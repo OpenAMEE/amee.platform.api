@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- Identity. -->
+    <name>amee-platform-science</name>
+    <groupId>com.amee.platform</groupId>
+    <artifactId>amee-platform-science</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <!-- Properties. -->
+    <properties>
+        <org.json.version>2.0</org.json.version>
+        <joda-time.version>1.6</joda-time.version>
+        <jscience.version>4.3.1</jscience.version>
+        <commons-lang.version>2.4</commons-lang.version>
+        <commons-collections.version>3.2</commons-collections.version>
+        <commons-logging.version>1.1</commons-logging.version>
+        <junit.version>4.4</junit.version>
+    </properties>
+    <!-- Build Plugins. -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <!-- Dependencies. -->
+    <dependencies>
+        <!-- Build Dependencies. -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>${org.json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>${jscience.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+        </dependency>
+        <!-- Test Dependencies. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
