@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- Identity. -->
     <name>amee-platform-science</name>
@@ -87,6 +88,7 @@
     </distributionManagement>
     <!-- Version Control. -->
     <scm>
-        <connection>scm:git:git://github.com/AMEE/amee.platform.science.git</connection>
+        <connection>scm:git:ssh://git@github.com/AMEE/amee.platform.science.git</connection>
+        <url>scm:git:ssh://git@github.com/AMEE/amee.platform.science.git</url>
     </scm>
 </project>
