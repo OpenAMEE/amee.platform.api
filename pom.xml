@@ -87,6 +87,6 @@
     </distributionManagement>
     <!-- Version Control. -->
     <scm>
-        <connection>scm:git:https://github.com/AMEE/amee.platform.science</connection>
+        <connection>scm:git:git://github.com/AMEE/amee.platform.science.git</connection>
     </scm>
 </project>
