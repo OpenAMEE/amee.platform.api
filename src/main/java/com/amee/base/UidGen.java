@@ -3,7 +3,9 @@ package com.amee.base;
 import java.io.Serializable;
 import java.util.Random;
 
-// These have a probability of 3.55271368 ? 10^-15 of not being unique :)
+/**
+ * These have a probability of 3.55271368 ? 10^-15 of not being unique :)
+ */
 public class UidGen implements Serializable {
 
     // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to FFFFFFFFFFFF).
