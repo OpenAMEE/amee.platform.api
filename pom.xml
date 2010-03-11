@@ -4,7 +4,7 @@
 
     <!-- Identity. -->
     <name>amee-base</name>
-    <groupId>com.amee.base</groupId>
+    <groupId>com.amee</groupId>
     <artifactId>amee-base</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
