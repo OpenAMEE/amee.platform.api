@@ -1,7 +1,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
     <persistence-unit name="entityManager">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <!--<class>com.amee.observatory.domain.Metric</class>-->
+        <!--<class>com.amee.AnEntity</class>-->
         <properties>
             <!-- *** Hibernate Configuration *** -->
             <!-- See: http://docs.jboss.org/hibernate/stable/core/reference/en/html/session-configuration.html -->
