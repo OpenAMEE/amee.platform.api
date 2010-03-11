@@ -15,6 +15,7 @@
         <commons-lang.version>2.4</commons-lang.version>
         <junit.version>4.4</junit.version>
         <restlet.version>1.1.6</restlet.version>
+        <xerces.version>2.9.1</xerces.version>
     </properties>
 
     <!-- Build Plugins. -->
@@ -52,9 +53,19 @@
             <version>${restlet.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.restlet</groupId>
+            <artifactId>org.restlet.ext.json</artifactId>
+            <version>${restlet.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.noelios.restlet</groupId>
             <artifactId>com.noelios.restlet</artifactId>
             <version>${restlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xerces.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
