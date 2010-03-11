@@ -1,0 +1,55 @@
+package com.amee.base.crypto;
+
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
+
+/**
+ * Cryptography for internal use with a private local key and salt.
+ */
+public class InternalCrypto extends BaseCrypto {
+
+    private final static String KEY_FILE = "amee.keyFile";
+    private final static String SALT_FILE = "amee.saltFile";
+    private static byte[] salt = null;
+    private static SecretKeySpec secretKeySpec = null;
+    private static IvParameterSpec iv = null;
+
+    public InternalCrypto() {
+        super();
+    }
+
+    private synchronized static void initialise() throws CryptoException {
+        if (InternalCrypto.secretKeySpec == null) {
+            String keyFileName = System.getProperty(KEY_FILE);
+            String saltFileName = System.getProperty(SALT_FILE);
+            if ((keyFileName != null) && (saltFileName != null)) {
+                File keyFile = new File(keyFileName);
+                File saltFile = new File(saltFileName);
+                if (keyFile.isFile() && saltFile.isFile()) {
+                    secretKeySpec = InternalCrypto.readKeyFromFile(keyFile);
+                    salt = InternalCrypto.readSaltFromFile(saltFile);
+                    iv = new javax.crypto.spec.IvParameterSpec(InternalCrypto.salt);
+                }
+            }
+            if ((secretKeySpec == null) || (iv == null)) {
+                throw new RuntimeException("Could not create SecretKeySpec or IvParameterSpec instances. Check key and salt files.");
+            }
+        }
+    }
+
+    public static String encrypt(String toBeEncrypted) throws CryptoException {
+        InternalCrypto.initialise();
+        return encrypt(secretKeySpec, iv, toBeEncrypted);
+    }
+
+    public static String decrypt(String toBeDecrypted) throws CryptoException {
+        InternalCrypto.initialise();
+        return decrypt(secretKeySpec, iv, toBeDecrypted);
+    }
+
+    public static String getAsMD5AndBase64(String s) throws CryptoException {
+        InternalCrypto.initialise();
+        return getAsMD5AndBase64(salt, s);
+    }
+}

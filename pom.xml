@@ -25,6 +25,9 @@
         <hibernate-core.version>3.3.2.GA</hibernate-core.version>
         <hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
         <slf4j.version>1.5.8</slf4j.version>
+        <commons-codec.version>1.4</commons-codec.version>
+        <ehcache.version>1.6.2</ehcache.version>
+        <spy-memcached.version>2.4rc1</spy-memcached.version>
     </properties>
 
     <!-- Build Plugins. -->
@@ -198,7 +201,27 @@
             <artifactId>commons-logging</artifactId>
             <version>${commons-logging.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>${commons-dbcp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>spy</groupId>
+            <artifactId>memcached</artifactId>
+            <version>${spy-memcached.version}</version>
+        </dependency>
+        
         <!-- Test Dependencies. -->
         <dependency>
             <groupId>junit</groupId>
@@ -240,12 +263,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>${commons-dbcp.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
