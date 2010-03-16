@@ -21,7 +21,7 @@ import org.w3c.dom.Element;
 
 import java.util.logging.Level;
 
-@Service
+@Service("ameeStatusService")
 public class AMEEStatusService extends StatusService {
 
     public AMEEStatusService() {
