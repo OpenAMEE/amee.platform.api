@@ -17,7 +17,7 @@ import java.util.List;
 public class InternalValue {
 
     private final Log log = LogFactory.getLog(getClass());
-
+    private final Log slog =   LogFactory.getLog("science");
     private Object value;
 
     /**
@@ -85,6 +85,7 @@ public class InternalValue {
      */
     private List<ExternalValue> filterItemValues(List<ExternalValue> values, Date startDate, Date endDate) {
 
+        slog.error ("Diagnostics from filtering:"+ values.size() + "," + new DateTime(startDate) +","+new DateTime(endDate))  ;
         List<ExternalValue> filteredValues = new ArrayList<ExternalValue>();
 
         ExternalValue previous = values.get(0);
@@ -101,7 +102,8 @@ public class InternalValue {
         }
 
         // Now add the value with the greatest date before the start of the range.
-        filteredValues.add(previous);
+        // the sequence is not self-sorting, so needs to go at the front
+        filteredValues.add(0,previous);
 
         return filteredValues;
     }

@@ -1,4 +1,6 @@
 *.iws
 target
 release.properties
+pom.xml
+*.ipr
 pom.xml.releaseBackup

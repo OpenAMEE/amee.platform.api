@@ -131,6 +131,8 @@ public class InternalValueTest {
         assertTrue("Should contain expected ItemValues", filteredDates.contains(four));
         assertFalse("Should not contain filtered ItemValues", filteredDates.contains(five));
         assertFalse("Should not contain filtered ItemValues", filteredDates.contains(six));
+        assertTrue("Should have a window of two minutes, is:"+filteredValues.getSeriesTimeInMillis() +"s",
+                filteredValues.getSeriesTimeInMillis().equals(new Decimal(new Float(120*1000))));        
     }
 
     @Test

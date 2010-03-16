@@ -286,8 +286,10 @@ public class DataSeries {
      * @return - the average as a {@link Decimal} value
      */
     public Decimal integrate() {
+
         Decimal integral = Decimal.ZERO;
         Decimal seriesTimeInMillis = getSeriesTimeInMillis();
+        log.error("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
         if (!seriesTimeInMillis.equals(Decimal.ZERO)) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
