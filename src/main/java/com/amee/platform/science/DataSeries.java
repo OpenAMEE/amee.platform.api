@@ -104,8 +104,7 @@ public class DataSeries {
 
     private DateTime getSeriesEndDate() {
         if (!dataPoints.isEmpty()) {
-            DateTime last = dataPoints.get(dataPoints.size() - 1).getDateTime();
-            return (seriesEndDate != null) && last.isAfter(seriesEndDate) ? seriesEndDate : last;
+            return (seriesEndDate != null)  ? seriesEndDate : dataPoints.get(dataPoints.size() - 1).getDateTime();
         } else {
             return null;
         }
@@ -292,15 +291,25 @@ public class DataSeries {
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
                 DataPoint current = dataPoints.get(i);
-                // If the data point starts before or ends after the effective range
-                // then use the real start date.
-                boolean lastElement = (i == (dataPoints.size() - 1));
-                DateTime end = lastElement ? getSeriesEndDate() : dataPoints.get(i + 1).getDateTime();
-                DateTime start = current.getDateTime();
+                       DateTime end;
+                if (i == (dataPoints.size() - 1)) {
+                   end = getSeriesEndDate();
+                } else {
+                  DataPoint next=dataPoints.get(i+1);
+                  end=getSeriesEndDate().isBefore(next.getDateTime()) ? getSeriesEndDate() : next.getDateTime();
+                }
+                DateTime start = getSeriesStartDate().isAfter(current.getDateTime()) ?
+                        getSeriesStartDate() : current.getDateTime();
                 Decimal segmentInMillis = new Decimal(
-                        end.getMillis() - ((getSeriesStartDate().isAfter(start) ? getSeriesStartDate() : start).getMillis()));
+                        end.getMillis() -start.getMillis());
+                // the filtering should have removed points after the end of the window of interest
+                // but in case it hasn't (and for direct testing not via internal value)
+                if (start.isAfter(end)) continue;
                 // Add weighted average value.
-                Decimal weightedAverage = current.getValue().multiply(segmentInMillis.divide(seriesTimeInMillis));
+                Decimal weightedAverage = current.getValue().multiply(segmentInMillis).divide(seriesTimeInMillis);
+//                System.out.println(
+//                        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
+//                        ","+segmentInMillis.divide(seriesTimeInMillis));
                 integral = integral.add(weightedAverage);
             }
         }

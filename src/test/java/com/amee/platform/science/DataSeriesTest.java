@@ -72,6 +72,8 @@ public class DataSeriesTest {
 
     }
 
+
+
     @Test
     public void subtract() {
 
@@ -169,8 +171,12 @@ public class DataSeriesTest {
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(3));
         Decimal window = new Decimal(now.plusDays(3).getMillis() - now.plusDays(1).getMillis());
+
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float((2+6)/2.0).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     @Test
@@ -178,12 +184,16 @@ public class DataSeriesTest {
         List<DataPoint> points = new ArrayList<DataPoint>();
         points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
         points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(4), new Decimal("12")));
+        points.add(new DataPoint(now.plusDays(4), new Decimal("15")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(5));
-        Decimal window = new Decimal(now.plusDays(4).getMillis() - now.plusDays(2).getMillis());
+        Decimal window = new Decimal(now.plusDays(5).getMillis() - now.plusDays(2).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
+        assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float((6+12+15)/3.0).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     @Test
@@ -198,6 +208,9 @@ public class DataSeriesTest {
         Decimal window = new Decimal(now.plusDays(4).getMillis() - now.plusDays(2).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float((6+12)/2.0).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     @Test
@@ -212,6 +225,9 @@ public class DataSeriesTest {
         Decimal window = new Decimal(now.plusDays(2).getMillis() - now.plusDays(1).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float(2).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     @Test
@@ -222,28 +238,34 @@ public class DataSeriesTest {
         points.add(new DataPoint(start, new Decimal("2")));
         points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
         points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(end, new Decimal("12")));
+        points.add(new DataPoint(end, new Decimal("15")));
         DataSeries series = new DataSeries(points);
         Decimal window = new Decimal(end.getMillis() - start.getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float((2+6+12)/3.0).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     @Test
     public void queryWithInsideStartAndEndDate() {
         int start = 15;
-        int end = 15;
+        int end = 35;
         List<DataPoint> points = new ArrayList<DataPoint>();
         points.add(new DataPoint(now.plusDays(10), new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(20), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(30), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(40), new Decimal("12")));
+        points.add(new DataPoint(now.plusDays(20), new Decimal("3")));
+        points.add(new DataPoint(now.plusDays(30), new Decimal("5")));
+        points.add(new DataPoint(now.plusDays(40), new Decimal("7")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(start));
         series.setSeriesEndDate(now.plusDays(end));
         Decimal window = new Decimal(now.plusDays(end).getMillis() - now.plusDays(start).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
+        Decimal target=new Decimal( new Float((2*5+3*10+5*5)/20.0).toString() );
+        assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
+                series.integrate().equals(target));
     }
 
     private void print(DataSeries test, DataSeries actual) {
