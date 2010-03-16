@@ -126,7 +126,7 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldMultiplyDataSeriesAAndB() {
-        String expectedSeriesAMultipliedByB = "{\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"0.000000\"],[\"2010-01-04T00:00:00.000Z\",\"1.000000\"]]}";
+        String expectedSeriesAMultipliedByB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"0.000000\"],[\"2010-01-04T00:00:00.000Z\",\"1.000000\"]]}";
         DataSeries seriesAMultipliedByB = seriesA.multiply(seriesB);
         System.out.println(expectedSeriesAMultipliedByB);
         System.out.println(seriesAMultipliedByB.toString());
@@ -138,7 +138,7 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldAddDataSeriesBToA() {
-        String expectedSeriesAPlusB = "{\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"2.500000\"]]}";
+        String expectedSeriesAPlusB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"2.500000\"]]}";
         DataSeries seriesAPlusB = seriesA.plus(seriesB);
         assertTrue("Should be able to add together two DataSeries objects.", seriesAPlusB.toString().equals(expectedSeriesAPlusB));
     }
@@ -148,7 +148,7 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldMultiplyDataSeriesBAndC() {
-        String expectedSeriesBMultipliedByC = "{\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"6.000000\"]]}";
+        String expectedSeriesBMultipliedByC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"6.000000\"]]}";
         DataSeries seriesBMultipliedByC = seriesB.multiply(seriesC);
         System.out.println(expectedSeriesBMultipliedByC);
         System.out.println(seriesBMultipliedByC.toString());
@@ -160,7 +160,7 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldAddDataSeriesCToB() {
-        String expectedSeriesBPlusC = "{\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"2.000000\"],[\"2010-01-04T00:00:00.000Z\",\"5.000000\"]]}";
+        String expectedSeriesBPlusC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"2.000000\"],[\"2010-01-04T00:00:00.000Z\",\"5.000000\"]]}";
         DataSeries seriesBPlusC = seriesB.plus(seriesC);
         assertTrue("Should be able to add together two DataSeries objects.", seriesBPlusC.toString().equals(expectedSeriesBPlusC));
     }

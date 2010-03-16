@@ -2,11 +2,11 @@ package com.amee.platform.science;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Provides a wrapper around external representations of values.
@@ -50,6 +50,8 @@ public class InternalValue {
      * @param endDate   - the end Date to filter the series
      */
     public InternalValue(List<ExternalValue> values, Date startDate, Date endDate) {
+        slog.info ("Diagnostics from filtering:"+ values.size() + "," + new DateTime(startDate) +","+new DateTime(endDate))  ;
+  
         if (values.get(0).isDecimal()) {
             DataSeries ds = new DataSeries();
             for (ExternalValue itemValue : filterItemValues(values, startDate, endDate)) {
@@ -58,6 +60,7 @@ public class InternalValue {
             ds.setSeriesStartDate(new DateTime(startDate));
             ds.setSeriesEndDate(new DateTime(endDate));
             this.value = ds;
+            slog.info ("Series dates"+ds.getSeriesStartDate()+"->"+ds.getSeriesEndDate());
         } else {
             this.value = values;
         }
@@ -85,8 +88,15 @@ public class InternalValue {
      */
     private List<ExternalValue> filterItemValues(List<ExternalValue> values, Date startDate, Date endDate) {
 
-        slog.error ("Diagnostics from filtering:"+ values.size() + "," + new DateTime(startDate) +","+new DateTime(endDate))  ;
         List<ExternalValue> filteredValues = new ArrayList<ExternalValue>();
+
+        Collections.sort(values, new Comparator<ExternalValue>() {
+            public int compare(ExternalValue a, ExternalValue b) {
+                if (a.getStartDate() == b.getStartDate()) return 0 ;
+                if (a.getStartDate().before(b.getStartDate())) return -1 ;
+                return 1;
+            }
+        });
 
         ExternalValue previous = values.get(0);
         StartEndDate latest = previous.getStartDate();
@@ -95,14 +105,14 @@ public class InternalValue {
             StartEndDate currentStart = iv.getStartDate();
             if (currentStart.before(endDate) && !currentStart.before(startDate)) {
                 filteredValues.add(iv);
+                slog.info("Adding point at"+iv.getStartDate());
             } else if (currentStart.before(startDate) && currentStart.after(latest)) {
                 latest = currentStart;
                 previous = iv;
             }
         }
 
-        // Now add the value with the greatest date before the start of the range.
-        // the sequence is not self-sorting, so needs to go at the front
+        slog.info("Adding previous point at"+previous.getStartDate());
         filteredValues.add(0,previous);
 
         return filteredValues;
