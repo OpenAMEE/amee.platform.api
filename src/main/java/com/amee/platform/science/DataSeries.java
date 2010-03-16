@@ -304,12 +304,13 @@ public class DataSeries {
                         end.getMillis() -start.getMillis());
                 // the filtering should have removed points after the end of the window of interest
                 // but in case it hasn't (and for direct testing not via internal value)
-                if (start.isAfter(end)) continue;
+
                 // Add weighted average value.
                 Decimal weightedAverage = current.getValue().multiply(segmentInMillis).divide(seriesTimeInMillis);
-//                System.out.println(
-//                        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-//                        ","+segmentInMillis.divide(seriesTimeInMillis));
+                //System.out.println(
+                //        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
+                //        ","+segmentInMillis.divide(seriesTimeInMillis));
+                if (start.isAfter(end)) continue;
                 integral = integral.add(weightedAverage);
             }
         }
