@@ -2,6 +2,8 @@ package com.amee.platform.science;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +19,7 @@ import java.util.List;
  * such as plus, subtract and multiply along with the crucial integrate method.
  */
 public class DataSeries {
-
+    private final Log log = LogFactory.getLog("science");
     private List<DataPoint> dataPoints = new ArrayList<DataPoint>();
 
     /// These dates will be used to define a query window on the series.
@@ -307,9 +309,9 @@ public class DataSeries {
 
                 // Add weighted average value.
                 Decimal weightedAverage = current.getValue().multiply(segmentInMillis).divide(seriesTimeInMillis);
-                //System.out.println(
-                //        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-                //        ","+segmentInMillis.divide(seriesTimeInMillis));
+                log.error(
+                        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
+                        ","+segmentInMillis.divide(seriesTimeInMillis));
                 if (start.isAfter(end)) continue;
                 integral = integral.add(weightedAverage);
             }
