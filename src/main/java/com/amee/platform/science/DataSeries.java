@@ -92,6 +92,7 @@ public class DataSeries {
         }
         DateTime seriesStart = getSeriesStartDate();
         DateTime seriesEnd = getSeriesEndDate();
+        if ((seriesEnd==null||seriesStart==null)) return null; // if the range of interest is undef
         return new Decimal(seriesEnd.getMillis() - seriesStart.getMillis());
     }
 
@@ -327,6 +328,7 @@ public class DataSeries {
         Decimal integral = Decimal.ZERO;
         Decimal seriesTimeInMillis = getSeriesTimeInMillis();
         log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
+
         if (!seriesTimeInMillis.equals(Decimal.ZERO)) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
@@ -354,6 +356,8 @@ public class DataSeries {
                 if (start.isAfter(end)) continue;
                 integral = integral.add(weightedAverage);
             }
+        } else if (seriesTimeInMillis==null) {
+            integral=dataPoints.get(dataPoints.size()-1).getValue();
         }
         return integral;
     }

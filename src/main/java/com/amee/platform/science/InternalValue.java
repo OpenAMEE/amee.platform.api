@@ -98,6 +98,13 @@ public class InternalValue {
             }
         });
 
+        // endDate can be nil, indicating range-of-interest extends to infinite future time
+        // in this case, only the final value in the interval is of interest to anyone
+        if (endDate==null) {
+            filteredValues.add(values.get(values.size()-1));
+            return filteredValues;
+        }
+
         ExternalValue previous = values.get(0);
         StartEndDate latest = previous.getStartDate();
 
