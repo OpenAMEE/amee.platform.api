@@ -23,6 +23,7 @@
     <orderEntry type="library" exported="" name="Maven: commons-dbcp:commons-dbcp:1.2.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-pool:commons-pool:1.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-codec:commons-codec:1.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-lang:commons-lang:2.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: net.sf.ehcache:ehcache:1.6.2" level="project" />
     <orderEntry type="library" exported="" name="Maven: spy:memcached:2.4rc1" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.hibernate:hibernate-core:3.3.2.GA" level="project" />
