@@ -1,6 +1,6 @@
 package com.amee.base.validation;
 
-import com.amee.base.UidGen;
+import com.amee.base.utils.UidGen;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 

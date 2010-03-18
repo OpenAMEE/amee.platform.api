@@ -12,15 +12,9 @@
     <!-- Properties. -->
     <properties>
         <commons-codec.version>1.4</commons-codec.version>
-        <commons-dbcp.version>1.2.2</commons-dbcp.version>
         <commons-lang.version>2.4</commons-lang.version>
         <ehcache.version>1.6.2</ehcache.version>
-        <hibernate-core.version>3.3.2.GA</hibernate-core.version>
-        <hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
-        <hsqldb.version>1.8.0.10</hsqldb.version>
         <junit.version>4.4</junit.version>
-        <persistence-api.version>1.0</persistence-api.version>
-        <slf4j.version>1.5.8</slf4j.version>
         <spring.version>2.5.6</spring.version>
         <spy-memcached.version>2.4rc1</spy-memcached.version>
     </properties>
@@ -41,100 +35,6 @@
             </plugins>
         </pluginManagement>
 
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeGroupIds>com.amee</excludeGroupIds>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <environmentVariables>
-                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
-                        <CONF_HOME>${basedir}/conf</CONF_HOME>
-                        <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
-                        <CACHE_SERVICE_CLASS>com.amee.observatory.domain.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
-                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-                        </CACHE_MANAGER_CLASS>
-                    </environmentVariables>
-                    <systemProperties>
-                        <property>
-                            <name>amee.cacheProviderClass</name>
-                            <value>net.sf.ehcache.hibernate.SingletonEhCacheProvider</value>
-                        </property>
-                        <property>
-                            <name>amee.useQueryCache</name>
-                            <value>false</value>
-                        </property>
-                        <property>
-                            <name>amee.useSecondLevelCache</name>
-                            <value>false</value>
-                        </property>
-                        <property>
-                            <name>amee.hibernateDialect</name>
-                            <value>org.hibernate.dialect.HSQLDialect</value>
-                        </property>
-                        <property>
-                            <name>log4j.configuration</name>
-                            <value>test-log4j.xml</value>
-                        </property>
-                        <property>
-                            <name>sun.lang.ClassLoader.allowArraySyntax</name>
-                            <value>true</value>
-                        </property>
-                        <property>
-                            <name>java.awt.headless</name>
-                            <value>true</value>
-                        </property>
-                        <property>
-                            <name>amee.logLevel</name>
-                            <value>DEBUG</value>
-                        </property>
-                        <property>
-                            <name>amee.defaultLogLevel</name>
-                            <value>WARN</value>
-                        </property>
-                        <property>
-                            <name>host.name</name>
-                            <value>localhost</value>
-                        </property>
-                        <property>
-                            <name>amee.keyFile</name>
-                            <value>${basedir}/src/test/resources/crypto/amee.key</value>
-                        </property>
-                        <property>
-                            <name>amee.saltFile</name>
-                            <value>${basedir}/src/test/resources/crypto/amee.salt</value>
-                        </property>
-                    </systemProperties>
-                    <argLine>-javaagent:${basedir}/target/dependency/spring-agent.jar</argLine>
-                    <additionalClasspathElements>
-                        <element>${basedir}/src/test/resources</element>
-                    </additionalClasspathElements>
-                </configuration>
-            </plugin>
-
-        </plugins>
-
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -152,24 +52,9 @@
 
         <!-- Build Dependencies. -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>${persistence-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>${commons-dbcp.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -191,32 +76,6 @@
             <artifactId>memcached</artifactId>
             <version>${spy-memcached.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate-entitymanager.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jmx</artifactId>
-            <version>${hibernate-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>${hibernate-entitymanager.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- Test Dependencies. -->
         <dependency>
@@ -229,12 +88,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -253,24 +106,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 

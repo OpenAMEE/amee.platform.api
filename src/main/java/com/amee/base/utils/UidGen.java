@@ -1,4 +1,4 @@
-package com.amee.base;
+package com.amee.base.utils;
 
 import java.io.Serializable;
 import java.util.Random;

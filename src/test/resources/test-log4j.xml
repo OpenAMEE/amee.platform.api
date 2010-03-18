@@ -11,24 +11,6 @@
         </layout>
     </appender>
 
-    <!-- ############### Hibernate ################# -->
-
-    <!--category name="org.hibernate">
-        <priority value="INFO"/>
-    </category-->
-    <!--category name="org.hibernate.SQL">
-        <priority value="TRACE"/>
-    </category-->
-    <!--category name="org.hibernate.type">
-        <priority value="TRACE"/>
-    </category-->
-    <!--category name="org.hibernate.loader">
-        <priority value="TRACE"/>
-    </category-->
-    <!--category name="org.hibernate.cache">
-        <priority value="TRACE"/>
-    </category-->
-
     <!-- ############### Spring ################# -->
 
     <!--category name="org.springframework">
@@ -39,29 +21,6 @@
 
     <category name="com.amee">
         <priority value="${amee.logLevel}"/>
-    </category>
-
-    <!-- ############### log4jdbc ################### -->
-    <!-- See: http://code.google.com/p/log4jdbc/ -->
-
-    <category name="jdbc.sqlonly">
-        <priority value="ERROR"/>
-    </category>
-
-    <category name="jdbc.sqltiming">
-        <priority value="ERROR"/>
-    </category>
-
-    <category name="jdbc.audit">
-        <priority value="ERROR"/>
-    </category>
-
-    <category name="jdbc.resultset">
-        <priority value="ERROR"/>
-    </category>
-
-    <category name="jdbc.connection">
-        <priority value="ERROR"/>
     </category>
 
     <!-- ############### Default ################### -->

@@ -9,9 +9,7 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-2.5.xsd
                            http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-                           http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+                           http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
     <!-- Placeholder property configuration. -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
@@ -21,46 +19,5 @@
     <!--<context:spring-configured/>-->
     <context:annotation-config/>
     <context:component-scan base-package="com"/>
-    <tx:annotation-driven mode="aspectj"/>
-    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
-
-    <!-- EntityManagerFactory. -->
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="testDataSource"/>
-        <property name="loadTimeWeaver">
-            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
-        </property>
-    </bean>
-
-    <!-- TransactionManager. -->
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="testDataSource"/>
-        <property name="jpaDialect" ref="jpaDialect"/>
-    </bean>
-    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
-
-    <!-- Test DataSource. -->
-    <bean id="testDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
-        <property name="url"
-                  value="${DB_URL_PREFIX}:hsqldb:mem:test?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false"/>
-        <property name="username" value="sa"/>
-        <property name="initialSize" value="10"/>
-        <property name="maxActive" value="250"/>
-        <property name="maxIdle" value="50"/>
-        <property name="minIdle" value="10"/>
-        <property name="maxWait" value="-1"/>
-        <property name="validationQuery" value="select 1 from INFORMATION_SCHEMA.SYSTEM_USERS"/>
-        <property name="testOnBorrow" value="true"/>
-        <property name="testOnReturn" value="true"/>
-        <property name="testWhileIdle" value="true"/>
-        <property name="removeAbandoned" value="true"/>
-        <property name="removeAbandonedTimeout" value="300"/>
-        <property name="minEvictableIdleTimeMillis" value="240000"/>
-        <property name="timeBetweenEvictionRunsMillis" value="1000"/>
-        <property name="defaultAutoCommit" value="false"/>
-    </bean>
 
 </beans>
