@@ -1,7 +1,7 @@
 package com.amee.restlet;
 
-import com.amee.base.UidGen;
-import com.amee.base.XMLUtils;
+import com.amee.base.utils.UidGen;
+import com.amee.base.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;

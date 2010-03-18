@@ -1,6 +1,6 @@
-package com.amee.restlet;
+package com.amee.restlet.transaction;
 
-import com.amee.base.TransactionController;
+import com.amee.base.transaction.TransactionController;
 import com.noelios.restlet.http.HttpResponse;
 import com.noelios.restlet.http.HttpServerConverter;
 import org.restlet.Context;
