@@ -58,12 +58,20 @@ public class Decimal {
         }
     }
 
+    public Decimal(Double decimal) {
+        scale(decimal.toString());
+    }
+
     public Decimal(Float decimal) {
         scale(decimal.toString());
     }
 
     public Decimal(Long decimal) {
         scale(decimal.toString());
+    }
+
+    public double doubleValue() {
+        return decimal.doubleValue();
     }
 
     private Decimal(BigDecimal decimal) {

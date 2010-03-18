@@ -325,7 +325,7 @@ public class DataSeries {
      */
     public Decimal integrate() {
 
-        Decimal integral = Decimal.ZERO;
+        double integral = 0.0;
         Decimal seriesTimeInMillis = getSeriesTimeInMillis();
         log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
 
@@ -343,23 +343,23 @@ public class DataSeries {
                 }
                 DateTime start = getSeriesStartDate().isAfter(current.getDateTime()) ?
                         getSeriesStartDate() : current.getDateTime();
-                Decimal segmentInMillis = new Decimal(
-                        end.getMillis() -start.getMillis());
+                double segmentInMillis =
+                        end.getMillis() -start.getMillis();
                 // the filtering should have removed points after the end of the window of interest
                 // but in case it hasn't (and for direct testing not via internal value)
 
                 // Add weighted average value.
-                Decimal weightedAverage = current.getValue().multiply(segmentInMillis).divide(seriesTimeInMillis);
+                double weightedAverage = current.getValue().doubleValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
                 log.info(
                         "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-                        ","+segmentInMillis.divide(seriesTimeInMillis));
+                        ","+segmentInMillis/(seriesTimeInMillis.doubleValue()));
                 if (start.isAfter(end)) continue;
-                integral = integral.add(weightedAverage);
+                integral = integral+weightedAverage;
             }
         } else if (seriesTimeInMillis==null) {
-            integral=dataPoints.get(dataPoints.size()-1).getValue();
+            integral=dataPoints.get(dataPoints.size()-1).getValue().doubleValue();
         }
-        return integral;
+        return new Decimal(integral);
     }
 
     /**
