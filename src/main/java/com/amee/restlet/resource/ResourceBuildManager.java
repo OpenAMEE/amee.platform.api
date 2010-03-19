@@ -1,5 +1,7 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;

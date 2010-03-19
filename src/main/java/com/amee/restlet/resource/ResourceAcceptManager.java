@@ -1,5 +1,7 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
 import org.json.JSONObject;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -13,7 +15,7 @@ import java.util.Map;
 
 public class ResourceAcceptManager extends ResourceManager {
 
-    private Map<String, ResourceAcceptor> acceptors = new HashMap<String, ResourceAcceptor>();
+    private Map<String, ResourceAcceptor<JSONObject>> acceptors = new HashMap<String, ResourceAcceptor<JSONObject>>();
 
     public void accept(Representation entity) {
         // A POST or PUT must have an entity content body.
@@ -72,11 +74,11 @@ public class ResourceAcceptManager extends ResourceManager {
         }
     }
 
-    public Map<String, ResourceAcceptor> getAcceptors() {
+    public Map<String, ResourceAcceptor<JSONObject>> getAcceptors() {
         return acceptors;
     }
 
-    public void setAcceptors(Map<String, ResourceAcceptor> acceptors) {
+    public void setAcceptors(Map<String, ResourceAcceptor<JSONObject>> acceptors) {
         if (acceptors != null) {
             this.acceptors = acceptors;
         }

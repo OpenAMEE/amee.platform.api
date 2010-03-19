@@ -1,5 +1,9 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import org.json.JSONObject;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -100,7 +104,7 @@ public class GenericResource extends Resource {
         }
     }
 
-    public void setAcceptors(Map<String, ResourceAcceptor> acceptors) {
+    public void setAcceptors(Map<String, ResourceAcceptor<JSONObject>> acceptors) {
         acceptManager.setAcceptors(acceptors);
     }
 
@@ -114,7 +118,7 @@ public class GenericResource extends Resource {
         }
     }
 
-    public void setRemover(ResourceRemover remover) {
+    public void setRemover(ResourceRemover<JSONObject> remover) {
         removeManager.setRemover(remover);
     }
 

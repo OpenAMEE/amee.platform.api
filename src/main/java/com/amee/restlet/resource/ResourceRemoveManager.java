@@ -1,11 +1,13 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceRemover;
 import org.json.JSONObject;
 import org.restlet.data.Status;
 
 public class ResourceRemoveManager extends ResourceManager {
 
-    private ResourceRemover remover;
+    private ResourceRemover<JSONObject> remover;
 
     public void remove() {
         if (remover != null) {
@@ -26,7 +28,7 @@ public class ResourceRemoveManager extends ResourceManager {
         return remover;
     }
 
-    public void setRemover(ResourceRemover remover) {
+    public void setRemover(ResourceRemover<JSONObject> remover) {
         this.remover = remover;
     }
 }
