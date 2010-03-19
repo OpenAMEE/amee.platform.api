@@ -15,6 +15,7 @@
         <commons-lang.version>2.4</commons-lang.version>
         <ehcache.version>1.6.2</ehcache.version>
         <junit.version>4.4</junit.version>
+        <org.json.version>2.0</org.json.version>
         <spring.version>2.5.6</spring.version>
         <spy-memcached.version>2.4rc1</spy-memcached.version>
     </properties>
@@ -75,6 +76,11 @@
             <groupId>spy</groupId>
             <artifactId>memcached</artifactId>
             <version>${spy-memcached.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>${org.json.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->
