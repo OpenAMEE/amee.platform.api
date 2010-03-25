@@ -10,7 +10,7 @@ public interface IdentityObject {
 
     public void setUid(String uid);
 
-    public String getValue();
+    public String getIdentityValue();
 
-    public void setValue(String value);
+    public void setIdentityValue(String value);
 }
