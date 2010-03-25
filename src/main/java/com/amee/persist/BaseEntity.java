@@ -87,11 +87,11 @@ public abstract class BaseEntity implements DatedObject, Serializable {
         this.uid = uid;
     }
 
-    public String getValue() {
+    public String getIdentityValue() {
         return getUid();
     }
 
-    public void setValue(String value) {
+    public void setIdentityValue(String value) {
         setUid(value);
     }
 
