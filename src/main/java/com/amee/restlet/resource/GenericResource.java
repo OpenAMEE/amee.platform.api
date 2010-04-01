@@ -1,16 +1,25 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.Feedback;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
+import com.amee.base.utils.XMLUtils;
+import org.apache.xerces.dom.DocumentImpl;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Context;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +33,7 @@ public class GenericResource extends Resource {
     private Boolean allowPost = null;
     private Boolean allowPut = null;
     private Boolean allowDelete = null;
+    private Feedback feedback = null;
 
     public void init(Context context, Request request, Response response) {
         super.init(context, request, response);
@@ -40,7 +50,41 @@ public class GenericResource extends Resource {
      */
     @Override
     public Representation represent(Variant variant) {
-        return buildManager.getRepresentation(variant);
+        if (feedback == null) {
+            return buildManager.getRepresentation(variant);
+        } else {
+            return getFeedbackRepresentation(variant.getMediaType());
+        }
+    }
+
+    protected Representation getFeedbackRepresentation(MediaType mediaType) {
+        Representation representation = null;
+        if (mediaType.equals(MediaType.APPLICATION_XML)) {
+            representation = getFeedbackDomRepresentation();
+        } else if (mediaType.equals(MediaType.APPLICATION_JSON)) {
+            representation = getFeedbackJsonRepresentation();
+        }
+        return representation;
+    }
+
+    protected Representation getFeedbackJsonRepresentation() {
+        try {
+            JSONObject result = new JSONObject();
+            result.put("status", "INVALID");
+            result.put("feedback", feedback.getJSONObject());
+            return new JsonRepresentation(result);
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    protected Representation getFeedbackDomRepresentation() {
+        Document document = new DocumentImpl();
+        Element representationElem = document.createElement("Representation");
+        document.appendChild(representationElem);
+        representationElem.appendChild(XMLUtils.getElement(document, "Status", "INVALID"));
+        representationElem.appendChild(feedback.getElement(document));
+        return new DomRepresentation(MediaType.APPLICATION_XML, document);
     }
 
     /**
@@ -144,5 +188,13 @@ public class GenericResource extends Resource {
 
     public void setAllowDelete(Boolean allowDelete) {
         this.allowDelete = allowDelete;
+    }
+
+    public Feedback getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(Feedback feedback) {
+        this.feedback = feedback;
     }
 }

@@ -1,7 +1,9 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.Feedback;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -20,7 +22,7 @@ public class ResourceAcceptManager extends ResourceManager {
     public void accept(Representation entity) {
         // A POST or PUT must have an entity content body.
         if (entity.isAvailable()) {
-            // Lookup correct RequestWrapper, based on media-type.
+            // Lookup correct ResourceAcceptor, based on media-type.
             MediaType mediaType = entity.getMediaType();
             if (acceptors.containsKey(mediaType.getName())) {
                 // Send RequestWrapper to ResourceAcceptor.
@@ -34,7 +36,14 @@ public class ResourceAcceptManager extends ResourceManager {
                         getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     }
                 } else if (isInvalid(result)) {
-                    // TODO: Add feedback to response.
+                    if (result.has("feedback")) {
+                        try {
+                            getResource().setFeedback(new Feedback(result.getJSONObject("feedback")));
+                        } catch (JSONException e) {
+                            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+                        }
+                        getResource().handleGet();
+                    }
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 } else if (isNotFound(result)) {
                     getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);

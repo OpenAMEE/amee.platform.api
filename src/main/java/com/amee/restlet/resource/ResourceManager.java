@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.resource.Resource;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,10 +12,10 @@ import java.util.Set;
 
 public class ResourceManager {
 
-    private Resource resource;
+    private GenericResource resource;
     private Set<String> attributeNames = new HashSet<String>();
 
-    public void init(Resource resource) {
+    public void init(GenericResource resource) {
         this.resource = resource;
     }
 
@@ -65,7 +64,7 @@ public class ResourceManager {
         return getRequest().getResourceRef().getQueryAsForm().getValuesMap();
     }
 
-    public Resource getResource() {
+    public GenericResource getResource() {
         return resource;
     }
 

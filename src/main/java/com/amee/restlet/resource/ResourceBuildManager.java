@@ -9,7 +9,6 @@ import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
 import org.restlet.resource.Variant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -22,7 +21,7 @@ public class ResourceBuildManager extends ResourceManager {
 
     private List<ResourceBuilder> builders = new ArrayList<ResourceBuilder>();
 
-    public void init(Resource resource) {
+    public void init(GenericResource resource) {
         super.init(resource);
         for (ResourceBuilder builder : getBuilders()) {
             resource.getVariants().add(new Variant(MediaType.valueOf(builder.getMediaType())));
