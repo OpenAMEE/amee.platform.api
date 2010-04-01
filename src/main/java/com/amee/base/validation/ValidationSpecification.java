@@ -21,8 +21,8 @@ public class ValidationSpecification implements Serializable {
     // The name of the value, such as 'password'.
     private String name = null;
 
-    // Can the value be blank?
-    private boolean allowBlank = false;
+    // Can the value be empty?
+    private boolean allowEmpty = false;
 
     // The minimum size of the value, or -1 to ignore.
     private int minSize = -1;
@@ -46,7 +46,10 @@ public class ValidationSpecification implements Serializable {
     private boolean uidList = false;
 
     // Is the value a number (integer)?
-    private boolean number = false;
+    private boolean integerNumber = false;
+
+    // Is the value a number (double)?
+    private boolean doubleNumber = false;
 
     // Can a number be negative?
     private boolean numberNegative = true;
@@ -68,13 +71,13 @@ public class ValidationSpecification implements Serializable {
         if (value instanceof String) {
             return validateString((String) value, e);
         } else {
-            return CONTINUE;
+            return validateObject(value, e);
         }
     }
 
     private int validateString(String value, Errors e) {
         // Handle empty.
-        if (allowBlank && StringUtils.isBlank(value)) {
+        if (allowEmpty && StringUtils.isBlank(value)) {
             // Allow empty.
             return CONTINUE;
         } else {
@@ -135,8 +138,8 @@ public class ValidationSpecification implements Serializable {
                 }
             }
         }
-        // Validate number.
-        if (number) {
+        // Validate integer.
+        if (integerNumber) {
             Integer i;
             try {
                 i = Integer.valueOf(value);
@@ -146,6 +149,36 @@ public class ValidationSpecification implements Serializable {
             }
             if (!numberNegative && i < 0) {
                 e.rejectValue(name, name + ".negative");
+                return STOP;
+            }
+        }
+        // Validate double.
+        if (doubleNumber) {
+            Double d;
+            try {
+                d = Double.valueOf(value);
+            } catch (NumberFormatException e1) {
+                e.rejectValue(name, name + ".number");
+                return STOP;
+            }
+            if (!numberNegative && d < 0) {
+                e.rejectValue(name, name + ".negative");
+                return STOP;
+            }
+        }
+        // Everything passed.
+        return CONTINUE;
+    }
+
+    private int validateObject(Object value, Errors e) {
+        // Handle empty.
+        if (allowEmpty && (value == null)) {
+            // Allow empty.
+            return CONTINUE;
+        } else {
+            // Don't allow empty.
+            if (value == null) {
+                e.rejectValue(name, name + ".empty");
                 return STOP;
             }
         }
@@ -161,12 +194,12 @@ public class ValidationSpecification implements Serializable {
         this.name = name;
     }
 
-    public boolean isAllowBlank() {
-        return allowBlank;
+    public boolean isAllowEmpty() {
+        return allowEmpty;
     }
 
-    public void setAllowBlank(boolean allowBlank) {
-        this.allowBlank = allowBlank;
+    public void setAllowEmpty(boolean allowEmpty) {
+        this.allowEmpty = allowEmpty;
     }
 
     public int getMinSize() {
@@ -229,12 +262,20 @@ public class ValidationSpecification implements Serializable {
         this.uidList = uidList;
     }
 
-    public boolean isNumber() {
-        return number;
+    public boolean isIntegerNumber() {
+        return integerNumber;
     }
 
-    public void setNumber(boolean number) {
-        this.number = number;
+    public void setIntegerNumber(boolean integerNumber) {
+        this.integerNumber = integerNumber;
+    }
+
+    public boolean isDoubleNumber() {
+        return doubleNumber;
+    }
+
+    public void setDoubleNumber(boolean doubleNumber) {
+        this.doubleNumber = doubleNumber;
     }
 
     public boolean isNumberNegative() {
