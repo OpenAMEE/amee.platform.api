@@ -70,7 +70,7 @@ public abstract class ValidationHelper {
     }
 
     protected DataBinder createDataBinder() {
-        return new DataBinder(getTarget(), getName());
+        return new DataBinder(getObject(), getName());
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class ValidationHelper {
         return dataBinder.getBindingResult();
     }
 
-    public Object getTarget() {
+    public Object getObject() {
         throw new UnsupportedOperationException();
     }
 
