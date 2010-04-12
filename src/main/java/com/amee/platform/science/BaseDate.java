@@ -37,4 +37,8 @@ public abstract class BaseDate extends java.util.Date {
     public DateTime toDateTime() {
         return new DateTime(this.getTime());
     }
+
+    public Date toDate() {
+        return new DateTime(this.getTime()).toDate();
+    }
 }
