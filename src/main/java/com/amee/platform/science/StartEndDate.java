@@ -2,13 +2,16 @@ package com.amee.platform.science;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.joda.time.format.ISOPeriodFormat;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 public class StartEndDate extends BaseDate {
 
@@ -67,7 +70,8 @@ public class StartEndDate extends BaseDate {
         return true;
     }
 
-    public static StartEndDate getStartOfMonthDate() {
-        return new StartEndDate(new DateTime().dayOfMonth().withMinimumValue().millisOfDay().withMinimumValue().toDate());
+    public static StartEndDate getStartOfMonthDate(TimeZone timeZone) {
+        DateMidnight startOfMonth = new DateMidnight(DateTimeZone.forTimeZone(timeZone)).withDayOfMonth(1);
+        return new StartEndDate(startOfMonth.toDate());
     }
 }

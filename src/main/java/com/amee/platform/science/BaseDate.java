@@ -30,6 +30,7 @@ public abstract class BaseDate extends java.util.Date {
 
     protected abstract long defaultDate();
 
+    @Override
     public String toString() {
         return dateStr;
     }
@@ -39,6 +40,6 @@ public abstract class BaseDate extends java.util.Date {
     }
 
     public Date toDate() {
-        return new DateTime(this.getTime()).toDate();
+        return new Date(this.getTime());
     }
 }
