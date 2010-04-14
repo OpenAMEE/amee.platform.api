@@ -70,8 +70,24 @@ public class StartEndDate extends BaseDate {
         return true;
     }
 
+    /**
+     * Get the start of the month in the given time zone.
+     * @param timeZone the time zone to use when calculating the start of the month.
+     * @return a StartEndDate set to the start of the month in the given time zone.
+     */
     public static StartEndDate getStartOfMonthDate(TimeZone timeZone) {
         DateMidnight startOfMonth = new DateMidnight(DateTimeZone.forTimeZone(timeZone)).withDayOfMonth(1);
-        return new StartEndDate(startOfMonth.toDate());
+        return new StartEndDate(startOfMonth.toString(ISODateTimeFormat.dateTimeNoMillis()));
+    }
+
+    /**
+     * Create a new StartEndDate using the given Date and TimeZone
+     * @param theDate the Date to set the StartEndDate to. (UTC is implied).
+     * @param theTimeZone the timeZone to convert the given timestamp to.
+     * @return a StartEndDate with the dateStr correctly set to the given time zone.
+     */
+    public static StartEndDate getLocalStartEndDate(Date theDate, TimeZone theTimeZone) {
+        DateTime localDate = new DateTime(theDate, DateTimeZone.forTimeZone(theTimeZone));
+        return new StartEndDate(localDate.toString(ISODateTimeFormat.dateTimeNoMillis()));
     }
 }
