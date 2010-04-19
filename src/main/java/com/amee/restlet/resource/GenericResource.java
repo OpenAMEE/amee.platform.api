@@ -1,11 +1,12 @@
 package com.amee.restlet.resource;
 
-import com.amee.base.resource.Feedback;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.XMLUtils;
 import org.apache.xerces.dom.DocumentImpl;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Context;
@@ -21,6 +22,7 @@ import org.restlet.resource.Variant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +35,7 @@ public class GenericResource extends Resource {
     private Boolean allowPost = null;
     private Boolean allowPut = null;
     private Boolean allowDelete = null;
-    private Feedback feedback = null;
+    private List<ValidationResult> validationResults = null;
 
     public void init(Context context, Request request, Response response) {
         super.init(context, request, response);
@@ -50,40 +52,60 @@ public class GenericResource extends Resource {
      */
     @Override
     public Representation represent(Variant variant) {
-        if (feedback == null) {
+        if (!hasValidationResults()) {
             return buildManager.getRepresentation(variant);
         } else {
-            return getFeedbackRepresentation(variant.getMediaType());
+            return getValidationResultRepresentation(variant.getMediaType());
         }
     }
 
-    protected Representation getFeedbackRepresentation(MediaType mediaType) {
+    protected Representation getValidationResultRepresentation(MediaType mediaType) {
         Representation representation = null;
         if (mediaType.equals(MediaType.APPLICATION_XML)) {
-            representation = getFeedbackDomRepresentation();
+            representation = getValidationResultDomRepresentation();
         } else if (mediaType.equals(MediaType.APPLICATION_JSON)) {
-            representation = getFeedbackJsonRepresentation();
+            representation = getValidationResultJsonRepresentation();
         }
         return representation;
     }
 
-    protected Representation getFeedbackJsonRepresentation() {
+    protected Representation getValidationResultJsonRepresentation() {
         try {
             JSONObject result = new JSONObject();
             result.put("status", "INVALID");
-            result.put("feedback", feedback.getJSONObject());
+            if (!getValidationResults().isEmpty()) {
+                if (getValidationResults().size() > 1) {
+                    JSONArray validationResults = new JSONArray();
+                    result.put("validationResults", validationResults);
+                    for (ValidationResult validationResult : getValidationResults()) {
+                        validationResults.put(validationResult.getJSONObject());
+                    }
+                } else {
+                    result.put("validationResult", getFirstValidationResult().getJSONObject());
+                }
+            }
             return new JsonRepresentation(result);
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
     }
 
-    protected Representation getFeedbackDomRepresentation() {
+    protected Representation getValidationResultDomRepresentation() {
         Document document = new DocumentImpl();
         Element representationElem = document.createElement("Representation");
         document.appendChild(representationElem);
-        representationElem.appendChild(XMLUtils.getElement(document, "Status", "INVALID"));
-        representationElem.appendChild(feedback.getElement(document));
+        if (!getValidationResults().isEmpty()) {
+            if (getValidationResults().size() > 1) {
+                representationElem.appendChild(XMLUtils.getElement(document, "Status", "INVALID"));
+                Element validationResultsElem = document.createElement("ValidationResults");
+                representationElem.appendChild(validationResultsElem);
+                for (ValidationResult validationResult : getValidationResults()) {
+                    validationResultsElem.appendChild(validationResult.getElement(document));
+                }
+            } else {
+                representationElem.appendChild(getFirstValidationResult().getElement(document));
+            }
+        }
         return new DomRepresentation(MediaType.APPLICATION_XML, document);
     }
 
@@ -148,7 +170,7 @@ public class GenericResource extends Resource {
         }
     }
 
-    public void setAcceptors(Map<String, ResourceAcceptor<JSONObject>> acceptors) {
+    public void setAcceptors(Map<String, ResourceAcceptor<Object>> acceptors) {
         acceptManager.setAcceptors(acceptors);
     }
 
@@ -190,11 +212,35 @@ public class GenericResource extends Resource {
         this.allowDelete = allowDelete;
     }
 
-    public Feedback getFeedback() {
-        return feedback;
+    public boolean hasValidationResults() {
+        return (validationResults != null) && !validationResults.isEmpty();
     }
 
-    public void setFeedback(Feedback feedback) {
-        this.feedback = feedback;
+    public List<ValidationResult> getValidationResults() {
+        if (validationResults == null) {
+            validationResults = new ArrayList<ValidationResult>();
+        }
+        return validationResults;
+    }
+
+    public void setValidationResults(List<ValidationResult> validationResults) {
+        getValidationResults().clear();
+        if (validationResults != null) {
+            getValidationResults().addAll(validationResults);
+        }
+    }
+
+    public ValidationResult getFirstValidationResult() {
+        if (!getValidationResults().isEmpty()) {
+            return getValidationResults().get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public void addValidationResult(ValidationResult validationResult) {
+        if (validationResult != null) {
+            getValidationResults().add(validationResult);
+        }
     }
 }

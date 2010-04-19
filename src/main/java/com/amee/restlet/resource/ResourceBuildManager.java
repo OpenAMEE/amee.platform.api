@@ -2,6 +2,9 @@ package com.amee.restlet.resource;
 
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ValidationResult;
+import org.jdom.Element;
+import org.jdom.input.DOMBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;
@@ -10,9 +13,6 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Variant;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +55,16 @@ public class ResourceBuildManager extends ResourceManager {
         Representation representation = null;
         try {
             JSONObject obj = builder.build(new RequestWrapper(getAttributes(), getQueryParameters()));
+            // Handle validationResult.
+            if ((obj != null) && obj.has("validationResult")) {
+                getResource().addValidationResult(new ValidationResult(obj.getJSONObject("validationResult")));
+            }
+            // Handle status.
             if ((obj != null) && obj.has("status")) {
                 if (obj.getString("status").equals("OK")) {
+                    representation = new JsonRepresentation(obj);
+                } else if (obj.getString("status").equals("INVALID")) {
+                    getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     representation = new JsonRepresentation(obj);
                 } else if (obj.getString("status").equals("NOT_FOUND")) {
                     getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
@@ -68,22 +76,26 @@ public class ResourceBuildManager extends ResourceManager {
         return representation;
     }
 
-    protected Representation getDomRepresentation(ResourceBuilder<Document> builder) {
+    protected Representation getDomRepresentation(ResourceBuilder<org.w3c.dom.Document> builder) {
         Representation representation = null;
-        Document document = builder.build(new RequestWrapper(getAttributes(), getQueryParameters()));
+        org.w3c.dom.Document document = builder.build(new RequestWrapper(getAttributes(), getQueryParameters()));
         if (document != null) {
-            Node representationNode = document.getFirstChild();
-            if ((representationNode != null) && representationNode.getNodeName().equals("Representation")) {
-                NodeList childNodes = representationNode.getChildNodes();
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    if (childNodes.item(i).getNodeName().equals("Status")) {
-                        Node statusNode = childNodes.item(i);
-                        String status = statusNode.getTextContent();
-                        if (status.equals("OK")) {
-                            representation = new DomRepresentation(MediaType.APPLICATION_XML, document);
-                        } else if (status.equals("NOT_FOUND")) {
-                            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                        }
+            Element representationElement = new DOMBuilder().build(document).getRootElement();
+            if ((representationElement != null) && representationElement.getName().equals("Representation")) {
+                // Handle ValidationResult
+                if (representationElement.getChild("ValidationResult") != null) {
+                    getResource().addValidationResult(new ValidationResult(representationElement.getChild("ValidationResult")));
+                }
+                // Handle Status.
+                if (representationElement.getChild("Status") != null) {
+                    String status = representationElement.getChild("Status").getValue();
+                    if (status.equals("OK")) {
+                        representation = new DomRepresentation(MediaType.APPLICATION_XML, document);
+                    } else if (status.equals("INVALID")) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                        representation = new DomRepresentation(MediaType.APPLICATION_XML, document);
+                    } else if (status.equals("NOT_FOUND")) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     }
                 }
             }
