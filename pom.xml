@@ -10,16 +10,17 @@
     <packaging>jar</packaging>
 
     <!-- Properties. -->
+    <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
     <properties>
         <amee.base.version>1.0.0-SNAPSHOT</amee.base.version>
-        <commons-dbcp.version>1.2.2</commons-dbcp.version>
-        <hibernate-core.version>3.3.2.GA</hibernate-core.version>
-        <hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <hibernate-core.version>3.5.1-Final</hibernate-core.version>
+        <hibernate-entitymanager.version>3.5.1-Final</hibernate-entitymanager.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
-        <junit.version>4.4</junit.version>
-        <persistence-api.version>1.0</persistence-api.version>
-        <slf4j.version>1.5.8</slf4j.version>
-        <spring.version>2.5.6</spring.version>
+        <junit.version>4.7</junit.version>
+        <!--<persistence-api.version>1.0</persistence-api.version>-->
+        <slf4j.version>1.5.11</slf4j.version>
+        <spring.version>3.0.2.RELEASE</spring.version>
     </properties>
 
     <!-- Build Plugins. -->
@@ -123,7 +124,7 @@
                             <value>${basedir}/src/test/resources/crypto/amee.salt</value>
                         </property>
                     </systemProperties>
-                    <argLine>-javaagent:${basedir}/target/dependency/spring-agent.jar</argLine>
+                    <argLine>-javaagent:${basedir}/target/dependency/spring-instrument.jar</argLine>
                     <additionalClasspathElements>
                         <element>${basedir}/src/test/resources</element>
                     </additionalClasspathElements>
@@ -155,11 +156,11 @@
         </dependency>
 
         <!-- Build Dependencies. -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>${persistence-api.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>javax.persistence</groupId>-->
+        <!--<artifactId>persistence-api</artifactId>-->
+        <!--<version>${persistence-api.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -208,7 +209,7 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Test Dependencies. -->
         <dependency>
             <groupId>junit</groupId>
@@ -230,7 +231,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-agent</artifactId>
+            <artifactId>spring-instrument</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
