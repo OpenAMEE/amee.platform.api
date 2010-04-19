@@ -1,5 +1,6 @@
 package com.amee.base.validation;
 
+import com.amee.base.resource.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -34,14 +35,10 @@ public abstract class ValidationHelper {
         beforeBind(values);
         dataBinder.bind(createPropertyValues(values));
         Errors errors = getErrors();
+        ValidationUtils.invokeValidator(getValidator(), dataBinder.getTarget(), errors);
         if (!errors.hasErrors()) {
-            ValidationUtils.invokeValidator(getValidator(), dataBinder.getTarget(), errors);
-            if (!errors.hasErrors()) {
-                log.debug("isValid() - No validation errors.");
-                return true;
-            }
-        } else {
-            log.debug("isValid() - Has binding errors.");
+            log.debug("isValid() - No validation errors.");
+            return true;
         }
         log.debug("isValid() - Has validation errors.");
         return false;
@@ -122,5 +119,20 @@ public abstract class ValidationHelper {
 
     public String[] getAllowedFields() {
         return new String[]{};
+    }
+
+    public ValidationResult getValidationResult() {
+        // We always want a new ValidationResult.
+        ValidationResult validationResult = new ValidationResult();
+        // Add the errors.
+        validationResult.setErrors(getErrors());
+        // Add the values.
+        for (String field : getAllowedFields()) {
+            Object value = getErrors().getFieldValue(field);
+            if ((value != null) && (value instanceof String)) {
+                validationResult.addValue(field, (String) value);
+            }
+        }
+        return validationResult;
     }
 }

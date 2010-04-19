@@ -68,6 +68,11 @@ public class ValidationSpecification implements Serializable {
      * @return STOP or CONTINUE, indicating whether the caller should continue validating other values
      */
     public int validate(Object value, Errors e) {
+        // Don't validate if this field already has errors.
+        if (e.hasFieldErrors(name)) {
+            return STOP;
+        }
+        // Validate Strings or Objects separately.
         if (value instanceof String) {
             return validateString((String) value, e);
         } else {
@@ -83,33 +88,33 @@ public class ValidationSpecification implements Serializable {
         } else {
             // Don't allow empty.
             if (StringUtils.isBlank(value)) {
-                e.rejectValue(name, name + ".empty");
+                e.rejectValue(name, "empty");
                 return STOP;
             }
         }
         // Validate length.
         if (minSize != -1) {
             if (value.length() < minSize) {
-                e.rejectValue(name, name + ".short");
+                e.rejectValue(name, "short");
                 return STOP;
             }
         }
         if (minSize != -1) {
             if (value.length() > maxSize) {
-                e.rejectValue(name, name + ".long");
+                e.rejectValue(name, "long");
                 return STOP;
             }
         }
         if (getSize() != -1) {
             if (value.length() != getSize()) {
-                e.rejectValue(name, name + ".length");
+                e.rejectValue(name, "length");
                 return STOP;
             }
         }
         // Validate format.
         if (format != null) {
             if (!format.matcher(value).matches()) {
-                e.rejectValue(name, name + ".format");
+                e.rejectValue(name, "format");
                 return STOP;
             }
         }
@@ -118,14 +123,14 @@ public class ValidationSpecification implements Serializable {
             try {
                 new URL(value);
             } catch (MalformedURLException e1) {
-                e.rejectValue(name, name + ".format");
+                e.rejectValue(name, "format");
                 return STOP;
             }
         }
         // Validate uid format.
         if (uid) {
             if (!UidGen.INSTANCE_12.isValid(value)) {
-                e.rejectValue(name, name + ".format");
+                e.rejectValue(name, "format");
                 return STOP;
             }
         }
@@ -133,7 +138,7 @@ public class ValidationSpecification implements Serializable {
         if (uidList) {
             for (String uid : value.split(",")) {
                 if (!UidGen.INSTANCE_12.isValid(uid)) {
-                    e.rejectValue(name, name + ".format");
+                    e.rejectValue(name, "format");
                     return STOP;
                 }
             }
@@ -144,11 +149,11 @@ public class ValidationSpecification implements Serializable {
             try {
                 i = Integer.valueOf(value);
             } catch (NumberFormatException e1) {
-                e.rejectValue(name, name + ".number");
+                e.rejectValue(name, "number");
                 return STOP;
             }
             if (!numberNegative && i < 0) {
-                e.rejectValue(name, name + ".negative");
+                e.rejectValue(name, "negative");
                 return STOP;
             }
         }
@@ -158,11 +163,11 @@ public class ValidationSpecification implements Serializable {
             try {
                 d = Double.valueOf(value);
             } catch (NumberFormatException e1) {
-                e.rejectValue(name, name + ".number");
+                e.rejectValue(name, "number");
                 return STOP;
             }
             if (!numberNegative && d < 0) {
-                e.rejectValue(name, name + ".negative");
+                e.rejectValue(name, "negative");
                 return STOP;
             }
         }
@@ -178,7 +183,7 @@ public class ValidationSpecification implements Serializable {
         } else {
             // Don't allow empty.
             if (value == null) {
-                e.rejectValue(name, name + ".empty");
+                e.rejectValue(name, "empty");
                 return STOP;
             }
         }

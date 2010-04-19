@@ -1,7 +1,11 @@
 package com.amee.base.resource;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +14,7 @@ public class RequestWrapper implements Serializable {
     private Map<String, String> attributes = new HashMap<String, String>();
     private Map<String, String> queryParameters = new HashMap<String, String>();
     private Map<String, String> formParameters = new HashMap<String, String>();
-    private InputStream stream = null;
+    private byte[] body = null;
     private String mediaType = "";
 
     public RequestWrapper() {
@@ -42,10 +46,10 @@ public class RequestWrapper implements Serializable {
     public RequestWrapper(
             Map<String, String> attributes,
             Map<String, String> queryParameters,
-            InputStream stream,
+            InputStream body,
             String mediaType) {
         this(attributes, queryParameters);
-        setStream(stream);
+        setBody(body);
         setMediaType(mediaType);
     }
 
@@ -79,12 +83,28 @@ public class RequestWrapper implements Serializable {
         }
     }
 
-    public InputStream getStream() {
-        return stream;
+    public boolean hasBody() {
+        return body != null;
     }
 
-    public void setStream(InputStream stream) {
-        this.stream = stream;
+    public byte[] getBody() {
+        return body;
+    }
+
+    public String getBodyAsString() {
+        try {
+            return new String(body, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Caught UnsupportedEncodingException: " + e.getMessage(), e);
+        }
+    }
+
+    public void setBody(InputStream stream) {
+        try {
+            body = IOUtils.toByteArray(stream);
+        } catch (IOException e) {
+            throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
+        }
     }
 
     public String getMediaType() {

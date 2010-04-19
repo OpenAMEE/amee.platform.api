@@ -10,14 +10,17 @@
     <packaging>jar</packaging>
 
     <!-- Properties. -->
+    <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
     <properties>
         <commons-codec.version>1.4</commons-codec.version>
-        <commons-lang.version>2.4</commons-lang.version>
+        <commons-lang.version>2.5</commons-lang.version>
+        <commons-io.version>1.4</commons-io.version>
+        <org.jdom.version>1.1</org.jdom.version>
         <ehcache.version>1.6.2</ehcache.version>
-        <junit.version>4.4</junit.version>
+        <junit.version>4.7</junit.version>
         <org.json.version>2.0</org.json.version>
-        <spring.version>2.5.6</spring.version>
-        <spy-memcached.version>2.4rc1</spy-memcached.version>
+        <spring.version>3.0.2.RELEASE</spring.version>
+        <spy-memcached.version>2.4</spy-memcached.version>
     </properties>
 
     <!-- Build Plugins. -->
@@ -68,6 +71,11 @@
             <version>${commons-lang.version}</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
@@ -81,6 +89,11 @@
             <groupId>org.json</groupId>
             <artifactId>org.json</artifactId>
             <version>${org.json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>${org.jdom.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->
@@ -98,7 +111,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-agent</artifactId>
+            <artifactId>spring-instrument</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>

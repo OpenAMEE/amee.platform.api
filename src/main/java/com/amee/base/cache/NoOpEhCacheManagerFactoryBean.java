@@ -1,5 +1,6 @@
 package com.amee.base.cache;
 
+import net.sf.ehcache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.core.io.Resource;
 
@@ -21,7 +22,7 @@ public class NoOpEhCacheManagerFactoryBean extends EhCacheManagerFactoryBean {
     public void afterPropertiesSet() {
     }
 
-    public Object getObject() {
+    public CacheManager getObject() {
         return null;
     }
 

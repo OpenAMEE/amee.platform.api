@@ -2,13 +2,12 @@ package com.amee.base.resource;
 
 import com.amee.base.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,17 +16,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class Feedback implements Serializable {
+public class ValidationResult implements Serializable {
 
     private HashMap<String, String> values = new HashMap<String, String>();
     private List<Map<String, String>> errors = new ArrayList<Map<String, String>>();
 
-    public Feedback() {
+    public ValidationResult() {
         super();
-        values = new HashMap<String, String>();
     }
 
-    public Feedback(JSONObject obj) {
+    public ValidationResult(JSONObject obj) {
         super();
         try {
             // Load values.
@@ -46,11 +44,43 @@ public class Feedback implements Serializable {
                     Map<String, String> fieldAndCode = new HashMap<String, String>();
                     fieldAndCode.put("field", errorsArr.getJSONObject(i).getString("field"));
                     fieldAndCode.put("code", errorsArr.getJSONObject(i).getString("code"));
+                    if (errorsArr.getJSONObject(i).has("value")) {
+                        fieldAndCode.put("value", errorsArr.getJSONObject(i).getString("value"));
+                    }
                     errors.add(fieldAndCode);
                 }
             }
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public ValidationResult(Element element) {
+        super();
+
+        // Load Values.
+        Element valuesElem = element.getChild("Values");
+        if (valuesElem != null) {
+            for (Element valueElem : (List<Element>) valuesElem.getChildren()) {
+                values.put(valueElem.getName(), valueElem.getValue());
+            }
+        }
+
+        // Load Errors.
+        Element errorsElem = element.getChild("Errors");
+        if (errorsElem != null) {
+            for (Element errorElem : (List<Element>) errorsElem.getChildren()) {
+                if ((errorElem.getChild("Field") != null) && (errorElem.getChild("Code") != null)) {
+                    Map<String, String> fieldAndCode = new HashMap<String, String>();
+                    fieldAndCode.put("field", errorElem.getChild("Field").getValue());
+                    fieldAndCode.put("code", errorElem.getChild("Code").getValue());
+                    if (errorElem.getChild("Value") != null) {
+                        fieldAndCode.put("value", errorElem.getChild("Value").getValue());
+                    }
+                    errors.add(fieldAndCode);
+                }
+            }
         }
     }
 
@@ -75,6 +105,9 @@ public class Feedback implements Serializable {
                 JSONObject fieldObj = new JSONObject();
                 fieldObj.put("field", fieldAndCode.get("field"));
                 fieldObj.put("code", fieldAndCode.get("code"));
+                if (fieldAndCode.containsKey("value")) {
+                    fieldObj.put("value", fieldAndCode.get("value"));
+                }
                 errorsArr.put(fieldObj);
             }
             obj.put("errors", errorsArr);
@@ -82,11 +115,11 @@ public class Feedback implements Serializable {
         return obj;
     }
 
-    public Element getElement(Document document) {
-        Element elem = document.createElement("Feedback");
+    public org.w3c.dom.Element getElement(org.w3c.dom.Document document) {
+        org.w3c.dom.Element elem = document.createElement("ValidationResult");
         // values
         if (!values.isEmpty()) {
-            Element valuesElem = document.createElement("Values");
+            org.w3c.dom.Element valuesElem = document.createElement("Values");
             for (String key : values.keySet()) {
                 valuesElem.appendChild(XMLUtils.getElement(document, StringUtils.capitalize(key), values.get(key)));
             }
@@ -94,11 +127,14 @@ public class Feedback implements Serializable {
         }
         // errors
         if (getErrors() != null) {
-            Element errorsElem = document.createElement("Errors");
+            org.w3c.dom.Element errorsElem = document.createElement("Errors");
             for (Map<String, String> fieldAndCode : errors) {
-                Element errorElem = document.createElement("Error");
+                org.w3c.dom.Element errorElem = document.createElement("Error");
                 errorElem.appendChild(XMLUtils.getElement(document, "Field", fieldAndCode.get("field")));
                 errorElem.appendChild(XMLUtils.getElement(document, "Code", fieldAndCode.get("code")));
+                if (fieldAndCode.containsKey("value")) {
+                    errorElem.appendChild(XMLUtils.getElement(document, "Value", fieldAndCode.get("value")));
+                }
                 errorsElem.appendChild(errorElem);
             }
             elem.appendChild(errorsElem);
@@ -121,6 +157,9 @@ public class Feedback implements Serializable {
                 Map<String, String> fieldAndCode = new HashMap<String, String>();
                 fieldAndCode.put("field", fieldError.getField());
                 fieldAndCode.put("code", fieldError.getCode());
+                if ((fieldError.getRejectedValue() != null) && (fieldError.getRejectedValue() instanceof String)) {
+                    fieldAndCode.put("value", (String) fieldError.getRejectedValue());
+                }
                 errors.add(fieldAndCode);
             }
         }
