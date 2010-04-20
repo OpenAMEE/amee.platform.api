@@ -1,5 +1,6 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.domain.Version;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
@@ -36,6 +37,8 @@ public class GenericResource extends Resource {
     private Boolean allowPut = null;
     private Boolean allowDelete = null;
     private List<ValidationResult> validationResults = null;
+    private Version since = null;
+    private Version until = null;
 
     public void init(Context context, Request request, Response response) {
         super.init(context, request, response);
@@ -242,5 +245,21 @@ public class GenericResource extends Resource {
         if (validationResult != null) {
             getValidationResults().add(validationResult);
         }
+    }
+
+    public Version getSince() {
+        return since;
+    }
+
+    public void setSince(Version since) {
+        this.since = since;
+    }
+
+    public Version getUntil() {
+        return until;
+    }
+
+    public void setUntil(Version until) {
+        this.until = until;
     }
 }
