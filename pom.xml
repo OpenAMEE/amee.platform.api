@@ -14,7 +14,7 @@
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee.base.version>1.0.0-SNAPSHOT</amee.base.version>
+        <amee.base.version>1.0.1-SNAPSHOT</amee.base.version>
         <commons-lang.version>2.5</commons-lang.version>
         <junit.version>4.7</junit.version>
         <restlet.version>1.1.9</restlet.version>
@@ -52,7 +52,7 @@
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!-- External Dependencies. -->
+        <!-- Compile Dependencies. -->
         <dependency>
             <groupId>org.restlet</groupId>
             <artifactId>org.restlet</artifactId>
