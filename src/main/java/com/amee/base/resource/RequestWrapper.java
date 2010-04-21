@@ -1,5 +1,6 @@
 package com.amee.base.resource;
 
+import com.amee.base.domain.Version;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -11,7 +12,9 @@ import java.util.Map;
 
 public class RequestWrapper implements Serializable {
 
+    private Version version;
     private Map<String, String> attributes = new HashMap<String, String>();
+    private Map<String, String> matrixParameters = new HashMap<String, String>();
     private Map<String, String> queryParameters = new HashMap<String, String>();
     private Map<String, String> formParameters = new HashMap<String, String>();
     private byte[] body = null;
@@ -22,35 +25,52 @@ public class RequestWrapper implements Serializable {
     }
 
     public RequestWrapper(
+            Version version,
             Map<String, String> attributes) {
         this();
+        setVersion(version);
         setAttributes(attributes);
     }
 
     public RequestWrapper(
+            Version version,
             Map<String, String> attributes,
+            Map<String, String> matrixParameters,
             Map<String, String> queryParameters) {
-        this(attributes);
+        this(version, attributes);
+        setMatrixParameters(matrixParameters);
         setQueryParameters(queryParameters);
     }
 
     public RequestWrapper(
+            Version version,
             Map<String, String> attributes,
+            Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             Map<String, String> formParameters) {
-        this(attributes, queryParameters);
+        this(version, attributes, matrixParameters, queryParameters);
         setFormParameters(formParameters);
         setMediaType("application/x-www-form-urlencoded");
     }
 
     public RequestWrapper(
+            Version version,
             Map<String, String> attributes,
+            Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             InputStream body,
             String mediaType) {
-        this(attributes, queryParameters);
+        this(version, attributes, matrixParameters, queryParameters);
         setBody(body);
         setMediaType(mediaType);
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
     }
 
     public Map<String, String> getAttributes() {
@@ -60,6 +80,16 @@ public class RequestWrapper implements Serializable {
     public void setAttributes(Map<String, String> attributes) {
         if (attributes != null) {
             this.attributes = attributes;
+        }
+    }
+
+    public Map<String, String> getMatrixParameters() {
+        return matrixParameters;
+    }
+
+    public void setMatrixParameters(Map<String, String> matrixParameters) {
+        if (matrixParameters != null) {
+            this.matrixParameters = matrixParameters;
         }
     }
 
