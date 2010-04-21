@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
@@ -9,8 +11,9 @@
     <packaging>jar</packaging>
 
     <!-- Properties. -->
-    <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
     <properties>
+        <!-- Versions. -->
+        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-codec.version>1.4</commons-codec.version>
         <commons-lang.version>2.5</commons-lang.version>
         <commons-io.version>1.4</commons-io.version>
@@ -20,6 +23,9 @@
         <org.json.version>2.0</org.json.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         <spy-memcached.version>2.4</spy-memcached.version>
+        <!-- Other. -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- Build Plugins. -->
@@ -105,24 +111,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-instrument</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
