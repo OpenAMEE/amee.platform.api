@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -10,13 +11,17 @@
     <packaging>jar</packaging>
 
     <!-- Properties. -->
-    <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
     <properties>
+        <!-- Versions. -->
+        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <amee.base.version>1.0.0-SNAPSHOT</amee.base.version>
         <commons-lang.version>2.5</commons-lang.version>
         <junit.version>4.7</junit.version>
         <restlet.version>1.1.9</restlet.version>
         <xerces.version>2.9.1</xerces.version>
+        <!-- Other, -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- Build Plugins. -->
