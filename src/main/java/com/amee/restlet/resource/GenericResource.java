@@ -6,6 +6,7 @@ import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
 import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.XMLUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.dom.DocumentImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +15,7 @@ import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
@@ -39,12 +41,25 @@ public class GenericResource extends Resource {
     private List<ValidationResult> validationResults = null;
     private Version since = null;
     private Version until = null;
+    private String lastSegment = null;
 
     public void init(Context context, Request request, Response response) {
         super.init(context, request, response);
         buildManager.init(this);
         acceptManager.init(this);
         removeManager.init(this);
+        checkLastSegment();
+    }
+
+    /**
+     * Checks the lastSegment field matches the last segment of the path.
+     */
+    public void checkLastSegment() {
+        if (!StringUtils.isBlank(getLastSegment())) {
+            if (!getRequest().getResourceRef().getLastSegment(false, true).equals(getLastSegment())) {
+                getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            }
+        }
     }
 
     /**
@@ -141,6 +156,10 @@ public class GenericResource extends Resource {
      */
     public void removeRepresentations() throws ResourceException {
         removeManager.remove();
+    }
+
+    public Version getSupportedVersion() {
+        return (Version) getRequest().getAttributes().get("versionSupported");
     }
 
     public void setAttributeNames(Set<String> attributeNames) {
@@ -261,5 +280,13 @@ public class GenericResource extends Resource {
 
     public void setUntil(Version until) {
         this.until = until;
+    }
+
+    public String getLastSegment() {
+        return lastSegment;
+    }
+
+    public void setLastSegment(String lastSegment) {
+        this.lastSegment = lastSegment;
     }
 }

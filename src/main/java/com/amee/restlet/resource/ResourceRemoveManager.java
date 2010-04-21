@@ -11,7 +11,10 @@ public class ResourceRemoveManager extends ResourceManager {
 
     public void remove() {
         if (remover != null) {
-            JSONObject result = remover.remove(new RequestWrapper(getAttributes()));
+            JSONObject result = remover.remove(
+                    new RequestWrapper(
+                            getResource().getSupportedVersion(),
+                            getAttributes()));
             if (isOk(result)) {
                 getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
             } else if (isNotFound(result)) {

@@ -83,13 +83,17 @@ public class ResourceAcceptManager extends ResourceManager {
     protected RequestWrapper getRequestWrapper(Representation entity) {
         if (entity.getMediaType().equals(MediaType.APPLICATION_WWW_FORM)) {
             return new RequestWrapper(
+                    getResource().getSupportedVersion(),
                     getAttributes(),
+                    getMatrixParameters(),
                     getQueryParameters(),
                     new Form(entity).getValuesMap());
         } else {
             try {
                 return new RequestWrapper(
+                        getResource().getSupportedVersion(),
                         getAttributes(),
+                        getMatrixParameters(),
                         getQueryParameters(),
                         entity.getStream(),
                         entity.getMediaType().getName());

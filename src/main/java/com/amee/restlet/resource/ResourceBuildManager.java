@@ -54,7 +54,12 @@ public class ResourceBuildManager extends ResourceManager {
     protected Representation getJsonRepresentation(ResourceBuilder<JSONObject> builder) {
         Representation representation = null;
         try {
-            JSONObject obj = builder.build(new RequestWrapper(getAttributes(), getQueryParameters()));
+            JSONObject obj = builder.build(
+                    new RequestWrapper(
+                            getResource().getSupportedVersion(),
+                            getAttributes(),
+                            getMatrixParameters(),
+                            getQueryParameters()));
             // Handle validationResult.
             if ((obj != null) && obj.has("validationResult")) {
                 getResource().addValidationResult(new ValidationResult(obj.getJSONObject("validationResult")));
@@ -78,7 +83,12 @@ public class ResourceBuildManager extends ResourceManager {
 
     protected Representation getDomRepresentation(ResourceBuilder<org.w3c.dom.Document> builder) {
         Representation representation = null;
-        org.w3c.dom.Document document = builder.build(new RequestWrapper(getAttributes(), getQueryParameters()));
+        org.w3c.dom.Document document = builder.build(
+                new RequestWrapper(
+                        getResource().getSupportedVersion(),
+                        getAttributes(),
+                        getMatrixParameters(),
+                        getQueryParameters()));
         if (document != null) {
             Element representationElement = new DOMBuilder().build(document).getRootElement();
             if ((representationElement != null) && representationElement.getName().equals("Representation")) {
