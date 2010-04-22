@@ -10,13 +10,17 @@
 
     <!-- Properties. -->
     <properties>
+        <!-- Versions. -->
         <org.json.version>2.0</org.json.version>
         <joda-time.version>1.6</joda-time.version>
         <jscience.version>4.3.1</jscience.version>
-        <commons-lang.version>2.4</commons-lang.version>
+        <commons-lang.version>2.5</commons-lang.version>
         <commons-collections.version>3.2</commons-collections.version>
         <commons-logging.version>1.1</commons-logging.version>
-        <junit.version>4.4</junit.version>
+        <junit.version>4.7</junit.version>
+        <!-- Other. -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <!-- Build Plugins. -->
