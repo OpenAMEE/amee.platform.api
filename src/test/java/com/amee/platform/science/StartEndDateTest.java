@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 
 public class StartEndDateTest {
     private static final TimeZone TIME_ZONE_NY = TimeZone.getTimeZone("America/New_York");
+    private static final TimeZone TIME_ZONE_LONDON = TimeZone.getTimeZone("Europe/London");
 
     @Test
     public void testGetStartOfMonthDate() throws Exception {
@@ -46,5 +47,15 @@ public class StartEndDateTest {
                 StartEndDate.getLocalStartEndDate(utcSummerTime.toDate(), TIME_ZONE_NY).toDate());
         assertEquals("2010-06-01T08:00:00-04:00",
                 StartEndDate.getLocalStartEndDate(utcSummerTime.toDate(), TIME_ZONE_NY).toString());
+
+        // Epoch
+        // 1970-01-01 00:00 UTC = 1970-01-01 01:00 Europe/London (British Standard Time Act 1968)
+        DateTime utcEpoch = new DateTime(0, DateTimeZone.UTC);
+        DateTime londonEpoch = new DateTime(0, DateTimeZone.forTimeZone(TIME_ZONE_LONDON));
+
+        assertEquals(londonEpoch.toDate(),
+                StartEndDate.getLocalStartEndDate(utcEpoch.toDate(), TIME_ZONE_LONDON).toDate());
+        assertEquals("1970-01-01T01:00:00+01:00",
+                StartEndDate.getLocalStartEndDate(londonEpoch.toDate(), TIME_ZONE_LONDON).toString());
     }
 }
