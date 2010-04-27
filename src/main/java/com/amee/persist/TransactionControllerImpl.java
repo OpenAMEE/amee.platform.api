@@ -1,7 +1,11 @@
 package com.amee.persist;
 
 import com.amee.base.transaction.TransactionController;
+import com.amee.base.transaction.TransactionEvent;
+import com.amee.base.transaction.TransactionEventType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
@@ -19,8 +23,7 @@ import javax.persistence.PersistenceException;
 import java.util.Map;
 import java.util.Properties;
 
-@Service("transactionController")
-public class TransactionControllerImpl extends EntityManagerFactoryAccessor implements TransactionController {
+public class TransactionControllerImpl extends EntityManagerFactoryAccessor implements TransactionController, ApplicationContextAware {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -29,6 +32,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
     private TransactionAttribute transactionAttribute = new DefaultTransactionAttribute();
     private ThreadLocal<TransactionStatus> transactionStatus = new ThreadLocal<TransactionStatus>();
     private ThreadLocal<Boolean> transactionRollback = new ThreadLocal<Boolean>();
+    private ApplicationContext applicationContext;
 
     public TransactionControllerImpl() {
         super();
@@ -58,15 +62,15 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
     public void beforeHandle(boolean withTransaction) {
         logger.debug("beforeHandle() - >>> BEFORE HANDLE {withTransaction=" + withTransaction + "}");
         // Callback hook.
-        onBeforeHandle();
+        onBeforeBegin();
         // Ensure any EntityManager associated with this thread is closed before handling this new request.
         ensureEntityManagerIsClosed();
         // Begin transaction if required.
         begin(withTransaction);
     }
 
-    public void onBeforeHandle() {
-        // Do nothing.
+    public void onBeforeBegin() {
+        applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.BEFORE_BEGIN));
     }
 
     /**
@@ -99,9 +103,19 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
     }
 
     public void end() {
+        onBeforeEnd();
         commitOrRollbackTransaction();
         ensureEntityManagerIsClosed();
         logger.debug("end() - <<< END");
+        onEnd();
+    }
+
+    public void onBeforeEnd() {
+        applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.BEFORE_END));
+    }
+
+    public void onEnd() {
+        applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.END));
     }
 
     private void beginTransaction() {
@@ -140,11 +154,11 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
     }
 
     public void onRollback() {
-        // Do nothing.
+        applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.ROLLBACK));
     }
 
     public void onCommit() {
-        // Do nothing.
+        applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.COMMIT));
     }
 
     public void openEntityManager() {
@@ -180,5 +194,9 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
 
     public boolean isManageTransactions() {
         return manageTransactions;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

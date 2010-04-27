@@ -41,6 +41,9 @@
     </bean>
     <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
 
+    <!-- TransactionController Implementation. -->
+    <bean id="transactionController" class="com.amee.persist.TransactionControllerImpl"/>
+
     <!-- Test DataSource. -->
     <bean id="testDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
