@@ -28,8 +28,8 @@ public class DecimalCompoundUnit extends DecimalUnit {
     }
 //
 //    public void getElement(Element parent, Document document) {
-//        parent.appendChild(APIUtils.getElement(document, "Unit", unit.toString()));
-//        parent.appendChild(APIUtils.getElement(document, "PerUnit", perUnit.toString()));
+//        parent.appendChild(XMLUtils.getElement(document, "Unit", unit.toString()));
+//        parent.appendChild(XMLUtils.getElement(document, "PerUnit", perUnit.toString()));
 //    }
 //
 //    public void getJSONObject(JSONObject parent) throws JSONException {
