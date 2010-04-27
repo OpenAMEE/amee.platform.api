@@ -9,7 +9,6 @@ import org.restlet.data.Response;
 import org.restlet.util.Template;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-@Qualifier
 public class VersionRoute extends Route {
 
     private Version since = new Version("0");

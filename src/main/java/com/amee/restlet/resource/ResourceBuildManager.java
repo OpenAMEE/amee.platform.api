@@ -13,6 +13,7 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Variant;
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +82,9 @@ public class ResourceBuildManager extends ResourceManager {
         return representation;
     }
 
-    protected Representation getDomRepresentation(ResourceBuilder<org.w3c.dom.Document> builder) {
+    protected Representation getDomRepresentation(ResourceBuilder<Document> builder) {
         Representation representation = null;
-        org.w3c.dom.Document document = builder.build(
+        Document document = builder.build(
                 new RequestWrapper(
                         getResource().getSupportedVersion(),
                         getAttributes(),
@@ -92,7 +93,7 @@ public class ResourceBuildManager extends ResourceManager {
         if (document != null) {
             Element representationElement = new DOMBuilder().build(document).getRootElement();
             if ((representationElement != null) && representationElement.getName().equals("Representation")) {
-                // Handle ValidationResult
+                // Handle ValidationResult.
                 if (representationElement.getChild("ValidationResult") != null) {
                     getResource().addValidationResult(new ValidationResult(representationElement.getChild("ValidationResult")));
                 }
