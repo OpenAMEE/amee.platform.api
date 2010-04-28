@@ -1,6 +1,7 @@
 package com.amee.base.crypto;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.ArrayUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -126,12 +127,12 @@ public class BaseCrypto {
 
     public static byte[] readSaltFromFile(File file) throws CryptoException {
         try {
-            // read salt byte array from file
+            // Read salt byte array from file.
             DataInputStream input = new DataInputStream(new FileInputStream(file));
             byte[] salt = new byte[(int) file.length()];
             input.readFully(salt);
             input.close();
-            // must be 16 bytes
+            // Salt must be 16 bytes.
             if (salt.length != 16) {
                 throw new RuntimeException("Salt from '" + file.getAbsolutePath() + "' is not 16 bytes.");
             }
@@ -141,10 +142,19 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Return an MD5 Base64 encoded digest of the supplied String & salt. Only the first
+     * 8 bytes of the salt will be included.
+     *
+     * @param salt to use
+     * @param s to digest 
+     * @return MD5 Base64 representation of the supplied String
+     * @throws CryptoException
+     */
     public static String getAsMD5AndBase64(byte[] salt, String s) throws CryptoException {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(salt);
+            md.update(ArrayUtils.subarray(salt, 0, 8));
             md.update(s.getBytes());
             return new String(Base64.encodeBase64(md.digest()));
         } catch (NoSuchAlgorithmException e) {
