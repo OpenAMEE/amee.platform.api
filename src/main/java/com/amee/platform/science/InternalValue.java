@@ -2,8 +2,6 @@ package com.amee.platform.science;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -11,7 +9,7 @@ import java.util.*;
 /**
  * Provides a wrapper around external representations of values.
  * <p/>
- * Decimal values will be converted to AMEE internal units if necessary. All other value types will be wrapped unchanged.
+ * Amount values will be converted to AMEE internal units if necessary. All other value types will be wrapped unchanged.
  */
 @SuppressWarnings("unchecked")
 public class InternalValue {
@@ -125,24 +123,24 @@ public class InternalValue {
         return filteredValues;
     }
 
-    private Decimal asInternalDecimal(ExternalValue iv) {
+    private Amount asInternalDecimal(ExternalValue iv) {
         if (!iv.hasUnit() && !iv.hasPerUnit()) {
-            return new Decimal(iv.getUsableValue());
+            return new Amount(iv.getUsableValue());
         } else {
-            Decimal decimal = new Decimal(iv.getUsableValue(), iv.getCompoundUnit());
+            Amount amount = new Amount(iv.getUsableValue(), iv.getCompoundUnit());
             if (iv.isConvertible()) {
-                DecimalCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
-                if (decimal.hasDifferentUnits(internalUnit)) {
+                AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
+                if (amount.hasDifferentUnits(internalUnit)) {
                     if (log.isDebugEnabled()) {
                         log.debug("asInternalDecimal() " +
                                 "label: " + iv.getLabel() + "," +
-                                "external: " + decimal + " " + decimal.getUnit() + "," +
-                                "internal: " + decimal.convert(internalUnit) + " " + internalUnit);
+                                "external: " + amount + " " + amount.getUnit() + "," +
+                                "internal: " + amount.convert(internalUnit) + " " + internalUnit);
                     }
-                    decimal = decimal.convert(internalUnit);
+                    amount = amount.convert(internalUnit);
                 }
             }
-            return decimal;
+            return amount;
         }
     }
 }

@@ -2,28 +2,28 @@ package com.amee.platform.science;
 
 import javax.measure.unit.Unit;
 
-public class DecimalCompoundUnit extends DecimalUnit {
+public class AmountCompoundUnit extends AmountUnit {
 
-    private DecimalPerUnit perUnit;
+    private AmountPerUnit perUnit;
 
-    protected DecimalCompoundUnit(DecimalUnit unit, DecimalPerUnit perUnit) {
+    protected AmountCompoundUnit(AmountUnit unit, AmountPerUnit perUnit) {
         super(unit.toUnit());
         this.perUnit = perUnit;
     }
 
-    public static DecimalCompoundUnit valueOf(DecimalUnit unit, DecimalPerUnit perUnit) {
-        return new DecimalCompoundUnit(unit, perUnit);
+    public static AmountCompoundUnit valueOf(AmountUnit unit, AmountPerUnit perUnit) {
+        return new AmountCompoundUnit(unit, perUnit);
     }
 
     public Unit toUnit() {
         return unit.divide(perUnit.toUnit());
     }
 
-    public boolean hasDifferentPerUnit(DecimalPerUnit perUnit) {
+    public boolean hasDifferentPerUnit(AmountPerUnit perUnit) {
         return !this.perUnit.equals(perUnit);
     }
 
-    public DecimalPerUnit getPerUnit() {
+    public AmountPerUnit getPerUnit() {
         return perUnit;
     }
 //

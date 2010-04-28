@@ -86,14 +86,14 @@ public class DataSeries {
         return obj;
     }
 
-    protected Decimal getSeriesTimeInMillis() {
+    protected Amount getSeriesTimeInMillis() {
         if (dataPoints.isEmpty()) {
-            return Decimal.ZERO;
+            return Amount.ZERO;
         }
         DateTime seriesStart = getSeriesStartDate();
         DateTime seriesEnd = getSeriesEndDate();
         if ((seriesEnd==null||seriesStart==null)) return null; // if the range of interest is undef
-        return new Decimal(seriesEnd.getMillis() - seriesStart.getMillis());
+        return new Amount(seriesEnd.getMillis() - seriesStart.getMillis());
     }
 
     DateTime getSeriesStartDate() {
@@ -321,15 +321,15 @@ public class DataSeries {
      * <p/>
      * If there is no time-period (the query time-period is zero) then the result will be zero.
      *
-     * @return - the average as a {@link Decimal} value
+     * @return - the average as a {@link Amount} value
      */
-    public Decimal integrate() {
+    public Amount integrate() {
 
         double integral = 0.0;
-        Decimal seriesTimeInMillis = getSeriesTimeInMillis();
+        Amount seriesTimeInMillis = getSeriesTimeInMillis();
         log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
 
-        if (!seriesTimeInMillis.equals(Decimal.ZERO)) {
+        if (!seriesTimeInMillis.equals(Amount.ZERO)) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
@@ -349,17 +349,17 @@ public class DataSeries {
                 // but in case it hasn't (and for direct testing not via internal value)
 
                 // Add weighted average value.
-                double weightedAverage = current.getValue().doubleValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
+                double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.getValue();
                 log.info(
                         "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-                        ","+segmentInMillis/(seriesTimeInMillis.doubleValue()));
+                        ","+segmentInMillis/(seriesTimeInMillis.getValue()));
                 if (start.isAfter(end)) continue;
                 integral = integral+weightedAverage;
             }
         } else if (seriesTimeInMillis==null) {
-            integral=dataPoints.get(dataPoints.size()-1).getValue().doubleValue();
+            integral=dataPoints.get(dataPoints.size()-1).getValue().getValue();
         }
-        return new Decimal(integral);
+        return new Amount(integral);
     }
 
     /**

@@ -23,60 +23,47 @@ package com.amee.platform.science;
 
 import org.junit.Test;
 
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 public class DecimalTest {
 
     @Test
-    public void shouldAllowDecimalUpToLimit() {
-        try {
-            // precision 21, scale 6
-            printWithPrecisionAndScale(new Decimal("123456789012345"));
-            printWithPrecisionAndScale(new Decimal("123456789012345.123456"));
-            printWithPrecisionAndScale(new Decimal("12345678901234.1234567")); // round up .123457
-            printWithPrecisionAndScale(new Decimal("-999999999999999.999999")); // min
-            printWithPrecisionAndScale(new Decimal("999999999999999.999999")); // max
-        } catch (IllegalArgumentException e) {
-            fail("Value should be OK.");
-        }
+    public void testEqualsAndHashCode() {
+        Amount d1 = new Amount("123.45", AmountUnit.valueOf("kWh"));
+        Amount d2 = new Amount(123.45, AmountUnit.valueOf("kWh"));
+        assertEquals("Objects should be equal", d1, d2);
+        assertEquals("HashCodes should be equal", d1.hashCode(), d2.hashCode());
+
+        Amount d3 = new Amount("123.45", AmountUnit.valueOf("MWh"));
+        assertFalse("Objects should not be equal", d1.equals(d3));
+        assertFalse("HashCodes should not be equal", d1.hashCode() == d3.hashCode());
+
+        Amount d4 = new Amount(54.321, AmountUnit.valueOf("MWh"));
+        assertFalse(d4.equals(d3));
+        assertFalse("HashCodes should not be equal", d4.hashCode() == d3.hashCode());
     }
 
     @Test
-    public void shouldNotAllowDecimalOverLimit() {
-        try {
-            // precision 22, scale 6
-            new Decimal("1234567890123456");
-            fail("Value should NOT be OK.");
-        } catch (IllegalArgumentException e) {
-            // swallow
-        }
-        try {
-            // precision 22, scale 6
-            new Decimal("1234567890123456.123456");
-            fail("Value should NOT be OK.");
-        } catch (IllegalArgumentException e) {
-            // swallow
-        }
-        try {
-            // precision 22, scale 6
-            printWithPrecisionAndScale(new Decimal("-9999999999999999.999999")); // min + 1 extra digit on the left
-            fail("Value should NOT be OK.");
-        } catch (IllegalArgumentException e) {
-            // swallow
-        }
-        try {
-            // precision 22, scale 6
-            printWithPrecisionAndScale(new Decimal("9999999999999999.999999")); // max + 1 extra digit on the left
-            fail("Value should NOT be OK.");
-        } catch (IllegalArgumentException e) {
-            // swallow
-        }
+    public void testOperations() {
+        Amount d1 = new Amount("123.45", AmountUnit.valueOf("kWh"));
+        Amount d2 = new Amount(123.45, AmountUnit.valueOf("kWh"));
+
+        // TODO: These operations discard the unit. Is this correct?
+        Amount expected = new Amount(123.45 + 123.45);
+        Amount actual = d1.add(d2);
+        assertEquals(expected, actual);
+
+        expected = new Amount(123.45 - 123.45);
+        actual = d1.subtract(d2);
+        assertEquals(expected, actual);
+
+        expected = new Amount(123.45 * 123.45);
+        actual = d1.multiply(d2);
+        assertEquals(expected, actual);
+
+        expected = new Amount(123.45 / 123.45);
+        actual = d1.divide(d2);
+        assertEquals(expected, actual);
     }
 
-    private void printWithPrecisionAndScale(Decimal decimal) {
-        System.out.println(
-                "decimal: " + decimal.toString() +
-                        " precision: " + decimal.getValue().precision() +
-                        " scale: " + decimal.getValue().scale());
-    }
 }

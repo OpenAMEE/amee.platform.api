@@ -24,22 +24,22 @@ public class DataSeriesTest {
 
         // Test adding two series
         List<DataPoint> a = new ArrayList<DataPoint>();
-        a.add(new DataPoint(now.plusDays(1), new Decimal("1")));
-        a.add(new DataPoint(now.plusDays(2), new Decimal("2")));
-        a.add(new DataPoint(now.plusDays(3), new Decimal("3")));
+        a.add(new DataPoint(now.plusDays(1), new Amount("1")));
+        a.add(new DataPoint(now.plusDays(2), new Amount("2")));
+        a.add(new DataPoint(now.plusDays(3), new Amount("3")));
         lhs = new DataSeries(a);
 
         List<DataPoint> b = new ArrayList<DataPoint>();
-        b.add(new DataPoint(now.plusDays(1), new Decimal("2")));
-        b.add(new DataPoint(now.plusDays(2), new Decimal("3")));
-        b.add(new DataPoint(now.plusDays(3), new Decimal("4")));
+        b.add(new DataPoint(now.plusDays(1), new Amount("2")));
+        b.add(new DataPoint(now.plusDays(2), new Amount("3")));
+        b.add(new DataPoint(now.plusDays(3), new Amount("4")));
         rhs = new DataSeries(b);
 
         lhs.setSeriesStartDate(now.plusHours(36));
         rhs.setSeriesStartDate(now.plusHours(37));
         lhs.setSeriesEndDate(now.plusDays(5));
         rhs.setSeriesEndDate(now.plusDays(5));
-        rhp = new DataPoint(now.plusDays(1), new Decimal("4"));
+        rhp = new DataPoint(now.plusDays(1), new Amount("4"));
 
         rhf = 4.0f;
     }
@@ -52,9 +52,9 @@ public class DataSeriesTest {
 
         // Add two data series
         List<DataPoint> sum = new ArrayList<DataPoint>();
-        sum.add(new DataPoint(now.plusDays(1), new Decimal("3")));
-        sum.add(new DataPoint(now.plusDays(2), new Decimal("5")));
-        sum.add(new DataPoint(now.plusDays(3), new Decimal("7")));
+        sum.add(new DataPoint(now.plusDays(1), new Amount("3")));
+        sum.add(new DataPoint(now.plusDays(2), new Amount("5")));
+        sum.add(new DataPoint(now.plusDays(3), new Amount("7")));
         actual = new DataSeries(sum);
         actual.setSeriesStartDate(now.plusHours(36));
         actual.setSeriesEndDate( now.plusDays(5));
@@ -68,9 +68,9 @@ public class DataSeriesTest {
         ));
         // Add a series and a single point
         sum = new ArrayList<DataPoint>();
-        sum.add(new DataPoint(now.plusDays(1), new Decimal("5")));
-        sum.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        sum.add(new DataPoint(now.plusDays(3), new Decimal("7")));
+        sum.add(new DataPoint(now.plusDays(1), new Amount("5")));
+        sum.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        sum.add(new DataPoint(now.plusDays(3), new Amount("7")));
         actual = new DataSeries(sum);
         test = lhs.plus(rhp);
         actual.setSeriesStartDate(now.plusHours(36));
@@ -104,9 +104,9 @@ public class DataSeriesTest {
         DataSeries actual;
 
         List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("-1")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("-1")));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("-1")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("-1")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("-1")));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("-1")));
         actual = new DataSeries(diff);
         test = lhs.subtract(rhs);
         actual.setSeriesStartDate(now.plusHours(36));
@@ -115,9 +115,9 @@ public class DataSeriesTest {
 
 
         diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("-3")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("-2")));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("-1")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("-3")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("-2")));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("-1")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
         actual.setSeriesEndDate( now.plusDays(5));
@@ -136,9 +136,9 @@ public class DataSeriesTest {
         DataSeries actual;
 
         List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("0.5")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("2").divide(new Decimal("3"))));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("0.75")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("0.5")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("2").divide(new Amount("3"))));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("0.75")));
         actual = new DataSeries(diff);
         test = lhs.divide(rhs);
         actual.setSeriesStartDate(now.plusHours(36));
@@ -146,9 +146,9 @@ public class DataSeriesTest {
         assertTrue("Integrate should produce the correct value.", test.integrate().equals(actual.integrate()));
 
         diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("0.25")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("0.5")));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("0.75")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("0.25")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("0.5")));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("0.75")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
         actual.setSeriesEndDate( now.plusDays(5));
@@ -169,9 +169,9 @@ public class DataSeriesTest {
         DataSeries actual;
 
         List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("2")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("12")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("2")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
         actual.setSeriesEndDate( now.plusDays(5));
@@ -180,9 +180,9 @@ public class DataSeriesTest {
 
 
         diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Decimal("4")));
-        diff.add(new DataPoint(now.plusDays(2), new Decimal("8")));
-        diff.add(new DataPoint(now.plusDays(3), new Decimal("12")));
+        diff.add(new DataPoint(now.plusDays(1), new Amount("4")));
+        diff.add(new DataPoint(now.plusDays(2), new Amount("8")));
+        diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
         actual.setSeriesEndDate( now.plusDays(5));
@@ -208,18 +208,18 @@ public class DataSeriesTest {
     @Test
     public void queryWithNarrowerStartAndEndDate() {
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(4), new Decimal("12")));
+        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
+        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
+        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(3));
-        Decimal window = new Decimal(now.plusDays(3).getMillis() - now.plusDays(1).getMillis());
+        Amount window = new Amount(now.plusDays(3).getMillis() - now.plusDays(1).getMillis());
 
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float((2+6)/2.0).toString() );
+        Amount target=new Amount( new Float((2+6)/2.0).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }
@@ -227,16 +227,16 @@ public class DataSeriesTest {
     @Test
     public void queryWithWiderStartAndEndDate() {
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(4), new Decimal("15")));
+        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
+        points.add(new DataPoint(now.plusDays(4), new Amount("15")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(5));
-        Decimal window = new Decimal(now.plusDays(5).getMillis() - now.plusDays(2).getMillis());
+        Amount window = new Amount(now.plusDays(5).getMillis() - now.plusDays(2).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float((6+12+15)/3.0).toString() );
+        Amount target=new Amount( new Float((6+12+15)/3.0).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }
@@ -244,16 +244,16 @@ public class DataSeriesTest {
     @Test
     public void queryWithStartDate() {
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(4), new Decimal("12")));
+        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
+        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
+        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(2));
-        Decimal window = new Decimal(now.plusDays(4).getMillis() - now.plusDays(2).getMillis());
+        Amount window = new Amount(now.plusDays(4).getMillis() - now.plusDays(2).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float((6+12)/2.0).toString() );
+        Amount target=new Amount( new Float((6+12)/2.0).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }
@@ -261,16 +261,16 @@ public class DataSeriesTest {
     @Test
     public void queryWithEndDate() {
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(now.plusDays(4), new Decimal("12")));
+        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
+        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
+        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
         DataSeries series = new DataSeries(points);
         series.setSeriesEndDate(now.plusDays(2));
-        Decimal window = new Decimal(now.plusDays(2).getMillis() - now.plusDays(1).getMillis());
+        Amount window = new Amount(now.plusDays(2).getMillis() - now.plusDays(1).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float(2).toString() );
+        Amount target=new Amount( new Float(2).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }
@@ -280,15 +280,15 @@ public class DataSeriesTest {
         DateTime start = now.plusDays(1);
         DateTime end = now.plusDays(4);
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(start, new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(2), new Decimal("6")));
-        points.add(new DataPoint(now.plusDays(3), new Decimal("12")));
-        points.add(new DataPoint(end, new Decimal("15")));
+        points.add(new DataPoint(start, new Amount("2")));
+        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
+        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
+        points.add(new DataPoint(end, new Amount("15")));
         DataSeries series = new DataSeries(points);
-        Decimal window = new Decimal(end.getMillis() - start.getMillis());
+        Amount window = new Amount(end.getMillis() - start.getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float((2+6+12)/3.0).toString() );
+        Amount target=new Amount( new Float((2+6+12)/3.0).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }
@@ -298,17 +298,17 @@ public class DataSeriesTest {
         int start = 15;
         int end = 35;
         List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(10), new Decimal("2")));
-        points.add(new DataPoint(now.plusDays(20), new Decimal("3")));
-        points.add(new DataPoint(now.plusDays(30), new Decimal("5")));
-        points.add(new DataPoint(now.plusDays(40), new Decimal("7")));
+        points.add(new DataPoint(now.plusDays(10), new Amount("2")));
+        points.add(new DataPoint(now.plusDays(20), new Amount("3")));
+        points.add(new DataPoint(now.plusDays(30), new Amount("5")));
+        points.add(new DataPoint(now.plusDays(40), new Amount("7")));
         DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusDays(start));
         series.setSeriesEndDate(now.plusDays(end));
-        Decimal window = new Decimal(now.plusDays(end).getMillis() - now.plusDays(start).getMillis());
+        Amount window = new Amount(now.plusDays(end).getMillis() - now.plusDays(start).getMillis());
         assertTrue("Should have correct time window.", series.getSeriesTimeInMillis().equals(window));
         assertTrue("Should be able to integrate.", series.integrate() != null);
-        Decimal target=new Decimal( new Float((2*5+3*10+5*5)/20.0).toString() );
+        Amount target=new Amount( new Float((2*5+3*10+5*5)/20.0).toString() );
         assertTrue("Integrate should produce the correct value ("+target+"):"+series.integrate(),
                 series.integrate().equals(target));
     }

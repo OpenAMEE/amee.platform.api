@@ -11,7 +11,12 @@ import javax.measure.unit.UnitFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 
-public class DecimalUnit {
+/**
+ * An AmountUnit represents the unit of an Amount, eg kWh.
+ *
+ * TODO: genericise this class?
+ */
+public class AmountUnit {
 
     protected final static UnitFormat UNIT_FORMAT = UnitFormat.getInstance();
 
@@ -89,19 +94,19 @@ public class DecimalUnit {
         UNIT_FORMAT.label(NonSI.OUNCE_LIQUID_UK, "oz_fl_uk");
     }
 
-    public static final DecimalUnit ONE = new DecimalUnit(Unit.ONE);
+    public static final AmountUnit ONE = new AmountUnit(Unit.ONE);
     protected Unit unit = Unit.ONE;
 
-    public DecimalUnit(Unit unit) {
+    public AmountUnit(Unit unit) {
         this.unit = unit;
     }
 
-    public static DecimalUnit valueOf(String unit) {
-        return new DecimalUnit(internalValueOf(unit));
+    public static AmountUnit valueOf(String unit) {
+        return new AmountUnit(internalValueOf(unit));
     }
 
-    public DecimalCompoundUnit with(DecimalPerUnit perUnit) {
-        return DecimalCompoundUnit.valueOf(this, perUnit);
+    public AmountCompoundUnit with(AmountPerUnit perUnit) {
+        return AmountCompoundUnit.valueOf(this, perUnit);
     }
 
     public boolean isCompatibleWith(String unit) {
@@ -120,14 +125,20 @@ public class DecimalUnit {
         }
     }
 
-    public boolean equals(DecimalUnit that) {
+    public boolean equals(AmountUnit that) {
         return toUnit().equals(that.toUnit());
+    }
+
+    @Override
+    public int hashCode() {
+        return unit.hashCode();
     }
 
     public Unit toUnit() {
         return unit;
     }
 
+    @Override
     public String toString() {
         return UNIT_FORMAT.format(toUnit());
     }

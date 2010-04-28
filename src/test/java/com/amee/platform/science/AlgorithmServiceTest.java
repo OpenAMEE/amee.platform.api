@@ -29,8 +29,7 @@ import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 /**
  * Implements various Algorithm related test cases.
@@ -50,19 +49,19 @@ public class AlgorithmServiceTest {
         algorithmService = new AlgorithmRunner();
         // Create DataSeries A.
         seriesA = new DataSeries();
-        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Decimal("1")));
-        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Decimal("0")));
-        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Decimal("0.5")));
+        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("1")));
+        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("0")));
+        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("0.5")));
         // Create DataSeries B.
         seriesB = new DataSeries();
-        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Decimal("0")));
-        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Decimal("1")));
-        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Decimal("2")));
+        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
+        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("1")));
+        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("2")));
         // Create DataSeries C.
         seriesC = new DataSeries();
-        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Decimal("0")));
-        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 2, 0, 0, 0, 0), new Decimal("1")));
-        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Decimal("3")));
+        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
+        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 2, 0, 0, 0, 0), new Amount("1")));
+        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("3")));
     }
 
     @Test
@@ -70,7 +69,7 @@ public class AlgorithmServiceTest {
         MockAlgorithm algorithm = new MockAlgorithm();
         algorithm.setContent("1");
         Map<String, Object> values = new HashMap<String, Object>();
-        assertTrue("Really simple algorithm should be OK.", algorithmService.evaluate(algorithm, values) != null);
+        assertNotNull("Really simple algorithm should be OK.", algorithmService.evaluate(algorithm, values));
     }
 
     @Test
@@ -126,11 +125,11 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldMultiplyDataSeriesAAndB() {
-        String expectedSeriesAMultipliedByB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"0.000000\"],[\"2010-01-04T00:00:00.000Z\",\"1.000000\"]]}";
+        String expectedSeriesAMultipliedByB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-03T00:00:00.000Z\",\"0.0\"],[\"2010-01-04T00:00:00.000Z\",\"1.0\"]]}";
         DataSeries seriesAMultipliedByB = seriesA.multiply(seriesB);
         System.out.println(expectedSeriesAMultipliedByB);
         System.out.println(seriesAMultipliedByB.toString());
-        assertTrue("Should be able to multiply two DataSeries objects.", seriesAMultipliedByB.toString().equals(expectedSeriesAMultipliedByB));
+        assertEquals("Should be able to multiply two DataSeries objects.", seriesAMultipliedByB.toString(), expectedSeriesAMultipliedByB);
     }
 
     /**
@@ -138,9 +137,9 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldAddDataSeriesBToA() {
-        String expectedSeriesAPlusB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"2.500000\"]]}";
+        String expectedSeriesAPlusB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"1.0\"],[\"2010-01-03T00:00:00.000Z\",\"1.0\"],[\"2010-01-04T00:00:00.000Z\",\"2.5\"]]}";
         DataSeries seriesAPlusB = seriesA.plus(seriesB);
-        assertTrue("Should be able to add together two DataSeries objects.", seriesAPlusB.toString().equals(expectedSeriesAPlusB));
+        assertEquals("Should be able to add together two DataSeries objects.", seriesAPlusB.toString(), expectedSeriesAPlusB);
     }
 
     /**
@@ -148,11 +147,11 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldMultiplyDataSeriesBAndC() {
-        String expectedSeriesBMultipliedByC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"0.000000\"],[\"2010-01-03T00:00:00.000Z\",\"1.000000\"],[\"2010-01-04T00:00:00.000Z\",\"6.000000\"]]}";
+        String expectedSeriesBMultipliedByC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-02T00:00:00.000Z\",\"0.0\"],[\"2010-01-03T00:00:00.000Z\",\"1.0\"],[\"2010-01-04T00:00:00.000Z\",\"6.0\"]]}";
         DataSeries seriesBMultipliedByC = seriesB.multiply(seriesC);
         System.out.println(expectedSeriesBMultipliedByC);
         System.out.println(seriesBMultipliedByC.toString());
-        assertTrue("Should be able to multiply two DataSeries objects.", seriesBMultipliedByC.toString().equals(expectedSeriesBMultipliedByC));
+        assertEquals("Should be able to multiply two DataSeries objects.", seriesBMultipliedByC.toString(), expectedSeriesBMultipliedByC);
     }
 
     /**
@@ -160,9 +159,9 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void shouldAddDataSeriesCToB() {
-        String expectedSeriesBPlusC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.000000\"],[\"2010-01-02T00:00:00.000Z\",\"1.000000\"],[\"2010-01-03T00:00:00.000Z\",\"2.000000\"],[\"2010-01-04T00:00:00.000Z\",\"5.000000\"]]}";
+        String expectedSeriesBPlusC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-02T00:00:00.000Z\",\"1.0\"],[\"2010-01-03T00:00:00.000Z\",\"2.0\"],[\"2010-01-04T00:00:00.000Z\",\"5.0\"]]}";
         DataSeries seriesBPlusC = seriesB.plus(seriesC);
-        assertTrue("Should be able to add together two DataSeries objects.", seriesBPlusC.toString().equals(expectedSeriesBPlusC));
+        assertEquals("Should be able to add together two DataSeries objects.", seriesBPlusC.toString(), expectedSeriesBPlusC);
     }
 
     /**
@@ -176,7 +175,7 @@ public class AlgorithmServiceTest {
         values.put("series", seriesA.copy());
         try {
             String result = algorithmService.evaluate(algorithm, values);
-            assertTrue("Should be able to use DataSeries.integrate() without a startDate and endDate.", result.equals("0.666667"));
+            assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", "0.666667", result);
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
         }
@@ -196,8 +195,7 @@ public class AlgorithmServiceTest {
         values.put("series", series);
         try {
             String result = algorithmService.evaluate(algorithm, values);
-            assertTrue("Should be able to use DataSeries.integrate() with a startDate and endDate.",
-                    result.equals("0.500000"));
+            assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", "0.500000", result);
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
         }
@@ -223,8 +221,7 @@ public class AlgorithmServiceTest {
         try {
             String result = algorithmService.evaluate(algorithm, values);
             System.out.println(result);
-            assertTrue("Should be able to use DataSeries.integrate() with a startDate and endDate.",
-                    result.equals("3.166667"));
+            assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", "3.166667", result);
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
         }

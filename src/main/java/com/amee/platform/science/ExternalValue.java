@@ -4,17 +4,17 @@ public interface ExternalValue {
 
     public String getUsableValue();
 
-    public DecimalUnit getUnit();
+    public AmountUnit getUnit();
 
-    public DecimalPerUnit getPerUnit();
+    public AmountPerUnit getPerUnit();
 
-    public DecimalUnit getCanonicalUnit();
+    public AmountUnit getCanonicalUnit();
 
-    public DecimalPerUnit getCanonicalPerUnit();
+    public AmountPerUnit getCanonicalPerUnit();
 
-    public DecimalCompoundUnit getCompoundUnit();
+    public AmountCompoundUnit getCompoundUnit();
 
-    public DecimalCompoundUnit getCanonicalCompoundUnit();
+    public AmountCompoundUnit getCanonicalCompoundUnit();
 
     public StartEndDate getStartDate();
 
