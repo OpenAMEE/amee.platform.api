@@ -56,7 +56,7 @@
                         </goals>
                         <configuration>
                             <excludeGroupIds>com.amee</excludeGroupIds>
-                            <stripVersion>true</stripVersion>
+                            <stripVersion>false</stripVersion>
                         </configuration>
                     </execution>
                 </executions>
@@ -127,7 +127,7 @@
                             <value>${basedir}/src/test/resources/crypto/amee.salt</value>
                         </property>
                     </systemProperties>
-                    <argLine>-javaagent:${basedir}/target/dependency/spring-instrument.jar</argLine>
+                    <argLine>-javaagent:${basedir}/target/dependency/spring-instrument-${spring.version}.jar</argLine>
                     <additionalClasspathElements>
                         <element>${basedir}/src/test/resources</element>
                     </additionalClasspathElements>
