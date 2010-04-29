@@ -1,6 +1,5 @@
 package com.amee.base.resource;
 
-public interface ResourceRemover<E> {
+public interface ResourceRemover<E> extends ResourceHandler<E> {
 
-    public E remove(RequestWrapper requestWrapper);
 }

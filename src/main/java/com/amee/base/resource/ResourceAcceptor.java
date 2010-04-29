@@ -1,6 +1,5 @@
 package com.amee.base.resource;
 
-public interface ResourceAcceptor<E> {
+public interface ResourceAcceptor<E> extends ResourceHandler<E> {
 
-    public E accept(RequestWrapper requestWrapper);
 }

@@ -2,16 +2,20 @@ package com.amee.base.resource;
 
 import com.amee.base.domain.Version;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class RequestWrapper implements Serializable {
 
+    private String target = "";
     private Version version;
     private Map<String, String> attributes = new HashMap<String, String>();
     private Map<String, String> matrixParameters = new HashMap<String, String>();
@@ -25,44 +29,88 @@ public class RequestWrapper implements Serializable {
     }
 
     public RequestWrapper(
+            String target,
             Version version,
             Map<String, String> attributes) {
         this();
+        setTarget(target);
         setVersion(version);
         setAttributes(attributes);
     }
 
     public RequestWrapper(
+            String target,
             Version version,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters) {
-        this(version, attributes);
+        this(target, version, attributes);
         setMatrixParameters(matrixParameters);
         setQueryParameters(queryParameters);
     }
 
     public RequestWrapper(
+            String target,
             Version version,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             Map<String, String> formParameters) {
-        this(version, attributes, matrixParameters, queryParameters);
+        this(target, version, attributes, matrixParameters, queryParameters);
         setFormParameters(formParameters);
         setMediaType("application/x-www-form-urlencoded");
     }
 
     public RequestWrapper(
+            String target,
             Version version,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             InputStream body,
             String mediaType) {
-        this(version, attributes, matrixParameters, queryParameters);
+        this(target, version, attributes, matrixParameters, queryParameters);
         setBody(body);
         setMediaType(mediaType);
+    }
+
+    public RequestWrapper(JSONObject obj) {
+        super();
+        try {
+            setTarget(obj.getString("target"));
+            setVersion(new Version(obj.getString("version")));
+            addToMap(getAttributes(), obj, "attributes");
+            addToMap(getMatrixParameters(), obj, "matrixParameters");
+            addToMap(getQueryParameters(), obj, "queryParameters");
+            addToMap(getFormParameters(), obj, "formParameters");
+            setMediaType(obj.getString("mediaType"));
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    private void addToMap(Map<String, String> m, JSONObject obj, String name) throws JSONException {
+        JSONObject node = obj.getJSONObject(name);
+        for (Iterator i = node.keys(); i.hasNext();) {
+            String key = (String) i.next();
+            m.put(key, node.getString(key));
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("target", getTarget());
+            obj.put("version", getVersion().toString());
+            obj.put("attributes", new JSONObject(getAttributes()));
+            obj.put("matrixParameters", new JSONObject(getMatrixParameters()));
+            obj.put("queryParameters", new JSONObject(getQueryParameters()));
+            obj.put("formParameters", new JSONObject(getFormParameters()));
+            obj.put("mediaType", getMediaType());
+            return obj;
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
     }
 
     public Version getVersion() {
@@ -144,6 +192,16 @@ public class RequestWrapper implements Serializable {
     public void setMediaType(String mediaType) {
         if (mediaType != null) {
             this.mediaType = mediaType;
+        }
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        if (target != null) {
+            this.target = target;
         }
     }
 }

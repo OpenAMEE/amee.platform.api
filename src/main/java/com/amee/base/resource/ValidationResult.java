@@ -1,6 +1,5 @@
 package com.amee.base.resource;
 
-import com.amee.base.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.json.JSONArray;
@@ -34,7 +33,7 @@ public class ValidationResult implements Serializable {
                 Iterator iterator = valuesObj.keys();
                 while (iterator.hasNext()) {
                     String key = (String) iterator.next();
-                    values.put(key, valuesObj.getString(key));
+                    getValues().put(key, valuesObj.getString(key));
                 }
             }
             // Load Errors.
@@ -63,7 +62,7 @@ public class ValidationResult implements Serializable {
         Element valuesElem = element.getChild("Values");
         if (valuesElem != null) {
             for (Element valueElem : (List<Element>) valuesElem.getChildren()) {
-                values.put(valueElem.getName(), valueElem.getValue());
+                getValues().put(valueElem.getName(), valueElem.getValue());
             }
         }
 
@@ -78,7 +77,7 @@ public class ValidationResult implements Serializable {
                     if (errorElem.getChild("Value") != null) {
                         fieldAndCode.put("value", errorElem.getChild("Value").getValue());
                     }
-                    errors.add(fieldAndCode);
+                    getErrors().add(fieldAndCode);
                 }
             }
         }
@@ -91,17 +90,17 @@ public class ValidationResult implements Serializable {
     public JSONObject getJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         // add values
-        if (!values.isEmpty()) {
+        if (!getValues().isEmpty()) {
             JSONObject valuesObj = new JSONObject();
-            for (String key : values.keySet()) {
-                valuesObj.put(key, values.get(key));
+            for (String key : getValues().keySet()) {
+                valuesObj.put(key, getValues().get(key));
             }
             obj.put("values", valuesObj);
         }
         // add errors
         if (getErrors() != null) {
             JSONArray errorsArr = new JSONArray();
-            for (Map<String, String> fieldAndCode : errors) {
+            for (Map<String, String> fieldAndCode : getErrors()) {
                 JSONObject fieldObj = new JSONObject();
                 fieldObj.put("field", fieldAndCode.get("field"));
                 fieldObj.put("code", fieldAndCode.get("code"));
@@ -115,29 +114,29 @@ public class ValidationResult implements Serializable {
         return obj;
     }
 
-    public org.w3c.dom.Element getElement(org.w3c.dom.Document document) {
-        org.w3c.dom.Element elem = document.createElement("ValidationResult");
+    public Element getElement() {
+        Element elem = new Element("ValidationResult");
         // values
-        if (!values.isEmpty()) {
-            org.w3c.dom.Element valuesElem = document.createElement("Values");
-            for (String key : values.keySet()) {
-                valuesElem.appendChild(XMLUtils.getElement(document, StringUtils.capitalize(key), values.get(key)));
+        if (!getValues().isEmpty()) {
+            Element valuesElem = new Element("Values");
+            for (String key : getValues().keySet()) {
+                valuesElem.addContent(new Element(StringUtils.capitalize(key)).setText(getValues().get(key)));
             }
-            elem.appendChild(valuesElem);
+            elem.addContent(valuesElem);
         }
         // errors
         if (getErrors() != null) {
-            org.w3c.dom.Element errorsElem = document.createElement("Errors");
-            for (Map<String, String> fieldAndCode : errors) {
-                org.w3c.dom.Element errorElem = document.createElement("Error");
-                errorElem.appendChild(XMLUtils.getElement(document, "Field", fieldAndCode.get("field")));
-                errorElem.appendChild(XMLUtils.getElement(document, "Code", fieldAndCode.get("code")));
+            Element errorsElem = new Element("Errors");
+            for (Map<String, String> fieldAndCode : getErrors()) {
+                Element errorElem = new Element("Error");
+                errorElem.addContent(new Element("Field").setText(fieldAndCode.get("field")));
+                errorElem.addContent(new Element("Code").setText(fieldAndCode.get("code")));
                 if (fieldAndCode.containsKey("value")) {
-                    errorElem.appendChild(XMLUtils.getElement(document, "Value", fieldAndCode.get("value")));
+                    errorElem.addContent(new Element("Value").setText(fieldAndCode.get("value")));
                 }
-                errorsElem.appendChild(errorElem);
+                errorsElem.addContent(errorElem);
             }
-            elem.appendChild(errorsElem);
+            elem.addContent(errorsElem);
         }
         return elem;
     }
@@ -160,7 +159,7 @@ public class ValidationResult implements Serializable {
                 if ((fieldError.getRejectedValue() != null) && (fieldError.getRejectedValue() instanceof String)) {
                     fieldAndCode.put("value", (String) fieldError.getRejectedValue());
                 }
-                errors.add(fieldAndCode);
+                getErrors().add(fieldAndCode);
             }
         }
     }
