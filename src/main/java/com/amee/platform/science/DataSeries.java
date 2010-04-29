@@ -92,7 +92,10 @@ public class DataSeries {
         }
         DateTime seriesStart = getSeriesStartDate();
         DateTime seriesEnd = getSeriesEndDate();
-        if ((seriesEnd==null||seriesStart==null)) return null; // if the range of interest is undef
+        if ((seriesEnd == null || seriesStart == null)) {
+            // the range of interest is undef
+            return null;
+        }
         return new Amount(seriesEnd.getMillis() - seriesStart.getMillis());
     }
 
@@ -329,7 +332,9 @@ public class DataSeries {
         Amount seriesTimeInMillis = getSeriesTimeInMillis();
         log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
 
-        if (!seriesTimeInMillis.equals(Amount.ZERO)) {
+        if (seriesTimeInMillis == null) {
+            integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
+        } else if (!seriesTimeInMillis.equals(Amount.ZERO)) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
@@ -356,8 +361,6 @@ public class DataSeries {
                 if (start.isAfter(end)) continue;
                 integral = integral+weightedAverage;
             }
-        } else if (seriesTimeInMillis==null) {
-            integral=dataPoints.get(dataPoints.size()-1).getValue().getValue();
         }
         return new Amount(integral);
     }
