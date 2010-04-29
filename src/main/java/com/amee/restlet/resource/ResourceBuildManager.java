@@ -3,8 +3,10 @@ package com.amee.restlet.resource;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ValidationResult;
+import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.input.DOMBuilder;
+import org.jdom.JDOMException;
+import org.jdom.output.DOMOutputter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;
@@ -13,12 +15,13 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Variant;
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceBuildManager extends ResourceManager {
+
+    public final static DOMOutputter DOM_OUTPUTTER = new DOMOutputter();
 
     private List<ResourceBuilder> builders = new ArrayList<ResourceBuilder>();
 
@@ -30,14 +33,13 @@ public class ResourceBuildManager extends ResourceManager {
     }
 
     public Representation getRepresentation(Variant variant) {
-        Representation representation = null;
         for (ResourceBuilder builder : builders) {
             MediaType mediaType = MediaType.valueOf(builder.getMediaType());
             if (variant.getMediaType().equals(mediaType)) {
-                representation = getRepresentation(builder);
+                return getRepresentation(builder);
             }
         }
-        return representation;
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -55,8 +57,9 @@ public class ResourceBuildManager extends ResourceManager {
     protected Representation getJsonRepresentation(ResourceBuilder<JSONObject> builder) {
         Representation representation = null;
         try {
-            JSONObject obj = builder.build(
+            JSONObject obj = builder.handle(
                     new RequestWrapper(
+                            "",
                             getResource().getSupportedVersion(),
                             getAttributes(),
                             getMatrixParameters(),
@@ -84,14 +87,15 @@ public class ResourceBuildManager extends ResourceManager {
 
     protected Representation getDomRepresentation(ResourceBuilder<Document> builder) {
         Representation representation = null;
-        Document document = builder.build(
+        Document document = builder.handle(
                 new RequestWrapper(
+                        "",
                         getResource().getSupportedVersion(),
                         getAttributes(),
                         getMatrixParameters(),
                         getQueryParameters()));
         if (document != null) {
-            Element representationElement = new DOMBuilder().build(document).getRootElement();
+            Element representationElement = document.getRootElement();
             if ((representationElement != null) && representationElement.getName().equals("Representation")) {
                 // Handle ValidationResult.
                 if (representationElement.getChild("ValidationResult") != null) {
@@ -100,13 +104,17 @@ public class ResourceBuildManager extends ResourceManager {
                 // Handle Status.
                 if (representationElement.getChild("Status") != null) {
                     String status = representationElement.getChild("Status").getValue();
-                    if (status.equals("OK")) {
-                        representation = new DomRepresentation(MediaType.APPLICATION_XML, document);
-                    } else if (status.equals("INVALID")) {
-                        getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                        representation = new DomRepresentation(MediaType.APPLICATION_XML, document);
-                    } else if (status.equals("NOT_FOUND")) {
-                        getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                    try {
+                        if (status.equals("OK")) {
+                            representation = new DomRepresentation(MediaType.APPLICATION_XML, DOM_OUTPUTTER.output(document));
+                        } else if (status.equals("INVALID")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                            representation = new DomRepresentation(MediaType.APPLICATION_XML, DOM_OUTPUTTER.output(document));
+                        } else if (status.equals("NOT_FOUND")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                        }
+                    } catch (JDOMException e) {
+                        throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
                     }
                 }
             }

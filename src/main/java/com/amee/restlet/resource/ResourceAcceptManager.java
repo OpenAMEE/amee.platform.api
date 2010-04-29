@@ -27,10 +27,10 @@ public class ResourceAcceptManager extends ResourceManager {
             MediaType mediaType = entity.getMediaType();
             if (acceptors.containsKey(mediaType.getName())) {
                 // Send RequestWrapper to ResourceAcceptor.
-                Object o = acceptors.get(mediaType.getName()).accept(getRequestWrapper(entity));
-                // Handle the various media types.
-                if (o instanceof JSONObject) {
-                    handle((JSONObject) o);
+                Object result = acceptors.get(mediaType.getName()).handle(getRequestWrapper(entity));
+                // Handle the various result media types.
+                if (result instanceof JSONObject) {
+                    handle((JSONObject) result);
                 } else {
                     getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
                 }
@@ -83,6 +83,7 @@ public class ResourceAcceptManager extends ResourceManager {
     protected RequestWrapper getRequestWrapper(Representation entity) {
         if (entity.getMediaType().equals(MediaType.APPLICATION_WWW_FORM)) {
             return new RequestWrapper(
+                    "",
                     getResource().getSupportedVersion(),
                     getAttributes(),
                     getMatrixParameters(),
@@ -91,6 +92,7 @@ public class ResourceAcceptManager extends ResourceManager {
         } else {
             try {
                 return new RequestWrapper(
+                        "",
                         getResource().getSupportedVersion(),
                         getAttributes(),
                         getMatrixParameters(),

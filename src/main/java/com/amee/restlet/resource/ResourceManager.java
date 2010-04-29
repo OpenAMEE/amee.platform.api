@@ -56,7 +56,8 @@ public class ResourceManager {
             if (getRequest().getAttributes().containsKey(attributeName)) {
                 Object a = getRequest().getAttributes().get(attributeName);
                 if (a instanceof String) {
-                    attributes.put(attributeName, (String) a);
+                    // This removes any matrix parameters.
+                    attributes.put(attributeName, ((String) a).split(";")[0]);
                 } else {
                     log.warn("getAttributes() Attribute value is not a String: " + attributeName);
                 }

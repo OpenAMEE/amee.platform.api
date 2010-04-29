@@ -5,9 +5,11 @@ import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
 import com.amee.base.resource.ValidationResult;
-import com.amee.base.utils.XMLUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xerces.dom.DocumentImpl;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.output.DOMOutputter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,8 +24,6 @@ import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class GenericResource extends Resource {
+
+    public final static DOMOutputter DOM_OUTPUTTER = new DOMOutputter();
 
     private ResourceBuildManager buildManager = new ResourceBuildManager();
     private ResourceAcceptManager acceptManager = new ResourceAcceptManager();
@@ -109,22 +111,26 @@ public class GenericResource extends Resource {
     }
 
     protected Representation getValidationResultDomRepresentation() {
-        Document document = new DocumentImpl();
-        Element representationElem = document.createElement("Representation");
-        document.appendChild(representationElem);
+        Document document = new Document();
+        Element representationElem = new Element("Representation");
+        document.setRootElement(representationElem);
         if (!getValidationResults().isEmpty()) {
             if (getValidationResults().size() > 1) {
-                representationElem.appendChild(XMLUtils.getElement(document, "Status", "INVALID"));
-                Element validationResultsElem = document.createElement("ValidationResults");
-                representationElem.appendChild(validationResultsElem);
+                representationElem.addContent(new Element("Status").setText("INVALID"));
+                Element validationResultsElem = new Element("ValidationResults");
+                representationElem.addContent(validationResultsElem);
                 for (ValidationResult validationResult : getValidationResults()) {
-                    validationResultsElem.appendChild(validationResult.getElement(document));
+                    validationResultsElem.addContent(validationResult.getElement());
                 }
             } else {
-                representationElem.appendChild(getFirstValidationResult().getElement(document));
+                representationElem.addContent(getFirstValidationResult().getElement());
             }
         }
-        return new DomRepresentation(MediaType.APPLICATION_XML, document);
+        try {
+            return new DomRepresentation(MediaType.APPLICATION_XML, DOM_OUTPUTTER.output(document));
+        } catch (JDOMException e) {
+            throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
+        }
     }
 
     /**
