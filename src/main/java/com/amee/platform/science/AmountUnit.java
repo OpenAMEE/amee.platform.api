@@ -4,10 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-import javax.measure.unit.UnitFormat;
+import javax.measure.unit.*;
 import java.text.ParseException;
 import java.text.ParsePosition;
 
@@ -125,8 +122,19 @@ public class AmountUnit {
         }
     }
 
-    public boolean equals(AmountUnit that) {
-        return toUnit().equals(that.toUnit());
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof AmountUnit)) {
+            return false;
+        }
+
+        AmountUnit a = (AmountUnit) o;
+
+        return unit.equals(a.unit);
     }
 
     @Override

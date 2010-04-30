@@ -2,6 +2,10 @@ package com.amee.platform.science;
 
 import javax.measure.unit.Unit;
 
+/**
+ * Represents a 'compound unit' - a unit and a dimension. Eg, km/h, kg/m.
+ * Note, this is a different concept from javax.measure.unit.CompoundUnit.
+ */
 public class AmountCompoundUnit extends AmountUnit {
 
     private AmountPerUnit perUnit;
@@ -15,6 +19,7 @@ public class AmountCompoundUnit extends AmountUnit {
         return new AmountCompoundUnit(unit, perUnit);
     }
 
+    @Override
     public Unit toUnit() {
         return unit.divide(perUnit.toUnit());
     }
@@ -26,14 +31,18 @@ public class AmountCompoundUnit extends AmountUnit {
     public AmountPerUnit getPerUnit() {
         return perUnit;
     }
-//
-//    public void getElement(Element parent, Document document) {
-//        parent.appendChild(APIUtils.getElement(document, "Unit", unit.toString()));
-//        parent.appendChild(APIUtils.getElement(document, "PerUnit", perUnit.toString()));
-//    }
-//
-//    public void getJSONObject(JSONObject parent) throws JSONException {
-//        parent.put("unit", unit.toString());
-//        parent.put("perUnit", perUnit.toString());
-//    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        
+        if (!(o instanceof AmountCompoundUnit)) {
+            return false;
+        }
+
+        AmountCompoundUnit acu = (AmountCompoundUnit) o;
+        return acu.unit.equals(unit) && acu.perUnit.equals(perUnit);
+    }
 }

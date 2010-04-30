@@ -33,6 +33,7 @@ public class AmountPerUnit extends AmountUnit {
         return new AmountPerUnit(duration);
     }
 
+    @Override
     public boolean isCompatibleWith(String unit) {
         return StringUtils.isNotBlank(unit) && ("none".equals(unit) || this.unit.isCompatible(internalValueOf(unit)));
     }
@@ -41,11 +42,13 @@ public class AmountPerUnit extends AmountUnit {
         return toUnit().getDimension().equals(Dimension.TIME);
     }
 
-    public Unit toUnit() {
-        return unit;
-    }
-
+    @Override
     public String toString() {
         return string;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
     }
 }

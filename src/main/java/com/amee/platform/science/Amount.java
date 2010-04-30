@@ -1,6 +1,10 @@
 package com.amee.platform.science;
 
 import javax.measure.Measure;
+import javax.measure.unit.Dimension;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * An AMEE abstraction of an amount. An Amount has a value and a unit.
@@ -115,7 +119,12 @@ public class Amount {
     // TODO: Should we include the unit here?
     @Override
     public String toString() {
-        return String.format("%f", value);
+        NumberFormat f = NumberFormat.getInstance();
+         if (f instanceof DecimalFormat) {
+             ((DecimalFormat) f).applyPattern("0.0################");
+         }
+
+         return f.format(value);
     }
 
     // TODO: Is this correct? Should 2 Amounts with different units be equal?
