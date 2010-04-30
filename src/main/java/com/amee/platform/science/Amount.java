@@ -70,11 +70,12 @@ public class Amount {
     // TODO: genericise so this is not needed?
     @SuppressWarnings("unchecked")
     public Amount convert(AmountUnit targetUnit) {
-        if (!unit.equals(targetUnit)) {
-            Measure measure = Measure.valueOf(value, unit.toUnit());
-            return new Amount(measure.doubleValue(targetUnit.toUnit()), targetUnit);
-        } else {
+        if (unit.equals(targetUnit)) {
             return new Amount(getValue(), unit);
+        } else {
+            Measure measure = Measure.valueOf(value, unit.toUnit());
+            double valueInTargetUnit = measure.doubleValue(targetUnit.toUnit());
+            return new Amount(valueInTargetUnit, targetUnit);
         }
     }
 
