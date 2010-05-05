@@ -122,21 +122,33 @@ public class AmountUnit {
         }
     }
 
+    /**
+     * Compares this AmountUnit with the specified Object for equality.
+     * This method considers two AmountUnit objects equal only if they are equal type and unit.
+     * Note that mixed-type comparison is allowed, but a subclass will never compare equal to this.
+     *
+     * @param o Object to which this AmountUnit is to be compared.
+     * @return true if and only if the specified Object is an AmountUnit whose unit is equal to this AmountUnit's.
+     */
     @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
 
-        if (!(o instanceof AmountUnit)) {
-            return false;
+        if (o != null && getClass() == o.getClass()) {
+            AmountUnit a = (AmountUnit) o;
+            return unit.equals(a.unit);
         }
 
-        AmountUnit a = (AmountUnit) o;
-
-        return unit.equals(a.unit);
+        return false;    
     }
 
+    /**
+     * Returns the hash code for this AmountUnit.
+     *
+     * @return hash code for this AmountUnit.
+     */
     @Override
     public int hashCode() {
         return unit.hashCode();

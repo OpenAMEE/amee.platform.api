@@ -4,7 +4,7 @@ import javax.measure.unit.Unit;
 
 /**
  * Represents a 'compound unit' - a unit and a dimension. Eg, km/h, kg/m.
- * Note, this is a different concept from javax.measure.unit.CompoundUnit.
+ * Note that this is a different concept from javax.measure.unit.CompoundUnit.
  */
 public class AmountCompoundUnit extends AmountUnit {
 
@@ -34,15 +34,22 @@ public class AmountCompoundUnit extends AmountUnit {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        
-        if (!(o instanceof AmountCompoundUnit)) {
-            return false;
+        if (super.equals(o)) {
+            AmountCompoundUnit acu = (AmountCompoundUnit) o;
+            return acu.perUnit.equals(perUnit);
         }
 
-        AmountCompoundUnit acu = (AmountCompoundUnit) o;
-        return acu.unit.equals(unit) && acu.perUnit.equals(perUnit);
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+
+        // perUnit
+        int perUnitCode = perUnit.hashCode();
+        result = 37 * result + perUnitCode;
+
+        return result;
     }
 }

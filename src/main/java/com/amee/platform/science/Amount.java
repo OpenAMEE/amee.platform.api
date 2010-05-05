@@ -1,10 +1,8 @@
 package com.amee.platform.science;
 
 import javax.measure.Measure;
-import javax.measure.unit.Dimension;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 /**
  * An AMEE abstraction of an amount. An Amount has a value and a unit.
@@ -32,9 +30,9 @@ public class Amount {
     }
 
     /**
-     * A Amount representing the supplied unit-less value.
+     * An Amount representing the supplied unit-less value.
      *
-     * @param value - the String representation of the value value
+     * @param value - the String representation of the value.
      */
     public Amount(String value) {
 
@@ -67,7 +65,6 @@ public class Amount {
      * @see AmountUnit
      */
 
-    // TODO: genericise so this is not needed?
     @SuppressWarnings("unchecked")
     public Amount convert(AmountUnit targetUnit) {
         if (unit.equals(targetUnit)) {
@@ -94,19 +91,31 @@ public class Amount {
         AmountCompoundUnit cUnit = (AmountCompoundUnit) unit;
 
         if (cUnit.hasDifferentPerUnit(targetPerUnit)) {
-            Measure dm = Measure.valueOf(value, cUnit.getPerUnit().toUnit().inverse());
-            return new Amount(dm.doubleValue(targetPerUnit.toUnit().inverse()), targetPerUnit);
+            Measure measure = Measure.valueOf(value, cUnit.getPerUnit().toUnit().inverse());
+            return new Amount(measure.doubleValue(targetPerUnit.toUnit().inverse()), targetPerUnit);
         } else {
             return new Amount(getValue(), unit);
         }
     }
 
     /**
+     * Compares this Amount's unit with the specified AmountUnit for equality.
+     *
      * @param unit - the unit to compare
      * @return returns true if the supplied AmountUnit is not considered equal to the unit of the current instance.
      */
     public boolean hasDifferentUnits(AmountUnit unit) {
         return !this.unit.equals(unit);
+    }
+
+    /**
+     * Compares this Amount's unit with the specified Amount's unit for equality.
+     * 
+     * @param amount Amount to which this Amount is to be compared.
+     * @return true if the specified Amount's unit is not considered equal to this Amount's unit.
+     */
+    public boolean hasDifferentUnits(Amount amount) {
+        return hasDifferentUnits(amount.getUnit());
     }
 
     public double getValue() {
@@ -117,7 +126,12 @@ public class Amount {
         return unit;
     }
 
-    // TODO: Should we include the unit here?
+    /**
+     * Returns the string representation of the value of this Amount in standard decimal notation with a precision
+     * of up to 17 decimal places. Note that the unit is NOT returned.
+     *
+     * @return string representation of this Amount.
+     */
     @Override
     public String toString() {
         NumberFormat f = NumberFormat.getInstance();
@@ -128,9 +142,15 @@ public class Amount {
          return f.format(value);
     }
 
-    // TODO: Is this correct? Should 2 Amounts with different units be equal?
+    /**
+     * Compares this Amount with the specified Object for equality.
+     * This method considers two Amount objects equal only if they are equal in value and unit.
+     *
+     * @param o Object to which this Amount is to be compared.
+     * @return true if and only if the specified Object is an Amount whose value and unit are equal to this Amount's.
+     */
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (o == this) {
             return true;
         }
@@ -140,45 +160,86 @@ public class Amount {
         }
         
         Amount d = (Amount) o;
-        if (Double.doubleToLongBits(d.value) != Double.doubleToLongBits(this.value)) {
-            return false;
-        }
 
-        if (!d.unit.equals(this.unit)) {
-            return false;
-        }
-
-        return true;
+        return Double.doubleToLongBits(d.value) == Double.doubleToLongBits(this.value)
+            && d.unit.equals(this.unit);
     }
 
+    /**
+     * Returns the hash code for this Amount.
+     * Note that two Amount objects that are numerically equal in value but differ in unit will not  have the same hash code.
+     *
+     * @return hash code for this Amount.
+     */
     @Override
     public int hashCode() {
         int result = 17;
 
+        // value
         Long bits = Double.doubleToLongBits(value);
         int valueCode = (int) (bits ^ (bits >>> 32));
         result = 37 * result + valueCode;
 
+        // unit
         int unitCode = unit.hashCode();
         result = 37 * result + unitCode;
 
         return result;
     }
 
-    // TODO: these methods ignore the units??
+    /**
+     * Returns an Amount whose value is (this + amount).
+     *
+     * @param amount value to be added to this Amount.
+     * @return this + amount.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     */
     public Amount add(Amount amount) {
-        return new Amount(getValue() + (amount.getValue()));
+        if (hasDifferentUnits(amount)) {
+            throw new IllegalArgumentException("Cannot add unit " + amount.unit + " to unit " + unit);
+        }
+        return new Amount(getValue() + (amount.getValue()), unit);
     }
 
+    /**
+     * Returns an Amount whose value is (this - amount).
+     *
+     * @param amount value to be subtracted from this Amount.
+     * @return this - amount.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     */
     public Amount subtract(Amount amount) {
-        return new Amount(getValue() - (amount.getValue()));
+        if (hasDifferentUnits(amount)) {
+            throw new IllegalArgumentException("Cannot subtract unit " + amount.unit + " from unit " + unit);
+        }
+        return new Amount(getValue() - (amount.getValue()), unit);
     }
 
+    /**
+     * Returns an Amount whose value is (this / amount).
+     *
+     * @param amount value by which this Amount is to be divided.
+     * @return this / amount.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     */
     public Amount divide(Amount amount) {
-        return new Amount(getValue() / (amount.getValue()));
+        if (hasDifferentUnits(amount)) {
+            throw new IllegalArgumentException("Cannot divide unit " + amount.unit + " with unit " + unit);
+        }
+        return new Amount(getValue() / (amount.getValue()), unit);
     }
 
+    /**
+     * Returns an Amount whose value is (this * amount).
+     *
+     * @param amount value to be multiplied by this Amount.
+     * @return this * amount.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     */
     public Amount multiply(Amount amount) {
-        return new Amount(getValue() * (amount.getValue()));
+        if (hasDifferentUnits(amount)) {
+            throw new IllegalArgumentException("Cannot multiply unit " + amount.unit + " with unit " + unit);
+        }
+        return new Amount(getValue() * (amount.getValue()), unit);
     }
 }
