@@ -59,7 +59,7 @@ public class MockExternalValue implements ExternalValue {
         return new StartEndDate(startDate);
     }
 
-    public boolean isDecimal() {
+    public boolean isDouble() {
         return true;
     }
 

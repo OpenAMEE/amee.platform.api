@@ -22,10 +22,10 @@ public class DataPoint implements Comparable<DataPoint> {
     /**
      * Construct a DataPoint with a amount value occurring at the epoch.
      *
-     * @param decimal - the amount value
+     * @param value - the amount value
      */
-    public DataPoint(float decimal) {
-        this(new Amount(decimal));
+    public DataPoint(double value) {
+        this(new Amount(value));
     }
 
     /**

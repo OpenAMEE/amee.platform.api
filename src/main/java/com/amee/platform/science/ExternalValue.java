@@ -18,7 +18,7 @@ public interface ExternalValue {
 
     public StartEndDate getStartDate();
 
-    public boolean isDecimal();
+    public boolean isDouble();
 
     public boolean isConvertible();
 

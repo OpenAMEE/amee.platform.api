@@ -33,7 +33,7 @@ public class InternalValue {
      * @param value - the {@link ExternalValue} representation of the value.
      */
     public InternalValue(ExternalValue value) {
-        if (value.isDecimal()) {
+        if (value.isDouble()) {
             this.value = asInternalDecimal(value).getValue();
         } else {
             this.value = value.getUsableValue();
@@ -50,7 +50,7 @@ public class InternalValue {
     public InternalValue(List<ExternalValue> values, Date startDate, Date endDate) {
         slog.info ("Diagnostics from filtering:"+ values.size() + "," + new DateTime(startDate) +","+new DateTime(endDate))  ;
   
-        if (values.get(0).isDecimal()) {
+        if (values.get(0).isDouble()) {
             DataSeries ds = new DataSeries();
             for (ExternalValue itemValue : filterItemValues(values, startDate, endDate)) {
                 ds.addDataPoint(new DataPoint(itemValue.getStartDate().toDateTime(), asInternalDecimal(itemValue)));
