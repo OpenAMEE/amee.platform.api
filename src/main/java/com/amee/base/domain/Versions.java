@@ -42,7 +42,7 @@ public class Versions implements Serializable {
         List<Version> versions = getVersions();
         Collections.reverse(versions);
         for (Version v : versions) {
-            if (v.before(version)) {
+            if (!v.after(version)) {
                 // Found the latest Version that supports the supplied Version.
                 return v;
             }
