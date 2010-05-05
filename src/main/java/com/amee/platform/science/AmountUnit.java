@@ -11,7 +11,6 @@ import java.text.ParsePosition;
 /**
  * An AmountUnit represents the unit of an Amount, eg kWh.
  *
- * TODO: genericise this class?
  */
 public class AmountUnit {
 
