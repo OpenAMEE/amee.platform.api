@@ -89,13 +89,6 @@ public class RequestWrapper implements Serializable {
         }
     }
 
-    private void addToMap(Map<String, String> m, JSONObject obj, String name) throws JSONException {
-        JSONObject node = obj.getJSONObject(name);
-        for (Iterator i = node.keys(); i.hasNext();) {
-            String key = (String) i.next();
-            m.put(key, node.getString(key));
-        }
-    }
 
     public JSONObject toJSONObject() {
         try {
@@ -113,6 +106,27 @@ public class RequestWrapper implements Serializable {
         }
     }
 
+    protected void addToMap(Map<String, String> m, JSONObject obj, String name) throws JSONException {
+        JSONObject node = obj.getJSONObject(name);
+        for (Iterator i = node.keys(); i.hasNext();) {
+            String key = (String) i.next();
+            if (!node.isNull(key)) {
+                m.put(key, node.getString(key));
+            } else {
+                m.put(key, "");
+            }
+        }
+    }
+
+    protected void setMapFromMap(Map<String, String> target, Map<String, String> source) {
+        target.clear();
+        if (source != null) {
+            for (String key : source.keySet()) {
+                target.put(key, source.get(key) != null ? source.get(key) : "");
+            }
+        }
+    }
+
     public Version getVersion() {
         return version;
     }
@@ -126,9 +140,7 @@ public class RequestWrapper implements Serializable {
     }
 
     public void setAttributes(Map<String, String> attributes) {
-        if (attributes != null) {
-            this.attributes = attributes;
-        }
+        setMapFromMap(this.attributes, attributes);
     }
 
     public Map<String, String> getMatrixParameters() {
@@ -136,9 +148,7 @@ public class RequestWrapper implements Serializable {
     }
 
     public void setMatrixParameters(Map<String, String> matrixParameters) {
-        if (matrixParameters != null) {
-            this.matrixParameters = matrixParameters;
-        }
+        setMapFromMap(this.matrixParameters, matrixParameters);
     }
 
     public Map<String, String> getQueryParameters() {
@@ -146,9 +156,7 @@ public class RequestWrapper implements Serializable {
     }
 
     public void setQueryParameters(Map<String, String> queryParameters) {
-        if (queryParameters != null) {
-            this.queryParameters = queryParameters;
-        }
+        setMapFromMap(this.queryParameters, queryParameters);
     }
 
     public Map<String, String> getFormParameters() {
@@ -156,9 +164,7 @@ public class RequestWrapper implements Serializable {
     }
 
     public void setFormParameters(Map<String, String> formParameters) {
-        if (formParameters != null) {
-            this.formParameters = formParameters;
-        }
+        setMapFromMap(this.formParameters, formParameters);
     }
 
     public boolean hasBody() {
