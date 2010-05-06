@@ -101,13 +101,13 @@ public class DataPoint implements Comparable<DataPoint> {
     }
 
     /**
-     * Add a float value to this DataPoint.
+     * Add a double value to this DataPoint.
      *
-     * @param f - the float to add
-     * @return a new DataPoint representing the addition of the DataPoint and float values
+     * @param d - the double to add
+     * @return a new DataPoint representing the addition of the DataPoint and double values
      */
-    public DataPoint plus(float f) {
-        return new DataPoint(dateTime, amount.add(new Amount(f)));
+    public DataPoint plus(double d) {
+        return new DataPoint(dateTime, amount.add(new Amount(d)));
     }
 
     /**
@@ -121,13 +121,13 @@ public class DataPoint implements Comparable<DataPoint> {
     }
 
     /**
-     * Subtract a float value from this DataPoint.
+     * Subtract a double value from this DataPoint.
      *
-     * @param f - the float to subtract
-     * @return a new DataPoint representing the subtraction of the float value from this DataPoint
+     * @param d - the double to subtract
+     * @return a new DataPoint representing the subtraction of the double value from this DataPoint
      */
-    public DataPoint subtract(float f) {
-        return new DataPoint(dateTime, amount.subtract(new Amount(f)));
+    public DataPoint subtract(double d) {
+        return new DataPoint(dateTime, amount.subtract(new Amount(d)));
     }
 
     /**
@@ -141,13 +141,13 @@ public class DataPoint implements Comparable<DataPoint> {
     }
 
     /**
-     * Divide this DataPoint by a float value.
+     * Divide this DataPoint by a double value.
      *
-     * @param f - the float value by which to divide this DataPoint
-     * @return a new DataPoint representing the division of this DataPoint by the float value
+     * @param d - the double value by which to divide this DataPoint
+     * @return a new DataPoint representing the division of this DataPoint by the double value
      */
-    public DataPoint divide(float f) {
-        return new DataPoint(dateTime, amount.divide(new Amount(f)));
+    public DataPoint divide(double d) {
+        return new DataPoint(dateTime, amount.divide(new Amount(d)));
     }
 
     /**
@@ -161,13 +161,13 @@ public class DataPoint implements Comparable<DataPoint> {
     }
 
     /**
-     * Multiply this DataPoint by a float value.
+     * Multiply this DataPoint by a double value.
      *
-     * @param f - the float value to multiply this DataPoint
-     * @return a new DataPoint representing the multiplication of this DataPoint by the float value.
+     * @param d - the double value to multiply this DataPoint
+     * @return a new DataPoint representing the multiplication of this DataPoint by the double value.
      */
-    public DataPoint multiply(float f) {
-        return new DataPoint(dateTime, amount.multiply(new Amount(f)));
+    public DataPoint multiply(double d) {
+        return new DataPoint(dateTime, amount.multiply(new Amount(d)));
     }
 
     public int compareTo(DataPoint that) {
