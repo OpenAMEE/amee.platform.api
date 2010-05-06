@@ -57,6 +57,7 @@ public class AmountTest {
         // Amounts have the same units.
         Amount d1 = new Amount("123.45", AmountUnit.valueOf("kWh"));
         Amount d2 = new Amount(123.45, AmountUnit.valueOf("kWh"));
+        Amount d3 = new Amount(123.45);
 
         Amount expected = new Amount(123.45 + 123.45, AmountUnit.valueOf("kWh"));
         Amount actual = d1.add(d2);
@@ -73,6 +74,10 @@ public class AmountTest {
         expected = new Amount(123.45 / 123.45, AmountUnit.valueOf("kWh"));
         actual = d1.divide(d2);
         assertEquals(expected, actual);
+
+        expected = new Amount(123.45 + 123.45, AmountUnit.valueOf("kWh"));
+        actual = d1.add(d3);
+        assertEquals("Should be able to add kWh and dimensionless unit", expected, actual);
     }
 
     @Test(expected = IllegalArgumentException.class)

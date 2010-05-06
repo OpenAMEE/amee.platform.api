@@ -109,13 +109,14 @@ public class Amount {
     }
 
     /**
-     * Compares this Amount's unit with the specified Amount's unit for equality.
-     * 
-     * @param amount Amount to which this Amount is to be compared.
-     * @return true if the specified Amount's unit is not considered equal to this Amount's unit.
+     * Tests if the units of the two Amounts permit the operation.
+     * Amounts may only be operated upon if they have the same unit or if the given Amount's unit is the dimensionless unit.
+     *
+     * @param amount the Amount to be tested.
+     * @return true if the operation can be performed.
      */
-    public boolean hasDifferentUnits(Amount amount) {
-        return hasDifferentUnits(amount.getUnit());
+    private boolean canOperateOnAmount(Amount amount) {
+        return amount.unit.equals(unit) || amount.unit.equals(AmountUnit.ONE);
     }
 
     public double getValue() {
@@ -192,13 +193,14 @@ public class Amount {
      *
      * @param amount value to be added to this Amount.
      * @return this + amount.
-     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit or AmountUnit.ONE.
      */
     public Amount add(Amount amount) {
-        if (hasDifferentUnits(amount)) {
+        if (canOperateOnAmount(amount)) {
+            return new Amount(getValue() + (amount.getValue()), unit);
+        } else {
             throw new IllegalArgumentException("Cannot add unit " + amount.unit + " to unit " + unit);
         }
-        return new Amount(getValue() + (amount.getValue()), unit);
     }
 
     /**
@@ -206,13 +208,14 @@ public class Amount {
      *
      * @param amount value to be subtracted from this Amount.
      * @return this - amount.
-     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit or AmountUnit.ONE.
      */
     public Amount subtract(Amount amount) {
-        if (hasDifferentUnits(amount)) {
+        if (canOperateOnAmount(amount)) {
+            return new Amount(getValue() - (amount.getValue()), unit);
+        } else {
             throw new IllegalArgumentException("Cannot subtract unit " + amount.unit + " from unit " + unit);
         }
-        return new Amount(getValue() - (amount.getValue()), unit);
     }
 
     /**
@@ -220,13 +223,14 @@ public class Amount {
      *
      * @param amount value by which this Amount is to be divided.
      * @return this / amount.
-     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit or AmountUnit.ONE.
      */
     public Amount divide(Amount amount) {
-        if (hasDifferentUnits(amount)) {
+        if (canOperateOnAmount(amount)) {
+            return new Amount(getValue() / (amount.getValue()), unit);
+        } else {
             throw new IllegalArgumentException("Cannot divide unit " + amount.unit + " with unit " + unit);
         }
-        return new Amount(getValue() / (amount.getValue()), unit);
     }
 
     /**
@@ -234,12 +238,13 @@ public class Amount {
      *
      * @param amount value to be multiplied by this Amount.
      * @return this * amount.
-     * @throws IllegalArgumentException if the unit of amount differs from this unit.
+     * @throws IllegalArgumentException if the unit of amount differs from this unit or AmountUnit.ONE.
      */
     public Amount multiply(Amount amount) {
-        if (hasDifferentUnits(amount)) {
+        if (canOperateOnAmount(amount)) {
+            return new Amount(getValue() * (amount.getValue()), unit);
+        } else {
             throw new IllegalArgumentException("Cannot multiply unit " + amount.unit + " with unit " + unit);
         }
-        return new Amount(getValue() * (amount.getValue()), unit);
     }
 }
