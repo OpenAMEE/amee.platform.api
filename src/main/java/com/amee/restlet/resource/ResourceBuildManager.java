@@ -57,7 +57,7 @@ public class ResourceBuildManager extends ResourceManager {
     protected Representation getJsonRepresentation(ResourceBuilder<JSONObject> builder) {
         Representation representation = null;
         try {
-            JSONObject obj = builder.handle(
+            JSONObject result = builder.handle(
                     new RequestWrapper(
                             "",
                             getResource().getSupportedVersion(),
@@ -65,18 +65,20 @@ public class ResourceBuildManager extends ResourceManager {
                             getMatrixParameters(),
                             getQueryParameters()));
             // Handle validationResult.
-            if ((obj != null) && obj.has("validationResult")) {
-                getResource().addValidationResult(new ValidationResult(obj.getJSONObject("validationResult")));
+            if ((result != null) && result.has("validationResult")) {
+                getResource().addValidationResult(new ValidationResult(result.getJSONObject("validationResult")));
             }
             // Handle status.
-            if ((obj != null) && obj.has("status")) {
-                if (obj.getString("status").equals("OK")) {
-                    representation = new JsonRepresentation(obj);
-                } else if (obj.getString("status").equals("INVALID")) {
+            if ((result != null) && result.has("status")) {
+                if (isOk(result)) {
+                    representation = new JsonRepresentation(result);
+                } else if (isInvalid(result)) {
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                    representation = new JsonRepresentation(obj);
-                } else if (obj.getString("status").equals("NOT_FOUND")) {
+                    representation = new JsonRepresentation(result);
+                } else if (isNotFound(result)) {
                     getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                } else if (isNotAuthenticated(result)) {
+                    getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                 }
             }
         } catch (JSONException e) {
@@ -87,7 +89,8 @@ public class ResourceBuildManager extends ResourceManager {
 
     protected Representation getDomRepresentation(ResourceBuilder<Document> builder) {
         Representation representation = null;
-        Document document = builder.handle(
+        Document document = null;
+        document = builder.handle(
                 new RequestWrapper(
                         "",
                         getResource().getSupportedVersion(),
@@ -95,15 +98,15 @@ public class ResourceBuildManager extends ResourceManager {
                         getMatrixParameters(),
                         getQueryParameters()));
         if (document != null) {
-            Element representationElement = document.getRootElement();
-            if ((representationElement != null) && representationElement.getName().equals("Representation")) {
+            Element result = document.getRootElement();
+            if ((result != null) && result.getName().equals("Representation")) {
                 // Handle ValidationResult.
-                if (representationElement.getChild("ValidationResult") != null) {
-                    getResource().addValidationResult(new ValidationResult(representationElement.getChild("ValidationResult")));
+                if (result.getChild("ValidationResult") != null) {
+                    getResource().addValidationResult(new ValidationResult(result.getChild("ValidationResult")));
                 }
-                // Handle Status.
-                if (representationElement.getChild("Status") != null) {
-                    String status = representationElement.getChild("Status").getValue();
+                // Handle status.
+                if (result.getChild("Status") != null) {
+                    String status = result.getChild("Status").getValue();
                     try {
                         if (status.equals("OK")) {
                             representation = new DomRepresentation(MediaType.APPLICATION_XML, DOM_OUTPUTTER.output(document));
@@ -112,6 +115,8 @@ public class ResourceBuildManager extends ResourceManager {
                             representation = new DomRepresentation(MediaType.APPLICATION_XML, DOM_OUTPUTTER.output(document));
                         } else if (status.equals("NOT_FOUND")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                        } else if (status.equals("NOT_AUTHENTICATED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                         }
                     } catch (JDOMException e) {
                         throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);

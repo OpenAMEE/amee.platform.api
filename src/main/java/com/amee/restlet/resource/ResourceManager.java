@@ -41,6 +41,15 @@ public class ResourceManager {
         }
     }
 
+    protected boolean isNotAuthenticated(JSONObject result) {
+        try {
+            return (result != null) && result.has("status") && result.getString("status").equals("NOT_AUTHENTICATED");
+        } catch (JSONException e) {
+            // Swallow.
+            return false;
+        }
+    }
+
     protected boolean isInvalid(JSONObject result) {
         try {
             return (result != null) && result.has("status") && result.getString("status").equals("INVALID");

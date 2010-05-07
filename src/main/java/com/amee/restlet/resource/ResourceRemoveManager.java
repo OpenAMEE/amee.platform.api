@@ -16,10 +16,13 @@ public class ResourceRemoveManager extends ResourceManager {
                             "",
                             getResource().getSupportedVersion(),
                             getAttributes()));
+            // Handle status.
             if (isOk(result)) {
                 getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
             } else if (isNotFound(result)) {
                 getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            } else if (isNotAuthenticated(result)) {
+                getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
             } else {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }

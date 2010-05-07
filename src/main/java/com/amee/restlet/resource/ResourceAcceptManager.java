@@ -69,6 +69,8 @@ public class ResourceAcceptManager extends ResourceManager {
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
         } else if (isNotFound(result)) {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+        } else if (isNotAuthenticated(result)) {
+            getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
         } else {
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
         }
