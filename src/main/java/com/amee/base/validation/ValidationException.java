@@ -3,7 +3,7 @@ package com.amee.base.validation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ValidationException extends Throwable {
+public class ValidationException extends RuntimeException {
 
     private ValidationHelper validationHelper;
 
