@@ -4,14 +4,15 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-import javax.measure.unit.UnitFormat;
+import javax.measure.unit.*;
 import java.text.ParseException;
 import java.text.ParsePosition;
 
-public class DecimalUnit {
+/**
+ * An AmountUnit represents the unit of an Amount, eg kWh.
+ *
+ */
+public class AmountUnit {
 
     protected final static UnitFormat UNIT_FORMAT = UnitFormat.getInstance();
 
@@ -89,19 +90,19 @@ public class DecimalUnit {
         UNIT_FORMAT.label(NonSI.OUNCE_LIQUID_UK, "oz_fl_uk");
     }
 
-    public static final DecimalUnit ONE = new DecimalUnit(Unit.ONE);
+    public static final AmountUnit ONE = new AmountUnit(Unit.ONE);
     protected Unit unit = Unit.ONE;
 
-    public DecimalUnit(Unit unit) {
+    public AmountUnit(Unit unit) {
         this.unit = unit;
     }
 
-    public static DecimalUnit valueOf(String unit) {
-        return new DecimalUnit(internalValueOf(unit));
+    public static AmountUnit valueOf(String unit) {
+        return new AmountUnit(internalValueOf(unit));
     }
 
-    public DecimalCompoundUnit with(DecimalPerUnit perUnit) {
-        return DecimalCompoundUnit.valueOf(this, perUnit);
+    public AmountCompoundUnit with(AmountPerUnit perUnit) {
+        return AmountCompoundUnit.valueOf(this, perUnit);
     }
 
     public boolean isCompatibleWith(String unit) {
@@ -120,14 +121,43 @@ public class DecimalUnit {
         }
     }
 
-    public boolean equals(DecimalUnit that) {
-        return toUnit().equals(that.toUnit());
+    /**
+     * Compares this AmountUnit with the specified Object for equality.
+     * This method considers two AmountUnit objects equal only if they are equal type and unit.
+     * Note that mixed-type comparison is allowed, but a subclass will never compare equal to this.
+     *
+     * @param o Object to which this AmountUnit is to be compared.
+     * @return true if and only if the specified Object is an AmountUnit whose unit is equal to this AmountUnit's.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o != null && getClass() == o.getClass()) {
+            AmountUnit a = (AmountUnit) o;
+            return unit.equals(a.unit);
+        }
+
+        return false;    
+    }
+
+    /**
+     * Returns the hash code for this AmountUnit.
+     *
+     * @return hash code for this AmountUnit.
+     */
+    @Override
+    public int hashCode() {
+        return unit.hashCode();
     }
 
     public Unit toUnit() {
         return unit;
     }
 
+    @Override
     public String toString() {
         return UNIT_FORMAT.format(toUnit());
     }

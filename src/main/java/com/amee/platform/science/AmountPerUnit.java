@@ -8,31 +8,32 @@ import javax.measure.unit.Dimension;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-public class DecimalPerUnit extends DecimalUnit {
+public class AmountPerUnit extends AmountUnit {
 
-    public static final DecimalPerUnit ONE = new DecimalPerUnit(Unit.ONE);
-    public static final DecimalPerUnit MONTH = DecimalPerUnit.valueOf("month");
+    public static final AmountPerUnit ONE = new AmountPerUnit(Unit.ONE);
+    public static final AmountPerUnit MONTH = AmountPerUnit.valueOf("month");
 
     private String string;
 
-    public DecimalPerUnit(Unit unit) {
+    public AmountPerUnit(Unit unit) {
         super(unit);
         this.string = unit.toString();
     }
 
-    private DecimalPerUnit(Duration duration) {
+    private AmountPerUnit(Duration duration) {
         super(SI.MILLI(SI.SECOND).times(duration.getMillis()));
         this.string = ISOPeriodFormat.standard().print(duration.toPeriod());
     }
 
-    public static DecimalPerUnit valueOf(String unit) {
-        return new DecimalPerUnit(internalValueOf(unit));
+    public static AmountPerUnit valueOf(String unit) {
+        return new AmountPerUnit(internalValueOf(unit));
     }
 
-    public static DecimalPerUnit valueOf(Duration duration) {
-        return new DecimalPerUnit(duration);
+    public static AmountPerUnit valueOf(Duration duration) {
+        return new AmountPerUnit(duration);
     }
 
+    @Override
     public boolean isCompatibleWith(String unit) {
         return StringUtils.isNotBlank(unit) && ("none".equals(unit) || this.unit.isCompatible(internalValueOf(unit)));
     }
@@ -41,11 +42,20 @@ public class DecimalPerUnit extends DecimalUnit {
         return toUnit().getDimension().equals(Dimension.TIME);
     }
 
-    public Unit toUnit() {
-        return unit;
-    }
-
+    @Override
     public String toString() {
         return string;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        
+        // We ignore the string value.
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

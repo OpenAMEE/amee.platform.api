@@ -31,27 +31,27 @@ public class MockExternalValue implements ExternalValue {
         return value;
     }
 
-    public DecimalUnit getUnit() {
-        return (unit != null) ? DecimalUnit.valueOf(unit) : getCanonicalUnit();
+    public AmountUnit getUnit() {
+        return (unit != null) ? AmountUnit.valueOf(unit) : getCanonicalUnit();
     }
 
-    public DecimalPerUnit getPerUnit() {
-        return (perUnit != null) ? DecimalPerUnit.valueOf(perUnit) : getCanonicalPerUnit();
+    public AmountPerUnit getPerUnit() {
+        return (perUnit != null) ? AmountPerUnit.valueOf(perUnit) : getCanonicalPerUnit();
     }
 
-    public DecimalUnit getCanonicalUnit() {
-        return (canonicalUnit != null) ? DecimalUnit.valueOf(canonicalUnit) : DecimalUnit.ONE;
+    public AmountUnit getCanonicalUnit() {
+        return (canonicalUnit != null) ? AmountUnit.valueOf(canonicalUnit) : AmountUnit.ONE;
     }
 
-    public DecimalPerUnit getCanonicalPerUnit() {
-        return (canonicalPerUnit != null) ? DecimalPerUnit.valueOf(canonicalPerUnit) : DecimalPerUnit.ONE;
+    public AmountPerUnit getCanonicalPerUnit() {
+        return (canonicalPerUnit != null) ? AmountPerUnit.valueOf(canonicalPerUnit) : AmountPerUnit.ONE;
     }
 
-    public DecimalCompoundUnit getCompoundUnit() {
+    public AmountCompoundUnit getCompoundUnit() {
         return getUnit().with(getPerUnit());
     }
 
-    public DecimalCompoundUnit getCanonicalCompoundUnit() {
+    public AmountCompoundUnit getCanonicalCompoundUnit() {
         return getUnit().with(getPerUnit());
     }
 
@@ -59,7 +59,7 @@ public class MockExternalValue implements ExternalValue {
         return new StartEndDate(startDate);
     }
 
-    public boolean isDecimal() {
+    public boolean isDouble() {
         return true;
     }
 

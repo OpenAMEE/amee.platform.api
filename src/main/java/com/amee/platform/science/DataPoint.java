@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
- * Represents a single-valued decimal data point at a single instance of time.
+ * Represents a single-valued amount data point at a single instance of time.
  */
 public class DataPoint implements Comparable<DataPoint> {
 
@@ -14,38 +14,38 @@ public class DataPoint implements Comparable<DataPoint> {
     /**
      * Represents the concept of a zero-valued DataPoint occurring at the EPOCH (<code>DateTime(0)</code>)
      */
-    public static final DataPoint NULL = new DataPoint(EPOCH, Decimal.ZERO);
+    public static final DataPoint NULL = new DataPoint(EPOCH, Amount.ZERO);
 
     private DateTime dateTime;
-    private Decimal decimal;
+    private Amount amount;
 
     /**
-     * Construct a DataPoint with a decimal value occurring at the epoch.
+     * Construct a DataPoint with a amount value occurring at the epoch.
      *
-     * @param decimal - the decimal value
+     * @param value - the amount value
      */
-    public DataPoint(float decimal) {
-        this(new Decimal(decimal));
+    public DataPoint(double value) {
+        this(new Amount(value));
     }
 
     /**
-     * Construct a DataPoint with a decimal value occurring at the epoch.
+     * Construct a DataPoint with a amount value occurring at the epoch.
      *
-     * @param decimal - the decimal value
+     * @param amount - the amount value
      */
-    public DataPoint(Decimal decimal) {
-        this(EPOCH, decimal);
+    public DataPoint(Amount amount) {
+        this(EPOCH, amount);
     }
 
     /**
-     * Construct a DataPoint with a decimal value occurring at a specific point in time.
+     * Construct a DataPoint with a amount value occurring at a specific point in time.
      *
-     * @param decimal  - the decimal value
+     * @param amount  - the amount value
      * @param dateTime - the point in time at which this data point occurs.
      */
-    public DataPoint(DateTime dateTime, Decimal decimal) {
+    public DataPoint(DateTime dateTime, Amount amount) {
         this.dateTime = dateTime;
-        this.decimal = decimal;
+        this.amount = amount;
     }
 
     /**
@@ -55,7 +55,7 @@ public class DataPoint implements Comparable<DataPoint> {
      */
     protected DataPoint(DataPoint dataPoint) {
         dateTime = dataPoint.getDateTime();
-        decimal = dataPoint.getValue();
+        amount = dataPoint.getValue();
     }
 
     /**
@@ -78,7 +78,7 @@ public class DataPoint implements Comparable<DataPoint> {
     public JSONArray getJSONArray() throws JSONException {
         JSONArray arr = new JSONArray();
         arr.put((dateTime == null) ? "NULL" : dateTime.toString());
-        arr.put((decimal == null) ? "NaN" : decimal.toString());
+        arr.put((amount == null) ? "NaN" : amount.toString());
         return arr;
     }
 
@@ -86,8 +86,8 @@ public class DataPoint implements Comparable<DataPoint> {
         return dateTime;
     }
 
-    public Decimal getValue() {
-        return decimal;
+    public Amount getValue() {
+        return amount;
     }
 
     /**
@@ -97,17 +97,17 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the addition of the two DataPoint values
      */
     public DataPoint plus(DataPoint point) {
-        return new DataPoint(dateTime, decimal.add(point.getValue()));
+        return new DataPoint(dateTime, amount.add(point.getValue()));
     }
 
     /**
-     * Add a float value to this DataPoint.
+     * Add a double value to this DataPoint.
      *
-     * @param f - the float to add
-     * @return a new DataPoint representing the addition of the DataPoint and float values
+     * @param d - the double to add
+     * @return a new DataPoint representing the addition of the DataPoint and double values
      */
-    public DataPoint plus(float f) {
-        return new DataPoint(dateTime, decimal.add(new Decimal(f)));
+    public DataPoint plus(double d) {
+        return new DataPoint(dateTime, amount.add(new Amount(d)));
     }
 
     /**
@@ -117,17 +117,17 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the subtraction of the DataPoint from this DataPoint
      */
     public DataPoint subtract(DataPoint point) {
-        return new DataPoint(dateTime, decimal.subtract(point.getValue()));
+        return new DataPoint(dateTime, amount.subtract(point.getValue()));
     }
 
     /**
-     * Subtract a float value from this DataPoint.
+     * Subtract a double value from this DataPoint.
      *
-     * @param f - the float to subtract
-     * @return a new DataPoint representing the subtraction of the float value from this DataPoint
+     * @param d - the double to subtract
+     * @return a new DataPoint representing the subtraction of the double value from this DataPoint
      */
-    public DataPoint subtract(float f) {
-        return new DataPoint(dateTime, decimal.subtract(new Decimal(f)));
+    public DataPoint subtract(double d) {
+        return new DataPoint(dateTime, amount.subtract(new Amount(d)));
     }
 
     /**
@@ -137,17 +137,17 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the division of this DataPoint by the DataPoint
      */
     public DataPoint divide(DataPoint point) {
-        return new DataPoint(dateTime, decimal.divide(point.getValue()));
+        return new DataPoint(dateTime, amount.divide(point.getValue()));
     }
 
     /**
-     * Divide this DataPoint by a float value.
+     * Divide this DataPoint by a double value.
      *
-     * @param f - the float value by which to divide this DataPoint
-     * @return a new DataPoint representing the division of this DataPoint by the float value
+     * @param d - the double value by which to divide this DataPoint
+     * @return a new DataPoint representing the division of this DataPoint by the double value
      */
-    public DataPoint divide(float f) {
-        return new DataPoint(dateTime, decimal.divide(new Decimal(f)));
+    public DataPoint divide(double d) {
+        return new DataPoint(dateTime, amount.divide(new Amount(d)));
     }
 
     /**
@@ -157,17 +157,17 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the multiplication of the two DataPoints
      */
     public DataPoint multiply(DataPoint point) {
-        return new DataPoint(dateTime, decimal.multiply(point.getValue()));
+        return new DataPoint(dateTime, amount.multiply(point.getValue()));
     }
 
     /**
-     * Multiply this DataPoint by a float value.
+     * Multiply this DataPoint by a double value.
      *
-     * @param f - the float value to multiply this DataPoint
-     * @return a new DataPoint representing the multiplication of this DataPoint by the float value.
+     * @param d - the double value to multiply this DataPoint
+     * @return a new DataPoint representing the multiplication of this DataPoint by the double value.
      */
-    public DataPoint multiply(float f) {
-        return new DataPoint(dateTime, decimal.multiply(new Decimal(f)));
+    public DataPoint multiply(double d) {
+        return new DataPoint(dateTime, amount.multiply(new Amount(d)));
     }
 
     public int compareTo(DataPoint that) {

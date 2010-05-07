@@ -86,14 +86,17 @@ public class DataSeries {
         return obj;
     }
 
-    protected Decimal getSeriesTimeInMillis() {
+    protected Amount getSeriesTimeInMillis() {
         if (dataPoints.isEmpty()) {
-            return Decimal.ZERO;
+            return Amount.ZERO;
         }
         DateTime seriesStart = getSeriesStartDate();
         DateTime seriesEnd = getSeriesEndDate();
-        if ((seriesEnd==null||seriesStart==null)) return null; // if the range of interest is undef
-        return new Decimal(seriesEnd.getMillis() - seriesStart.getMillis());
+        if ((seriesEnd == null || seriesStart == null)) {
+            // the range of interest is undef
+            return null;
+        }
+        return new Amount(seriesEnd.getMillis() - seriesStart.getMillis());
     }
 
     DateTime getSeriesStartDate() {
@@ -169,15 +172,15 @@ public class DataSeries {
     }
 
     /**
-     * Add a float value to this DataSeries.
+     * Add a double value to this DataSeries.
      *
-     * @param f - the float value to add
-     * @return a new DataSeries representing the addition of the float value and the DataSeries
+     * @param d - the double value to add
+     * @return a new DataSeries representing the addition of the double value and the DataSeries
      */
-    public DataSeries plus(float f) {
+    public DataSeries plus(double d) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.plus(f));
+            combinedDataPoints.add(dp.plus(d));
         }
         DataSeries result=new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
@@ -212,15 +215,15 @@ public class DataSeries {
     }
 
     /**
-     * Subtract a float value from this DataSeries.
+     * Subtract a double value from this DataSeries.
      *
-     * @param f - the float value to subtract
-     * @return a new DataSeries representing the subtraction of the float value from this DataSeries
+     * @param d - the double value to subtract
+     * @return a new DataSeries representing the subtraction of the double value from this DataSeries
      */
-    public DataSeries subtract(float f) {
+    public DataSeries subtract(double d) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.subtract(f));
+            combinedDataPoints.add(dp.subtract(d));
         }
         DataSeries result= new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
@@ -255,15 +258,15 @@ public class DataSeries {
     }
 
     /**
-     * Divide this DataSeries by a float value.
+     * Divide this DataSeries by a double value.
      *
-     * @param f - the float value by which to divide this DataSeries
-     * @return a new DataSeries representing the division of this DataSeries by the float value
+     * @param d - the double value by which to divide this DataSeries
+     * @return a new DataSeries representing the division of this DataSeries by the double value
      */
-    public DataSeries divide(float f) {
+    public DataSeries divide(double d) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.divide(f));
+            combinedDataPoints.add(dp.divide(d));
         }
         DataSeries result= new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
@@ -298,15 +301,15 @@ public class DataSeries {
     }
 
     /**
-     * Multiply this DataSeries by a float value.
+     * Multiply this DataSeries by a double value.
      *
-     * @param f - the float value to multiply this DataSeries
-     * @return a new DataSeries representing the multiplication of the DataSeries and the float value
+     * @param d - the double value to multiply this DataSeries
+     * @return a new DataSeries representing the multiplication of the DataSeries and the double value
      */
-    public DataSeries multiply(float f) {
+    public DataSeries multiply(double d) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.multiply(f));
+            combinedDataPoints.add(dp.multiply(d));
         }
         DataSeries result= new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
@@ -321,15 +324,17 @@ public class DataSeries {
      * <p/>
      * If there is no time-period (the query time-period is zero) then the result will be zero.
      *
-     * @return - the average as a {@link Decimal} value
+     * @return - the average as a {@link Amount} value
      */
-    public Decimal integrate() {
+    public Amount integrate() {
 
         double integral = 0.0;
-        Decimal seriesTimeInMillis = getSeriesTimeInMillis();
+        Amount seriesTimeInMillis = getSeriesTimeInMillis();
         log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
 
-        if (!seriesTimeInMillis.equals(Decimal.ZERO)) {
+        if (seriesTimeInMillis == null) {
+            integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
+        } else if (!seriesTimeInMillis.equals(Amount.ZERO)) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
@@ -349,17 +354,15 @@ public class DataSeries {
                 // but in case it hasn't (and for direct testing not via internal value)
 
                 // Add weighted average value.
-                double weightedAverage = current.getValue().doubleValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
+                double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.getValue();
                 log.info(
                         "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-                        ","+segmentInMillis/(seriesTimeInMillis.doubleValue()));
+                        ","+segmentInMillis/(seriesTimeInMillis.getValue()));
                 if (start.isAfter(end)) continue;
                 integral = integral+weightedAverage;
             }
-        } else if (seriesTimeInMillis==null) {
-            integral=dataPoints.get(dataPoints.size()-1).getValue().doubleValue();
         }
-        return new Decimal(integral);
+        return new Amount(integral);
     }
 
     /**
