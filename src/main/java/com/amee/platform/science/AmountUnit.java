@@ -47,6 +47,9 @@ public class AmountUnit {
     private final static Unit<? extends Quantity> THERM_63F = BTU_63F.times(100000);
     private final static Unit<? extends Quantity> THERM_THERMOCHEMICAL = BTU_THERMOCHEMICAL.times(100000);
 
+    // Define barrels
+    private final static Unit<? extends Quantity> BARREL_OIL = NonSI.GALLON_LIQUID_US.times(42);
+
     {
         // Create usable ASCII representations. JScience will use non-ASCII characters by default.
         UNIT_FORMAT.label(KILOWATT_HOUR, "kWh");
@@ -135,6 +138,9 @@ public class AmountUnit {
         // Need to explicitly declare these otherwise we get a parse error.
         UNIT_FORMAT.label(NonSI.OUNCE_LIQUID_US, "oz_fl");
         UNIT_FORMAT.label(NonSI.OUNCE_LIQUID_UK, "oz_fl_uk");
+
+        // Barrel
+        UNIT_FORMAT.label(BARREL_OIL, "bbl");
     }
 
     public static final AmountUnit ONE = new AmountUnit(Unit.ONE);

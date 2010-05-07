@@ -118,5 +118,8 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("oz_fl").toUnit(), NonSI.OUNCE_LIQUID_US);
         assertEquals(AmountUnit.valueOf("oz_fl_uk").toUnit(), NonSI.OUNCE_LIQUID_UK);
 
+        // Barrel
+        assertEquals(AmountUnit.valueOf("bbl").toUnit(), NonSI.GALLON_LIQUID_US.times(42));
+
     }
 }
