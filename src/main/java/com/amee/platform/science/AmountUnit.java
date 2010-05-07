@@ -56,13 +56,60 @@ public class AmountUnit {
 
         // BTUs.
         UNIT_FORMAT.label(BTU_39F, "BTU_ThirtyNineF");
+        UNIT_FORMAT.label(SI.KILO(BTU_39F), "kBTU_ThirtyNineF");
+        UNIT_FORMAT.label(SI.MEGA(BTU_39F), "MBTU_ThirtyNineF");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_39F), "MMBTU_ThirtyNineF");
+        UNIT_FORMAT.label(SI.GIGA(BTU_39F), "GBTU_ThirtyNineF");
+        UNIT_FORMAT.label(SI.TERA(BTU_39F), "TBTU_ThirtyNineF");
+
         UNIT_FORMAT.label(BTU_MEAN, "BTU_Mean");
+        UNIT_FORMAT.label(SI.KILO(BTU_MEAN), "kBTU_Mean");
+        UNIT_FORMAT.label(SI.MEGA(BTU_MEAN), "MBTU_Mean");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_MEAN), "MMBTU_Mean");
+        UNIT_FORMAT.label(SI.GIGA(BTU_MEAN), "GBTU_Mean");
+        UNIT_FORMAT.label(SI.TERA(BTU_MEAN), "TBTU_Mean");
+
         UNIT_FORMAT.label(BTU_IT, "BTU_IT");
+        UNIT_FORMAT.label(SI.KILO(BTU_IT), "kBTU_IT");
+        UNIT_FORMAT.label(SI.MEGA(BTU_IT), "MBTU_IT");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_IT), "MMBTU_IT");
+        UNIT_FORMAT.label(SI.GIGA(BTU_IT), "GBTU_IT");
+        UNIT_FORMAT.label(SI.TERA(BTU_IT), "TBTU_IT");
+
         UNIT_FORMAT.label(BTU_ISO, "BTU_ISO");
+        UNIT_FORMAT.label(SI.KILO(BTU_ISO), "kBTU_ISO");
+        UNIT_FORMAT.label(SI.MEGA(BTU_ISO), "MBTU_ISO");
+        UNIT_FORMAT.label(SI.MEGA(BTU_ISO), "MMBTU_ISO");
+        UNIT_FORMAT.label(SI.GIGA(BTU_ISO), "GBTU_ISO");
+        UNIT_FORMAT.label(SI.TERA(BTU_ISO), "TBTU_ISO");
+
         UNIT_FORMAT.label(BTU_59F, "BTU_FiftyNineF");
+        UNIT_FORMAT.label(SI.KILO(BTU_59F), "kBTU_FiftyNineF");
+        UNIT_FORMAT.label(SI.MEGA(BTU_59F), "MBTU_FiftyNineF");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_59F), "MMBTU_FiftyNineF");
+        UNIT_FORMAT.label(SI.GIGA(BTU_59F), "GBTU_FiftyNineF");
+        UNIT_FORMAT.label(SI.TERA(BTU_59F), "TBTU_FiftyNineF");
+
         UNIT_FORMAT.label(BTU_60F, "BTU_SixtyF");
+        UNIT_FORMAT.label(SI.KILO(BTU_60F), "kBTU_SixtyF");
+        UNIT_FORMAT.label(SI.MEGA(BTU_60F), "MBTU_SixtyF");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_60F), "MMBTU_SixtyF");
+        UNIT_FORMAT.label(SI.GIGA(BTU_60F), "GBTU_SixtyF");
+        UNIT_FORMAT.label(SI.TERA(BTU_60F), "TBTU_SixtyF");
+
         UNIT_FORMAT.label(BTU_63F, "BTU_SixtyThreeF");
+        UNIT_FORMAT.label(SI.KILO(BTU_63F), "kBTU_SixtyThreeF");
+        UNIT_FORMAT.label(SI.MEGA(BTU_63F), "MBTU_SixtyThreeF");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_63F), "MMBTU_SixtyThreeF");
+        UNIT_FORMAT.label(SI.GIGA(BTU_63F), "GBTU_SixtyThreeF");
+        UNIT_FORMAT.label(SI.TERA(BTU_63F), "TBTU_SixtyThreeF");
+
         UNIT_FORMAT.label(BTU_THERMOCHEMICAL, "BTU_Thermochemical");
+        UNIT_FORMAT.label(SI.KILO(BTU_THERMOCHEMICAL), "kBTU_Thermochemical");
+        UNIT_FORMAT.label(SI.MEGA(BTU_THERMOCHEMICAL), "MBTU_Thermochemical");
+        UNIT_FORMAT.alias(SI.MEGA(BTU_THERMOCHEMICAL), "MMBTU_Thermochemical");
+        UNIT_FORMAT.label(SI.GIGA(BTU_THERMOCHEMICAL), "GBTU_Thermochemical");
+        UNIT_FORMAT.label(SI.TERA(BTU_THERMOCHEMICAL), "TBTU_Thermochemical");
 
         // THERMs.
         UNIT_FORMAT.label(THERM_39F, "thm_ThirtyNineF");
