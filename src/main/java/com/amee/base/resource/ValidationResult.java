@@ -83,10 +83,6 @@ public class ValidationResult implements Serializable {
         }
     }
 
-    public void addValue(String key, String value) {
-        values.put(key, value);
-    }
-
     public JSONObject getJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         // add values
@@ -141,8 +137,26 @@ public class ValidationResult implements Serializable {
         return elem;
     }
 
+    public void addValue(String key, String value) {
+        values.put(key, value);
+    }
+
     public HashMap<String, String> getValues() {
         return values;
+    }
+
+    public void addError(String field, String code) {
+        addError(field, code, null);
+    }
+
+    public void addError(String field, String code, String value) {
+        Map<String, String> fieldAndCode = new HashMap<String, String>();
+        fieldAndCode.put("field", field);
+        fieldAndCode.put("code", code);
+        if (value != null) {
+            fieldAndCode.put("value", value);
+        }
+        getErrors().add(fieldAndCode);
     }
 
     public List<Map<String, String>> getErrors() {
@@ -153,13 +167,11 @@ public class ValidationResult implements Serializable {
         for (Object error : e.getAllErrors()) {
             if (error.getClass().isAssignableFrom(FieldError.class)) {
                 FieldError fieldError = (FieldError) error;
-                Map<String, String> fieldAndCode = new HashMap<String, String>();
-                fieldAndCode.put("field", fieldError.getField());
-                fieldAndCode.put("code", fieldError.getCode());
                 if ((fieldError.getRejectedValue() != null) && (fieldError.getRejectedValue() instanceof String)) {
-                    fieldAndCode.put("value", (String) fieldError.getRejectedValue());
+                    addError(fieldError.getField(), fieldError.getCode(), (String) fieldError.getRejectedValue());
+                } else {
+                    addError(fieldError.getField(), fieldError.getCode());
                 }
-                getErrors().add(fieldAndCode);
             }
         }
     }

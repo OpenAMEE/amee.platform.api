@@ -1,33 +1,34 @@
 package com.amee.base.validation;
 
+import com.amee.base.resource.ValidationResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ValidationException extends RuntimeException {
 
-    private ValidationHelper validationHelper;
+    private ValidationResult validationResult;
 
     public ValidationException() {
         super();
     }
 
-    public ValidationException(ValidationHelper validationHelper) {
+    public ValidationException(ValidationResult validationResult) {
         this();
-        setValidationHelper(validationHelper);
+        setValidationResult(validationResult);
     }
 
-    public ValidationHelper getValidationHelper() {
-        return validationHelper;
+    public ValidationResult getValidationResult() {
+        return validationResult;
     }
 
-    public void setValidationHelper(ValidationHelper validationHelper) {
-        this.validationHelper = validationHelper;
+    public void setValidationResult(ValidationResult validationResult) {
+        this.validationResult = validationResult;
     }
 
     public JSONObject getJSONObject() {
         try {
             JSONObject o = new JSONObject();
-            o.put("validationResult", getValidationHelper().getValidationResult().getJSONObject());
+            o.put("validationResult", getValidationResult().getJSONObject());
             o.put("status", "INVALID");
             return o;
         } catch (JSONException e) {
