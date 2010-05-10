@@ -46,6 +46,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_ThirtyNineF").toUnit(), SI.KILO(SI.JOULE.times(1059.67)));
         assertEquals(AmountUnit.valueOf("MBTU_ThirtyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1059.67)));
         assertEquals(AmountUnit.valueOf("MMBTU_ThirtyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1059.67)));
+        assertEquals(AmountUnit.valueOf("mmBTU_ThirtyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1059.67)));
         assertEquals(AmountUnit.valueOf("GBTU_ThirtyNineF").toUnit(), SI.GIGA(SI.JOULE.times(1059.67)));
         assertEquals(AmountUnit.valueOf("TBTU_ThirtyNineF").toUnit(), SI.TERA(SI.JOULE.times(1059.67)));
 
@@ -53,6 +54,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_Mean").toUnit(), SI.KILO(SI.JOULE.times(1055.87)));
         assertEquals(AmountUnit.valueOf("MBTU_Mean").toUnit(), SI.MEGA(SI.JOULE.times(1055.87)));
         assertEquals(AmountUnit.valueOf("MMBTU_Mean").toUnit(), SI.MEGA(SI.JOULE.times(1055.87)));
+        assertEquals(AmountUnit.valueOf("mmBTU_Mean").toUnit(), SI.MEGA(SI.JOULE.times(1055.87)));
         assertEquals(AmountUnit.valueOf("GBTU_Mean").toUnit(), SI.GIGA(SI.JOULE.times(1055.87)));
         assertEquals(AmountUnit.valueOf("TBTU_Mean").toUnit(), SI.TERA(SI.JOULE.times(1055.87)));
 
@@ -60,6 +62,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_IT").toUnit(), SI.KILO(SI.JOULE.times(1055.05585262)));
         assertEquals(AmountUnit.valueOf("MBTU_IT").toUnit(), SI.MEGA(SI.JOULE.times(1055.05585262)));
         assertEquals(AmountUnit.valueOf("MMBTU_IT").toUnit(), SI.MEGA(SI.JOULE.times(1055.05585262)));
+        assertEquals(AmountUnit.valueOf("mmBTU_IT").toUnit(), SI.MEGA(SI.JOULE.times(1055.05585262)));
         assertEquals(AmountUnit.valueOf("GBTU_IT").toUnit(), SI.GIGA(SI.JOULE.times(1055.05585262)));
         assertEquals(AmountUnit.valueOf("TBTU_IT").toUnit(), SI.TERA(SI.JOULE.times(1055.05585262)));
 
@@ -67,6 +70,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_ISO").toUnit(), SI.KILO(SI.JOULE.times(1055.056)));
         assertEquals(AmountUnit.valueOf("MBTU_ISO").toUnit(), SI.MEGA(SI.JOULE.times(1055.056)));
         assertEquals(AmountUnit.valueOf("MMBTU_ISO").toUnit(), SI.MEGA(SI.JOULE.times(1055.056)));
+        assertEquals(AmountUnit.valueOf("mmBTU_ISO").toUnit(), SI.MEGA(SI.JOULE.times(1055.056)));
         assertEquals(AmountUnit.valueOf("GBTU_ISO").toUnit(), SI.GIGA(SI.JOULE.times(1055.056)));
         assertEquals(AmountUnit.valueOf("TBTU_ISO").toUnit(), SI.TERA(SI.JOULE.times(1055.056)));
 
@@ -74,6 +78,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_FiftyNineF").toUnit(), SI.KILO(SI.JOULE.times(1054.804)));
         assertEquals(AmountUnit.valueOf("MBTU_FiftyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1054.804)));
         assertEquals(AmountUnit.valueOf("MMBTU_FiftyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1054.804)));
+        assertEquals(AmountUnit.valueOf("mmBTU_FiftyNineF").toUnit(), SI.MEGA(SI.JOULE.times(1054.804)));
         assertEquals(AmountUnit.valueOf("GBTU_FiftyNineF").toUnit(), SI.GIGA(SI.JOULE.times(1054.804)));
         assertEquals(AmountUnit.valueOf("TBTU_FiftyNineF").toUnit(), SI.TERA(SI.JOULE.times(1054.804)));
 
@@ -81,6 +86,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_SixtyF").toUnit(), SI.KILO(SI.JOULE.times(1054.68)));
         assertEquals(AmountUnit.valueOf("MBTU_SixtyF").toUnit(), SI.MEGA(SI.JOULE.times(1054.68)));
         assertEquals(AmountUnit.valueOf("MMBTU_SixtyF").toUnit(), SI.MEGA(SI.JOULE.times(1054.68)));
+        assertEquals(AmountUnit.valueOf("mmBTU_SixtyF").toUnit(), SI.MEGA(SI.JOULE.times(1054.68)));
         assertEquals(AmountUnit.valueOf("GBTU_SixtyF").toUnit(), SI.GIGA(SI.JOULE.times(1054.68)));
         assertEquals(AmountUnit.valueOf("TBTU_SixtyF").toUnit(), SI.TERA(SI.JOULE.times(1054.68)));
 
@@ -88,6 +94,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_SixtyThreeF").toUnit(), SI.KILO(SI.JOULE.times(1054.6)));
         assertEquals(AmountUnit.valueOf("MBTU_SixtyThreeF").toUnit(), SI.MEGA(SI.JOULE.times(1054.6)));
         assertEquals(AmountUnit.valueOf("MMBTU_SixtyThreeF").toUnit(), SI.MEGA(SI.JOULE.times(1054.6)));
+        assertEquals(AmountUnit.valueOf("mmBTU_SixtyThreeF").toUnit(), SI.MEGA(SI.JOULE.times(1054.6)));
         assertEquals(AmountUnit.valueOf("GBTU_SixtyThreeF").toUnit(), SI.GIGA(SI.JOULE.times(1054.6)));
         assertEquals(AmountUnit.valueOf("TBTU_SixtyThreeF").toUnit(), SI.TERA(SI.JOULE.times(1054.6)));
 
@@ -95,6 +102,7 @@ public class AmountUnitTest {
         assertEquals(AmountUnit.valueOf("kBTU_Thermochemical").toUnit(), SI.KILO(SI.JOULE.times(1054.35026444)));
         assertEquals(AmountUnit.valueOf("MBTU_Thermochemical").toUnit(), SI.MEGA(SI.JOULE.times(1054.35026444)));
         assertEquals(AmountUnit.valueOf("MMBTU_Thermochemical").toUnit(), SI.MEGA(SI.JOULE.times(1054.35026444)));
+        assertEquals(AmountUnit.valueOf("mmBTU_Thermochemical").toUnit(), SI.MEGA(SI.JOULE.times(1054.35026444)));
         assertEquals(AmountUnit.valueOf("GBTU_Thermochemical").toUnit(), SI.GIGA(SI.JOULE.times(1054.35026444)));
         assertEquals(AmountUnit.valueOf("TBTU_Thermochemical").toUnit(), SI.TERA(SI.JOULE.times(1054.35026444)));
 
