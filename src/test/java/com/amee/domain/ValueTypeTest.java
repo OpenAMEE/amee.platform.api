@@ -4,13 +4,8 @@ import org.apache.xerces.dom.DocumentImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,14 +16,13 @@ public class ValueTypeTest {
 
     // Map of Enum name => label
     private static final Map<String, String> pairs = new HashMap<String, String>();
-
     {
-        pairs.put("INTEGER", "Integer");
-        pairs.put("BOOLEAN", "Boolean");
-        pairs.put("DECIMAL", "Decimal");
-        pairs.put("TEXT", "Text");
-        pairs.put("DATE", "Date");
         pairs.put("UNSPECIFIED", "Unspecified");
+        pairs.put("TEXT", "Text");
+        pairs.put("DATE","Date");
+        pairs.put("BOOLEAN", "Boolean");
+        pairs.put("INTEGER", "Integer");
+        pairs.put("DECIMAL", "Decimal");
     }
 
     @Test
@@ -92,9 +86,6 @@ public class ValueTypeTest {
         String s = "Some string";
         assertEquals("Should return ValueType.TEXT", ValueType.TEXT, ValueType.getValueType(s));
 
-        BigDecimal bd = new BigDecimal("123.45");
-        assertEquals("Should return ValueType.DECIMAL", ValueType.DECIMAL, ValueType.getValueType(bd));
-
         Integer i = new Integer(12345);
         assertEquals("Should return ValueType.INTEGER", ValueType.INTEGER, ValueType.getValueType(i));
 
@@ -108,7 +99,7 @@ public class ValueTypeTest {
         assertEquals("Should return ValueType.UNSPECIFIED", ValueType.UNSPECIFIED, ValueType.getValueType(f));
 
         Double d = new Double(123.45);
-        assertEquals("Should return ValueType.UNSPECIFIED", ValueType.UNSPECIFIED, ValueType.getValueType(d));
+        assertEquals("Should return ValueType.DOUBLE", ValueType.DOUBLE, ValueType.getValueType(d));
 
         Object o = new Object();
         assertEquals("Should return ValueType.UNSPECIFIED", ValueType.UNSPECIFIED, ValueType.getValueType(o));
