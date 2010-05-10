@@ -17,7 +17,7 @@
         <amee-base.version>1.0.1-SNAPSHOT</amee-base.version>
         <commons-lang.version>2.5</commons-lang.version>
         <junit.version>4.7</junit.version>
-        <restlet.version>1.1.9</restlet.version>
+        <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.9.1</xerces.version>
         <!-- Other, -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
