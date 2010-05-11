@@ -65,7 +65,7 @@ import java.util.Set;
 @Configurable(autowire = Autowire.BY_TYPE)
 public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
 
-    public final static int NAME_MIN_SIZE = 3;
+    public final static int NAME_MIN_SIZE = 0;
     public final static int NAME_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
