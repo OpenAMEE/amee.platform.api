@@ -71,9 +71,9 @@ import java.util.TreeMap;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValueDefinition extends AMEEEnvironmentEntity implements ExternalValue {
 
-    public final static int NAME_MIN_SIZE = 3;
+    public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
-    public final static int PATH_MIN_SIZE = 3;
+    public final static int PATH_MIN_SIZE = 2;
     public final static int PATH_MAX_SIZE = 255;
     public final static int VALUE_MAX_SIZE = 255;
     public final static int CHOICES_MAX_SIZE = 255;
