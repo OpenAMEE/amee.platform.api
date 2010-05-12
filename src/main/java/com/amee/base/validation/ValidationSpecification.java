@@ -99,14 +99,14 @@ public class ValidationSpecification implements Serializable {
                 return STOP;
             }
         }
-        if (minSize != -1) {
+        if (maxSize != -1) {
             if (value.length() > maxSize) {
                 e.rejectValue(name, "long");
                 return STOP;
             }
         }
-        if (getSize() != -1) {
-            if (value.length() != getSize()) {
+        if (size != -1) {
+            if (value.length() != size) {
                 e.rejectValue(name, "length");
                 return STOP;
             }
