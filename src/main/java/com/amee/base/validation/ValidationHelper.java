@@ -24,6 +24,8 @@ public abstract class ValidationHelper {
 
     /**
      * Validates the supplied form.
+     * <p/>
+     * TODO: Binder.setValidator() & Binder.validate() instead.
      *
      * @param values to validate
      * @return true if form is valid, otherwise false
@@ -39,9 +41,10 @@ public abstract class ValidationHelper {
         if (!errors.hasErrors()) {
             log.debug("isValid() - No validation errors.");
             return true;
+        } else {
+            log.debug("isValid() - Has validation errors.");
+            return false;
         }
-        log.debug("isValid() - Has validation errors.");
-        return false;
     }
 
     /**
