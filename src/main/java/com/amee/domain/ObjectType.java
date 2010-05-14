@@ -37,12 +37,14 @@ import com.amee.domain.data.LocaleName;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.profile.ProfileItem;
+import com.amee.domain.tag.EntityTag;
+import com.amee.domain.tag.Tag;
 
 import java.io.Serializable;
 
 public enum ObjectType implements Serializable {
 
-    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD;
+    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET;
 
     private String[] names = {
             "DC",
@@ -62,7 +64,9 @@ public enum ObjectType implements Serializable {
             "GP",
             "VD",
             "AV",
-            "MD"};
+            "MD",
+            "TA",
+            "ET"};
 
     private String[] labels = {
             "DataCategory",
@@ -82,7 +86,9 @@ public enum ObjectType implements Serializable {
             "GroupPrincipal",
             "ValueDefinition",
             "APIVersion",
-            "Metadata"};
+            "Metadata",
+            "Tag",
+            "EntityTag"};
 
     public String toString() {
         return getName();
@@ -133,6 +139,10 @@ public enum ObjectType implements Serializable {
             return AV;
         } else if (Metadata.class.isAssignableFrom(c)) {
             return MD;
+        } else if (Tag.class.isAssignableFrom(c)) {
+            return TA;
+        } else if (EntityTag.class.isAssignableFrom(c)) {
+            return ET;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
@@ -181,6 +191,10 @@ public enum ObjectType implements Serializable {
             return APIVersion.class;
         } else if (Metadata.class.isAssignableFrom(c)) {
             return Metadata.class;
+        } else if (Tag.class.isAssignableFrom(c)) {
+            return Tag.class;
+        } else if (EntityTag.class.isAssignableFrom(c)) {
+            return EntityTag.class;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
@@ -204,6 +218,10 @@ public enum ObjectType implements Serializable {
             return ItemValue.class;
         } else if (this.equals(MD)) {
             return Metadata.class;
+        } else if (this.equals(TA)) {
+            return Tag.class;
+        } else if (this.equals(ET)) {
+            return EntityTag.class;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
