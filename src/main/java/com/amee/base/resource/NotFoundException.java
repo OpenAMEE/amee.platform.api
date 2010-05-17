@@ -3,12 +3,13 @@ package com.amee.base.resource;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NotFoundException extends RuntimeException {
+public class NotFoundException extends ResourceException {
 
     public NotFoundException() {
         super();
     }
 
+    @Override
     public JSONObject getJSONObject() {
         try {
             JSONObject o = new JSONObject();

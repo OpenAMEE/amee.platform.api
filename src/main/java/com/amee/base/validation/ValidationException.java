@@ -1,10 +1,11 @@
 package com.amee.base.validation;
 
+import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ValidationException extends RuntimeException {
+public class ValidationException extends ResourceException {
 
     private ValidationResult validationResult;
 
@@ -25,6 +26,7 @@ public class ValidationException extends RuntimeException {
         this.validationResult = validationResult;
     }
 
+    @Override
     public JSONObject getJSONObject() {
         try {
             JSONObject o = new JSONObject();
