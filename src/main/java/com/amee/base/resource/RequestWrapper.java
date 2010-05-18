@@ -2,6 +2,7 @@ package com.amee.base.resource;
 
 import com.amee.base.domain.Version;
 import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,13 +11,16 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class RequestWrapper implements Serializable {
 
     private String target = "";
     private Version version;
+    private Set<String> acceptedMediaTypes = new HashSet<String>();
     private Map<String, String> attributes = new HashMap<String, String>();
     private Map<String, String> matrixParameters = new HashMap<String, String>();
     private Map<String, String> queryParameters = new HashMap<String, String>();
@@ -29,47 +33,47 @@ public class RequestWrapper implements Serializable {
     }
 
     public RequestWrapper(
-            String target,
             Version version,
+            Set<String> acceptedMediaTypes,
             Map<String, String> attributes) {
         this();
-        setTarget(target);
         setVersion(version);
+        setAcceptedMediaTypes(acceptedMediaTypes);
         setAttributes(attributes);
     }
 
     public RequestWrapper(
-            String target,
             Version version,
+            Set<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters) {
-        this(target, version, attributes);
+        this(version, acceptedMediaTypes, attributes);
         setMatrixParameters(matrixParameters);
         setQueryParameters(queryParameters);
     }
 
     public RequestWrapper(
-            String target,
             Version version,
+            Set<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             Map<String, String> formParameters) {
-        this(target, version, attributes, matrixParameters, queryParameters);
+        this(version, acceptedMediaTypes, attributes, matrixParameters, queryParameters);
         setFormParameters(formParameters);
         setMediaType("application/x-www-form-urlencoded");
     }
 
     public RequestWrapper(
-            String target,
             Version version,
+            Set<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
             InputStream body,
             String mediaType) {
-        this(target, version, attributes, matrixParameters, queryParameters);
+        this(version, acceptedMediaTypes, attributes, matrixParameters, queryParameters);
         setBody(body);
         setMediaType(mediaType);
     }
@@ -79,6 +83,7 @@ public class RequestWrapper implements Serializable {
         try {
             setTarget(obj.getString("target"));
             setVersion(new Version(obj.getString("version")));
+            addToSet(getAcceptedMediaTypes(), obj, "acceptedMediaTypes");
             addToMap(getAttributes(), obj, "attributes");
             addToMap(getMatrixParameters(), obj, "matrixParameters");
             addToMap(getQueryParameters(), obj, "queryParameters");
@@ -94,6 +99,7 @@ public class RequestWrapper implements Serializable {
             JSONObject obj = new JSONObject();
             obj.put("target", getTarget());
             obj.put("version", getVersion().toString());
+            obj.put("acceptedMediaTypes", new JSONArray(getAcceptedMediaTypes()));
             obj.put("attributes", new JSONObject(getAttributes()));
             obj.put("matrixParameters", new JSONObject(getMatrixParameters()));
             obj.put("queryParameters", new JSONObject(getQueryParameters()));
@@ -117,6 +123,13 @@ public class RequestWrapper implements Serializable {
         }
     }
 
+    protected void addToSet(Set<String> s, JSONObject obj, String name) throws JSONException {
+        JSONArray arr = obj.getJSONArray(name);
+        for (int i = 0; i < arr.length(); i++) {
+            s.add((String) arr.get(i));
+        }
+    }
+
     protected void setMapFromMap(Map<String, String> target, Map<String, String> source) {
         target.clear();
         if (source != null) {
@@ -132,6 +145,17 @@ public class RequestWrapper implements Serializable {
 
     public void setVersion(Version version) {
         this.version = version;
+    }
+
+    public Set<String> getAcceptedMediaTypes() {
+        return acceptedMediaTypes;
+    }
+
+    public void setAcceptedMediaTypes(Set<String> acceptedMediaTypes) {
+        this.acceptedMediaTypes.clear();
+        if (acceptedMediaTypes != null) {
+            this.acceptedMediaTypes.addAll(acceptedMediaTypes);
+        }
     }
 
     public Map<String, String> getAttributes() {
