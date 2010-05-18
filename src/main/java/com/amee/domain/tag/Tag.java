@@ -20,7 +20,7 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Tag extends AMEEEntity {
 
-    public final static int TAG_MIN_SIZE = 3;
+    public final static int TAG_MIN_SIZE = 2;
     public final static int TAG_MAX_SIZE = 255;
 
     // Mapped for HQL. We don't use this collection Java-side.
