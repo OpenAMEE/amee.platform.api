@@ -59,8 +59,8 @@ public class ResourceBuildManager extends ResourceManager {
         try {
             JSONObject result = builder.handle(
                     new RequestWrapper(
-                            "",
                             getResource().getSupportedVersion(),
+                            getAcceptedMediaTypes(),
                             getAttributes(),
                             getMatrixParameters(),
                             getQueryParameters()));
@@ -92,8 +92,8 @@ public class ResourceBuildManager extends ResourceManager {
         Document document = null;
         document = builder.handle(
                 new RequestWrapper(
-                        "",
                         getResource().getSupportedVersion(),
+                        getAcceptedMediaTypes(),
                         getAttributes(),
                         getMatrixParameters(),
                         getQueryParameters()));

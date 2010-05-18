@@ -85,8 +85,8 @@ public class ResourceAcceptManager extends ResourceManager {
     protected RequestWrapper getRequestWrapper(Representation entity) {
         if (entity.getMediaType().equals(MediaType.APPLICATION_WWW_FORM)) {
             return new RequestWrapper(
-                    "",
                     getResource().getSupportedVersion(),
+                    getAcceptedMediaTypes(),
                     getAttributes(),
                     getMatrixParameters(),
                     getQueryParameters(),
@@ -94,8 +94,8 @@ public class ResourceAcceptManager extends ResourceManager {
         } else {
             try {
                 return new RequestWrapper(
-                        "",
                         getResource().getSupportedVersion(),
+                        getAcceptedMediaTypes(),
                         getAttributes(),
                         getMatrixParameters(),
                         getQueryParameters(),

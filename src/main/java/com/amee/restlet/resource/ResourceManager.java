@@ -4,6 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.data.MediaType;
+import org.restlet.data.Preference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 
@@ -83,6 +85,14 @@ public class ResourceManager {
 
     protected Map<String, String> getQueryParameters() {
         return getRequest().getResourceRef().getQueryAsForm().getValuesMap();
+    }
+
+    protected Set<String> getAcceptedMediaTypes() {
+        Set<String> acceptedMediaTypes = new HashSet<String>();
+        for (Preference<MediaType> p : getRequest().getClientInfo().getAcceptedMediaTypes()) {
+            acceptedMediaTypes.add(p.getMetadata().toString());
+        }
+        return acceptedMediaTypes;
     }
 
     public GenericResource getResource() {
