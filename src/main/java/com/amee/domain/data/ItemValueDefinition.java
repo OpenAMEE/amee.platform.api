@@ -24,8 +24,8 @@ import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.APIVersion;
 import com.amee.domain.Builder;
+import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
-import com.amee.domain.LocaleHolder;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.ValueDefinition;
@@ -64,7 +64,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 @Entity
 @Table(name = "ITEM_VALUE_DEFINITION")
@@ -85,6 +84,10 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     @Transient
     @Resource
     private IMetadataService metadataService;
+
+    @Transient
+    @Resource
+    private ILocaleService localeService;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ITEM_DEFINITION_ID")
@@ -145,48 +148,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     private boolean isForceTimeSeries;
 
     @Transient
-    private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
-
-    @Transient
     private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
-
-    /**
-     * Get the collection of locale specific names for this ItemValueDefinition.
-     *
-     * @return the collection of locale specific names. The collection will be empty
-     *         if no locale specific names exist.
-     */
-    public Map<String, LocaleName> getLocaleNames() {
-        Map<String, LocaleName> activeLocaleNames = new TreeMap<String, LocaleName>();
-        for (String locale : localeNames.keySet()) {
-            LocaleName name = localeNames.get(locale);
-            if (!name.isTrash()) {
-                activeLocaleNames.put(locale, name);
-            }
-        }
-        return activeLocaleNames;
-    }
-
-    /*
-     * Get the locale specific name of this ItemValueDefinition for the locale of the current thread.
-     *
-     * The locale specific name of this ItemValueDefinition for the locale of the current thread.
-     * If no locale specific name is found, the default name will be returned.
-     */
-
-    @SuppressWarnings("unchecked")
-    private String getLocaleName() {
-        String name = null;
-        LocaleName localeName = localeNames.get(LocaleHolder.getLocale());
-        if (localeName != null && !localeName.isTrash()) {
-            name = localeName.getName();
-        }
-        return name;
-    }
-
-    public void addLocaleName(LocaleName localeName) {
-        localeNames.put(localeName.getLocale(), localeName);
-    }
 
     @Transient
     private Builder builder;
@@ -268,12 +230,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     }
 
     public String getName() {
-        String localeName = getLocaleName();
-        if (localeName != null) {
-            return localeName;
-        } else {
-            return name;
-        }
+        return localeService.getLocaleNameValue(this, name);
     }
 
     public void setName(String name) {

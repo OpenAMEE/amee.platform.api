@@ -56,7 +56,7 @@ public class LocaleName extends AMEEEntity {
 
     // The locale-specific name.
     @Column(name = "NAME", nullable = false)
-    private String name;
+    private String name = "";
 
     @Embedded
     private AMEEEntityReference entity = new AMEEEntityReference();
@@ -99,6 +99,9 @@ public class LocaleName extends AMEEEntity {
      * @param name - the locale-specific name
      */
     public void setName(String name) {
+        if (name == null) {
+            name = "";
+        }
         this.name = name;
     }
 

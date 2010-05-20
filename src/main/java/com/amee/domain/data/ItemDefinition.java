@@ -22,7 +22,7 @@ package com.amee.domain.data;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.APIVersion;
-import com.amee.domain.LocaleHolder;
+import com.amee.domain.ILocaleService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
@@ -32,9 +32,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.annotation.Resource;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,16 +47,15 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 @Entity
 @Table(name = "ITEM_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Configurable(autowire = Autowire.BY_TYPE)
 public class ItemDefinition extends AMEEEnvironmentEntity {
 
     public final static int NAME_SIZE = 255;
@@ -76,45 +78,8 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
 
     @Transient
-    private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
-
-    /**
-     * Get the collection of locale specific names for this ItemDefinition.
-     *
-     * @return the collection of locale specific names. The collection will be empty
-     *         if no locale specific names exist.
-     */
-    public Map<String, LocaleName> getLocaleNames() {
-        Map<String, LocaleName> activeLocaleNames = new TreeMap<String, LocaleName>();
-        for (String locale : localeNames.keySet()) {
-            LocaleName name = localeNames.get(locale);
-            if (!name.isTrash()) {
-                activeLocaleNames.put(locale, name);
-            }
-        }
-        return activeLocaleNames;
-    }
-
-    /*
-    * Get the locale specific name of this Itemefinition for the locale of the current thread.
-    *
-    * The locale specific name of this ItemDefinition for the locale of the current thread.
-    * If no locale specific name is found, the default name will be returned.
-    */
-
-    @SuppressWarnings("unchecked")
-    private String getLocaleName() {
-        String name = null;
-        LocaleName localeName = localeNames.get(LocaleHolder.getLocale());
-        if (localeName != null && !localeName.isTrash()) {
-            name = localeName.getName();
-        }
-        return name;
-    }
-
-    public void addLocaleName(LocaleName localeName) {
-        localeNames.put(localeName.getLocale(), localeName);
-    }
+    @Resource
+    private ILocaleService localeService;
 
     public ItemDefinition() {
         super();
@@ -217,12 +182,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     }
 
     public String getName() {
-        String localeName = getLocaleName();
-        if (localeName != null) {
-            return localeName;
-        } else {
-            return name;
-        }
+        return localeService.getLocaleNameValue(this, name);
     }
 
     public void setName(String name) {

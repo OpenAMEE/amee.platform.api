@@ -22,8 +22,8 @@ package com.amee.domain.data;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
-import com.amee.domain.LocaleHolder;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Entity
 @Table(name = "DATA_CATEGORY")
@@ -72,6 +71,10 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @Transient
     @Resource
     private IMetadataService metadataService;
+
+    @Transient
+    @Resource
+    private ILocaleService localeService;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "DATA_CATEGORY_ID")
@@ -99,9 +102,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "ALIASED_TO_ID")
     private List<DataCategory> aliases = new ArrayList<DataCategory>();
-
-    @Transient
-    private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
 
     @Transient
     private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
@@ -224,12 +224,7 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     }
 
     public String getName() {
-        String localeName = getLocaleName();
-        if (localeName != null) {
-            return localeName;
-        } else {
-            return name;
-        }
+        return localeService.getLocaleNameValue(this, name);
     }
 
     public void setName(String name) {
@@ -264,9 +259,9 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @Override
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH) ||
-            ((getDataCategory() != null) && getDataCategory().isTrash()) ||
-            ((getAliasedCategory() != null) && getAliasedCategory().isTrash()) ||
-            ((getItemDefinition() != null) && getItemDefinition().isTrash());
+                ((getDataCategory() != null) && getDataCategory().isTrash()) ||
+                ((getAliasedCategory() != null) && getAliasedCategory().isTrash()) ||
+                ((getItemDefinition() != null) && getItemDefinition().isTrash());
     }
 
     public DataCategory getAliasedCategory() {
@@ -279,44 +274,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
 
     public List<DataCategory> getAliases() {
         return aliases;
-    }
-
-    /**
-     * Get the collection of locale specific names for this DataCategory.
-     *
-     * @return the collection of locale specific names. The collection will be empty
-     *         if no locale specific names exist.
-     */
-    public Map<String, LocaleName> getLocaleNames() {
-        Map<String, LocaleName> activeLocaleNames = new TreeMap<String, LocaleName>();
-        for (String locale : localeNames.keySet()) {
-            LocaleName name = localeNames.get(locale);
-            if (!name.isTrash()) {
-                activeLocaleNames.put(locale, name);
-            }
-        }
-        return activeLocaleNames;
-    }
-
-    /*
-     * Get the locale specific name of this DataCategory for the locale of the current thread.
-     *
-     * The locale specific name of this DataCategory for the locale of the current thread.
-     * If no locale specific name is found, the default name will be returned.
-     */
-
-    @SuppressWarnings("unchecked")
-    private String getLocaleName() {
-        String name = null;
-        LocaleName localeName = localeNames.get(LocaleHolder.getLocale());
-        if (localeName != null && !localeName.isTrash()) {
-            name = localeName.getName();
-        }
-        return name;
-    }
-
-    public void addLocaleName(LocaleName localeName) {
-        localeNames.put(localeName.getLocale(), localeName);
     }
 
     public String getWikiDoc() {
