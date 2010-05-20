@@ -142,10 +142,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     @Column(name = "FORCE_TIMESERIES")
     private boolean isForceTimeSeries;
-//
-//    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @MapKey(name = "locale")
-//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+
     @Transient
     private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
 

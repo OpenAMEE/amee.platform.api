@@ -100,9 +100,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @JoinColumn(name = "ALIASED_TO_ID")
     private List<DataCategory> aliases = new ArrayList<DataCategory>();
 
-//    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @MapKey(name = "locale")
-//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @Transient
     private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
 

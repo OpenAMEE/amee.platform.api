@@ -75,9 +75,6 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     @OrderBy("name")
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
 
-//    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @MapKey(name = "locale")
-//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @Transient
     private Map<String, LocaleName> localeNames = new HashMap<String, LocaleName>();
 

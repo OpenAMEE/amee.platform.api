@@ -84,9 +84,6 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
     @Index(name = "START_DATE_IND")
     private Date startDate = new Date();
 
-//    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @MapKey(name = "locale")
-//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @Transient
     private Map<String, LocaleName> localeValues = new HashMap<String, LocaleName>();
 
