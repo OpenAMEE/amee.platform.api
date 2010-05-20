@@ -21,6 +21,7 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEStatus;
 import com.amee.domain.APIVersion;
 import com.amee.domain.Builder;
 import com.amee.domain.IMetadataService;
@@ -192,6 +193,11 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     public ItemValueDefinition() {
         super();
+    }
+
+    @Override
+    public boolean isTrash() {
+        return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
     }
 
     public ItemValueDefinition(ItemDefinition itemDefinition) {
