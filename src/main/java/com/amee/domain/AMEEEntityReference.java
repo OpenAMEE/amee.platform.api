@@ -246,7 +246,12 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
      * @param entityType to set
      */
     public void setEntityType(ObjectType entityType) {
-        this.entityType = entityType.getName();
+        // TODO: This conditional may not be needed.
+        if (entityType != null) {
+            this.entityType = entityType.getName();
+        } else {
+            this.entityType = "";
+        }
     }
 
     /**

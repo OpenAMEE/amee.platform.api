@@ -31,12 +31,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Locale;
 
 /**
@@ -69,7 +67,8 @@ public class LocaleName extends AMEEEntity {
 
     @Override
     public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || entity.isTrash();
+        // TODO: Currently entity.getEntity() may be null but should never be. 
+        return status.equals(AMEEStatus.TRASH) || ((entity.getEntity() == null) || entity.getEntity().isTrash());
     }
 
     /**
