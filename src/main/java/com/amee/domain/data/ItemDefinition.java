@@ -61,6 +61,10 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     public final static int NAME_SIZE = 255;
     public final static int DRILL_DOWN_SIZE = 255;
 
+    @Transient
+    @Resource
+    private ILocaleService localeService;
+
     @Column(name = "NAME", length = NAME_SIZE, nullable = false)
     private String name = "";
 
@@ -76,10 +80,6 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderBy("name")
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
-
-    @Transient
-    @Resource
-    private ILocaleService localeService;
 
     public ItemDefinition() {
         super();
