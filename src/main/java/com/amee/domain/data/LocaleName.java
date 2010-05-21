@@ -33,7 +33,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
 import javax.persistence.Table;
 import java.util.Locale;
 
@@ -45,7 +44,6 @@ import java.util.Locale;
  * Modelled as a One-to-Many relationship with the owning entity.
  */
 @Entity
-@Inheritance
 @Table(name = "LOCALE_NAME")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class LocaleName extends AMEEEntity {
