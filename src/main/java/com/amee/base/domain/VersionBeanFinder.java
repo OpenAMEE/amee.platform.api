@@ -32,9 +32,8 @@ public class VersionBeanFinder implements ApplicationContextAware {
     public Object getBeanForVersion(String className, Version version) {
         TreeMap<Version, String> candidates =
                 new TreeMap<Version, String>(getBeanNamesForVersion(className, version));
-        Version lastVersion = candidates.lastKey();
-        if (lastVersion != null) {
-            return applicationContext.getBean(candidates.get(lastVersion));
+        if (!candidates.isEmpty()) {
+            return applicationContext.getBean(candidates.get(candidates.lastKey()));
         } else {
             return null;
         }
