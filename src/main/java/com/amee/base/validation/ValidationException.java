@@ -18,14 +18,6 @@ public class ValidationException extends ResourceException {
         setValidationResult(validationResult);
     }
 
-    public ValidationResult getValidationResult() {
-        return validationResult;
-    }
-
-    public void setValidationResult(ValidationResult validationResult) {
-        this.validationResult = validationResult;
-    }
-
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -36,5 +28,13 @@ public class ValidationException extends ResourceException {
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
+    }
+
+    public ValidationResult getValidationResult() {
+        return validationResult;
+    }
+
+    public void setValidationResult(ValidationResult validationResult) {
+        this.validationResult = validationResult;
     }
 }
