@@ -19,7 +19,6 @@ public class ResourceManager {
     private final Log log = LogFactory.getLog(getClass());
 
     private GenericResource resource;
-    private Set<String> attributeNames = new HashSet<String>();
 
     public void init(GenericResource resource) {
         this.resource = resource;
@@ -108,12 +107,10 @@ public class ResourceManager {
     }
 
     public Set<String> getAttributeNames() {
-        return attributeNames;
+        return resource.getAttributeNames();
     }
 
     public void setAttributeNames(Set<String> attributeNames) {
-        if (attributeNames != null) {
-            this.attributeNames = attributeNames;
-        }
+        resource.setAttributeNames(attributeNames);
     }
 }

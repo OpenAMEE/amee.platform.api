@@ -26,6 +26,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,9 +35,9 @@ public class GenericResource extends Resource {
 
     public final static DOMOutputter DOM_OUTPUTTER = new DOMOutputter();
 
-    private ResourceBuildManager buildManager = new ResourceBuildManager();
-    private ResourceAcceptManager acceptManager = new ResourceAcceptManager();
-    private ResourceRemoveManager removeManager = new ResourceRemoveManager();
+    private ResourceBuildManager buildManager = null;
+    private ResourceAcceptManager acceptManager = null;
+    private ResourceRemoveManager removeManager = null;
     private Boolean allowPost = null;
     private Boolean allowPut = null;
     private Boolean allowDelete = null;
@@ -44,12 +45,10 @@ public class GenericResource extends Resource {
     private Version since = null;
     private Version until = null;
     private String lastSegment = null;
+    private Set<String> attributeNames = new HashSet<String>();
 
     public void init(Context context, Request request, Response response) {
         super.init(context, request, response);
-        buildManager.init(this);
-        acceptManager.init(this);
-        removeManager.init(this);
         checkLastSegment();
     }
 
@@ -73,7 +72,7 @@ public class GenericResource extends Resource {
     @Override
     public Representation represent(Variant variant) {
         if (!hasValidationResults()) {
-            return buildManager.getRepresentation(variant);
+            return getBuildManager().getRepresentation(variant);
         } else {
             return getValidationResultRepresentation(variant.getMediaType());
         }
@@ -141,7 +140,7 @@ public class GenericResource extends Resource {
      */
     public void acceptRepresentation(Representation entity)
             throws ResourceException {
-        acceptManager.accept(entity);
+        getAcceptManager().accept(entity);
     }
 
     /**
@@ -152,7 +151,7 @@ public class GenericResource extends Resource {
      */
     public void storeRepresentation(Representation entity)
             throws ResourceException {
-        acceptManager.accept(entity);
+        getAcceptManager().accept(entity);
     }
 
     /**
@@ -161,20 +160,28 @@ public class GenericResource extends Resource {
      * @throws ResourceException
      */
     public void removeRepresentations() throws ResourceException {
-        removeManager.remove();
+        getRemoveManager().remove();
     }
 
     public Version getSupportedVersion() {
         return (Version) getRequest().getAttributes().get("versionSupported");
     }
 
+    public Set<String> getAttributeNames() {
+        return attributeNames;
+    }
+
     public void setAttributeNames(Set<String> attributeNames) {
-        buildManager.setAttributeNames(attributeNames);
-        acceptManager.setAttributeNames(attributeNames);
-        removeManager.setAttributeNames(attributeNames);
+        if (attributeNames != null) {
+            this.attributeNames = attributeNames;
+        }
     }
 
     public ResourceBuildManager getBuildManager() {
+        if (buildManager == null) {
+            buildManager = new ResourceBuildManager();
+            buildManager.init(this);
+        }
         return buildManager;
     }
 
@@ -184,11 +191,15 @@ public class GenericResource extends Resource {
         }
     }
 
-    public void setBuilders(List<ResourceBuilder> builders) {
-        buildManager.setBuilders(builders);
+    public void setBuilder(ResourceBuilder builder) {
+        getBuildManager().setBuilder(builder);
     }
 
     public ResourceAcceptManager getAcceptManager() {
+        if (acceptManager == null) {
+            acceptManager = new ResourceAcceptManager();
+            acceptManager.init(this);
+        }
         return acceptManager;
     }
 
@@ -199,10 +210,14 @@ public class GenericResource extends Resource {
     }
 
     public void setAcceptors(Map<String, ResourceAcceptor<Object>> acceptors) {
-        acceptManager.setAcceptors(acceptors);
+        getAcceptManager().setAcceptors(acceptors);
     }
 
     public ResourceRemoveManager getRemoveManager() {
+        if (removeManager == null) {
+            removeManager = new ResourceRemoveManager();
+            removeManager.init(this);
+        }
         return removeManager;
     }
 
@@ -213,7 +228,7 @@ public class GenericResource extends Resource {
     }
 
     public void setRemover(ResourceRemover<JSONObject> remover) {
-        removeManager.setRemover(remover);
+        getRemoveManager().setRemover(remover);
     }
 
     public boolean allowPost() {

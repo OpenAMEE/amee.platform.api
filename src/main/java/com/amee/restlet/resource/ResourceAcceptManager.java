@@ -29,7 +29,7 @@ public class ResourceAcceptManager extends ResourceManager {
                 // Send RequestWrapper to ResourceAcceptor.
                 Object result = acceptors.get(mediaType.getName()).handle(getRequestWrapper(entity));
                 // Handle the various result media types.
-                if (result instanceof JSONObject) {
+                if (JSONObject.class.isAssignableFrom(result.getClass())) {
                     handle((JSONObject) result);
                 } else {
                     getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
