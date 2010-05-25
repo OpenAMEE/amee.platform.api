@@ -174,7 +174,7 @@ public class AlgorithmServiceTest {
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", seriesA.copy());
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            Amounts result = algorithmService.evaluate(algorithm, values);
             assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", 0.6666666666666666, result.getDefaultAmountAsDouble());
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
@@ -194,7 +194,7 @@ public class AlgorithmServiceTest {
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", series);
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            Amounts result = algorithmService.evaluate(algorithm, values);
             assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 0.5, result.getDefaultAmountAsDouble());
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
@@ -219,7 +219,7 @@ public class AlgorithmServiceTest {
         values.put("seriesB", seriesB.copy());
         values.put("seriesC", seriesC.copy());
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            Amounts result = algorithmService.evaluate(algorithm, values);
             System.out.println(result);
             assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 3.1666666666666665, result.getDefaultAmountAsDouble());
         } catch (ScriptException e) {
@@ -236,15 +236,15 @@ public class AlgorithmServiceTest {
     public void multipleReturnValues() throws Exception {
         MockAlgorithm mockAlgorithm = new MockAlgorithm();
         StringBuilder content = new StringBuilder();
-        content.append("returnValues.addAmount('CO2', 'kg', 'month', 5.43);");
-        content.append("returnValues.addAmount('CO2e', 'kg', 'month', 1.23);");
+        content.append("returnValues.putAmount('CO2', 'kg', 'month', 5.43);");
+        content.append("returnValues.putAmount('CO2e', 'kg', 'month', 1.23);");
         content.append("returnValues.setDefaultType('CO2');");
         content.append("returnValues.addNote('Note 1');");
         mockAlgorithm.setContent(content.toString());
 
         Map<String, Object> values = new HashMap<String, Object>();
 
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        Amounts result = algorithmService.evaluate(mockAlgorithm, values);
         assertEquals("Should have 2 amounts in result", 2, result.getAmounts().size());
         assertEquals("Incorrect default amount", 5.43, result.getDefaultAmountAsDouble(), 0.000001);
         assertEquals("Should have 1 note", 1, result.getNotes().size());
@@ -262,7 +262,7 @@ public class AlgorithmServiceTest {
         mockAlgorithm.setContent("1.23");
         Map<String, Object> values = new HashMap<String, Object>();
 
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        Amounts result = algorithmService.evaluate(mockAlgorithm, values);
         assertEquals("Should have 1 result", 1, result.getAmounts().size());
         assertEquals("Incorrect return value", 1.23, result.getDefaultAmountAsDouble(), 0.000001);
         assertTrue("Notes should be empty", result.getNotes().isEmpty());
