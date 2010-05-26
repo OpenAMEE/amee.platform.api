@@ -14,8 +14,8 @@
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee-base.version>1.0.1-SNAPSHOT</amee-base.version>
-        <amee-platform-service.version>1.0.0-SNAPSHOT</amee-platform-service.version>
+        <amee-base.version>1.0.1</amee-base.version>
+        <amee-platform-service.version>1.0.0</amee-platform-service.version>
         <!-- External Versions. -->
         <!--<commons-codec.version>1.3</commons-codec.version>-->
         <!--<commons-lang.version>2.5</commons-lang.version>-->
