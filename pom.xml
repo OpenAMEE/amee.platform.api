@@ -16,6 +16,7 @@
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <amee-base.version>1.0.1-SNAPSHOT</amee-base.version>
         <commons-lang.version>2.5</commons-lang.version>
+        <jetty.version>6.1.15</jetty.version>
         <junit.version>4.7</junit.version>
         <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.9.1</xerces.version>
@@ -49,7 +50,7 @@
         <dependency>
             <groupId>com.amee</groupId>
             <artifactId>amee-base</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>${amee-base.version}</version>
         </dependency>
 
         <!-- Compile Dependencies. -->
@@ -77,6 +78,21 @@
                     <artifactId>spring-webmvc</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-ajp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>com.noelios.restlet</groupId>
