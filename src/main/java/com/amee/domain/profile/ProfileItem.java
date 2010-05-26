@@ -1,6 +1,6 @@
 package com.amee.domain.profile;
 
-import com.amee.platform.science.CO2Amount;
+import com.amee.platform.science.Amounts;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.Builder;
 import com.amee.domain.ObjectType;
@@ -12,8 +12,6 @@ import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -62,7 +60,7 @@ public class ProfileItem extends Item {
     protected Date endDate;
 
     @Transient
-    private Double amount;
+    private Amounts amounts = new Amounts();
 
     @Transient
     private Builder builder;
@@ -114,7 +112,7 @@ public class ProfileItem extends Item {
         o.dataItem = dataItem;
         o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
         o.endDate = (endDate != null) ? (Date) endDate.clone() : null;
-        o.amount = amount;
+        o.amounts = amounts;
         o.builder = builder;
         o.calculationService = calculationService;
     }
@@ -167,22 +165,22 @@ public class ProfileItem extends Item {
     }
 
     /**
-     * Get the {@link com.amee.platform.science.CO2Amount CO2Amount} for this ProfileItem.
+     * Get the GHG {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem.
      * <p/>
-     * If the ProfileItem does not support CO2 calculations (i.e. metadata) CO2Amount.ZERO is returned.
+     * If the ProfileItem does not support calculations (i.e. metadata) an empty Amounts object is returned.
      *
-     * @return - the {@link com.amee.platform.science.CO2Amount CO2Amount} for this ProfileItem
+     * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
      */
-    public CO2Amount getAmount() {
-        if (amount == null) {
-            log.debug("getAmount() - calculating amount");
+    public Amounts getAmounts() {
+        if (amounts.getAmounts().isEmpty()) {
+            log.debug("getAmounts() - calculating amounts");
             calculationService.calculate(this);
         }
-        return new CO2Amount(amount);
+        return amounts;
     }
 
-    public void setAmount(CO2Amount amount) {
-        this.amount = amount.getValue();
+    public void setAmounts(Amounts amounts) {
+        this.amounts = amounts;
     }
 
     @Override

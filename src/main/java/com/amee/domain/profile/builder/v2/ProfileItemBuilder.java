@@ -28,7 +28,6 @@ import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.AmountCompoundUnit;
-import com.amee.platform.science.CO2AmountUnit;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +94,7 @@ public class ProfileItemBuilder implements Builder {
         buildElement(obj, detailed);
 
         JSONObject amount = new JSONObject();
-        amount.put("value", item.getAmount().convert(returnUnit).getValue());
+        amount.put("value", item.getAmounts().getDefaultAmount().convert(returnUnit).getValue());
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
 
@@ -122,7 +121,7 @@ public class ProfileItemBuilder implements Builder {
 
         Element amount = document.createElement("Amount");
 
-        amount.setTextContent(item.getAmount().convert(returnUnit).toString());
+        amount.setTextContent(item.getAmounts().getDefaultAmount().convert(returnUnit).toString());
         amount.setAttribute("unit", returnUnit.toString());
         element.appendChild(amount);
 
