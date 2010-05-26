@@ -79,8 +79,13 @@ public class Amounts {
 
     private Amount newAmount(String unit, String perUnit, double value) {
         AmountUnit amountUnit = AmountUnit.valueOf(unit);
-        AmountPerUnit amountPerUnit = AmountPerUnit.valueOf(perUnit);
-        Amount amount = new Amount(value, AmountCompoundUnit.valueOf(amountUnit, amountPerUnit));
+        Amount amount;
+        if (!perUnit.isEmpty()) {
+            AmountPerUnit amountPerUnit = AmountPerUnit.valueOf(perUnit);
+            amount = new Amount(value, AmountCompoundUnit.valueOf(amountUnit, amountPerUnit));
+        } else {
+            amount = new Amount(value, amountUnit);
+        }
         return amount;
     }
 
