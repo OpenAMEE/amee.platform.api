@@ -153,7 +153,7 @@
         <dependency>
             <groupId>com.amee</groupId>
             <artifactId>amee-base</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${amee-base.version}</version>
         </dependency>
 
         <!-- Compile Dependencies. -->
