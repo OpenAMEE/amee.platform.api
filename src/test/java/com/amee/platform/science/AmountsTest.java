@@ -1,5 +1,7 @@
 package com.amee.platform.science;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -53,5 +55,45 @@ public class AmountsTest {
         values.putAmount("CO2", "kg", "month", 54.321);
 
         assertEquals(123.45, values.getDefaultAmountAsDouble(), 0.000001);
+    }
+
+    @Test
+    public void getDefaultAmountWhenEmpty() {
+        Amounts values = new Amounts();
+        assertEquals("Amount should be ZERO", CO2Amount.ZERO, values.getDefaultAmount());
+    }
+
+    @Test
+    public void getCo2AmountWhenEmpty() {
+        Amounts values = new Amounts();
+        assertEquals("Amount should be zero", CO2Amount.ZERO, values.getCo2Amount());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void getCo2AmountWhenMissing() {
+        Amounts values = new Amounts();
+        values.putAmount("CO2e", "kg", "month", 123.45);
+        values.setDefaultType("CO2e");
+        values.getCo2Amount();
+    }
+
+    @Test
+    public void addNote() {
+        Amounts values = new Amounts();
+        values.addNote("Note 1");
+        values.addNote("Note 2");
+        assertEquals("Should be 2 notes", 2, values.getNotes().size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addNoteExceedsMaxLength() {
+        Amounts values = new Amounts();
+        values.addNote(StringUtils.repeat("a", Amounts.MAX_NOTE_LENGTH + 1));
+    }
+
+    @Test
+    public void addNotMaxLength() {
+        Amounts values = new Amounts();
+        values.addNote(StringUtils.repeat("a", Amounts.MAX_NOTE_LENGTH));
     }
 }

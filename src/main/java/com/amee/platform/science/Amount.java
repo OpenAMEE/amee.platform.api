@@ -67,7 +67,7 @@ public class Amount {
 
     @SuppressWarnings("unchecked")
     public Amount convert(AmountUnit targetUnit) {
-        if (unit.equals(targetUnit)) {
+        if (value == 0.0 || unit.equals(targetUnit)) {
             return new Amount(getValue(), unit);
         } else {
             Measure measure = Measure.valueOf(value, unit.toUnit());

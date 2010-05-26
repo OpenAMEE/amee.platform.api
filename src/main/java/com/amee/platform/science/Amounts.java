@@ -1,5 +1,7 @@
 package com.amee.platform.science;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.Map;
  *
  */
 public class Amounts {
+
+    public static final int MAX_NOTE_LENGTH = 255;
 
     // These are the default values used in CO2Amount
     private static final String CO2_DEFAULT_TYPE = "CO2";
@@ -32,17 +36,26 @@ public class Amounts {
     /**
      * Puts a CO2 Amount using default units (kg/year)
      *
-     * @param value amount of CO2 in kg/y.
+     * @param value amount of CO2 in kg/year.
      */
     public void putCo2Amount(double value) {
         putAmount(CO2_DEFAULT_TYPE, CO2_DEFAULT_UNIT, CO2_DEFAULT_PER_UNIT, value);
     }
 
+    /**
+     * Get the CO2 Amount.
+     *
+     * @return the CO2 Amount
+     * @throws IllegalStateException if Amounts is non-empty and does not contain a CO2 Amount.
+     */
     public Amount getCo2Amount() {
-        if (!amounts.containsKey(CO2_DEFAULT_TYPE)) {
+        if (amounts.isEmpty()) {
+            return CO2Amount.ZERO;
+        } else if (amounts.containsKey(CO2_DEFAULT_TYPE)) {
+            return amounts.get(CO2_DEFAULT_TYPE);
+        } else {
             throw new IllegalStateException("There is no value of type " + CO2_DEFAULT_TYPE);
         }
-        return amounts.get(CO2_DEFAULT_TYPE);
     }
 
     /**
@@ -54,15 +67,21 @@ public class Amounts {
      * @param value the value of the amount.
      */
     public void putAmount(String type, String unit, String perUnit, double value) {
-        AmountUnit amountUnit = AmountUnit.valueOf(unit);
-        AmountPerUnit amountPerUnit = AmountPerUnit.valueOf(perUnit);
-        Amount amount = new Amount(value, AmountCompoundUnit.valueOf(amountUnit, amountPerUnit));
+        Amount amount = newAmount(unit, perUnit, value);
         amounts.put(type, amount);
 
-        // TODO: Should we make the first amount the default?
+        // TODO: Is it correct to make the first amount the default?
+        // It guards against forgetting to set a default type.
         if (amounts.size() == 1) {
             setDefaultType(type);
         }
+    }
+
+    private Amount newAmount(String unit, String perUnit, double value) {
+        AmountUnit amountUnit = AmountUnit.valueOf(unit);
+        AmountPerUnit amountPerUnit = AmountPerUnit.valueOf(perUnit);
+        Amount amount = new Amount(value, AmountCompoundUnit.valueOf(amountUnit, amountPerUnit));
+        return amount;
     }
 
     /**
@@ -87,7 +106,6 @@ public class Amounts {
      */
     public String getDefaultType() {
         if (defaultType == null) {
-            // TODO: How can we enforce the state?
             throw new IllegalStateException("There is no default type");
         }
         return defaultType;
@@ -96,11 +114,13 @@ public class Amounts {
     /**
      * Get the default Amount
      *
-     * @return the default Amount.
+     * @return the default Amount or ZERO if there are no Amounts.
      * @throws IllegalStateException if there is no default type set.
      */
     public Amount getDefaultAmount() {
-        if (defaultType == null) {
+        if (amounts.isEmpty()) {
+            return CO2Amount.ZERO;
+        } else if (defaultType == null) {
             throw new IllegalStateException("There is no default type");
         }
         return amounts.get(defaultType);
@@ -119,23 +139,38 @@ public class Amounts {
      * Add a text note.
      *
      * @param note String to add.
+     * @throws IllegalArgumentException if note length is greater than {@value #MAX_NOTE_LENGTH}
      */
     public void addNote(String note) {
+        if (note.length() > MAX_NOTE_LENGTH) {
+            throw new IllegalArgumentException("Note must be <= " + MAX_NOTE_LENGTH + " characters. Tried to add note of length " + note.length());
+        }
         notes.add(note);
     }
 
     /**
      * Get the notes.
      *
-     * @return List of notes.
+     * @return the List of notes.
      */
     public List<String> getNotes() {
         return notes;
     }
 
+    /**
+     * Returns a string representation of this object. The exact details of the representation are subject to change
+     * but the following may be regarded as typical:
+     * com.amee.platform.science.Amounts@5ae80842[amounts={CO2e=123.45, CO2=54.321},defaultType=CO2e,notes=[Note 1, Note 2]]
+     *
+     * @return a String representation of this object.
+     */
     @Override
     public String toString() {
-        //TODO: Implement
-        return "Implement this!";
+        return new ToStringBuilder(this).
+            append("amounts", amounts).
+            append("defaultType", defaultType).
+            append("notes", notes).
+            toString();
     }
+
 }

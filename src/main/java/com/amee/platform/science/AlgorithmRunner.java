@@ -21,7 +21,7 @@ public class AlgorithmRunner {
     private final ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
     private static final String DEFAULT_TYPE = "CO2";
     private static final String DEFAULT_UNIT = "kg";
-    private static final String DEFAULT_PER_UNIT = "month";
+    private static final String DEFAULT_PER_UNIT = "year";
 
     /**
      * Evaluate an Algorithm.
