@@ -48,23 +48,33 @@ public class ReturnValue {
         this.value = value;
     }
 
-    public double asDouble() {
+    /**
+     * Converts this ReturnValue to a double.
+     *
+     * @return the double value of this ReturnValue.
+     */
+    public double toDouble() {
         return value;
     }
 
-    public CO2Amount asAmount() {
+    /**
+     * Converts this ReturnValue into a CO2Amount.
+     *
+     * @return a CO2Amount with this ReturnValue's values.
+     */
+    public CO2Amount toAmount() {
         if (value == 0.0) {
             return CO2Amount.ZERO;
         }
         return newAmount(unit, perUnit, value);
     }
 
-    // TODO: check how we deal with no perUnit. PerUnit may be null?
     private CO2Amount newAmount(String unit, String perUnit, double value) {
         CO2AmountUnit amountUnit = new CO2AmountUnit(unit, perUnit);
         return new CO2Amount(value, amountUnit);
     }
 
+    // TODO: We should add in the other fields here.
     @Override
     public String toString() {
         NumberFormat f = NumberFormat.getInstance();

@@ -8,12 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ReturnValues {
-    // These are the default values used in CO2Amount
-    private static final String CO2_DEFAULT_TYPE = "CO2";
-    private static final String CO2_DEFAULT_UNIT = "kg";
-    private static final String CO2_DEFAULT_PER_UNIT = "year";
 
-    /** The return Amounts, indexed by GHG type. */
+    /** The return values, indexed by GHG type. */
     private Map<String, ReturnValue> returnValues = new HashMap<String, ReturnValue>();
 
     /** The default GHG type. */
@@ -25,31 +21,6 @@ public class ReturnValues {
     public Map<String, ReturnValue> getReturnValues() {
         return returnValues;
     }
-
-//    /**
-//     * Puts a CO2 Amount using default units (kg/year)
-//     *
-//     * @param value amount of CO2 in kg/year.
-//     */
-//    public void putCo2Amount(double value) {
-//        putAmount(CO2_DEFAULT_TYPE, CO2_DEFAULT_UNIT, CO2_DEFAULT_PER_UNIT, value);
-//    }
-//
-//    /**
-//     * Get the CO2 Amount.
-//     *
-//     * @return the CO2 Amount
-//     * @throws IllegalStateException if Amounts is non-empty and does not contain a CO2 Amount.
-//     */
-//    public Amount getCo2Amount() {
-//        if (amounts.isEmpty()) {
-//            return CO2Amount.ZERO;
-//        } else if (amounts.containsKey(CO2_DEFAULT_TYPE)) {
-//            return amounts.get(CO2_DEFAULT_TYPE);
-//        } else {
-//            throw new IllegalStateException("There is no value of type " + CO2_DEFAULT_TYPE);
-//        }
-//    }
 
     /**
      * Add an amount to the return values.
@@ -63,18 +34,10 @@ public class ReturnValues {
         ReturnValue returnValue = new ReturnValue(type, unit, perUnit, value);
         returnValues.put(type, returnValue);
 
-        // TODO: Is it correct to make the first amount the default?
-        // It guards against forgetting to set a default type.
+        // TODO: Is it correct to make the first added amount the default like this?
         if (returnValues.size() == 1) {
             setDefaultType(type);
         }
-    }
-
-    // TODO: check how we deal with no perUnit. PerUnit may be null?
-    private CO2Amount newAmount(String unit, String perUnit, double value) {
-        CO2AmountUnit amountUnit = new CO2AmountUnit(unit, perUnit);
-
-        return new CO2Amount(value, amountUnit);
     }
 
     /**
@@ -104,10 +67,21 @@ public class ReturnValues {
         return defaultType;
     }
 
+    public ReturnValue getDefaultValue() {
+        if (defaultType == null) {
+            throw new IllegalStateException("There is no default type");
+        }
+        if (!returnValues.containsKey(defaultType)) {
+            throw new IllegalArgumentException("There are no values of type " + defaultType);
+        } else {
+            return returnValues.get(defaultType);
+        }
+    }
+
     /**
-     * Get the default Amount
+     * Get the default value as an Amount
      *
-     * @return the default Amount or ZERO if there are no Amounts.
+     * @return the default Amount or ZERO if there are no ReturnValues.
      * @throws IllegalStateException if there is no default type set.
      */
     public CO2Amount defaultValueAsAmount() {
@@ -117,8 +91,7 @@ public class ReturnValues {
             throw new IllegalStateException("There is no default type");
         }
         ReturnValue defaultValue = returnValues.get(defaultType);
-        return defaultValue.asAmount();
-//        return newAmount(defaultValue.getUnit(), defaultValue.getPerUnit(), defaultValue.getValue());
+        return defaultValue.toAmount();
     }
 
     /**
@@ -127,7 +100,12 @@ public class ReturnValues {
      * @return the value of the default Amount.
      */
     public double defaultValueAsDouble() {
-        return returnValues.get(defaultType).asDouble();
+        if (returnValues.isEmpty()) {
+            return 0.0;
+        } else if (defaultType == null) {
+            throw new IllegalStateException("There is no default type");
+        }
+        return returnValues.get(defaultType).toDouble();
     }
 
     /**
@@ -150,9 +128,7 @@ public class ReturnValues {
     }
 
     /**
-     * Returns a string representation of this object. The exact details of the representation are subject to change
-     * but the following may be regarded as typical:
-     * com.amee.platform.science.Amounts@5ae80842[amounts={CO2e=123.45, CO2=54.321},defaultType=CO2e,notes=[Note 1, Note 2]]
+     * Returns a string representation of this object.
      *
      * @return a String representation of this object.
      */
@@ -163,5 +139,9 @@ public class ReturnValues {
             append("defaultType", defaultType).
             append("notes", notes).
             toString();
+    }
+
+    public boolean hasReturnValues() {
+        return !returnValues.isEmpty();
     }
 }

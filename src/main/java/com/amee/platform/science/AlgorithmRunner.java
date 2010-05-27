@@ -19,6 +19,8 @@ public class AlgorithmRunner {
 
     // The ScriptEngine for the JavaScript context.
     private final ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
+
+    // Default single return value is in kg of CO2 per year
     private static final String DEFAULT_TYPE = "CO2";
     private static final String DEFAULT_UNIT = "kg";
     private static final String DEFAULT_PER_UNIT = "year";
@@ -37,21 +39,21 @@ public class AlgorithmRunner {
         bindings.putAll(values);
         bindings.put("logger", scienceLog);
 
-        ReturnValues amounts = new ReturnValues();
-        bindings.put("returnValues", amounts);
+        ReturnValues returnValues = new ReturnValues();
+        bindings.put("returnValues", returnValues);
 
         Object result = algorithm.getCompiledScript(getEngine()).eval(bindings);
 
         // First check for multiple return values
-        if (!amounts.getReturnValues().isEmpty()) {
-            return amounts;
+        if (returnValues.hasReturnValues()) {
+            return returnValues;
         }
 
-        // If it is an old-style single return value algorithm, wrap it in a Amounts object.
+        // If it is an old-style single return value algorithm, wrap it in a ReturnValues object.
         if (result != null) {
-            amounts.putValue(DEFAULT_TYPE, DEFAULT_UNIT, DEFAULT_PER_UNIT, Double.parseDouble(result.toString()));
-            amounts.setDefaultType(DEFAULT_TYPE);
-            return amounts;
+            returnValues.putValue(DEFAULT_TYPE, DEFAULT_UNIT, DEFAULT_PER_UNIT, Double.parseDouble(result.toString()));
+            returnValues.setDefaultType(DEFAULT_TYPE);
+            return returnValues;
         }
 
         // The algorithm returned no value.       
