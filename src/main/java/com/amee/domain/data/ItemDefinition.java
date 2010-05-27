@@ -77,6 +77,10 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     @OrderBy("name")
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
 
+    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ReturnValueDefinition> returnValueDefinitions = new HashSet<ReturnValueDefinition>();
+
     @Transient
     @Resource
     private ILocaleService localeService;
@@ -105,6 +109,10 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
 
     public void add(ItemValueDefinition itemValueDefinition) {
         itemValueDefinitions.add(itemValueDefinition);
+    }
+
+    public void add(ReturnValueDefinition returnValueDefinition) {
+        returnValueDefinitions.add(returnValueDefinition);
     }
 
     public boolean hasDrillDownAvailable() {
