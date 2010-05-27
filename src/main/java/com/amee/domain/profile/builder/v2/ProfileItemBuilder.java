@@ -154,9 +154,7 @@ public class ProfileItemBuilder implements Builder {
             Element multiAmount = document.createElement("Amount");
             multiAmount.setAttribute("type", entry.getKey());
             multiAmount.setAttribute("unit", entry.getValue().getUnit());
-//            if (entry.getValue().getUnit() instanceof AmountCompoundUnit) {
-                multiAmount.setAttribute("perUnit", entry.getValue().getPerUnit());
-//            }
+            multiAmount.setAttribute("perUnit", entry.getValue().getPerUnit());
             if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
                 multiAmount.setAttribute("default", "true");
             }

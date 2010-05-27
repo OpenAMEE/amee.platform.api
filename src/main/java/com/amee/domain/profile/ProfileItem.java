@@ -1,6 +1,5 @@
 package com.amee.domain.profile;
 
-import com.amee.platform.science.Amounts;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.Builder;
 import com.amee.domain.ObjectType;
@@ -166,12 +165,12 @@ public class ProfileItem extends Item {
     }
 
     /**
-     * Get the GHG {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem.
+     * Get the GHG {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem.
      * <p/>
-     * If the ProfileItem does not support calculations (i.e. metadata) an empty Amounts object is returned.
+     * If the ProfileItem does not support calculations (i.e. metadata) an empty ReturnValues object is returned.
      *
      * @param recalculate force recalculation of the amounts. If false, only calculate amounts if amounts is empty.
-     * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
+     * @return - the {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem
      */
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
@@ -182,13 +181,13 @@ public class ProfileItem extends Item {
     }
 
     /**
-     * Get the GHG {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem.
+     * Get the GHG {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem.
      * <p/>
-     * If the ProfileItem does not support calculations (i.e. metadata) an empty Amounts object is returned.
+     * If the ProfileItem does not support calculations (i.e. metadata) an empty ReturnValues object is returned.
      *
      * Note: this method only calculates the amounts if amounts is empty, ie, has not already been calculated.
      *
-     * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
+     * @return - the {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem
      */
     public ReturnValues getAmounts() {
         return getAmounts(false);
