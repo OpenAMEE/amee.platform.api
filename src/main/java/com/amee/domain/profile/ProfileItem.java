@@ -169,14 +169,28 @@ public class ProfileItem extends Item {
      * <p/>
      * If the ProfileItem does not support calculations (i.e. metadata) an empty Amounts object is returned.
      *
+     * @param recalculate force recalculation of the amounts. If false, only calculate amounts if amounts is empty.
      * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
      */
-    public Amounts getAmounts() {
-        if (amounts.getAmounts().isEmpty()) {
+    public Amounts getAmounts(boolean recalculate) {
+        if (amounts.getAmounts().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
             calculationService.calculate(this);
         }
         return amounts;
+    }
+
+    /**
+     * Get the GHG {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem.
+     * <p/>
+     * If the ProfileItem does not support calculations (i.e. metadata) an empty Amounts object is returned.
+     *
+     * Note: this method only calculates the amounts if amounts is empty, ie, has not already been calculated.
+     *
+     * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
+     */
+    public Amounts getAmounts() {
+        return getAmounts(false);
     }
 
     public void setAmounts(Amounts amounts) {
