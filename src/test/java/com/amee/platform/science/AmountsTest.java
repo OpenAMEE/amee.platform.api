@@ -80,20 +80,8 @@ public class AmountsTest {
     @Test
     public void addNote() {
         Amounts values = new Amounts();
-        values.addNote("Note 1");
-        values.addNote("Note 2");
+        values.addNote("comment", "Note 1");
+        values.addNote("comment", "Note 2");
         assertEquals("Should be 2 notes", 2, values.getNotes().size());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addNoteExceedsMaxLength() {
-        Amounts values = new Amounts();
-        values.addNote(StringUtils.repeat("a", Amounts.MAX_NOTE_LENGTH + 1));
-    }
-
-    @Test
-    public void addNotMaxLength() {
-        Amounts values = new Amounts();
-        values.addNote(StringUtils.repeat("a", Amounts.MAX_NOTE_LENGTH));
     }
 }

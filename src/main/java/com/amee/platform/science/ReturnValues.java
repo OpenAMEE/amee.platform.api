@@ -7,19 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A container class to hold multiple GHG values returned by a Algorithm.
- *
- */
-public class Amounts {
-
+public class ReturnValues {
     // These are the default values used in CO2Amount
     private static final String CO2_DEFAULT_TYPE = "CO2";
     private static final String CO2_DEFAULT_UNIT = "kg";
     private static final String CO2_DEFAULT_PER_UNIT = "year";
 
     /** The return Amounts, indexed by GHG type. */
-    private Map<String, CO2Amount> amounts = new HashMap<String, CO2Amount>();
+    private Map<String, ReturnValue> returnValues = new HashMap<String, ReturnValue>();
 
     /** The default GHG type. */
     private String defaultType;
@@ -27,34 +22,34 @@ public class Amounts {
     /** Optional text notes. */
     private List<Note> notes = new ArrayList<Note>();
 
-    public Map<String, CO2Amount> getAmounts() {
-        return amounts;
+    public Map<String, ReturnValue> getReturnValues() {
+        return returnValues;
     }
 
-    /**
-     * Puts a CO2 Amount using default units (kg/year)
-     *
-     * @param value amount of CO2 in kg/year.
-     */
-    public void putCo2Amount(double value) {
-        putAmount(CO2_DEFAULT_TYPE, CO2_DEFAULT_UNIT, CO2_DEFAULT_PER_UNIT, value);
-    }
-
-    /**
-     * Get the CO2 Amount.
-     *
-     * @return the CO2 Amount
-     * @throws IllegalStateException if Amounts is non-empty and does not contain a CO2 Amount.
-     */
-    public Amount getCo2Amount() {
-        if (amounts.isEmpty()) {
-            return CO2Amount.ZERO;
-        } else if (amounts.containsKey(CO2_DEFAULT_TYPE)) {
-            return amounts.get(CO2_DEFAULT_TYPE);
-        } else {
-            throw new IllegalStateException("There is no value of type " + CO2_DEFAULT_TYPE);
-        }
-    }
+//    /**
+//     * Puts a CO2 Amount using default units (kg/year)
+//     *
+//     * @param value amount of CO2 in kg/year.
+//     */
+//    public void putCo2Amount(double value) {
+//        putAmount(CO2_DEFAULT_TYPE, CO2_DEFAULT_UNIT, CO2_DEFAULT_PER_UNIT, value);
+//    }
+//
+//    /**
+//     * Get the CO2 Amount.
+//     *
+//     * @return the CO2 Amount
+//     * @throws IllegalStateException if Amounts is non-empty and does not contain a CO2 Amount.
+//     */
+//    public Amount getCo2Amount() {
+//        if (amounts.isEmpty()) {
+//            return CO2Amount.ZERO;
+//        } else if (amounts.containsKey(CO2_DEFAULT_TYPE)) {
+//            return amounts.get(CO2_DEFAULT_TYPE);
+//        } else {
+//            throw new IllegalStateException("There is no value of type " + CO2_DEFAULT_TYPE);
+//        }
+//    }
 
     /**
      * Add an amount to the return values.
@@ -64,13 +59,13 @@ public class Amounts {
      * @param perUnit the per unit, eg 'month'.
      * @param value the value of the amount.
      */
-    public void putAmount(String type, String unit, String perUnit, double value) {
-        CO2Amount amount = newAmount(unit, perUnit, value);
-        amounts.put(type, amount);
+    public void putValue(String type, String unit, String perUnit, double value) {
+        ReturnValue returnValue = new ReturnValue(type, unit, perUnit, value);
+        returnValues.put(type, returnValue);
 
         // TODO: Is it correct to make the first amount the default?
         // It guards against forgetting to set a default type.
-        if (amounts.size() == 1) {
+        if (returnValues.size() == 1) {
             setDefaultType(type);
         }
     }
@@ -89,7 +84,7 @@ public class Amounts {
      * @throws IllegalArgumentException if there are no values of the given type.
      */
     public void setDefaultType(String type) {
-        if (amounts.containsKey(type)) {
+        if (returnValues.containsKey(type)) {
             defaultType = type;
         } else {
             throw new IllegalArgumentException("There are no values of type " + type);
@@ -115,22 +110,24 @@ public class Amounts {
      * @return the default Amount or ZERO if there are no Amounts.
      * @throws IllegalStateException if there is no default type set.
      */
-    public CO2Amount getDefaultAmount() {
-        if (amounts.isEmpty()) {
+    public CO2Amount defaultValueAsAmount() {
+        if (returnValues.isEmpty()) {
             return CO2Amount.ZERO;
         } else if (defaultType == null) {
             throw new IllegalStateException("There is no default type");
         }
-        return amounts.get(defaultType);
+        ReturnValue defaultValue = returnValues.get(defaultType);
+        return defaultValue.asAmount();
+//        return newAmount(defaultValue.getUnit(), defaultValue.getPerUnit(), defaultValue.getValue());
     }
 
     /**
-     * Get the numeric value of the default Amount.
+     * Get the numeric value of the default ReturnValue.
      *
      * @return the value of the default Amount.
      */
-    public double getDefaultAmountAsDouble() {
-        return getDefaultAmount().getValue();
+    public double defaultValueAsDouble() {
+        return returnValues.get(defaultType).asDouble();
     }
 
     /**
@@ -162,10 +159,9 @@ public class Amounts {
     @Override
     public String toString() {
         return new ToStringBuilder(this).
-            append("amounts", amounts).
+            append("returnValues", returnValues).
             append("defaultType", defaultType).
             append("notes", notes).
             toString();
     }
-
 }

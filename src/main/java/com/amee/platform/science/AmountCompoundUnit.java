@@ -28,6 +28,10 @@ public class AmountCompoundUnit extends AmountUnit {
         return !this.perUnit.equals(perUnit);
     }
 
+    public Unit getUnit() {
+        return unit;
+    }
+
     public AmountPerUnit getPerUnit() {
         return perUnit;
     }

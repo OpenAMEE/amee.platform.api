@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 /**
  * The unit of a CO2 amount calculated by AMEE.
@@ -88,6 +89,10 @@ public class CO2AmountUnit extends AmountCompoundUnit {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public Unit getBaseUnit() {
+        return unit;
     }
 }
 
