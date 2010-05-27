@@ -20,20 +20,20 @@
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.platform.science.CO2AmountUnit;
+import com.amee.platform.science.*;
 import com.amee.domain.Builder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.profile.ProfileItem;
-import com.amee.platform.science.AmountCompoundUnit;
-import com.amee.platform.science.StartEndDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.util.Map;
 
 public class ProfileItemBuilder implements Builder {
 
@@ -94,9 +94,31 @@ public class ProfileItemBuilder implements Builder {
         buildElement(obj, detailed);
 
         JSONObject amount = new JSONObject();
-        amount.put("value", item.getAmounts().getDefaultAmount().convert(returnUnit).getValue());
+        amount.put("value", item.getAmounts().defaultValueAsAmount().convert(returnUnit).getValue());
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
+
+        // Multiple return values
+        // TODO: refactor
+        JSONObject amounts = new JSONObject(); // TODO: Should be array?
+        for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
+            JSONObject multiAmount = new JSONObject();
+            multiAmount.put("value", entry.getValue().getValue());
+            multiAmount.put("type", entry.getKey());
+            multiAmount.put("unit", entry.getValue().getUnit());
+            multiAmount.put("perUnit", entry.getValue().getPerUnit());
+            if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
+                multiAmount.put("default", "true");
+            }
+            amounts.put("amount", multiAmount);
+        }
+        for (Note note : item.getAmounts().getNotes()) {
+            JSONObject noteObj = new JSONObject();
+            noteObj.put("type", note.getType());
+            noteObj.put("value", note.getValue());
+            amounts.put("note", noteObj);
+        }
+        obj.put("amounts", amounts);
 
         // Convert to user's time zone
         obj.put("startDate", StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
@@ -121,9 +143,33 @@ public class ProfileItemBuilder implements Builder {
 
         Element amount = document.createElement("Amount");
 
-        amount.setTextContent(item.getAmounts().getDefaultAmount().convert(returnUnit).toString());
+        amount.setTextContent(item.getAmounts().defaultValueAsAmount().convert(returnUnit).toString());
         amount.setAttribute("unit", returnUnit.toString());
         element.appendChild(amount);
+
+        // Multiple return values
+        // TODO: refactor
+        Element amounts = document.createElement("Amounts");
+        for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
+            Element multiAmount = document.createElement("Amount");
+            multiAmount.setAttribute("type", entry.getKey());
+            multiAmount.setAttribute("unit", entry.getValue().getUnit());
+//            if (entry.getValue().getUnit() instanceof AmountCompoundUnit) {
+                multiAmount.setAttribute("perUnit", entry.getValue().getPerUnit());
+//            }
+            if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
+                multiAmount.setAttribute("default", "true");
+            }
+            multiAmount.setTextContent(entry.getValue().getValue() + "");
+            amounts.appendChild(multiAmount);
+        }
+        for (Note note : item.getAmounts().getNotes()) {
+            Element noteElm = document.createElement("Note");
+            noteElm.setAttribute("type", note.getType());
+            noteElm.setTextContent(note.getValue());
+            amounts.appendChild(noteElm);
+        }
+        element.appendChild(amounts);
 
         // Convert to user's time zone
         element.appendChild(XMLUtils.getElement(document, "StartDate",

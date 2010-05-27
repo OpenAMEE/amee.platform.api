@@ -8,6 +8,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.Item;
 import com.amee.domain.data.ItemValue;
+import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
 import org.json.JSONException;
@@ -60,7 +61,7 @@ public class ProfileItem extends Item {
     protected Date endDate;
 
     @Transient
-    private Amounts amounts = new Amounts();
+    private ReturnValues amounts = new ReturnValues();
 
     @Transient
     private Builder builder;
@@ -172,8 +173,8 @@ public class ProfileItem extends Item {
      * @param recalculate force recalculation of the amounts. If false, only calculate amounts if amounts is empty.
      * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
      */
-    public Amounts getAmounts(boolean recalculate) {
-        if (amounts.getAmounts().isEmpty() || recalculate) {
+    public ReturnValues getAmounts(boolean recalculate) {
+        if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
             calculationService.calculate(this);
         }
@@ -189,11 +190,11 @@ public class ProfileItem extends Item {
      *
      * @return - the {@link com.amee.platform.science.Amounts Amounts} for this ProfileItem
      */
-    public Amounts getAmounts() {
+    public ReturnValues getAmounts() {
         return getAmounts(false);
     }
 
-    public void setAmounts(Amounts amounts) {
+    public void setAmounts(ReturnValues amounts) {
         this.amounts = amounts;
     }
 
