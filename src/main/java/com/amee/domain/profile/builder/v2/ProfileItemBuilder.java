@@ -98,26 +98,45 @@ public class ProfileItemBuilder implements Builder {
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
 
+        // TODO: Refactor this stuff into a method?
         // Multiple return values
-        // TODO: refactor
-        JSONObject amounts = new JSONObject(); // TODO: Should be array?
+        JSONObject amounts = new JSONObject();
+
+        // Create an array of amount objects
+        JSONArray amountArray = new JSONArray();
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
-            JSONObject multiAmount = new JSONObject();
-            multiAmount.put("value", entry.getValue().getValue());
-            multiAmount.put("type", entry.getKey());
-            multiAmount.put("unit", entry.getValue().getUnit());
-            multiAmount.put("perUnit", entry.getValue().getPerUnit());
+
+            // Create an Amount object
+            JSONObject amountObj = new JSONObject();
+            amountObj.put("value", entry.getValue().getValue());
+            amountObj.put("type", entry.getKey());
+            amountObj.put("unit", entry.getValue().getUnit());
+            amountObj.put("perUnit", entry.getValue().getPerUnit());
             if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
-                multiAmount.put("default", "true");
+                amountObj.put("default", "true");
             }
-            amounts.put("amount", multiAmount);
+
+            // Add the object to the amounts array
+            amountArray.put(amountObj);
         }
+
+        // Add the amount array to the amounts object.
+        amounts.put("amount", amountArray);
+
+        // Create an array of note objects
+        JSONArray noteArray = new JSONArray();
         for (Note note : item.getAmounts().getNotes()) {
             JSONObject noteObj = new JSONObject();
             noteObj.put("type", note.getType());
             noteObj.put("value", note.getValue());
-            amounts.put("note", noteObj);
+
+            // Add the note object to the notes array
+            noteArray.put(noteObj);
         }
+
+        // Add the notes array to the amounts object.
+        amounts.put("note", noteArray);
+        
         obj.put("amounts", amounts);
 
         // Convert to user's time zone
@@ -148,7 +167,6 @@ public class ProfileItemBuilder implements Builder {
         element.appendChild(amount);
 
         // Multiple return values
-        // TODO: refactor
         Element amounts = document.createElement("Amounts");
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
             Element multiAmount = document.createElement("Amount");
