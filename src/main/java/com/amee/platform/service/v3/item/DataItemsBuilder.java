@@ -167,7 +167,6 @@ public class DataItemsBuilder implements ResourceBuilder {
         }
 
         public void start() {
-            dataItemRenderer = new DataItemBuilder.DataItemDOMRenderer(false);
             rootElem = new Element("Representation");
             ItemsElem = new Element("Items");
             rootElem.addContent(ItemsElem);

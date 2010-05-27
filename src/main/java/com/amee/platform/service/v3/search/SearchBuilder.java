@@ -52,7 +52,6 @@ public class SearchBuilder implements ResourceBuilder {
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         renderer = new RendererHelper<SearchRenderer>().getRenderer(requestWrapper, RENDERERS);
-        renderer.start();
         SearchFilter filter = new SearchFilter();
         validationHelper.setSearchFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
@@ -109,7 +108,8 @@ public class SearchBuilder implements ResourceBuilder {
         public SearchJSONRenderer() {
             super();
             this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryJSONRenderer(false);
-            this.dataItemRenderer = new DataItemBuilder.DataItemJSONRenderer();
+            this.dataItemRenderer = new DataItemBuilder.DataItemJSONRenderer(false);
+            start();
         }
 
         public void start() {
@@ -161,7 +161,8 @@ public class SearchBuilder implements ResourceBuilder {
         public SearchDOMRenderer() {
             super();
             this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryDOMRenderer(false);
-            this.dataItemRenderer = new DataItemBuilder.DataItemDOMRenderer();
+            this.dataItemRenderer = new DataItemBuilder.DataItemDOMRenderer(false);
+            start();
         }
 
         public void start() {
