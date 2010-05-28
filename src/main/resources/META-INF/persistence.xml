@@ -33,9 +33,9 @@
             <property name="hibernate.use_sql_comments" value="false"/>
             <property name="hibernate.jdbc.batch_size" value="50"/>
             <!-- *** Cache Configuration *** -->
-            <property name="hibernate.cache.use_query_cache" value="true"/>
-            <property name="hibernate.cache.use_second_level_cache" value="true"/>
-            <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider"/>
+            <property name="hibernate.cache.use_query_cache" value="${amee.useQueryCache}"/>
+            <property name="hibernate.cache.use_second_level_cache" value="${amee.useSecondLevelCache}"/>
+            <property name="hibernate.cache.provider_class" value="${amee.cacheProviderClass}"/>
             <!--<property name="hibernate.cache.provider_class" value="com.googlecode.hibernate.memcached.MemcachedCacheProvider"/>-->
             <property name="hibernate.bytecode.provider" value="cglib"/>
             <property name="hibernate.generate_statistics" value="true"/>

@@ -115,4 +115,8 @@ public class LocaleName extends AMEEEntity {
     public ObjectType getObjectType() {
         return ObjectType.LN;
     }
+
+    public IAMEEEntityReference getEntityReference() {
+        return entity;
+    }
 }
