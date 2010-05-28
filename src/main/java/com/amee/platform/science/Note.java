@@ -2,6 +2,9 @@ package com.amee.platform.science;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+/**
+ * A simple object containing a type and some text.
+ */
 public class Note {
     public static final int MAX_TYPE_LENGTH = 255;
     public static final int MAX_VALUE_LENGTH = 255;
@@ -45,6 +48,4 @@ public class Note {
             append("value", value).
             toString();
     }
-
-    // TODO: handle creating JSON and XML.
 }
