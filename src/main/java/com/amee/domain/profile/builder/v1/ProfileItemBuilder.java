@@ -87,9 +87,9 @@ public class ProfileItemBuilder implements Builder {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
         if (!item.isSingleFlight()) {
-            obj.put("amountPerMonth", item.getAmount().convert(AmountPerUnit.MONTH).getValue());
+            obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue());
         } else {
-            obj.put("amountPerMonth", item.getAmount().getValue());
+            obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().getValue());
         }
         obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));
@@ -106,9 +106,9 @@ public class ProfileItemBuilder implements Builder {
 
         if (!item.isSingleFlight()) {
             element.appendChild(XMLUtils.getElement(document, "AmountPerMonth",
-                item.getAmount().convert(AmountPerUnit.MONTH).toString()));
+                item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).toString()));
         } else {
-            element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmount().toString()));
+            element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmounts().toString()));
         }
         element.appendChild(XMLUtils.getElement(document, "ValidFrom",
                 DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()))));

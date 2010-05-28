@@ -28,12 +28,7 @@ import com.amee.domain.auth.Group;
 import com.amee.domain.auth.GroupPrincipal;
 import com.amee.domain.auth.Permission;
 import com.amee.domain.auth.User;
-import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
-import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValue;
-import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.data.LocaleName;
+import com.amee.domain.data.*;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.profile.ProfileItem;
@@ -42,9 +37,11 @@ import com.amee.domain.tag.Tag;
 
 import java.io.Serializable;
 
+// TODO: Refactor (see other Enums)
+
 public enum ObjectType implements Serializable {
 
-    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET;
+    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD;
 
     private String[] names = {
             "DC",
@@ -66,7 +63,8 @@ public enum ObjectType implements Serializable {
             "AV",
             "MD",
             "TA",
-            "ET"};
+            "ET",
+            "RVD"};
 
     private String[] labels = {
             "DataCategory",
@@ -88,7 +86,8 @@ public enum ObjectType implements Serializable {
             "APIVersion",
             "Metadata",
             "Tag",
-            "EntityTag"};
+            "EntityTag",
+            "ReturnValueDefinition"};
 
     public String toString() {
         return getName();
@@ -111,6 +110,8 @@ public enum ObjectType implements Serializable {
             return ID;
         } else if (ItemValueDefinition.class.isAssignableFrom(c)) {
             return IVD;
+        } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
+            return RVD;
         } else if (DataItem.class.isAssignableFrom(c)) {
             return DI;
         } else if (ProfileItem.class.isAssignableFrom(c)) {
@@ -163,6 +164,8 @@ public enum ObjectType implements Serializable {
             return ItemDefinition.class;
         } else if (ItemValueDefinition.class.isAssignableFrom(c)) {
             return ItemValueDefinition.class;
+        } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
+            return ReturnValueDefinition.class;
         } else if (DataItem.class.isAssignableFrom(c)) {
             return DataItem.class;
         } else if (ProfileItem.class.isAssignableFrom(c)) {
