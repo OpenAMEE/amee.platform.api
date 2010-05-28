@@ -1,5 +1,7 @@
 package com.amee.platform.science;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -74,14 +76,17 @@ public class ReturnValue {
         return new CO2Amount(value, amountUnit);
     }
 
-    // TODO: We should add in the other fields here.
     @Override
     public String toString() {
         NumberFormat f = NumberFormat.getInstance();
-         if (f instanceof DecimalFormat) {
-             ((DecimalFormat) f).applyPattern("0.0################");
-         }
-
-         return f.format(value);
+        if (f instanceof DecimalFormat) {
+            ((DecimalFormat) f).applyPattern("0.0################");
+        }
+        return new ToStringBuilder(this).
+            append("type", type).
+            append("unit", unit).
+            append("perUnit", perUnit).
+            append("value", f.format(value)).
+            toString();
     }
 }

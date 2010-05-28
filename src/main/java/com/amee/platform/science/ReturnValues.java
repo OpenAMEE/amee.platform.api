@@ -7,6 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Holds a collection of ReturnValue objects added by Algorithms.
+ * The first ReturnValue added is marked as the default but this may be changed by calling setDefaultType.
+ * A list of Note objects may be added containing additional information about the ReturnValues.
+ */
 public class ReturnValues {
 
     /** The return values, indexed by GHG type. */
@@ -34,7 +39,7 @@ public class ReturnValues {
         ReturnValue returnValue = new ReturnValue(type, unit, perUnit, value);
         returnValues.put(type, returnValue);
 
-        // TODO: Is it correct to make the first added amount the default like this?
+        // We make the first added amount the default.
         if (returnValues.size() == 1) {
             setDefaultType(type);
         }
