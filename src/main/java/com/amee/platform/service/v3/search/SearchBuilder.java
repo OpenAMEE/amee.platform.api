@@ -53,6 +53,7 @@ public class SearchBuilder implements ResourceBuilder {
     public Object handle(RequestWrapper requestWrapper) {
         renderer = new RendererHelper<SearchRenderer>().getRenderer(requestWrapper, RENDERERS);
         SearchFilter filter = new SearchFilter();
+        filter.setLoadDataItemValues(requestWrapper.getMatrixParameters().containsKey("values"));
         validationHelper.setSearchFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, filter, renderer);
