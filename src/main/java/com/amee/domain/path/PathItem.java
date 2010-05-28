@@ -118,6 +118,12 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
     }
 
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof PathItem)) {
+            return false;
+        }
         PathItem other = (PathItem) o;
         return getFullPath().equalsIgnoreCase(other.getFullPath());
     }
@@ -138,10 +144,12 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
     // Used by EnvironmentPIGFactory & ProfilePIGFactory.
 
     public void add(PathItem child) {
-        children.add(child);
-        child.setParent(this);
-        if (getPathItemGroup() != null) {
-            getPathItemGroup().add(child);
+        synchronized (children) {
+            children.add(child);
+            child.setParent(this);
+            if (getPathItemGroup() != null) {
+                getPathItemGroup().add(child);
+            }
         }
     }
 
@@ -437,7 +445,6 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
         } else {
             return null;
         }
-
     }
 
     public void setEntity(AMEEEntity entity) {
