@@ -53,7 +53,14 @@ public class SearchBuilder implements ResourceBuilder {
     public Object handle(RequestWrapper requestWrapper) {
         renderer = new RendererHelper<SearchRenderer>().getRenderer(requestWrapper, RENDERERS);
         SearchFilter filter = new SearchFilter();
-        filter.setLoadDataItemValues(requestWrapper.getMatrixParameters().containsKey("values"));
+        filter.setLoadDataItemValues(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("values"));
+        filter.setLoadMetadatas(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("authority") ||
+                        requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                        requestWrapper.getMatrixParameters().containsKey("provenance"));
         validationHelper.setSearchFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, filter, renderer);

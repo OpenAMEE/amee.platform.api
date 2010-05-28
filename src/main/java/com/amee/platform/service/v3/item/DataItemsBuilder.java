@@ -70,6 +70,13 @@ public class DataItemsBuilder implements ResourceBuilder {
             if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
                 // Create filter and do search.
                 DataItemFilter filter = new DataItemFilter(dataCategory.getItemDefinition());
+                filter.setLoadDataItemValues(
+                        requestWrapper.getMatrixParameters().containsKey("full") ||
+                                requestWrapper.getMatrixParameters().containsKey("values"));
+                filter.setLoadMetadatas(
+                        requestWrapper.getMatrixParameters().containsKey("full") ||
+                                requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                                requestWrapper.getMatrixParameters().containsKey("provenance"));
                 validationHelper.setDataItemFilter(filter);
                 if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
                     handle(requestWrapper, dataCategory, filter, renderer);

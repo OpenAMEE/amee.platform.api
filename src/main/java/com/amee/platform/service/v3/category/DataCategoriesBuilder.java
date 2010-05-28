@@ -48,6 +48,11 @@ public class DataCategoriesBuilder implements ResourceBuilder {
     public Object handle(RequestWrapper requestWrapper) {
         renderer = new RendererHelper<DataCategoriesRenderer>().getRenderer(requestWrapper, RENDERERS);
         DataCategoryFilter filter = new DataCategoryFilter();
+        filter.setLoadMetadatas(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("authority") ||
+                        requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                        requestWrapper.getMatrixParameters().containsKey("provenance"));
         validationHelper.setDataCategoryFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, filter);

@@ -55,7 +55,7 @@ public class DataCategoryBuilder implements ResourceBuilder {
     @Autowired
     private TagService tagService;
 
-    DataCategoryRenderer renderer;
+    private DataCategoryRenderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
