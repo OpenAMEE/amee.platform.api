@@ -98,7 +98,6 @@ public class ProfileItemBuilder implements Builder {
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
 
-        // TODO: Refactor this stuff into a method?
         // Multiple return values
         JSONObject amounts = new JSONObject();
 
