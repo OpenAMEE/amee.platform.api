@@ -131,6 +131,8 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
     /**
      * Two AMEEEntityReferences are considered equal if the entityId and entityType properties
      * match, along with standard object equality.
+     * <p/>
+     * This needs to be kept the same as com.amee.domain.AMEEEntity#equals.
      *
      * @param o object to compare against
      * @return true if the obejcts are considered equal, otherwise false
@@ -145,6 +147,8 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
 
     /**
      * Returns a hash code based on the entityId and entityType properties.
+     * <p/>
+     * This needs to be kept the same as com.amee.domain.AMEEEntity#hashCode.
      *
      * @return the hash code
      */

@@ -7,12 +7,15 @@ import com.amee.domain.ValueDefinition;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -37,7 +40,7 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
 
     @Column(name = "IS_DEFAULT")
     private boolean isDefault;
-    
+
     public ReturnValueDefinition() {
         super();
     }
@@ -93,7 +96,6 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
         return "ItemValueDefinition_" + getUid();
     }
 
-    @Override
     public ObjectType getObjectType() {
         return ObjectType.RVD;
     }

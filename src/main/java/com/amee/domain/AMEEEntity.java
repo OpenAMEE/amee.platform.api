@@ -61,6 +61,8 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      * Two AMEEEntity instances are considered equal if their UID matches, along with standard
      * object identity matching. The IAMEEEntityReference interface is used as the base identity
      * for all AMEEEntity instances.
+     * <p/>
+     * This needs to be kept the same as com.amee.domain.AMEEEntityReference#equals.
      *
      * @param o object to compare
      * @return true if the supplied object matches this object
@@ -71,6 +73,21 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
         if ((o == null) || !IAMEEEntityReference.class.isAssignableFrom(o.getClass())) return false;
         IAMEEEntityReference entity = (IAMEEEntityReference) o;
         return getEntityUid().equals(entity.getEntityUid()) && getObjectType().equals(entity.getObjectType());
+    }
+
+    /**
+     * Returns a hash code based on the entityId and entityType properties.
+     * <p/>
+     * This needs to be kept the same as com.amee.domain.AMEEEntityReference#hashCode.
+     *
+     * @return the hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + (null == getEntityUid() ? 0 : getEntityUid().hashCode());
+        hash = 31 * hash + (null == getObjectType() ? 0 : getObjectType().hashCode());
+        return hash;
     }
 
     /**
