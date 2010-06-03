@@ -1,5 +1,7 @@
 package com.amee.base.resource;
 
+import org.jdom.Document;
+import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +24,13 @@ public class MissingAttributeException extends ResourceException {
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
+    }
+
+    public Document getDocument() {
+        Element rootElem = new Element("Representation");
+        rootElem.addContent(new Element("Status").setText("ERROR"));
+        rootElem.addContent(new Element("Error").setText("An attribute was missing: " + getAttributeName()));
+        return new Document(rootElem);
     }
 
     public String getAttributeName() {

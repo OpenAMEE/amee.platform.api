@@ -5,9 +5,9 @@ import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NotFoundException extends ResourceException {
+public class TimedOutException extends ResourceException {
 
-    public NotFoundException() {
+    public TimedOutException() {
         super();
     }
 
@@ -15,7 +15,7 @@ public class NotFoundException extends ResourceException {
     public JSONObject getJSONObject() {
         try {
             JSONObject o = new JSONObject();
-            o.put("status", "NOT_FOUND");
+            o.put("status", "TIMED_OUT");
             return o;
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
@@ -24,7 +24,7 @@ public class NotFoundException extends ResourceException {
 
     public Document getDocument() {
         Element rootElem = new Element("Representation");
-        rootElem.addContent(new Element("Status").setText("NOT_FOUND"));
+        rootElem.addContent(new Element("Status").setText("TIMED_OUT"));
         return new Document(rootElem);
     }
 }

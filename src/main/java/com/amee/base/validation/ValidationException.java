@@ -2,6 +2,8 @@ package com.amee.base.validation;
 
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +30,13 @@ public class ValidationException extends ResourceException {
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
+    }
+
+    public Document getDocument() {
+        Element rootElem = new Element("Representation");
+        rootElem.addContent(getValidationResult().getElement());
+        rootElem.addContent(new Element("Status").setText("INVALID"));
+        return new Document(rootElem);
     }
 
     public ValidationResult getValidationResult() {

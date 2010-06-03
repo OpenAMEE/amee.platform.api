@@ -210,7 +210,7 @@ public class RequestWrapper implements Serializable {
         try {
             body = IOUtils.toByteArray(stream);
         } catch (IOException e) {
-            throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
+            throw new RuntimeException("Caught IOException: " + e.getMessage());
         }
     }
 
