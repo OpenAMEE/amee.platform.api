@@ -6,6 +6,8 @@ import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
 import com.amee.base.resource.ValidationResult;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -32,6 +34,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class GenericResource extends Resource {
+
+    private final Log log = LogFactory.getLog(getClass());
 
     public final static DOMOutputter DOM_OUTPUTTER = new DOMOutputter();
 
@@ -71,11 +75,16 @@ public class GenericResource extends Resource {
      */
     @Override
     public Representation represent(Variant variant) {
+        Representation representation;
         if (!hasValidationResults()) {
-            return getBuildManager().getRepresentation(variant);
+            representation = getBuildManager().getRepresentation(variant);
         } else {
-            return getValidationResultRepresentation(variant.getMediaType());
+            representation = getValidationResultRepresentation(variant.getMediaType());
         }
+        if (representation == null) {
+            log.warn("represent() Representation was null.");
+        }
+        return representation;
     }
 
     protected Representation getValidationResultRepresentation(MediaType mediaType) {

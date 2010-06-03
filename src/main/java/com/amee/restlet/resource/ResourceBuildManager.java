@@ -43,10 +43,11 @@ public class ResourceBuildManager extends ResourceManager {
     }
 
     public Representation getRepresentation(Variant variant) {
+        Representation representation = null;
         if ((builder != null) && (mediaTypes.contains(variant.getMediaType()))) {
-            return getRepresentation(builder);
+            representation = getRepresentation(builder);
         }
-        return null;
+        return representation;
     }
 
     public Representation getRepresentation(ResourceBuilder builder) {
@@ -65,11 +66,11 @@ public class ResourceBuildManager extends ResourceManager {
                 } else if (Document.class.isAssignableFrom(result.getClass())) {
                     representation = getDomRepresentation((Document) result);
                 } else {
-                    log.error("getRepresentation() Result MediaType not supported.");
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    log.warn("getRepresentation() Response media type is not supported.");
+                    getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
                 }
             } else {
-                log.error("getRepresentation() No result.");
+                log.error("getRepresentation() Result was null.");
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }
         }
@@ -94,6 +95,8 @@ public class ResourceBuildManager extends ResourceManager {
                     getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                 } else if (isNotAuthenticated(result)) {
                     getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                } else if (isTimedOut(result)) {
+                    getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                 } else {
                     log.warn("getJsonRepresentation() Status code not handled: " + result.getString("status"));
                 }
@@ -126,6 +129,8 @@ public class ResourceBuildManager extends ResourceManager {
                             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                         } else if (status.equals("NOT_AUTHENTICATED")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                        } else if (status.equals("TIMED_OUT")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                         } else {
                             log.warn("getDomRepresentation() Status code not handled: " + status);
                         }

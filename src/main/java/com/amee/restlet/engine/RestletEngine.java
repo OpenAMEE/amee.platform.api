@@ -53,11 +53,11 @@ public class RestletEngine extends Engine {
             }
             return true;
         } catch (Exception e) {
-            log.fatal("Caught Exception: " + e);
+            log.fatal("onStart() Caught Exception: " + e);
             e.printStackTrace();
             return false;
         } catch (Throwable e) {
-            log.fatal("Caught Throwable: " + e);
+            log.fatal("onStart() Caught Throwable: " + e);
             e.printStackTrace();
             return false;
         }

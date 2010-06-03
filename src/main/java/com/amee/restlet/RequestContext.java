@@ -98,14 +98,14 @@ public class RequestContext {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(requestPath + "|");
-        sb.append(type + "|");
-        sb.append(label + "|");
-        sb.append(requestParameters.replace("=", "__") + "|");
-        sb.append(form + "|");
-        sb.append(error + "|");
-        sb.append(method + "|");
-        sb.append(more + "|");
+        sb.append(requestPath).append("|");
+        sb.append(type).append("|");
+        sb.append(label).append("|");
+        sb.append(requestParameters.replace("=", "__")).append("|");
+        sb.append(form).append("|");
+        sb.append(error).append("|");
+        sb.append(method).append("|");
+        sb.append(more).append("|");
         sb.append(System.currentTimeMillis() - start);
         return sb.toString();
     }

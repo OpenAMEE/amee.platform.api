@@ -25,35 +25,28 @@ public class ResourceManager {
     }
 
     protected boolean isOk(JSONObject result) {
-        try {
-            return (result != null) && result.has("status") && result.getString("status").equals("OK");
-        } catch (JSONException e) {
-            // Swallow.
-            return false;
-        }
+        return isStatus(result, "OK");
     }
 
     protected boolean isNotFound(JSONObject result) {
-        try {
-            return (result != null) && result.has("status") && result.getString("status").equals("NOT_FOUND");
-        } catch (JSONException e) {
-            // Swallow.
-            return false;
-        }
+        return isStatus(result, "NOT_FOUND");
     }
 
     protected boolean isNotAuthenticated(JSONObject result) {
-        try {
-            return (result != null) && result.has("status") && result.getString("status").equals("NOT_AUTHENTICATED");
-        } catch (JSONException e) {
-            // Swallow.
-            return false;
-        }
+        return isStatus(result, "NOT_AUTHENTICATED");
     }
 
     protected boolean isInvalid(JSONObject result) {
+        return isStatus(result, "INVALID");
+    }
+
+    protected boolean isTimedOut(JSONObject result) {
+        return isStatus(result, "TIMED_OUT");
+    }
+
+    protected boolean isStatus(JSONObject result, String status) {
         try {
-            return (result != null) && result.has("status") && result.getString("status").equals("INVALID");
+            return (result != null) && result.has("status") && result.getString("status").equals(status);
         } catch (JSONException e) {
             // Swallow.
             return false;

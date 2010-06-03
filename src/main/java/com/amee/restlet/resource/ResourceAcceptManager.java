@@ -3,6 +3,8 @@ package com.amee.restlet.resource;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ValidationResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,8 @@ import java.util.Map;
 
 public class ResourceAcceptManager extends ResourceManager {
 
+    private final Log log = LogFactory.getLog(getClass());
+
     private Map<String, ResourceAcceptor<Object>> acceptors = new HashMap<String, ResourceAcceptor<Object>>();
 
     public void accept(Representation entity) {
@@ -28,11 +32,17 @@ public class ResourceAcceptManager extends ResourceManager {
             if (acceptors.containsKey(mediaType.getName())) {
                 // Send RequestWrapper to ResourceAcceptor.
                 Object result = acceptors.get(mediaType.getName()).handle(getRequestWrapper(entity));
-                // Handle the various result media types.
-                if (JSONObject.class.isAssignableFrom(result.getClass())) {
-                    handle((JSONObject) result);
+                if (result != null) {
+                    // Handle the various result media types.
+                    if (JSONObject.class.isAssignableFrom(result.getClass())) {
+                        handle((JSONObject) result);
+                    } else {
+                        log.warn("accept() Response media type is not supported.");
+                        getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                    }
                 } else {
-                    getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                    log.error("accept() Result was null.");
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 }
             } else {
                 getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
@@ -71,6 +81,8 @@ public class ResourceAcceptManager extends ResourceManager {
             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
         } else if (isNotAuthenticated(result)) {
             getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+        } else if (isTimedOut(result)) {
+            getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
         } else {
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
         }
@@ -102,7 +114,7 @@ public class ResourceAcceptManager extends ResourceManager {
                         entity.getStream(),
                         entity.getMediaType().getName());
             } catch (IOException e) {
-                throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
+                throw new RuntimeException("Caught IOException: " + e.getMessage());
             }
         }
     }
