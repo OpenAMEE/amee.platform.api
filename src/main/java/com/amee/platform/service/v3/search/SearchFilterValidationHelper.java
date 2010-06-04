@@ -28,9 +28,10 @@ public class SearchFilterValidationHelper extends ValidationHelper {
 
     @Override
     protected void registerCustomEditors(DataBinder dataBinder) {
-        String[] fields = {"name", "wikiName", "path", "provenance", "authority", "wikiDoc", "itemDefinitionName", "label"};
+        String[] fields = {"name", "wikiName", "path", "provenance", "authority", "wikiDoc", "itemDefinitionName", "label", "tags"};
         Map<String, Float> boosts = new HashMap<String, Float>();
         boosts.put("wikiName", 10.0f);
+        boosts.put("tags", 10.0f);
         dataBinder.registerCustomEditor(Query.class, "q", new MultiFieldQueryParserEditor(fields, boosts));
         dataBinder.registerCustomEditor(Set.class, "types", new ObjectTypesEditor());
     }
