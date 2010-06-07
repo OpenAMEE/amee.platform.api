@@ -2,6 +2,7 @@ package com.amee.restlet.resource;
 
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,13 +54,18 @@ public class ResourceBuildManager extends ResourceManager {
     public Representation getRepresentation(ResourceBuilder builder) {
         Representation representation = null;
         if (builder != null) {
-            Object result = builder.handle(
-                    new RequestWrapper(
-                            getResource().getSupportedVersion(),
-                            getAcceptedMediaTypes(),
-                            getAttributes(),
-                            getMatrixParameters(),
-                            getQueryParameters()));
+            Object result;
+            RequestWrapper requestWrapper = new RequestWrapper(
+                    getResource().getSupportedVersion(),
+                    getAcceptedMediaTypes(),
+                    getAttributes(),
+                    getMatrixParameters(),
+                    getQueryParameters());
+            try {
+                result = builder.handle(requestWrapper);
+            } catch (ResourceException e) {
+                result = e.getResponse(requestWrapper);
+            }
             if (result != null) {
                 if (JSONObject.class.isAssignableFrom(result.getClass())) {
                     representation = getJsonRepresentation((JSONObject) result);

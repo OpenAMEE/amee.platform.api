@@ -2,6 +2,7 @@ package com.amee.restlet.resource;
 
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +32,13 @@ public class ResourceAcceptManager extends ResourceManager {
             MediaType mediaType = entity.getMediaType();
             if (acceptors.containsKey(mediaType.getName())) {
                 // Send RequestWrapper to ResourceAcceptor.
-                Object result = acceptors.get(mediaType.getName()).handle(getRequestWrapper(entity));
+                Object result = null;
+                RequestWrapper requestWrapper = getRequestWrapper(entity);
+                try {
+                    result = acceptors.get(mediaType.getName()).handle(requestWrapper);
+                } catch (ResourceException e) {
+                    result = e.getResponse(requestWrapper);
+                }
                 if (result != null) {
                     // Handle the various result media types.
                     if (JSONObject.class.isAssignableFrom(result.getClass())) {
