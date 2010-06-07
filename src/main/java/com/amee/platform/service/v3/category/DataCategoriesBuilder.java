@@ -53,6 +53,9 @@ public class DataCategoriesBuilder implements ResourceBuilder {
                         requestWrapper.getMatrixParameters().containsKey("authority") ||
                         requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
                         requestWrapper.getMatrixParameters().containsKey("provenance"));
+        filter.setLoadEntityTags(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("tags"));
         validationHelper.setDataCategoryFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, filter);
