@@ -57,6 +57,8 @@ public class SearchFilterValidationHelper extends ValidationHelper {
             allowedFields = new HashSet<String>();
             allowedFields.add("q");
             allowedFields.add("types");
+            allowedFields.add("resultStart");
+            allowedFields.add("resultLimit");
         }
         return allowedFields.toArray(new String[]{});
     }
