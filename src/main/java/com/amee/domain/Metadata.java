@@ -46,11 +46,6 @@ public class Metadata extends AMEEEntity {
         setValue(value);
     }
 
-    @Override
-    public String toString() {
-        return "Metadata_" + getUid();
-    }
-
     public ObjectType getObjectType() {
         return ObjectType.MD;
     }

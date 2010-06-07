@@ -90,11 +90,6 @@ public class User extends AMEEEnvironmentEntity implements Comparable {
         setName(name);
     }
 
-    @Override
-    public String toString() {
-        return "User: " + getUsername();
-    }
-
     public int compareTo(Object o) throws ClassCastException {
         if (this == o) return 0;
         User user = (User) o;

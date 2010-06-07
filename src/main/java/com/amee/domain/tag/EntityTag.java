@@ -13,6 +13,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ENTITY_TAG")
@@ -26,6 +29,9 @@ public class EntityTag extends AMEEEntity {
     @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
+    @Transient
+    private List<Tag> tags;
+
     public EntityTag() {
         super();
     }
@@ -34,11 +40,6 @@ public class EntityTag extends AMEEEntity {
         this();
         setEntityReference(entityReference);
         setTag(tag);
-    }
-
-    @Override
-    public String toString() {
-        return "EntityTag_" + getUid();
     }
 
     public ObjectType getObjectType() {
@@ -59,5 +60,17 @@ public class EntityTag extends AMEEEntity {
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+
+    public List<Tag> getTags() {
+        if (tags == null) {
+            tags = new ArrayList<Tag>();
+        }
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.getTags().clear();
+        this.getTags().addAll(tags);
     }
 }

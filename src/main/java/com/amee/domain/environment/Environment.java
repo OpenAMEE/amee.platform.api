@@ -51,11 +51,6 @@ public class Environment extends AMEEEntity implements Comparable {
         setName(name);
     }
 
-    @Override
-    public String toString() {
-        return "Environment_" + getUid();
-    }
-
     public int compareTo(Object o) {
         if (this == o) return 0;
         if (equals(o)) return 0;

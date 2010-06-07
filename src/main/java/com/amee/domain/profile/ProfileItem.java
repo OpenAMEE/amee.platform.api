@@ -16,7 +16,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -87,11 +93,6 @@ public class ProfileItem extends Item {
 
     public void setBuilder(Builder builder) {
         this.builder = builder;
-    }
-
-    @Override
-    public String toString() {
-        return "ProfileItem_" + getUid();
     }
 
     public ProfileItem getCopy() {
@@ -184,7 +185,7 @@ public class ProfileItem extends Item {
      * Get the GHG {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem.
      * <p/>
      * If the ProfileItem does not support calculations (i.e. metadata) an empty ReturnValues object is returned.
-     *
+     * <p/>
      * Note: this method only calculates the amounts if amounts is empty, ie, has not already been calculated.
      *
      * @return - the {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem

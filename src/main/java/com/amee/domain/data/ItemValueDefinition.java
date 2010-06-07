@@ -173,10 +173,6 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
         setName(name);
     }
 
-    public String toString() {
-        return "ItemValueDefinition_" + getUid();
-    }
-
     public boolean isUsableValue() {
         return getValue() != null && !getValue().isEmpty();
     }

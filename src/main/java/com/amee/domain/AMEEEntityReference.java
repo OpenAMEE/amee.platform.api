@@ -160,6 +160,11 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
         return hash;
     }
 
+    @Override
+    public String toString() {
+        return getEntityType() + "_" + getEntityUid();
+    }
+
     /**
      * Returns a JSONObject representing the AMEEEntityReference.
      *

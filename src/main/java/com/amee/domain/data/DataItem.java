@@ -74,11 +74,6 @@ public class DataItem extends Item {
         super(dataCategory, itemDefinition);
     }
 
-    @Override
-    public String toString() {
-        return "DataItem_" + getUid();
-    }
-
     public String getLabel() {
         String label = "";
         ItemValue itemValue;

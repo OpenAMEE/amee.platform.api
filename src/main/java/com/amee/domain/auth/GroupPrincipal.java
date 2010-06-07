@@ -12,7 +12,15 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * A GroupPrincipal joins a Group to a principal via an EntityReference.
@@ -49,11 +57,6 @@ public class GroupPrincipal extends AMEEEnvironmentEntity implements Comparable 
         super(group.getEnvironment());
         setGroup(group);
         setPrincipalReference(new AMEEEntityReference(principal));
-    }
-
-    @Override
-    public String toString() {
-        return "GroupPrincipal_" + getUid();
     }
 
     public int compareTo(Object o) throws ClassCastException {

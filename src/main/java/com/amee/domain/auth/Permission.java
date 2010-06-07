@@ -1,6 +1,10 @@
 package com.amee.domain.auth;
 
-import com.amee.domain.*;
+import com.amee.domain.AMEEEntityReference;
+import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
+import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -10,7 +14,14 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -103,11 +114,6 @@ public class Permission extends AMEEEnvironmentEntity implements Comparable {
     public Permission(Environment environment, IAMEEEntityReference principal, IAMEEEntityReference entity, Collection<PermissionEntry> entries) {
         this(environment, principal, entity);
         addEntries(entries);
-    }
-
-    @Override
-    public String toString() {
-        return "Permission_" + getUid();
     }
 
     public int compareTo(Object o) {

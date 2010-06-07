@@ -90,6 +90,11 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
         return hash;
     }
 
+    @Override
+    public String toString() {
+        return getObjectType() + "_" + getUid();
+    }
+
     /**
      * Copy values from this instance to the supplied instance.
      *

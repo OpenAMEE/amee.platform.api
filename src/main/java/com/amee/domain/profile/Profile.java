@@ -35,7 +35,12 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,11 +66,6 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
     public Profile(User user) {
         super(user.getEnvironment());
         setUser(user);
-    }
-
-    @Override
-    public String toString() {
-        return "Profile_" + getUid();
     }
 
     public JSONObject getJSONObject() throws JSONException {

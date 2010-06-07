@@ -55,11 +55,6 @@ public class Group extends AMEEEnvironmentEntity implements Comparable {
         setName(name);
     }
 
-    @Override
-    public String toString() {
-        return "Group_" + getUid();
-    }
-
     public int compareTo(Object o) throws ClassCastException {
         if (this == o) return 0;
         if (equals(o)) return 0;

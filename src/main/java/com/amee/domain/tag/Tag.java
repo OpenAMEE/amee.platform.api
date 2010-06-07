@@ -44,11 +44,6 @@ public class Tag extends AMEEEntity {
         setTag(tag);
     }
 
-    @Override
-    public String toString() {
-        return "Tag_" + getUid();
-    }
-
     public ObjectType getObjectType() {
         return ObjectType.TA;
     }

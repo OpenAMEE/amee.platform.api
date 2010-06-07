@@ -20,7 +20,6 @@
 package com.amee.domain;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.ValueType;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -56,10 +55,6 @@ public class ValueDefinition extends AMEEEnvironmentEntity {
         setEnvironment(environment);
         setName(name);
         setValueType(valueType);
-    }
-
-    public String toString() {
-        return "ValueDefinition_" + getUid();
     }
 
     public JSONObject getJSONObject() throws JSONException {
@@ -105,7 +100,7 @@ public class ValueDefinition extends AMEEEnvironmentEntity {
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, this);
     }
-    
+
     public String getName() {
         return name;
     }

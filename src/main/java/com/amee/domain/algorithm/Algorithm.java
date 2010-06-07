@@ -140,11 +140,6 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
         return ObjectType.AL;
     }
 
-    @Override
-    public String toString() {
-        return "Algorithm_" + getUid();
-    }
-
     public CompiledScript getCompiledScript(ScriptEngine engine) throws ScriptException {
         if (StringUtils.isBlank(getContent())) {
             throw new AlgorithmException(

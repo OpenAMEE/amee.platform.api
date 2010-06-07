@@ -71,17 +71,17 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     @Column(name = "DRILL_DOWN", length = DRILL_DOWN_SIZE, nullable = true)
     private String drillDown = "";
 
-    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderBy("name")
     private Set<Algorithm> algorithms = new HashSet<Algorithm>();
 
-    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @OrderBy("name")
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
 
-    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ReturnValueDefinition> returnValueDefinitions = new HashSet<ReturnValueDefinition>();
 
@@ -96,11 +96,6 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     public ItemDefinition(Environment environment, String name) {
         this(environment);
         setName(name);
-    }
-
-    @Override
-    public String toString() {
-        return "ItemDefinition_" + getUid();
     }
 
     public void add(Algorithm algorithm) {

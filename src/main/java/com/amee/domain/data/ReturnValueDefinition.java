@@ -91,11 +91,6 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
         this.valueDefinition = valueDefinition;
     }
 
-    @Override
-    public String toString() {
-        return "ItemValueDefinition_" + getUid();
-    }
-
     public ObjectType getObjectType() {
         return ObjectType.RVD;
     }

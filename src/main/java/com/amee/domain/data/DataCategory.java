@@ -136,11 +136,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         setItemDefinition(itemDefinition);
     }
 
-    @Override
-    public String toString() {
-        return "DataCategory_" + getUid();
-    }
-
     public JSONObject getJSONObject() throws JSONException {
         return getJSONObject(true);
     }

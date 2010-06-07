@@ -1,8 +1,8 @@
 package com.amee.domain.algorithm;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.environment.Environment;
 import com.amee.domain.ObjectType;
+import com.amee.domain.environment.Environment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,10 +26,6 @@ public class AlgorithmContext extends AbstractAlgorithm {
 
     public AlgorithmContext(Environment environment, String content) {
         super(environment, content);
-    }
-
-    public String toString() {
-        return "AlgorithmContext_" + getUid();
     }
 
     public Element getIdentityElement(Document document) {

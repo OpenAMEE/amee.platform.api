@@ -107,10 +107,6 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         this.startDate = item.getStartDate();
     }
 
-    public String toString() {
-        return "ItemValue_" + getUid();
-    }
-
     public void setBuilder(Builder builder) {
         this.builder = builder;
     }
