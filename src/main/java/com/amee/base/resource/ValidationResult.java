@@ -1,6 +1,5 @@
 package com.amee.base.resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +10,6 @@ import org.springframework.validation.FieldError;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +27,11 @@ public class ValidationResult implements Serializable {
         try {
             // Load values.
             if (obj.has("values")) {
-                JSONObject valuesObj = obj.getJSONObject("values");
-                Iterator iterator = valuesObj.keys();
-                while (iterator.hasNext()) {
-                    String key = (String) iterator.next();
-                    getValues().put(key, valuesObj.getString(key));
+                JSONArray valuesArr = obj.getJSONArray("values");
+                for (int i = 0; i < valuesArr.length(); i++) {
+                    String name = valuesArr.getJSONObject(i).getString("name");
+                    String value = valuesArr.getJSONObject(i).getString("value");
+                    getValues().put(name, value);
                 }
             }
             // Load Errors.
@@ -62,7 +60,7 @@ public class ValidationResult implements Serializable {
         Element valuesElem = element.getChild("Values");
         if (valuesElem != null) {
             for (Element valueElem : (List<Element>) valuesElem.getChildren()) {
-                getValues().put(valueElem.getName(), valueElem.getValue());
+                getValues().put(valueElem.getChild("Name").getValue(), valueElem.getChild("Value").getValue());
             }
         }
 
@@ -87,11 +85,16 @@ public class ValidationResult implements Serializable {
         JSONObject obj = new JSONObject();
         // add values
         if (!getValues().isEmpty()) {
-            JSONObject valuesObj = new JSONObject();
+            JSONArray valuesArr = new JSONArray();
             for (String key : getValues().keySet()) {
-                valuesObj.put(key, getValues().get(key));
+                if (getValues().get(key) != null) {
+                    valuesArr.put(
+                            new JSONObject()
+                                    .put("name", key)
+                                    .put("value", getValues().get(key)));
+                }
             }
-            obj.put("values", valuesObj);
+            obj.put("values", valuesArr);
         }
         // add errors
         if (getErrors() != null) {
@@ -116,7 +119,12 @@ public class ValidationResult implements Serializable {
         if (!getValues().isEmpty()) {
             Element valuesElem = new Element("Values");
             for (String key : getValues().keySet()) {
-                valuesElem.addContent(new Element(StringUtils.capitalize(key)).setText(getValues().get(key)));
+                if (getValues().get(key) != null) {
+                    valuesElem.addContent(
+                            new Element("Value")
+                                    .addContent(new Element("Name").setText(key))
+                                    .addContent(new Element("Value").setText(getValues().get(key))));
+                }
             }
             elem.addContent(valuesElem);
         }
