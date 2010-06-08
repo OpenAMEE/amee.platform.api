@@ -1,5 +1,6 @@
 package com.amee.platform.service.v3.item;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RendererHelper;
@@ -98,7 +99,9 @@ public class DataItemsBuilder implements ResourceBuilder {
             DataCategory dataCategory,
             QueryFilter filter,
             DataItemsRenderer renderer) {
-        for (DataItem dataItem : searchService.getDataItems(dataCategory, filter)) {
+        ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
+        renderer.setTruncated(resultsWrapper.isTruncated());
+        for (DataItem dataItem : resultsWrapper.getResults()) {
             dataItemBuilder.handle(requestWrapper, dataItem, renderer.getDataItemRenderer());
             renderer.newDataItem();
         }
@@ -111,6 +114,8 @@ public class DataItemsBuilder implements ResourceBuilder {
         public void start();
 
         public void newDataItem();
+
+        public void setTruncated(boolean truncated);
 
         public DataItemBuilder.DataItemRenderer getDataItemRenderer();
 
@@ -144,6 +149,10 @@ public class DataItemsBuilder implements ResourceBuilder {
             itemsArr.put(dataItemRenderer.getDataItemJSONObject());
         }
 
+        public void setTruncated(boolean truncated) {
+            put(rootObj, "resultsTruncated", truncated);
+        }
+
         public DataItemBuilder.DataItemRenderer getDataItemRenderer() {
             return dataItemRenderer;
         }
@@ -165,7 +174,7 @@ public class DataItemsBuilder implements ResourceBuilder {
 
         private DataItemBuilder.DataItemDOMRenderer dataItemRenderer;
         private Element rootElem;
-        private Element ItemsElem;
+        private Element itemsElem;
 
         public DataItemsDOMRenderer() {
             super();
@@ -175,8 +184,8 @@ public class DataItemsBuilder implements ResourceBuilder {
 
         public void start() {
             rootElem = new Element("Representation");
-            ItemsElem = new Element("Items");
-            rootElem.addContent(ItemsElem);
+            itemsElem = new Element("Items");
+            rootElem.addContent(itemsElem);
         }
 
         public void ok() {
@@ -184,7 +193,11 @@ public class DataItemsBuilder implements ResourceBuilder {
         }
 
         public void newDataItem() {
-            ItemsElem.addContent(dataItemRenderer.getDataItemElement());
+            itemsElem.addContent(dataItemRenderer.getDataItemElement());
+        }
+
+        public void setTruncated(boolean truncated) {
+            itemsElem.setAttribute("truncated", "" + truncated);
         }
 
         public DataItemBuilder.DataItemRenderer getDataItemRenderer() {

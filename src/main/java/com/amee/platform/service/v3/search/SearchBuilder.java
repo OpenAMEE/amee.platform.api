@@ -1,5 +1,6 @@
 package com.amee.platform.service.v3.search;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.resource.RendererHelper;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
@@ -75,7 +76,9 @@ public class SearchBuilder implements ResourceBuilder {
             RequestWrapper requestWrapper,
             SearchFilter filter,
             SearchRenderer renderer) {
-        for (AMEEEntity entity : searchService.getEntities(filter)) {
+        ResultsWrapper<AMEEEntity> resultsWrapper = searchService.getEntities(filter);
+        renderer.setTruncated(resultsWrapper.isTruncated());
+        for (AMEEEntity entity : resultsWrapper.getResults()) {
             switch (entity.getObjectType()) {
                 case DC:
                     dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity, renderer.getDataCategoryRenderer());
@@ -98,6 +101,8 @@ public class SearchBuilder implements ResourceBuilder {
         public void newDataCategory();
 
         public void newDataItem();
+
+        public void setTruncated(boolean truncated);
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer();
 
@@ -136,6 +141,10 @@ public class SearchBuilder implements ResourceBuilder {
 
         public void newDataItem() {
             resultsArr.put(dataItemRenderer.getDataItemJSONObject());
+        }
+
+        public void setTruncated(boolean truncated) {
+            put(rootObj, "resultsTruncated", truncated);
         }
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
@@ -189,6 +198,10 @@ public class SearchBuilder implements ResourceBuilder {
 
         public void newDataItem() {
             resultsElem.addContent(dataItemRenderer.getDataItemElement());
+        }
+
+        public void setTruncated(boolean truncated) {
+            resultsElem.setAttribute("truncated", "" + truncated);
         }
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {

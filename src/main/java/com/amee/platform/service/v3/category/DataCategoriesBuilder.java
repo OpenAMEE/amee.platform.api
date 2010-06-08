@@ -1,5 +1,6 @@
 package com.amee.platform.service.v3.category;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.resource.Renderer;
 import com.amee.base.resource.RendererHelper;
 import com.amee.base.resource.RequestWrapper;
@@ -69,7 +70,9 @@ public class DataCategoriesBuilder implements ResourceBuilder {
     protected void handle(
             RequestWrapper requestWrapper,
             DataCategoryFilter filter) {
-        for (DataCategory dataCategory : searchService.getDataCategories(filter)) {
+        ResultsWrapper<DataCategory> resultsWrapper = searchService.getDataCategories(filter);
+        renderer.setTruncated(resultsWrapper.isTruncated());
+        for (DataCategory dataCategory : resultsWrapper.getResults()) {
             dataCategoryBuilder.handle(requestWrapper, dataCategory, renderer.getDataCategoryRenderer());
             renderer.newDataCategory();
         }
@@ -82,6 +85,8 @@ public class DataCategoriesBuilder implements ResourceBuilder {
         public void start();
 
         public void newDataCategory();
+
+        public void setTruncated(boolean truncated);
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer();
 
@@ -112,6 +117,10 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
         public void newDataCategory() {
             categoriesArr.put(dataCategoryRenderer.getDataCategoryJSONObject());
+        }
+
+        public void setTruncated(boolean truncated) {
+            put(rootObj, "resultsTruncated", truncated);
         }
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
@@ -155,6 +164,10 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
         public void newDataCategory() {
             categoriesElem.addContent(dataCategoryRenderer.getDataCategoryElement());
+        }
+
+        public void setTruncated(boolean truncated) {
+            categoriesElem.setAttribute("truncated", "" + truncated);
         }
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
