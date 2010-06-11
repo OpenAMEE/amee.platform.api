@@ -248,6 +248,7 @@ public class DataItem extends Item {
 
     public void setWikiDoc(String wikiDoc) {
         getOrCreateMetadata("wikiDoc").setValue(wikiDoc);
+        onModify();
     }
 
     public String getProvenance() {
@@ -256,6 +257,7 @@ public class DataItem extends Item {
 
     public void setProvenance(String provenance) {
         getOrCreateMetadata("provenance").setValue(provenance);
+        onModify();
     }
 
     // TODO: The following three methods are cut-and-pasted between various entities. They should be consolidated.

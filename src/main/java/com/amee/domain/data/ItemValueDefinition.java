@@ -472,6 +472,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     public void setWikiDoc(String wikiDoc) {
         getOrCreateMetadata("wikiDoc").setValue(wikiDoc);
+        onModify();
     }
 
     // TODO: The following three methods are cut-and-pasted between various entities. They should be consolidated.
