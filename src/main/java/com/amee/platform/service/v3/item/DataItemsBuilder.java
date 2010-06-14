@@ -12,7 +12,6 @@ import com.amee.domain.data.DataItem;
 import com.amee.domain.environment.Environment;
 import com.amee.platform.search.DataItemFilter;
 import com.amee.platform.search.DataItemFilterValidationHelper;
-import com.amee.platform.search.QueryFilter;
 import com.amee.platform.search.SearchService;
 import com.amee.service.data.DataService;
 import com.amee.service.environment.EnvironmentService;
@@ -97,7 +96,7 @@ public class DataItemsBuilder implements ResourceBuilder {
     protected void handle(
             RequestWrapper requestWrapper,
             DataCategory dataCategory,
-            QueryFilter filter,
+            DataItemFilter filter,
             DataItemsRenderer renderer) {
         ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
