@@ -13,7 +13,7 @@
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee-base.version>1.0.2-SNAPSHOT</amee-base.version>
+        <amee-base.version>1.0.2</amee-base.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <hibernate-core.version>3.5.1-Final</hibernate-core.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
