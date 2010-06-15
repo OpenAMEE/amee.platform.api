@@ -5,7 +5,7 @@
     <name>amee-persist</name>
     <groupId>com.amee</groupId>
     <artifactId>amee-persist</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
