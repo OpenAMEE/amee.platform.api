@@ -6,14 +6,14 @@
     <name>amee-restlet</name>
     <groupId>com.amee</groupId>
     <artifactId>amee-restlet</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee-base.version>1.0.2-SNAPSHOT</amee-base.version>
+        <amee-base.version>1.0.2</amee-base.version>
         <commons-lang.version>2.5</commons-lang.version>
         <jetty.version>6.1.15</jetty.version>
         <junit.version>4.7</junit.version>
