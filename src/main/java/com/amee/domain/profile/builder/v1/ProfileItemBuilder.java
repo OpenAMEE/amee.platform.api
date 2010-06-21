@@ -89,7 +89,7 @@ public class ProfileItemBuilder implements Builder {
         if (!item.isSingleFlight()) {
             obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue());
         } else {
-            obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().getValue());
+            obj.put("amountPerMonth", item.getAmounts().defaultValueAsDouble());
         }
         obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));
@@ -106,9 +106,9 @@ public class ProfileItemBuilder implements Builder {
 
         if (!item.isSingleFlight()) {
             element.appendChild(XMLUtils.getElement(document, "AmountPerMonth",
-                item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).toString()));
+                item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue() + ""));
         } else {
-            element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmounts().toString()));
+            element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmounts().defaultValueAsDouble() + ""));
         }
         element.appendChild(XMLUtils.getElement(document, "ValidFrom",
                 DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()))));
