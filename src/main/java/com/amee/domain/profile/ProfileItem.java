@@ -194,6 +194,17 @@ public class ProfileItem extends Item {
         return getAmounts(false);
     }
 
+    /**
+     * Returns the default GHG amount for this ProfileItem as a double.
+     * This method is only included to provide backwards compatibility for existing Algorithms.
+     *
+     * @return the double value of the default GHG amount.
+     */
+    @Deprecated
+    public double getAmount() {
+        return getAmounts().defaultValueAsDouble();
+    }
+
     public void setAmounts(ReturnValues amounts) {
         this.amounts = amounts;
     }
