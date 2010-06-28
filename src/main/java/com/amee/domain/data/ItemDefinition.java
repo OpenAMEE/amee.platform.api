@@ -38,19 +38,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "ITEM_DEFINITION")
@@ -126,7 +115,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
      */
     public boolean isDrillDownValue(ItemValueDefinition itemValueDefinition) {
         for (Choice choice : getDrillDownChoices()) {
-            if (choice.getName().equalsIgnoreCase(itemValueDefinition.getName())) {
+            if (choice.getName().equalsIgnoreCase(itemValueDefinition.getPath())) {
                 return true;
             }
         }
