@@ -14,9 +14,9 @@
 # These settings can be modified to fit the needs of your application
 
 # Application name. This should be changed for multi-deploys, eg amee-science
-APP_NAME=${AMEE_APP_NAME:-platform\.back}
+APP_NAME=${AMEE_APP_NAME:-platform\-api}
 INSTANCE_NAME=${AMEE_INSTANCE_NAME:-live}
-APP_LONG_NAME="AMEE Platform Back"
+APP_LONG_NAME="AMEE Platform API"
 
 ### BEGIN INIT INFO
 # Provides:          ${APP_NAME}.${INSTANCE_NAME}
