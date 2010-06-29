@@ -1,0 +1,435 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Identity. -->
+    <groupId>com.amee.platform</groupId>
+    <artifactId>amee-platform-api</artifactId>
+    <name>AMEE Platform API</name>
+    <packaging>pom</packaging>
+    <version>${amee-platform-api.version}</version>
+
+    <!-- Properties. -->
+    <properties>
+        <!-- Internal Versions. -->
+        <amee-platform-api.version>3.0</amee-platform-api.version>
+        <amee-base.version>1.0.2</amee-base.version>
+        <amee-persist.version>1.0.3</amee-persist.version>
+        <amee-messaging.version>1.0.2</amee-messaging.version>
+        <amee-platform-science.version>1.0.9</amee-platform-science.version>
+        <amee-platform-domain.version>1.0.3</amee-platform-domain.version>
+        <amee-platform-service.version>1.0.4</amee-platform-service.version>
+        <amee-platform-resource.version>1.0.4</amee-platform-resource.version>
+        <amee-restlet.version>1.0.3</amee-restlet.version>
+        <!-- External Versions. -->
+        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
+        <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
+        <!-- Note: Check Restlet release notes and jetty dependencies. -->
+        <cglib.version>2.2</cglib.version>
+        <commons-cli.version>1.2</commons-cli.version>
+        <commons-collections.version>3.2</commons-collections.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-lang.version>2.5</commons-lang.version>
+        <commons-logging.version>1.1.1</commons-logging.version>
+        <hibernate-core.version>3.5.1-Final</hibernate-core.version>
+        <hibernate-memcached.version>1.2.2</hibernate-memcached.version>
+        <hsqldb.version>1.8.0.10</hsqldb.version>
+        <jetty-servlet-api.version>2.5-20081211</jetty-servlet-api.version>
+        <jetty.version>6.1.15</jetty.version>
+        <jscience.version>4.3.1</jscience.version>
+        <junit.version>4.7</junit.version>
+        <log4j.version>1.2.15</log4j.version>
+        <log4jdbc.version>4-1.2alpha2</log4jdbc.version>
+        <mysql-connector-java.version>5.1.10</mysql-connector-java.version>
+        <org-aspectj.version>1.6.8</org-aspectj.version>
+        <org-json.version>2.0</org-json.version>
+        <quartz.version>1.6.1</quartz.version>
+        <restlet.version>1.1.10</restlet.version>
+        <slf4j.version>1.5.11</slf4j.version>
+        <spring.version>3.0.2.RELEASE</spring.version>
+        <wrapper.version>3.4.0</wrapper.version>
+        <xml-apis.version>1.3.04</xml-apis.version>
+        <!-- Paths. -->
+        <amee.home>/var/www/apps/platform-api</amee.home>
+        <amee.current>${amee.home}/current</amee.current>
+        <amee.current.lib>${amee.current}/lib</amee.current.lib>
+        <!-- Other. -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <!-- Modules. -->
+    <modules>
+        <module>engine</module>
+        <module>restlet</module>
+    </modules>
+
+    <!-- Internal Dependencies. -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.amee</groupId>
+                <artifactId>amee-base</artifactId>
+                <version>${amee-base.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee</groupId>
+                <artifactId>amee-persist</artifactId>
+                <version>${amee-persist.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee</groupId>
+                <artifactId>amee-restlet</artifactId>
+                <version>${amee-restlet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee</groupId>
+                <artifactId>amee-messaging</artifactId>
+                <version>${amee-messaging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-science</artifactId>
+                <version>${amee-platform-science.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-domain</artifactId>
+                <version>${amee-platform-domain.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-service</artifactId>
+                <version>${amee-platform-service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-resource</artifactId>
+                <version>${amee-platform-resource.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-api-engine</artifactId>
+                <version>${amee-platform-api.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Build Plugins. -->
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <!-- Copy all dependencies to build directories, ready for Capistrano install. -->
+                    <execution>
+                        <id>copy-dependencies-other</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <excludeScope>provided</excludeScope>
+                        </configuration>
+                    </execution>
+                    <!-- Copy all dependencies to local runtime directory, ready for local execution. -->
+                    <execution>
+                        <id>copy-dependencies-other-local</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>runtime</includeScope>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${amee.current.lib}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <CONF_HOME>${basedir}/conf</CONF_HOME>
+                        <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
+                        <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
+                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
+                        </CACHE_MANAGER_CLASS>
+                        <HOST_NAME>local-platform-api.amee.com</HOST_NAME>
+                        <AJP_PORT>8020</AJP_PORT>
+                    </environmentVariables>
+                    <systemProperties>
+                        <property>
+                            <name>amee.cacheProviderClass</name>
+                            <value>net.sf.ehcache.hibernate.SingletonEhCacheProvider</value>
+                        </property>
+                        <property>
+                            <name>amee.useQueryCache</name>
+                            <value>false</value>
+                        </property>
+                        <property>
+                            <name>amee.useSecondLevelCache</name>
+                            <value>false</value>
+                        </property>
+                        <property>
+                            <name>amee.hibernateDialect</name>
+                            <value>org.hibernate.dialect.HSQLDialect</value>
+                        </property>
+                        <property>
+                            <name>log4j.configuration</name>
+                            <value>test-log4j.xml</value>
+                        </property>
+                        <property>
+                            <name>sun.lang.ClassLoader.allowArraySyntax</name>
+                            <value>true</value>
+                        </property>
+                        <property>
+                            <name>java.awt.headless</name>
+                            <value>true</value>
+                        </property>
+                        <property>
+                            <name>amee.logLevel</name>
+                            <value>DEBUG</value>
+                        </property>
+                        <property>
+                            <name>amee.defaultLogLevel</name>
+                            <value>WARN</value>
+                        </property>
+                        <property>
+                            <name>server.name</name>
+                            <value>localhost</value>
+                        </property>
+                        <property>
+                            <name>amee.keyFile</name>
+                            <value>${basedir}/src/test/resources/crypto/amee.key</value>
+                        </property>
+                        <property>
+                            <name>amee.saltFile</name>
+                            <value>${basedir}/src/test/resources/crypto/amee.salt</value>
+                        </property>
+                        <property>
+                            <name>org.joda.time.DateTimeZone.Provider</name>
+                            <value>org.joda.time.tz.UTCProvider</value>
+                        </property>
+                    </systemProperties>
+                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
+                    </argLine>
+                    <additionalClasspathElements>
+                        <element>${basedir}/src/main/resources</element>
+                        <element>${basedir}/conf</element>
+                    </additionalClasspathElements>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>test-log4j.xml</include>
+                    <include>applicationContext.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+    </build>
+
+    <!-- Dependencies. -->
+    <dependencies>
+
+        <!-- Compile Dependencies. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Internal Runtime Dependencies. -->
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-base</artifactId>
+            <version>${amee-base.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-persist</artifactId>
+            <version>${amee-persist.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-messaging</artifactId>
+            <version>${amee-messaging.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-science</artifactId>
+            <version>${amee-platform-science.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-domain</artifactId>
+            <version>${amee-platform-domain.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-service</artifactId>
+            <version>${amee-platform-service.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-resource</artifactId>
+            <version>${amee-platform-resource.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Runtime Dependencies. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>${spring.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jmx</artifactId>
+            <version>${hibernate-core.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Runtime Dependencies. -->
+        <!-- Explicit dependency & version here to avoid transitive dependency mess -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${jetty-servlet-api.version}</version>
+            <scope>runtime</scope>
+            <!-- Required when Restlet is integrated with Jetty. -->
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>${xml-apis.version}</version>
+            <scope>runtime</scope>
+            <!-- Conflicted by: hibernate-annotations/dom4j & xercesImpl -->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+            <!-- Conflicted by: hibernate-annotations -->
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
+            <scope>runtime</scope>
+            <!-- Conflicted by: jscience & hibernate-core -->
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+            <!-- Weirdly conflicted by: amee-base -->
+        </dependency>
+
+        <!-- Test Dependencies. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Version Control. -->
+    <!--<scm>-->
+    <!--<connection>scm:git:ssh://git@github.com/AMEE/amee.git</connection>-->
+    <!--<developerConnection>scm:git:ssh://git@github.com/AMEE/amee.git</developerConnection>-->
+    <!--<url>scm:git:ssh://git@github.com/AMEE/amee.git</url>-->
+    <!--</scm>-->
+
+</project>

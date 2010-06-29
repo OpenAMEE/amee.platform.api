@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="amee-platform.api" default="clean-deploy" basedir=".">
+
+    <property environment="env"/>
+    <property name="amee.appName" value="platform-api"/>
+    <property name="amee.home" value="/var/www/apps/${amee.appName}" description="The root of the AMEE deployment layout."/>
+    <property name="amee.current" value="${amee.home}/current" description="The root of the current AMEE package"/>
+    <property name="amee.current.lib" value="${amee.current}/lib" description="The location of the AMEE libs and dependencies."/>
+    <property name="amee.shared" value="${amee.home}/shared" description="The location of the AMEE shared config."/>
+    <property name="amee.devel.home" value="/Development/AMEE/amee.platform.api/project/amee.platform.api" />
+
+    <target name="rebuild" depends="clean, package, copy-amee-libs"
+            description="Perform a clean build from src."/>
+
+    <target name="build" depends="package" description="Perform an incremental build from src."/>
+
+    <target name="clean" description="Clean the deployment lib and target directories.">
+        <!-- Clean the amee target dirs. -->
+        <exec executable="mvn" dir="server" failonerror="true">
+            <!--arg value="-o"/-->
+            <arg value="clean"/>
+        </exec>
+        <!-- Clean the amee deployment lib dir. -->
+        <delete>
+            <fileset dir="${amee.current.lib}" includes="*.jar"/>
+        </delete>
+    </target>
+
+    <target name="package" description="Run the mvn package goal.">
+        <exec executable="mvn" dir="server" failonerror="true">
+            <!--arg value="-o"/-->
+            <arg value="package"/>
+        </exec>
+    </target>
+
+    <target name="copy-amee-libs" description="Copy libs to deployment dir.">
+        <copy todir="${amee.current.lib}" flatten="true">
+            <fileset dir=".">
+                <include name="**/amee-*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-wrapper" description="Copy the AMEE local wrapper.conf to the deployment folder.">
+        <copy tofile="${amee.shared}/wrapper.conf" file="server/engine/conf/wrapper.conf.local.example"
+              overwrite="true"/>
+    </target>
+
+    <target name="clean-deploy" depends="rebuild" description="Rebuild and deploy AMEE."/>
+
+    <target name="cap-local-deploy" depends="rebuild" description="Capistrano local deploy from working copy">
+        <exec executable="cap" dir="${basedir}" failonerror="true">
+            <arg value="local"/>
+            <arg value="install:prepare"/>
+        </exec>
+        <exec executable="cap" dir="${basedir}" failonerror="true">
+            <arg value="local"/>
+            <arg value="install:package"/>
+        </exec>
+        <exec executable="cap" dir="${basedir}" failonerror="true">
+            <arg value="local"/>
+            <arg value="deploy:update"/>
+        </exec>
+    </target>
+
+    <target name="cap-install" depends="rebuild" description="Create a new release and deploy to git.">
+        <fail unless="tag" message="You must specify a tag, eg -Dtag=2.10.5" />
+        <exec executable="cap" dir="${basedir}" failonerror="true">
+            <arg value="install"/>
+            <arg value="TAG=${tag}"/>
+        </exec>
+    </target>
+
+    <target name="init-dir" description="Set up the deployment directory structure.">
+
+        <!-- shared -->
+        <mkdir dir="${amee.shared}" />
+        <mkdir dir="${amee.shared}/log" />
+        <mkdir dir="${amee.shared}/pids" />
+        <mkdir dir="${amee.shared}/system" />
+        <symlink link="${amee.shared}/crypto" resource="${amee.devel.home}/server/engine/src/test/resources/crypto" overwrite="true" />
+
+        <!-- current -->
+        <mkdir dir="${amee.current.lib}" />
+        <symlink link="${amee.current}/bin" resource="${amee.devel.home}/server/engine/bin" overwrite="true" />
+        <symlink link="${amee.current}/conf" resource="${amee.devel.home}/server/engine/conf" overwrite="true" />
+        <symlink link="${amee.current}/log" resource="${amee.home}/shared/log" overwrite="true" />
+        <symlink link="${amee.current.lib}/wrapper" resource="${amee.devel.home}/server/engine/lib/wrapper" overwrite="true" />
+
+        <antcall target="copy-wrapper" />
+    </target>
+
+</project>
+

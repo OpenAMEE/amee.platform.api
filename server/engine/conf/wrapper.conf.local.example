@@ -1,0 +1,61 @@
+# JAVA_HOME
+set.default.JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+set.JDK_HOME=%JAVA_HOME%
+
+# Java Library Path
+wrapper.java.library.path.1=%LIB_HOME%/wrapper/macosx-universal-64
+
+# AMEE_SERVER_NAME
+set.AMEE_SERVER_NAME=localhost
+set.AMEE_INSTANCE_NAME=local_api
+
+# Log levels
+set.LOG_LEVEL=DEBUG
+set.DEFAULT_LOG_LEVEL=INFO
+
+# Extra Java Parameters
+wrapper.java.additional.100=-Xdebug
+wrapper.java.additional.101=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5008
+wrapper.java.additional.102=-Dcom.sun.management.jmxremote.port=9990
+wrapper.java.additional.103=-Dcom.sun.management.jmxremote.authenticate=false
+wrapper.java.additional.104=-Dcom.sun.management.jmxremote.ssl=false
+wrapper.java.additional.205=-XX:+PrintGCDetails
+
+# Host names
+set.HOST_NAME=local-platform-api.amee.com
+
+# AJP_PORT
+set.AJP_PORT=8040
+
+# Memory sizing
+wrapper.java.initmemory=256
+wrapper.java.maxmemory=512
+
+# Database
+set.DB_USERNAME=amee
+set.DB_PSWD=amee
+set.DB_HOST=localhost
+set.DB_NAME=amee
+set.DB_DRIVER=net.sf.log4jdbc.DriverSpy
+set.DB_URL_PREFIX=jdbc:log4jdbc
+
+# Search index.
+set.CLEAR_INDEX=false
+set.INDEX_DATA_CATEGORIES=false
+set.INDEX_DATA_ITEMS=false
+
+# The master server where all updates to the Lucene index happen. There can be only one.
+set.MASTER_INDEX=false
+
+# The license.
+wrapper.license.type=NODE
+wrapper.license.id=201005210018
+wrapper.license.licensee=AMEE UK (Diggory Briercliffe)
+wrapper.license.host_id=0026b0eab692
+wrapper.license.features=pro, 64bit, test
+wrapper.license.upgrade_term.begin_date=2010-05-21
+wrapper.license.upgrade_term.end_date=2011-05-21
+wrapper.license.key.1=1d37-de0f-7d1e-97ff
+wrapper.license.key.2=f733-c547-1981-baef
+wrapper.license.key.3=3279-3d7d-e8b4-91d6
+wrapper.license.key.4=ebb3-6c01-8e47-886c

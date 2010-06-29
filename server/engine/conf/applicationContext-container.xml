@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="platformContainer" class="org.restlet.ext.spring.SpringComponent">
+        <property name="server" ref="platformServer"/>
+        <property name="hosts">
+            <list>
+                <ref local="platformHost"/>
+            </list>
+        </property>
+        <property name="statusService" ref="ameeStatusService"/>
+    </bean>
+
+    <bean id="platformServer" class="org.restlet.ext.spring.SpringServer">
+        <constructor-arg index="0" value="ajp"/>
+        <constructor-arg index="1" value="${AJP_PORT}"/>
+        <property name="parameters">
+            <props>
+                <prop key="minThreads">50</prop>
+                <prop key="maxThreads">700</prop>
+                <prop key="threadMaxIdleTimeMs">30000</prop>
+                <prop key="lowThreads">25</prop>
+                <prop key="lowResourceMaxIdleTimeMs">2500</prop>
+                <prop key="acceptorThreads">1</prop>
+                <prop key="acceptQueueSize">0</prop>
+                <!-- more params here: http://www.restlet.org/documentation/1.1/ext/com/noelios/restlet/ext/jetty/JettyServerHelper.html -->
+                <!-- advice here: http://jetty.mortbay.org/jetty5/doc/optimization.html (what about Jetty 6?) -->
+            </props>
+        </property>
+    </bean>
+
+    <bean id="platformHost" class="org.restlet.ext.spring.SpringHost">
+        <constructor-arg ref="platformContainer"/>
+        <property name="hostDomain" value="${HOST_NAME}"/>
+        <property name="attachments">
+            <map>
+                <entry key="" value-ref="platformApplication"/>
+            </map>
+        </property>
+        <property name="name" value="Platform Host"/>
+    </bean>
+
+    <bean id="modeEquals"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.restlet.util.Template.MODE_EQUALS"/>
+    </bean>
+
+    <bean id="modeStartsWith"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.restlet.util.Template.MODE_STARTS_WITH"/>
+    </bean>
+
+    <bean id="challengeSchemeCustom"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="org.restlet.data.ChallengeScheme.CUSTOM"/>
+    </bean>
+
+</beans>

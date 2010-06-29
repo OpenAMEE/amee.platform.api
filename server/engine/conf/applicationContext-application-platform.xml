@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="platformApplication" class="org.restlet.Application">
+        <property name="root" ref="platformRoot"/>
+        <property name="tunnelService.methodTunnel" value="true"/>
+        <property name="tunnelService.extensionsTunnel" value="true"/>
+        <property name="statusService" ref="ameeStatusService"/>
+        <property name="name" value="Platform Application"/>
+    </bean>
+
+    <bean id="platformRoot" class="org.restlet.ext.spring.SpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
+                        <constructor-arg index="0" ref="platformApplication"/>
+                        <property name="next" ref="versionsRouter"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="versionsRouter" class="org.restlet.ext.spring.SpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="attachments">
+            <map>
+                <entry key="/{version}">
+                    <bean class="com.amee.restlet.version.VersionFilter">
+                        <property name="next" ref="platformRouter"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="platformRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="attachments">
+            <map>
+                <entry key="/categories" value-ref="categoriesRouter"/>
+                <entry key="/definitions" value-ref="definitionsRouter"/>
+                <entry key="/search" value-ref="searchRouter"/>
+                <entry key="/tags" value-ref="tagsRouter"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="categoriesRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="defaultMatchingMode" ref="modeStartsWith"/>
+        <property name="defaultMatchQuery" value="false"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataCategoriesResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{categoryIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataCategoryResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{categoryIdentifier}/items">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataItemsResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{categoryIdentifier}/items/{itemIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataItemResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{categoryIdentifier}/tags">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="tagsResource"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="dataCategoriesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="lastSegment" value="categories"/>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.category.DataCategoriesBuilder"/>
+        </property>
+        <!--<property name="acceptors">-->
+        <!--<map>-->
+        <!--<entry key="application/x-www-form-urlencoded">-->
+        <!--<bean class="com.amee.platform.service.v3.category.DataCategoriesFormAcceptor"/>-->
+        <!--</entry>-->
+        <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="dataCategoryResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>categoryIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.category.DataCategoryBuilder"/>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.platform.service.v3.category.DataCategoryFormAcceptor"/>
+                </entry>
+            </map>
+        </property>
+        <!--<property name="remover">-->
+        <!--<bean class="com.amee.platform.service.v3.category.DataCategoryRemover"/>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="dataItemsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="lastSegment" value="items"/>
+        <property name="attributeNames">
+            <set>
+                <value>categoryIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.item.DataItemsBuilder"/>
+        </property>
+        <!--<property name="acceptors">-->
+        <!--<map>-->
+        <!--<entry key="application/x-www-form-urlencoded">-->
+        <!--<bean class="com.amee.platform.service.v3.item.DataItemsFormAcceptor"/>-->
+        <!--</entry>-->
+        <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="dataItemResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>username</value>
+                <value>password</value>
+                <value>categoryIdentifier</value>
+                <value>itemIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.item.DataItemBuilder"/>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.platform.service.v3.item.DataItemFormAcceptor"/>
+                </entry>
+            </map>
+        </property>
+        <!--<property name="remover">-->
+        <!--<bean class="com.amee.platform.service.v3.item.DataItemRemover"/>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="definitionsRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="defaultMatchingMode" ref="modeStartsWith"/>
+        <property name="defaultMatchQuery" value="false"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="itemDefinitionsResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{itemDefinitionIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="itemDefinitionResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{itemDefinitionIdentifier}/values">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="itemValueDefinitionsResource"/>
+                    </bean>
+                </entry>
+                <entry key="/{itemDefinitionIdentifier}/values/{itemValueDefinitionIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="itemValueDefinitionResource"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- TODO: itemDefinitionsResource -->
+
+    <!-- TODO: itemDefinitionResource -->
+
+    <!-- TODO: itemValueDefinitionsResource -->
+
+    <bean id="itemValueDefinitionResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>itemDefinitionIdentifier</value>
+                <value>itemValueDefinitionIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.definition.ItemValueDefinitionBuilder"/>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.platform.service.v3.definition.ItemValueDefinitionFormAcceptor"/>
+                </entry>
+            </map>
+        </property>
+        <!--<property name="remover">-->
+        <!--<bean class="com.amee.platform.service.v3.definition.ItemValueDefinitionRemover"/>-->
+        <!--</property>-->
+    </bean>
+
+    <!-- Search. -->
+
+    <bean id="searchRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="defaultMatchingMode" ref="modeStartsWith"/>
+        <property name="defaultMatchQuery" value="false"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="searchResource"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="searchResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="lastSegment" value="search"/>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.search.SearchBuilder"/>
+        </property>
+    </bean>
+
+    <!-- Tags. -->
+
+    <bean id="tagsRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="defaultMatchingMode" ref="modeStartsWith"/>
+        <property name="defaultMatchQuery" value="false"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="tagsResource"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="tagsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="allowPost" value="true"/>
+        <property name="lastSegment" value="tags"/>
+        <property name="attributeNames">
+            <set>
+                <value>categoryIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.platform.service.v3.tag.TagsBuilder"/>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.platform.service.v3.tag.TagsFormAcceptor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

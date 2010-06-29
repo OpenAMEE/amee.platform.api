@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Validation Messages</comment>
+    <entry key="name.empty">You must enter a name.</entry>
+    <entry key="name.short">The name is too short.</entry>
+    <entry key="name.long">The name is too long.</entry>
+</properties>

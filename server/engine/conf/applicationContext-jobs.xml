@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Scheduler configuration -->
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- Allow us to prevent automatic startup -->
+        <property name="autoStartup" value="${AUTO_START_SCHEDULER}"/>
+        <!-- Wait for 10 seconds -->
+        <property name="startupDelay" value="10"/>
+        <property name="triggers">
+            <list>
+                <ref bean="updateSearchIndexCronTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Hooks -->
+
+    <bean id="updateSearchIndexJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="searchService"/>
+        <property name="targetMethod" value="update"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Fire at 10 minutes past every hour. -->
+    <bean id="updateSearchIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="updateSearchIndexJobDetail"/>
+        <property name="cronExpression" value="0 10 * * * ?"/>
+    </bean>
+
+</beans>

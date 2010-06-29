@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Identity. -->
+    <artifactId>amee-platform-api-restlet</artifactId>
+    <name>AMEE Platform API - Restlet</name>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>com.amee.platform</groupId>
+        <artifactId>amee-platform-api</artifactId>
+        <version>${amee-platform-api.version}</version>
+    </parent>
+
+    <!-- Dependencies. -->
+    <dependencies>
+
+        <!-- Internal Dependencies. -->
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-restlet</artifactId>
+            <version>${amee-restlet.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
