@@ -64,7 +64,7 @@ public class ResourceAcceptManager extends ResourceManager {
             if (getRequest().getMethod().equals(Method.POST)) {
                 getResponse().setStatus(Status.SUCCESS_CREATED);
             } else if (getRequest().getMethod().equals(Method.PUT)) {
-                getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+                getResponse().setStatus(Status.SUCCESS_CREATED);
             } else {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }

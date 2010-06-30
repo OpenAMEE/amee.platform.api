@@ -19,7 +19,7 @@ public class ResourceRemoveManager extends ResourceManager {
             getRequest().getClientInfo().getAcceptedMediaTypes();
             // Handle status.
             if (isOk(result)) {
-                getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+                getResponse().setStatus(Status.SUCCESS_OK);
             } else if (isNotFound(result)) {
                 getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
             } else if (isNotAuthenticated(result)) {
