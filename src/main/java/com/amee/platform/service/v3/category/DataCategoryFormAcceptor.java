@@ -4,7 +4,6 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
-import com.amee.base.transaction.TransactionController;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.service.data.DataService;
@@ -21,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataCategoryFormAcceptor implements ResourceAcceptor {
 
     @Autowired
-    private TransactionController transactionController;
-
-    @Autowired
     private InvalidationService invalidationService;
 
     @Autowired
@@ -32,7 +28,7 @@ public class DataCategoryFormAcceptor implements ResourceAcceptor {
     @Autowired
     private DataCategoryValidationHelper validationHelper;
 
-    @Transactional(rollbackFor = {ValidationException.class, NotFoundException.class})
+    @Transactional(rollbackFor = {ValidationException.class})
     public JSONObject handle(RequestWrapper requestWrapper) throws ValidationException {
         try {
             JSONObject o = new JSONObject();

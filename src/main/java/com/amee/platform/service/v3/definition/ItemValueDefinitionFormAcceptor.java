@@ -29,7 +29,7 @@ public class ItemValueDefinitionFormAcceptor implements ResourceAcceptor {
     @Autowired
     private ItemValueDefinitionValidationHelper validationHelper;
 
-    @Transactional(rollbackFor = {com.amee.base.validation.ValidationException.class})
+    @Transactional(rollbackFor = {ValidationException.class})
     public JSONObject handle(RequestWrapper requestWrapper) throws ValidationException {
         try {
             JSONObject o = new JSONObject();
