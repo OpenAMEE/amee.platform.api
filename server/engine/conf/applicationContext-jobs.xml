@@ -18,7 +18,7 @@
         </property>
     </bean>
 
-    <!-- Hooks -->
+    <!-- Search Index -->
 
     <bean id="updateSearchIndexJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
