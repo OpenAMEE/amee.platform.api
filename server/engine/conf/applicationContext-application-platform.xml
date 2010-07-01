@@ -22,7 +22,12 @@
                 <entry key="">
                     <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
                         <constructor-arg index="0" ref="platformApplication"/>
-                        <property name="next" ref="versionsRouter"/>
+                        <property name="next">
+                            <bean class="com.amee.platform.restlet.TransactionFilter">
+                                <constructor-arg index="0" ref="platformApplication"/>
+                                <property name="next" ref="versionsRouter"/>
+                            </bean>
+                        </property>
                     </bean>
                 </entry>
             </map>

@@ -19,8 +19,23 @@
         <!-- Internal Dependencies. -->
         <dependency>
             <groupId>com.amee</groupId>
+            <artifactId>amee-base</artifactId>
+            <version>${amee-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee</groupId>
             <artifactId>amee-restlet</artifactId>
             <version>${amee-restlet.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-persist</artifactId>
+            <version>${amee-persist.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-service</artifactId>
+            <version>${amee-platform-service.version}</version>
         </dependency>
 
     </dependencies>
