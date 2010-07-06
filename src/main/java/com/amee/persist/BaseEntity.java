@@ -6,19 +6,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * An abstract base class for persistent entities. Provides common base properties and
@@ -32,13 +22,6 @@ public abstract class BaseEntity implements DatedObject, Serializable {
 
     // The exact size of all UID fields.
     public final static int UID_SIZE = 12;
-
-    // A thread bound Set of UIDs seen by the onCreate method. Used to detect UID duplicates.
-    private final static ThreadLocal<Set<String>> UIDS = new ThreadLocal<Set<String>>() {
-        protected Set<String> initialValue() {
-            return new HashSet<String>();
-        }
-    };
 
     /**
      * The unique ID, within the table, of the entity.
@@ -117,24 +100,10 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      */
     @PrePersist
     public void onCreate() {
-        // Keep track of UIDs used in the current Thread.
-        if (!addUid()) {
-            // UID duplicate detected.
-            throw new RuntimeException("Duplicate UID '" + getUid() + "' detected in class '" + getClass().getSimpleName() + "'.");
-        }
         // Update created and modified.
         Date now = new Date();
         setCreated(now);
         setModified(now);
-    }
-
-    /**
-     * Adds the current uid value to the thread bound Set of UIDs.
-     *
-     * @return true of the UID is not already stored, otherwise false
-     */
-    public boolean addUid() {
-        return UIDS.get().add(getUid());
     }
 
     /**
