@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
@@ -13,7 +14,7 @@
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <amee-base.version>1.0.2</amee-base.version>
-        <amee-platform-service.version>1.0.5</amee-platform-service.version>
+        <amee-platform-service.version>1.0.6-SNAPSHOT</amee-platform-service.version>
         <!-- External Versions. -->
         <junit.version>4.7</junit.version>
         <org-json.version>2.0</org-json.version>
@@ -61,36 +62,6 @@
             <artifactId>org.json</artifactId>
             <version>${org-json.version}</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.hibernate</groupId>-->
-        <!--<artifactId>hibernate-annotations</artifactId>-->
-        <!--<version>${hibernate-core.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>joda-time</groupId>-->
-        <!--<artifactId>joda-time</artifactId>-->
-        <!--<version>${joda-time.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.jscience</groupId>-->
-        <!--<artifactId>jscience</artifactId>-->
-        <!--<version>${jscience.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>commons-codec</groupId>-->
-        <!--<artifactId>commons-codec</artifactId>-->
-        <!--<version>${commons-codec.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>commons-lang</groupId>-->
-        <!--<artifactId>commons-lang</artifactId>-->
-        <!--<version>${commons-lang.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>net.sf.ehcache</groupId>-->
-        <!--<artifactId>ehcache</artifactId>-->
-        <!--<version>${ehcache.version}</version>-->
-        <!--</dependency>-->
 
         <!-- Test Dependencies. -->
         <dependency>
@@ -99,18 +70,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>xerces</groupId>-->
-        <!--<artifactId>xercesImpl</artifactId>-->
-        <!--<version>${xerces.version}</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.mockito</groupId>-->
-        <!--<artifactId>mockito-all</artifactId>-->
-        <!--<version>${org-mockito.version}</version>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
 
     </dependencies>
 
