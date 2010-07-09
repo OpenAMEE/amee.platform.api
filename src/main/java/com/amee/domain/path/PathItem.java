@@ -33,14 +33,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
 
@@ -366,9 +359,18 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
         this.fullPath = fullPath;
     }
 
-    private void updateFullPath() {
+    public void updateFullPath() {
         if (parent != null) {
             setFullPath(parent.getFullPath() + "/" + getPath());
+        }
+    }
+
+    public void updateFullPaths() {
+        updateFullPath();
+        synchronized (children) {
+            for (PathItem child : children) {
+                child.updateFullPaths();
+            }
         }
     }
 
