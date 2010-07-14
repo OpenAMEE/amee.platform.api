@@ -64,7 +64,8 @@
 
     <!-- Search -->
     <bean id="searchService" class="com.amee.platform.search.SearchService"/>
-    <bean id="luceneService" class="com.amee.platform.search.LuceneService">
+    <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryService"/>
+    <bean id="luceneService" class="com.amee.platform.search.LuceneServiceImpl">
         <property name="snapShooterPath" value="${CURRENT_HOME}/bin/snapshooter" />
         <property name="indexDirPath" value="${AMEE_HOME}/lucene" />
         <property name="snapTime" value="300" />
