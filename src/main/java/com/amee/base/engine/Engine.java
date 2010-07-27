@@ -1,14 +1,7 @@
 package com.amee.base.engine;
 
 import com.amee.base.transaction.TransactionController;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,15 +26,19 @@ public class Engine implements WrapperListener, Serializable {
     private ApplicationContext springContext;
     private TransactionController transactionController;
 
-    // This is used to determine the PID of the instance in the init script.
+    // These are used to determine the PID of the instance in the init script.
+    private String appName = "amee";
+    private String serverName = "localhost";
     private String instanceName = "live";
 
     public Engine() {
         super();
     }
 
-    public Engine(String instanceName) {
+    public Engine(String appName, String serverName, String instanceName) {
         this();
+        this.appName = appName;
+        this.serverName = serverName;
         this.instanceName = instanceName;
     }
 
@@ -90,6 +87,22 @@ public class Engine implements WrapperListener, Serializable {
         CommandLineParser parser = new GnuParser();
         Options options = new Options();
 
+        // Define appName option.
+        Option appNameOpt = OptionBuilder.withArgName("appName")
+                .hasArg()
+                .withDescription("The app name")
+                .create("appName");
+        appNameOpt.setRequired(true);
+        options.addOption(appNameOpt);
+
+        // Define serverName option.
+        Option serverNameOpt = OptionBuilder.withArgName("serverName")
+                .hasArg()
+                .withDescription("The server name")
+                .create("serverName");
+        serverNameOpt.setRequired(true);
+        options.addOption(serverNameOpt);
+
         // Define instanceName option.
         Option instanceNameOpt = OptionBuilder.withArgName("instanceName")
                 .hasArg()
@@ -112,6 +125,16 @@ public class Engine implements WrapperListener, Serializable {
         } catch (ParseException exp) {
             new HelpFormatter().printHelp("java " + this.getClass().getName(), options);
             System.exit(-1);
+        }
+
+        // Handle appName.
+        if (line.hasOption(appNameOpt.getOpt())) {
+            appName = line.getOptionValue(appNameOpt.getOpt());
+        }
+
+        // Handle serverName.
+        if (line.hasOption(serverNameOpt.getOpt())) {
+            serverName = line.getOptionValue(serverNameOpt.getOpt());
         }
 
         // Handle instanceName.
@@ -165,6 +188,14 @@ public class Engine implements WrapperListener, Serializable {
 
     public TransactionController getTransactionController() {
         return transactionController;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getServerName() {
+        return serverName;
     }
 
     public String getInstanceName() {
