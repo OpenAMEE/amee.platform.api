@@ -17,8 +17,8 @@ public class RestletEngine extends Engine {
         super();
     }
 
-    public RestletEngine(String instanceName) {
-        super(instanceName);
+    public RestletEngine(String appName, String serverName, String instanceName) {
+        super(instanceName, serverName, instanceName);
     }
 
     public static void main(String[] args) {

@@ -86,25 +86,29 @@ public class ResourceBuildManager extends ResourceManager {
     protected Representation getJsonRepresentation(JSONObject result) {
         Representation representation = null;
         try {
-            // Handle validationResult.
-            if ((result != null) && result.has("validationResult")) {
-                getResource().addValidationResult(new ValidationResult(result.getJSONObject("validationResult")));
-            }
-            // Handle status.
-            if ((result != null) && result.has("status")) {
-                if (isOk(result)) {
-                    representation = new JsonRepresentation(result);
-                } else if (isInvalid(result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                    representation = new JsonRepresentation(result);
-                } else if (isNotFound(result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                } else if (isNotAuthenticated(result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
-                } else if (isTimedOut(result)) {
-                    getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
-                } else {
-                    log.warn("getJsonRepresentation() Status code not handled: " + result.getString("status"));
+            if (result != null) {
+                // Add version.
+                result.put("version", getResource().getSupportedVersion().toString());
+                // Handle validationResult.
+                if (result.has("validationResult")) {
+                    getResource().addValidationResult(new ValidationResult(result.getJSONObject("validationResult")));
+                }
+                // Handle status.
+                if (result.has("status")) {
+                    if (isOk(result)) {
+                        representation = new JsonRepresentation(result);
+                    } else if (isInvalid(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                        representation = new JsonRepresentation(result);
+                    } else if (isNotFound(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                    } else if (isNotAuthenticated(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                    } else if (isTimedOut(result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+                    } else {
+                        log.warn("getJsonRepresentation() Status code not handled: " + result.getString("status"));
+                    }
                 }
             }
         } catch (JSONException e) {
@@ -118,6 +122,8 @@ public class ResourceBuildManager extends ResourceManager {
         if (document != null) {
             Element result = document.getRootElement();
             if ((result != null) && result.getName().equals("Representation")) {
+                // Add version.
+                result.addContent(new Element("Version").setText(getResource().getSupportedVersion().toString()));
                 // Handle ValidationResult.
                 if (result.getChild("ValidationResult") != null) {
                     getResource().addValidationResult(new ValidationResult(result.getChild("ValidationResult")));
