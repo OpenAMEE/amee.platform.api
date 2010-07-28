@@ -74,6 +74,18 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ReturnValueDefinition> returnValueDefinitions = new HashSet<ReturnValueDefinition>();
 
+    /**
+     * A comma separated (CSV) list of 'usages'.
+     */
+    @Column(name = "USAGES")
+    private String usages = "";
+
+    /**
+     * A locally cached List of 'usages'.
+     */
+    @Transient
+    private List<String> usagesList;
+
     public ItemDefinition() {
         super();
     }
@@ -247,6 +259,63 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
             if (ivd.isUsableValue() && ivd.isValidInAPIVersion(version)) {
                 values.put(ivd, new InternalValue(ivd));
             }
+        }
+    }
+
+    /**
+     * Returns the usages property as a String.
+     *
+     * @return String representation of the usages property
+     */
+    public String getUsagesString() {
+        return usages;
+    }
+
+    /**
+     * Set the usages property.
+     *
+     * @param usages value to set
+     */
+    public void setUsages(String usages) {
+        if (usages == null) {
+            usages = "";
+        }
+        this.usages = usages;
+        usagesList = null;
+    }
+
+    /**
+     * Returns the usages property as a List. Modifications to the returned list are not
+     * persisted and are discouraged.
+     *
+     * @return a List of usages
+     */
+    public List<String> getUsages() {
+        if (usagesList == null) {
+            usagesList = new ArrayList<String>();
+            for (String usage : usages.split(",")) {
+                usagesList.add(usage.trim());
+            }
+        }
+        return usagesList;
+    }
+
+    /**
+     * Updates the usages property with a CSV representation of the usages argument.
+     *
+     * @param usages List to update the usages property with
+     */
+    public void setUsages(List<String> usages) {
+        if ((usages == null) || usages.isEmpty()) {
+            setUsages("");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (String usage : usages) {
+                sb.append(usage);
+                sb.append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(","));
+            setUsages(sb.toString());
         }
     }
 }
