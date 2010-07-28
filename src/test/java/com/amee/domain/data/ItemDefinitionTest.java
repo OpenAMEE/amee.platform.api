@@ -46,4 +46,20 @@ public class ItemDefinitionTest {
                 itemDefinition.getUsages().get(2).equals("usage_3"));
         assertEquals("ItemDefinition usages String should look right.", MOCK_USAGES_STRING, itemDefinition.getUsagesString());
     }
+
+    @Test
+    public void canHandleEmptyUsages() {
+        ItemDefinition itemDefinition = new ItemDefinition();
+        assertTrue("ItemDefinition should contain 0 usages. ",
+                itemDefinition.getUsages().isEmpty());
+        itemDefinition.setUsages(new ArrayList<String>());
+        assertTrue("ItemDefinition should contain 0 usages. ",
+                itemDefinition.getUsages().isEmpty());
+        itemDefinition.setUsages("");
+        assertTrue("ItemDefinition should contain 0 usages. ",
+                itemDefinition.getUsages().isEmpty());
+        itemDefinition.setUsages(" , , , sss, xxx, , ");
+        assertTrue("ItemDefinition should contain 2 usages. ",
+                itemDefinition.getUsages().size() == 2);
+    }
 }

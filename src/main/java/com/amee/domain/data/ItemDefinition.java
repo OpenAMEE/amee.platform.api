@@ -294,7 +294,9 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         if (usagesList == null) {
             usagesList = new ArrayList<String>();
             for (String usage : usages.split(",")) {
-                usagesList.add(usage.trim());
+                if (!usage.trim().isEmpty()) {
+                    usagesList.add(usage.trim());
+                }
             }
         }
         return usagesList;
@@ -311,8 +313,10 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         } else {
             StringBuilder sb = new StringBuilder();
             for (String usage : usages) {
-                sb.append(usage);
-                sb.append(",");
+                if (!usage.trim().isEmpty()) {
+                    sb.append(usage);
+                    sb.append(",");
+                }
             }
             sb.deleteCharAt(sb.lastIndexOf(","));
             setUsages(sb.toString());
