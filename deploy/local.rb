@@ -2,7 +2,7 @@
 role :app, "localhost"
 role :db,  "localhost", :primary => true
 
-set :application, "platform-api"
+set :application, "platform-api-local"
 set :deploy_to, "/var/www/apps/#{application}"
 
 unset :user

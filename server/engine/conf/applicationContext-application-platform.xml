@@ -68,26 +68,31 @@
                 <entry key="">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataCategoriesResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataCategoryResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}/items">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataItemsResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}/items/{itemIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataItemResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}/tags">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="tagsResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
             </map>
@@ -191,21 +196,25 @@
                 <entry key="">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="itemDefinitionsResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{itemDefinitionIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="itemDefinitionResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{itemDefinitionIdentifier}/values">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="itemValueDefinitionsResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
                 <entry key="/{itemDefinitionIdentifier}/values/{itemValueDefinitionIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="itemValueDefinitionResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
             </map>
@@ -228,7 +237,9 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.service.v3.definition.ItemValueDefinitionBuilder"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target" value="com.amee.platform.service.v3.definition.ItemValueDefinitionBuilder"/>
+            </bean>
         </property>
         <property name="acceptors">
             <map>
@@ -253,6 +264,7 @@
                 <entry key="">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="searchResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
             </map>
@@ -280,6 +292,7 @@
                 <entry key="">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="tagsResource"/>
+                        <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
             </map>
