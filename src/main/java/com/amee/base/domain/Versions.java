@@ -6,6 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
+/**
+ * A Spring Bean providing storage and utility functions for Versions supported by the application.
+ * <p/>
+ * Configuration of this bean is in '/conf/applicationContext-versions.xml'.
+ */
 public class Versions implements Serializable {
 
     private TreeSet<Version> versions = new TreeSet<Version>();
@@ -14,6 +19,12 @@ public class Versions implements Serializable {
         super();
     }
 
+    /**
+     * Returns true if the supplied Version is contained within the current set of Versions.
+     *
+     * @param version to check
+     * @return true if the supplied Version is present
+     */
     public boolean contains(Version version) {
         return versions.contains(version);
     }
@@ -51,10 +62,20 @@ public class Versions implements Serializable {
         return null;
     }
 
+    /**
+     * Get a flattened list of the contained Versions.
+     *
+     * @return flattened list of the contained Versions
+     */
     public List<Version> getVersions() {
         return new ArrayList<Version>(versions);
     }
 
+    /**
+     * Set the supplied List of Versions to this bean.
+     *
+     * @param versions to set
+     */
     public void setVersions(List<Version> versions) {
         this.versions.clear();
         this.versions.addAll(versions);
