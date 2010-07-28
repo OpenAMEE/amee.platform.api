@@ -76,17 +76,16 @@ public class ItemValueUsage implements Serializable {
     }
 
     public static Set<ItemValueUsage> getItemValueUsages(JSONArray itemValueUsageArr) {
-        if (itemValueUsageArr == null) {
-            throw new IllegalArgumentException("The itemValueUsageArr argument was null.");
-        }
         Set<ItemValueUsage> itemValueUsages = new HashSet<ItemValueUsage>();
-        for (int i = 0; i < itemValueUsageArr.length(); i++) {
-            try {
-                if (!itemValueUsages.add(new ItemValueUsage(itemValueUsageArr.getJSONObject(i)))) {
-                    throw new IllegalArgumentException("More than one equivalent ItemValueUsage was supplied.");
+        if (itemValueUsageArr != null) {
+            for (int i = 0; i < itemValueUsageArr.length(); i++) {
+                try {
+                    if (!itemValueUsages.add(new ItemValueUsage(itemValueUsageArr.getJSONObject(i)))) {
+                        throw new IllegalArgumentException("More than one equivalent ItemValueUsage was supplied.");
+                    }
+                } catch (JSONException e) {
+                    throw new IllegalArgumentException("Caught JSONException whilst parsing itemValueUsageArr.", e);
                 }
-            } catch (JSONException e) {
-                throw new IllegalArgumentException("Caught JSONException whilst parsing itemValueUsageArr.", e);
             }
         }
         return itemValueUsages;

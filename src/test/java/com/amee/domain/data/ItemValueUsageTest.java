@@ -79,4 +79,10 @@ public class ItemValueUsageTest {
         }
         fail("Should have caught an IllegalArgumentException.");
     }
+
+    @Test
+    public void canParseEmptyItemValueUsagesJSON() {
+        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.getItemValueUsages(null).isEmpty());
+        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.getItemValueUsages(new JSONArray()).isEmpty());
+    }
 }
