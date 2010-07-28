@@ -20,23 +20,10 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.APIVersion;
-import com.amee.domain.Builder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
-import com.amee.domain.Metadata;
-import com.amee.domain.ObjectType;
-import com.amee.domain.ValueDefinition;
-import com.amee.domain.ValueType;
+import com.amee.domain.*;
 import com.amee.domain.data.builder.v2.ItemValueDefinitionBuilder;
 import com.amee.domain.sheet.Choice;
-import com.amee.platform.science.AmountCompoundUnit;
-import com.amee.platform.science.AmountPerUnit;
-import com.amee.platform.science.AmountUnit;
-import com.amee.platform.science.ExternalValue;
-import com.amee.platform.science.StartEndDate;
+import com.amee.platform.science.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
@@ -48,22 +35,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "ITEM_VALUE_DEFINITION")
@@ -146,6 +119,20 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     @Column(name = "FORCE_TIMESERIES")
     private boolean isForceTimeSeries;
+
+    /**
+     * A String containing an arbitrary sized JSON object containing configuration data for the
+     * ItemValueDefinition. Primary use will be for validation and 'usages'. This will be stored in
+     * a TEXT column in the database.
+     */
+    @Column(name = "CONFIGURATION")
+    private String configuration = "";
+
+    /**
+     * A JSONObject based on the deserialized form of the configuration property.
+     */
+    @Transient
+    private JSONObject configurationObj;
 
     @Transient
     private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
@@ -464,6 +451,83 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     public void setForceTimeSeries(boolean isForceTimeSeries) {
         this.isForceTimeSeries = isForceTimeSeries;
+    }
+
+    /**
+     * Get the configuration property.
+     *
+     * @return the configuration value
+     */
+    public String getConfigurationString() {
+        return configuration;
+    }
+
+    /**
+     * Get the configuration property. The returned JSONObject should not be modified (but any modifications
+     * will never be persisted).
+     *
+     * @return the configuration value
+     */
+    public JSONObject getConfiguration() {
+        if (configurationObj == null) {
+            try {
+                configurationObj = new JSONObject(getConfigurationString());
+            } catch (JSONException e) {
+                // This should never happen as the various configuration methods are protective.
+                throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+            }
+        }
+        return configurationObj;
+    }
+
+    /**
+     * Set the configuration property.
+     *
+     * @param configuration String value to set
+     */
+    public void setConfiguration(String configuration) {
+        if (configuration == null) {
+            configuration = "{}";
+        }
+        try {
+            configurationObj = new JSONObject(configuration);
+            this.configuration = configurationObj.toString();
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("The configuration argument was not valid JSON.");
+        }
+    }
+
+    /**
+     * Set the configuration property.
+     *
+     * @param configuration JSONObject value to set
+     */
+    public void setConfiguration(JSONObject configuration) {
+        if (configuration == null) {
+            configuration = new JSONObject();
+        }
+        setConfiguration(configuration.toString());
+    }
+
+    /**
+     * Return a Set of ItemValueUsages extracted from the configuration property. The Set and contained
+     * ItemValueUsage instances are created for every invocation. The configuration property is
+     * expected to contain a 'usages' JSON array. The Set will be empty if this array does not exist
+     * or is empty.
+     *
+     * @return Set of ItemValueUsages.
+     */
+    public Set<ItemValueUsage> getItemValueUsages() {
+        try {
+            if (getConfiguration().has("usages")) {
+                return ItemValueUsage.getItemValueUsages(getConfiguration().getJSONArray("usages"));
+            } else {
+                return new HashSet<ItemValueUsage>();
+            }
+        } catch (JSONException e) {
+            // This should never happen as the various configuration methods are protective.
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
     }
 
     public String getWikiDoc() {
