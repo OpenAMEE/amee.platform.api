@@ -52,6 +52,8 @@ public class ItemValueDefinitionTest {
     @Test
     public void canUseUsagesInConfiguration() {
         ItemValueDefinition itemValueDefinition = new ItemValueDefinition();
+        assertTrue("ItemValueDefinition should contain 0 ItemValueUsages. ",
+                itemValueDefinition.getItemValueUsages().isEmpty());
         itemValueDefinition.setConfiguration(MOCK_CONFIGURATION_WITH_USAGES);
         Set<ItemValueUsage> itemValueUsages = itemValueDefinition.getItemValueUsages();
         assertTrue("ItemValueDefinition should contain 2 ItemValueUsages. ",

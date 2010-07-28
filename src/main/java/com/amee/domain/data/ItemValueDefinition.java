@@ -471,7 +471,11 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public JSONObject getConfiguration() {
         if (configurationObj == null) {
             try {
-                configurationObj = new JSONObject(getConfigurationString());
+                if (!configuration.isEmpty()) {
+                    configurationObj = new JSONObject(configuration);
+                } else {
+                    configurationObj = new JSONObject();
+                }
             } catch (JSONException e) {
                 // This should never happen as the various configuration methods are protective.
                 throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
