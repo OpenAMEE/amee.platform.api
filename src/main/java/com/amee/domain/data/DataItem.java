@@ -316,4 +316,8 @@ public class DataItem extends Item {
     public StartEndDate getEndDate() {
         return null;
     }
+
+    public void setMetadataService(IMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
 }

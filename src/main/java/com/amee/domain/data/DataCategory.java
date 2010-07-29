@@ -337,4 +337,12 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     public ObjectType getObjectType() {
         return ObjectType.DC;
     }
+
+    public void setMetadataService(IMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
+
+    public void setLocaleService(ILocaleService localeService) {
+        this.localeService = localeService;
+    }
 }
