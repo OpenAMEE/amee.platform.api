@@ -238,13 +238,14 @@
         </property>
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
-                <property name="target" value="com.amee.platform.service.v3.definition.ItemValueDefinitionBuilder"/>
+                <property name="target"
+                          value="com.amee.platform.service.v3.itemvaluedefinition.ItemValueDefinitionBuilder"/>
             </bean>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.service.v3.definition.ItemValueDefinitionFormAcceptor"/>
+                    <bean class="com.amee.platform.service.v3.itemvaluedefinition.ItemValueDefinitionFormAcceptor"/>
                 </entry>
             </map>
         </property>
