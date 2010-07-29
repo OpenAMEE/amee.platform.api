@@ -2,6 +2,7 @@ package com.amee.platform.service.v3.itemvaluedefinition;
 
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.data.ItemValueUsage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,8 +81,14 @@ public class ItemValueDefinitionJSONRenderer_3_1 implements ItemValueDefinitionR
 
     @Override
     public void addUsages() {
-        JSONArray itemDefinitionObj = new JSONArray();
-        put(itemValueDefinitionObj, "usages", itemDefinitionObj);
+        JSONArray itemValueUsagesArr = new JSONArray();
+        put(itemValueDefinitionObj, "usages", itemValueUsagesArr);
+        for (ItemValueUsage itemValueUsage : itemValueDefinition.getItemValueUsages()) {
+            JSONObject itemValueUsageObj = new JSONObject();
+            put(itemValueUsageObj, "name", itemValueUsage.getName());
+            put(itemValueUsageObj, "type", itemValueUsage.getType().toString());
+            itemValueUsagesArr.put(itemValueUsageObj);
+        }
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

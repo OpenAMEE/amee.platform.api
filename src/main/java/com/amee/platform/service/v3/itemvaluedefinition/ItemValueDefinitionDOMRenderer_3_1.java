@@ -2,6 +2,7 @@ package com.amee.platform.service.v3.itemvaluedefinition;
 
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.data.ItemValueUsage;
 import org.jdom.Document;
 import org.jdom.Element;
 
@@ -78,10 +79,14 @@ public class ItemValueDefinitionDOMRenderer_3_1 implements ItemValueDefinitionRe
 
     @Override
     public void addUsages() {
-        Element e = new Element("Usages");
-        itemValueDefinitionElem.addContent(e);
-        //e.setAttribute("uid", itemDefinition.getUid());
-        //e.addContent(new Element("Name").setText(itemDefinition.getName()));
+        Element itemValueUsagesElem = new Element("Usages");
+        itemValueDefinitionElem.addContent(itemValueUsagesElem);
+        for (ItemValueUsage itemValueUsage : itemValueDefinition.getItemValueUsages()) {
+            Element valueElem = new Element("Usage");
+            valueElem.addContent(new Element("Name").setText(itemValueUsage.getName()));
+            valueElem.addContent(new Element("Type").setText(itemValueUsage.getType().toString()));
+            itemValueUsagesElem.addContent(valueElem);
+        }
     }
 
     public Element getItemValueDefinitionElement() {
