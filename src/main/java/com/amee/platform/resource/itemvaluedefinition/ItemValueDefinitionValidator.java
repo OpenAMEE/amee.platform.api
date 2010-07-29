@@ -14,9 +14,6 @@ public class ItemValueDefinitionValidator implements Validator {
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
-    // @Autowired
-    // private DataService dataService;
-
     private ValidationSpecification nameSpec;
     private ValidationSpecification pathSpec;
     private ValidationSpecification wikiDocSpec;
@@ -34,6 +31,20 @@ public class ItemValueDefinitionValidator implements Validator {
         pathSpec.setMinSize(ItemValueDefinition.PATH_MIN_SIZE);
         pathSpec.setMaxSize(ItemValueDefinition.PATH_MAX_SIZE);
         pathSpec.setFormat(PATH_PATTERN_STRING);
+        pathSpec.setCustomValidation(new ValidationSpecification.CustomValidation() {
+            @Override
+            public int validate(Object o, Errors e) {
+                // Ensure ItemValueDefinition path is unique amongst peers. 
+                ItemValueDefinition itemValueDefinition = (ItemValueDefinition) o;
+                for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
+                    if ((itemValueDefinition != ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
+                        e.rejectValue("path", "duplicate");
+                        break;
+                    }
+                }
+                return ValidationSpecification.CONTINUE;
+            }
+        });
         // wikiDoc
         wikiDocSpec = new ValidationSpecification();
         wikiDocSpec.setName("wikiDoc");
@@ -46,13 +57,8 @@ public class ItemValueDefinitionValidator implements Validator {
     }
 
     public void validate(Object o, Errors e) {
-        ItemValueDefinition itemValueDefinition = (ItemValueDefinition) o;
-        // name
-        nameSpec.validate(itemValueDefinition.getName(), e);
-        // path
-        // TODO: This must be unique amongst peers.
-        pathSpec.validate(itemValueDefinition.getPath(), e);
-        // wikiDoc
-        wikiDocSpec.validate(itemValueDefinition.getWikiDoc(), e);
+        nameSpec.validate(o, e);
+        pathSpec.validate(o, e);
+        wikiDocSpec.validate(o, e);
     }
 }

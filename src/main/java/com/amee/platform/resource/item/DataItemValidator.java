@@ -32,6 +32,7 @@ public class DataItemValidator implements Validator {
         nameSpec.setMaxSize(DataItem.NAME_MAX_SIZE);
         nameSpec.setAllowEmpty(true);
         // path
+        // TODO: This must be unique amongst peers, if set.
         pathSpec = new ValidationSpecification();
         pathSpec.setName("path");
         pathSpec.setMaxSize(DataItem.PATH_MAX_SIZE);
@@ -54,15 +55,9 @@ public class DataItemValidator implements Validator {
     }
 
     public void validate(Object o, Errors e) {
-        DataItem dataitem = (DataItem) o;
-        // name
-        nameSpec.validate(dataitem.getName(), e);
-        // path
-        // TODO: This must be unique amongst peers, if set.
-        pathSpec.validate(dataitem.getPath(), e);
-        // wikiDoc
-        wikiDocSpec.validate(dataitem.getWikiDoc(), e);
-        // provenance
-        provenanceSpec.validate(dataitem.getProvenance(), e);
+        nameSpec.validate(o, e);
+        pathSpec.validate(o, e);
+        wikiDocSpec.validate(o, e);
+        provenanceSpec.validate(o, e);
     }
 }

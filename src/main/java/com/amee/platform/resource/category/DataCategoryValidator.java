@@ -35,6 +35,7 @@ public class DataCategoryValidator implements Validator {
         nameSpec.setMinSize(DataCategory.NAME_MIN_SIZE);
         nameSpec.setMaxSize(DataCategory.NAME_MAX_SIZE);
         // path
+        // TODO: This must be unique amongst peers.
         pathSpec = new ValidationSpecification();
         pathSpec.setName("path");
         pathSpec.setMinSize(DataCategory.PATH_MIN_SIZE);
@@ -42,6 +43,7 @@ public class DataCategoryValidator implements Validator {
         pathSpec.setFormat(PATH_PATTERN_STRING);
         pathSpec.setAllowEmpty(true);
         // wikiName
+        // TODO: This must be unique.
         wikiNameSpec = new ValidationSpecification();
         wikiNameSpec.setName("wikiName");
         wikiNameSpec.setMinSize(DataCategory.WIKI_NAME_MIN_SIZE);
@@ -69,21 +71,12 @@ public class DataCategoryValidator implements Validator {
     }
 
     public void validate(Object o, Errors e) {
-        DataCategory datacategory = (DataCategory) o;
-        // name
-        nameSpec.validate(datacategory.getName(), e);
-        // path
-        // TODO: This must be unique amongst peers.
-        pathSpec.validate(datacategory.getPath(), e);
-        // wikiName
-        // TODO: This must be unique.
-        wikiNameSpec.validate(datacategory.getWikiName(), e);
-        // wikiDoc
-        wikiDocSpec.validate(datacategory.getWikiDoc(), e);
-        // provenance
-        provenanceSpec.validate(datacategory.getProvenance(), e);
-        // authority
-        authoritySpec.validate(datacategory.getAuthority(), e);
+        nameSpec.validate(o, e);
+        pathSpec.validate(o, e);
+        wikiNameSpec.validate(o, e);
+        wikiDocSpec.validate(o, e);
+        provenanceSpec.validate(o, e);
+        authoritySpec.validate(o, e);
     }
 }
 

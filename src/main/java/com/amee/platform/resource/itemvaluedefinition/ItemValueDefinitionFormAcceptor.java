@@ -32,7 +32,6 @@ public class ItemValueDefinitionFormAcceptor implements ResourceAcceptor {
     @Transactional(rollbackFor = {ValidationException.class})
     public JSONObject handle(RequestWrapper requestWrapper) throws ValidationException {
         try {
-            JSONObject o = new JSONObject();
             // Get ItemDefinition identifier.
             String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
             if (itemDefinitionIdentifier != null) {
@@ -46,12 +45,7 @@ public class ItemValueDefinitionFormAcceptor implements ResourceAcceptor {
                         // Get ItemValueDefinition.
                         ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(itemValueDefinitionIdentifier);
                         if (itemValueDefinition != null) {
-                            validationHelper.setItemValueDefinition(itemValueDefinition);
-                            if (validationHelper.isValid(requestWrapper.getFormParameters())) {
-                                o.put("status", "OK");
-                            } else {
-                                throw new ValidationException(validationHelper.getValidationResult());
-                            }
+                            return handle(requestWrapper, itemValueDefinition);
                         } else {
                             throw new NotFoundException();
                         }
@@ -64,9 +58,19 @@ public class ItemValueDefinitionFormAcceptor implements ResourceAcceptor {
             } else {
                 throw new MissingAttributeException("itemDefinitionIdentifier");
             }
-            return o;
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    protected JSONObject handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition) throws JSONException {
+        validationHelper.setItemValueDefinition(itemValueDefinition);
+        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+            JSONObject o = new JSONObject();
+            o.put("status", "OK");
+            return o;
+        } else {
+            throw new ValidationException(validationHelper.getValidationResult());
         }
     }
 }

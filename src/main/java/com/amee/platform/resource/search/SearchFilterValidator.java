@@ -25,7 +25,6 @@ public class SearchFilterValidator implements Validator {
     }
 
     public void validate(Object o, Errors e) {
-        SearchFilter searchFilter = (SearchFilter) o;
-        qSpec.validate(searchFilter.getQ(), e);
+        qSpec.validate(o, e);
     }
 }

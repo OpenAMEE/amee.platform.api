@@ -31,8 +31,6 @@ public class TagValidator implements Validator {
     }
 
     public void validate(Object o, Errors e) {
-        Tag tag = (Tag) o;
-        // tag
-        tagSpec.validate(tag.getTag(), e);
+        tagSpec.validate(o, e);
     }
 }
