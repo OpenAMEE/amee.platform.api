@@ -6,6 +6,8 @@ import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +45,8 @@ public class ResourceAcceptManager extends ResourceManager {
                     // Handle the various result media types.
                     if (JSONObject.class.isAssignableFrom(result.getClass())) {
                         handle((JSONObject) result);
+                    } else if (Document.class.isAssignableFrom(result.getClass())) {
+                        handle((Document) result);
                     } else {
                         log.warn("accept() Response media type is not supported.");
                         getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
@@ -90,6 +94,44 @@ public class ResourceAcceptManager extends ResourceManager {
             getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
         } else if (isTimedOut(result)) {
             getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+        } else {
+            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+        }
+    }
+
+    public void handle(Document document) {
+        Element result = document.getRootElement();
+        if (result.getChild("Status") != null) {
+            String status = result.getChild("Status").getValue();
+            if (status.equals("OK")) {
+                if (getRequest().getMethod().equals(Method.POST)) {
+                    getResponse().setStatus(Status.SUCCESS_CREATED);
+                } else if (getRequest().getMethod().equals(Method.PUT)) {
+                    getResponse().setStatus(Status.SUCCESS_CREATED);
+                } else {
+                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                }
+            } else if (status.equals("INVALID")) {
+                if (result.getChild("ValidationResult") != null) {
+                    getResource().addValidationResult(new ValidationResult(result.getChild("ValidationResult")));
+                    getResource().handleGet();
+                } else if (result.getChild("ValidationResults") != null) {
+                    Element validationResultsElem = result.getChild("ValidationResults");
+                    for (Object o : validationResultsElem.getChildren()) {
+                        getResource().addValidationResult(new ValidationResult((Element) o));
+                    }
+                    getResource().handleGet();
+                }
+                getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            } else if (status.equals("NOT_FOUND")) {
+                getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            } else if (status.equals("NOT_AUTHENTICATED")) {
+                getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+            } else if (status.equals("TIMED_OUT")) {
+                getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+            } else {
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+            }
         } else {
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
         }
