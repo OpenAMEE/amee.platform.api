@@ -173,6 +173,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <parallel>methods</parallel>
                     <environmentVariables>
                         <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
