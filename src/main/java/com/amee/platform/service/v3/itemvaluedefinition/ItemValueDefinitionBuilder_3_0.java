@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.definition;
+package com.amee.platform.service.v3.itemvaluedefinition;
 
 import com.amee.base.domain.Since;
 import org.springframework.context.annotation.Scope;
