@@ -214,40 +214,45 @@ public class ValidationSpecification implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public ValidationSpecification setName(String name) {
         this.name = name;
+        return this;
     }
 
     public boolean isAllowEmpty() {
         return allowEmpty;
     }
 
-    public void setAllowEmpty(boolean allowEmpty) {
+    public ValidationSpecification setAllowEmpty(boolean allowEmpty) {
         this.allowEmpty = allowEmpty;
+        return this;
     }
 
     public int getMinSize() {
         return minSize;
     }
 
-    public void setMinSize(int minSize) {
+    public ValidationSpecification setMinSize(int minSize) {
         this.minSize = minSize;
+        return this;
     }
 
     public int getMaxSize() {
         return maxSize;
     }
 
-    public void setMaxSize(int maxSize) {
+    public ValidationSpecification setMaxSize(int maxSize) {
         this.maxSize = maxSize;
+        return this;
     }
 
     public int getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public ValidationSpecification setSize(int size) {
         this.size = size;
+        return this;
     }
 
     public String getFormat() {
@@ -258,64 +263,72 @@ public class ValidationSpecification implements Serializable {
         }
     }
 
-    public void setFormat(String format) {
+    public ValidationSpecification setFormat(String format) {
         this.format = Pattern.compile(format);
+        return this;
     }
 
     public boolean isUrl() {
         return url;
     }
 
-    public void setUrl(boolean url) {
+    public ValidationSpecification setUrl(boolean url) {
         this.url = url;
+        return this;
     }
 
     public boolean isUid() {
         return uid;
     }
 
-    public void setUid(boolean uid) {
+    public ValidationSpecification setUid(boolean uid) {
         this.uid = uid;
+        return this;
     }
 
     public boolean isUidList() {
         return uidList;
     }
 
-    public void setUidList(boolean uidList) {
+    public ValidationSpecification setUidList(boolean uidList) {
         this.uidList = uidList;
+        return this;
     }
 
     public boolean isIntegerNumber() {
         return integerNumber;
     }
 
-    public void setIntegerNumber(boolean integerNumber) {
+    public ValidationSpecification setIntegerNumber(boolean integerNumber) {
         this.integerNumber = integerNumber;
+        return this;
     }
 
     public boolean isDoubleNumber() {
         return doubleNumber;
     }
 
-    public void setDoubleNumber(boolean doubleNumber) {
+    public ValidationSpecification setDoubleNumber(boolean doubleNumber) {
         this.doubleNumber = doubleNumber;
+        return this;
     }
 
     public boolean isNumberNegative() {
         return numberNegative;
     }
 
-    public void setNumberNegative(boolean numberNegative) {
+    public ValidationSpecification setNumberNegative(boolean numberNegative) {
         this.numberNegative = numberNegative;
+        return this;
     }
 
     public CustomValidation getCustomValidation() {
         return customValidation;
     }
 
-    public void setCustomValidation(CustomValidation customValidation) {
+    public ValidationSpecification setCustomValidation(CustomValidation customValidation) {
         this.customValidation = customValidation;
+        return this;
     }
 }
 
