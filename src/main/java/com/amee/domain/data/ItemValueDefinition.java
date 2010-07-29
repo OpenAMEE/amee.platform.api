@@ -596,4 +596,12 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public ObjectType getObjectType() {
         return ObjectType.IVD;
     }
+
+    public void setMetadataService(IMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
+
+    public void setLocaleService(ILocaleService localeService) {
+        this.localeService = localeService;
+    }
 }
