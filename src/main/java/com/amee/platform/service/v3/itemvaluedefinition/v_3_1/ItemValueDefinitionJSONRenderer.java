@@ -1,23 +1,24 @@
-package com.amee.platform.service.v3.itemvaluedefinition;
+package com.amee.platform.service.v3.itemvaluedefinition.v_3_1;
 
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
+import com.amee.platform.service.v3.itemvaluedefinition.ItemValueDefinitionRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemValueDefinitionJSONRenderer_3_1 implements ItemValueDefinitionRenderer {
+public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRenderer {
 
     private ItemValueDefinition itemValueDefinition;
     private JSONObject rootObj;
     private JSONObject itemValueDefinitionObj;
 
-    public ItemValueDefinitionJSONRenderer_3_1() {
+    public ItemValueDefinitionJSONRenderer() {
         this(true);
     }
 
-    public ItemValueDefinitionJSONRenderer_3_1(boolean start) {
+    public ItemValueDefinitionJSONRenderer(boolean start) {
         super();
         if (start) {
             start();

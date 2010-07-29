@@ -1,22 +1,23 @@
-package com.amee.platform.service.v3.itemvaluedefinition;
+package com.amee.platform.service.v3.itemvaluedefinition.v_3_1;
 
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
+import com.amee.platform.service.v3.itemvaluedefinition.ItemValueDefinitionRenderer;
 import org.jdom.Document;
 import org.jdom.Element;
 
-public class ItemValueDefinitionDOMRenderer_3_1 implements ItemValueDefinitionRenderer {
+public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRenderer {
 
     private ItemValueDefinition itemValueDefinition;
     private Element rootElem;
     private Element itemValueDefinitionElem;
 
-    public ItemValueDefinitionDOMRenderer_3_1() {
+    public ItemValueDefinitionDOMRenderer() {
         this(true);
     }
 
-    public ItemValueDefinitionDOMRenderer_3_1(boolean start) {
+    public ItemValueDefinitionDOMRenderer(boolean start) {
         super();
         if (start) {
             start();

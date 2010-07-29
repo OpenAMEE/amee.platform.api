@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.itemvaluedefinition;
+package com.amee.platform.service.v3.itemvaluedefinition.v_3_0;
 
 import com.amee.base.domain.Since;
 import org.springframework.context.annotation.Scope;
@@ -10,12 +10,12 @@ import java.util.Map;
 @Service
 @Scope("prototype")
 @Since("3.0.0")
-public class ItemValueDefinitionBuilder_3_0 extends ItemValueDefinitionBuilder {
+public class ItemValueDefinitionBuilder extends com.amee.platform.service.v3.itemvaluedefinition.ItemValueDefinitionBuilder {
 
     private final static Map<String, Class> RENDERERS = new HashMap<String, Class>() {
         {
-            put("application/json", ItemValueDefinitionJSONRenderer_3_0.class);
-            put("application/xml", ItemValueDefinitionDOMRenderer_3_0.class);
+            put("application/json", ItemValueDefinitionJSONRenderer.class);
+            put("application/xml", ItemValueDefinitionDOMRenderer.class);
         }
     };
 
