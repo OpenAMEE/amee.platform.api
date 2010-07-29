@@ -81,6 +81,9 @@ public class AlgorithmRunner {
     /**
      * Returns an IllegalArgumentException that is wrapped in a ScriptException.
      *
+     * Writing java programs that rely on sun.* is risky: they are not portable, and are not supported.
+     * http://java.sun.com/products/jdk/faq/faq-sun-packages.html
+     *
      * @param e ScriptException to look within
      * @return an IllegalArgumentException instance or null
      */

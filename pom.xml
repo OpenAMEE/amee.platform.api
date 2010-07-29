@@ -105,6 +105,11 @@
         <url>scm:git:ssh://git@github.com/AMEE/amee.platform.science.git</url>
     </scm>
 
+    <!--
+        Profile required to compile on linux.
+        sun.* packages are not included on javac bootclasspath on linux.
+        See: http://java.sun.com/products/jdk/faq/faq-sun-packages.html
+     -->
     <profiles>
         <profile>
             <id>linux</id>
