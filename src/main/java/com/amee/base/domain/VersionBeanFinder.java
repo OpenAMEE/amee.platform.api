@@ -30,13 +30,13 @@ public class VersionBeanFinder implements ApplicationContextAware {
      * @return the matching bean
      */
     public Object getBeanForVersion(String className, Version version) {
+        Object bean = null;
         TreeMap<Version, String> candidates =
                 new TreeMap<Version, String>(getBeanNamesForVersion(className, version));
         if (!candidates.isEmpty()) {
-            return applicationContext.getBean(candidates.get(candidates.lastKey()));
-        } else {
-            return null;
+            bean = applicationContext.getBean(candidates.get(candidates.lastKey()));
         }
+        return bean;
     }
 
     /**
@@ -45,6 +45,7 @@ public class VersionBeanFinder implements ApplicationContextAware {
      * supplied version is not less than the Since version and not greater than the Until version.
      * <p/>
      * TODO: This implementation causes an exhaustive search of beans. There is an opportunity for improvement.
+     * TODO: In development testing this took 38ms on the first run and then 1ms on subsequent runs.
      *
      * @param className for requested bean
      * @param version   to take into account

@@ -2,6 +2,7 @@ package com.amee.base.validation;
 
 import com.amee.base.utils.UidGen;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.Errors;
 
 import java.io.Serializable;
@@ -14,6 +15,10 @@ import java.util.regex.Pattern;
  * Allows for various types of fields and rules to be checked against. See below for the available checks.
  */
 public class ValidationSpecification implements Serializable {
+
+    public interface CustomValidation {
+        public int validate(Object o, Errors e);
+    }
 
     public final static int STOP = 0;
     public final static int CONTINUE = 1;
@@ -54,30 +59,44 @@ public class ValidationSpecification implements Serializable {
     // Can a number be negative?
     private boolean numberNegative = true;
 
+    // Extension point for custom validation.
+    private CustomValidation customValidation;
+
     public ValidationSpecification() {
         super();
     }
 
     /**
-     * Performs validation of the supplied value against the specification held in the
+     * Performs validation of the named value in the supplied object against the specification held in the
      * ValidationSpecification instance. Will update the supplied Errors instance with the
      * validation results.
      *
-     * @param value to validate
-     * @param e     the Errors instance for storing validation results
+     * @param object containing value to validate
+     * @param e      the Errors instance for storing validation results
      * @return STOP or CONTINUE, indicating whether the caller should continue validating other values
      */
-    public int validate(Object value, Errors e) {
+    public int validate(Object object, Errors e) {
+        int result = CONTINUE;
         // Don't validate if this field already has errors.
         if (e.hasFieldErrors(name)) {
-            return STOP;
+            result = STOP;
         }
+        // Extract object value.
+        BeanWrapperImpl bean = new BeanWrapperImpl(object);
+        Object value = bean.getPropertyValue(getName());
         // Validate Strings or Objects separately.
-        if (value instanceof String) {
-            return validateString((String) value, e);
-        } else {
-            return validateObject(value, e);
+        if (result != STOP) {
+            if (value instanceof String) {
+                result = validateString((String) value, e);
+            } else {
+                result = validateObject(value, e);
+            }
         }
+        // Handle CustomValidation.
+        if ((result != STOP) && (customValidation != null)) {
+            result = customValidation.validate(object, e);
+        }
+        return result;
     }
 
     private int validateString(String value, Errors e) {
@@ -289,6 +308,14 @@ public class ValidationSpecification implements Serializable {
 
     public void setNumberNegative(boolean numberNegative) {
         this.numberNegative = numberNegative;
+    }
+
+    public CustomValidation getCustomValidation() {
+        return customValidation;
+    }
+
+    public void setCustomValidation(CustomValidation customValidation) {
+        this.customValidation = customValidation;
     }
 }
 
