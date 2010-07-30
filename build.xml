@@ -2,11 +2,14 @@
 <project name="amee-platform.api" default="clean-deploy" basedir=".">
 
     <property environment="env"/>
+    <property file="build.properties"/>    
     <property name="amee.appName" value="platform-api"/>
     <property name="amee.home" value="/var/www/apps/${amee.appName}" description="The root of the AMEE deployment layout."/>
     <property name="amee.current" value="${amee.home}/current" description="The root of the current AMEE package"/>
     <property name="amee.current.lib" value="${amee.current}/lib" description="The location of the AMEE libs and dependencies."/>
     <property name="amee.shared" value="${amee.home}/shared" description="The location of the AMEE shared config."/>
+
+    <!-- Override this in build.properties -->
     <property name="amee.devel.home" value="/Development/AMEE/amee.platform.api/project/amee.platform.api" />
 
     <target name="rebuild" depends="clean, package, copy-amee-libs"
@@ -43,7 +46,7 @@
     </target>
 
     <target name="copy-wrapper" description="Copy the AMEE local wrapper.conf to the deployment folder.">
-        <copy tofile="${amee.shared}/wrapper.conf" file="server/engine/conf/wrapper.conf.local.example"
+        <copy tofile="${amee.shared}/wrapper.conf" file="server/engine/conf/wrapper.conf.local"
               overwrite="true"/>
     </target>
 

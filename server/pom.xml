@@ -32,9 +32,11 @@
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <commons-lang.version>2.5</commons-lang.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+        <groovy.version>1.7.3</groovy.version>
         <hibernate-core.version>3.5.1-Final</hibernate-core.version>
         <hibernate-memcached.version>1.2.2</hibernate-memcached.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
+        <http-builder.version>0.5.0</http-builder.version>
         <jetty-servlet-api.version>2.5-20081211</jetty-servlet-api.version>
         <jetty.version>6.1.15</jetty.version>
         <jscience.version>4.3.1</jscience.version>
@@ -168,88 +170,119 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
             </plugin>
 
+            <!-- Unit tests -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <parallel>methods</parallel>
+                </configuration>
+            </plugin>
+
+            <!-- Integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
                     <environmentVariables>
-                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <!--DB_URL_PREFIX>jdbc</DB_URL_PREFIX-->
+                        <DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>
+                        <!--DB_URL>hsqldb:mem:amee</DB_URL-->
+                        <DB_URL>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL>
+                        <!--DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER-->
+                        <DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER>
+                        <!--DB_USERNAME>sa</DB_USERNAME-->
+                        <DB_USERNAME>amee</DB_USERNAME>
+                        <!--DB_PSWD></DB_PSWD-->
+                        <DB_PSWD>amee</DB_PSWD>
+                        <MESSAGING_RUN_SLEEP>30000</MESSAGING_RUN_SLEEP>
+                        <RABBIT_MQ_ADDRESS>127.0.0.1</RABBIT_MQ_ADDRESS>
+                        <RABBIT_MQ_PORT>5672</RABBIT_MQ_PORT>
+                        <RABBIT_MQ_USERNAME>guest</RABBIT_MQ_USERNAME>
+                        <RABBIT_MQ_PASSWORD>guest</RABBIT_MQ_PASSWORD>
+                        <MESSAGING_SCOPE>live</MESSAGING_SCOPE>
+                        <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
+                        <AMEE_INSTANCE_NAME>test</AMEE_INSTANCE_NAME>
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
+                        <AMEE_HOME>${basedir}</AMEE_HOME>
+                        <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
                         <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
-                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-                        </CACHE_MANAGER_CLASS>
+                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</CACHE_MANAGER_CLASS>
                         <HOST_NAME>local-platform-api.amee.com</HOST_NAME>
-                        <AJP_PORT>8020</AJP_PORT>
+                        <PROTOCOL>http</PROTOCOL>
+                        <PORT>8888</PORT>
+                        <MASTER_INDEX>false</MASTER_INDEX>
                     </environmentVariables>
-                    <systemProperties>
-                        <property>
-                            <name>amee.cacheProviderClass</name>
-                            <value>net.sf.ehcache.hibernate.SingletonEhCacheProvider</value>
-                        </property>
-                        <property>
-                            <name>amee.useQueryCache</name>
-                            <value>false</value>
-                        </property>
-                        <property>
-                            <name>amee.useSecondLevelCache</name>
-                            <value>false</value>
-                        </property>
-                        <property>
-                            <name>amee.hibernateDialect</name>
-                            <value>org.hibernate.dialect.HSQLDialect</value>
-                        </property>
-                        <property>
-                            <name>log4j.configuration</name>
-                            <value>test-log4j.xml</value>
-                        </property>
-                        <property>
-                            <name>sun.lang.ClassLoader.allowArraySyntax</name>
-                            <value>true</value>
-                        </property>
-                        <property>
-                            <name>java.awt.headless</name>
-                            <value>true</value>
-                        </property>
-                        <property>
-                            <name>amee.logLevel</name>
-                            <value>DEBUG</value>
-                        </property>
-                        <property>
-                            <name>amee.defaultLogLevel</name>
-                            <value>WARN</value>
-                        </property>
-                        <property>
-                            <name>server.name</name>
-                            <value>localhost</value>
-                        </property>
-                        <property>
-                            <name>amee.keyFile</name>
-                            <value>${basedir}/src/test/resources/crypto/amee.key</value>
-                        </property>
-                        <property>
-                            <name>amee.saltFile</name>
-                            <value>${basedir}/src/test/resources/crypto/amee.salt</value>
-                        </property>
-                        <property>
-                            <name>org.joda.time.DateTimeZone.Provider</name>
-                            <value>org.joda.time.tz.UTCProvider</value>
-                        </property>
-                    </systemProperties>
-                    <!--argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar</argLine-->
+                    <systemPropertyVariables>
+                        <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider</amee.cacheProviderClass>
+                        <amee.useQueryCache>false</amee.useQueryCache>
+                        <amee.useSecondLevelCache>false</amee.useSecondLevelCache>
+                        <!--amee.hibernateDialect>org.hibernate.dialect.HSQLDialect</amee.hibernateDialect-->
+                        <amee.hibernateDialect>org.hibernate.dialect.MySQLInnoDBDialect</amee.hibernateDialect>
+                        <log4j.configuration>test-log4j.xml</log4j.configuration>
+                        <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
+                        <java.awt.headless>true</java.awt.headless>
+                        <amee.logLevel>DEBUG</amee.logLevel>
+                        <amee.defaultLogLevel>WARN</amee.defaultLogLevel>
+                        <server.name>localhost</server.name>
+                        <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
+                        <amee.saltFile>${basedir}/src/test/resources/crypto/amee.key</amee.saltFile>
+                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider</org.joda.time.DateTimeZone.Provider>
+                    </systemPropertyVariables>
+                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar</argLine>
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
                         <element>${basedir}/conf</element>
                     </additionalClasspathElements>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Groovy -->
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <fileset>
+                                    <directory>${basedir}/src/test/groovy</directory>
+                                    <includes>
+                                        <include>**/*.groovy</include>
+                                    </includes>
+                                </fileset>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
 
-        <testResources>
+        <!--testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <includes>
@@ -257,7 +290,7 @@
                     <include>applicationContext.xml</include>
                 </includes>
             </testResource>
-        </testResources>
+        </testResources-->
 
     </build>
 
@@ -421,6 +454,18 @@
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy.modules.http-builder</groupId>
+            <artifactId>http-builder</artifactId>
+            <version>${http-builder.version}</version>
             <scope>test</scope>
         </dependency>
 

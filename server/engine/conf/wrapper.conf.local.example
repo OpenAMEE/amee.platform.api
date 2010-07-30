@@ -24,8 +24,11 @@ wrapper.java.additional.205=-XX:+PrintGCDetails
 # Host names
 set.HOST_NAME=local-platform-api.amee.com
 
-# AJP_PORT
-set.AJP_PORT=8040
+# PROTOCOL
+set.PROTOCOL=ajp
+
+# PORT
+set.PORT=8040
 
 # Memory sizing
 wrapper.java.initmemory=256
@@ -34,8 +37,7 @@ wrapper.java.maxmemory=512
 # Database
 set.DB_USERNAME=amee
 set.DB_PSWD=amee
-set.DB_HOST=localhost
-set.DB_NAME=amee
+set.DB_URL=mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false
 set.DB_DRIVER=net.sf.log4jdbc.DriverSpy
 set.DB_URL_PREFIX=jdbc:log4jdbc
 
