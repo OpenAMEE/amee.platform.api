@@ -150,8 +150,9 @@
                             <excludeScope>provided</excludeScope>
                         </configuration>
                     </execution>
+                    <!-- This happens in ant copy-amee-libs now -->
                     <!-- Copy all dependencies to local runtime directory, ready for local execution. -->
-                    <execution>
+                    <!--execution>
                         <id>copy-dependencies-other-local</id>
                         <phase>package</phase>
                         <goals>
@@ -162,7 +163,7 @@
                             <excludeScope>provided</excludeScope>
                             <outputDirectory>${amee.current.lib}</outputDirectory>
                         </configuration>
-                    </execution>
+                    </execution-->
                 </executions>
             </plugin>
 
@@ -173,6 +174,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <parallel>methods</parallel>
                     <environmentVariables>
                         <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
@@ -237,8 +239,7 @@
                             <value>org.joda.time.tz.UTCProvider</value>
                         </property>
                     </systemProperties>
-                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
-                    </argLine>
+                    <!--argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar</argLine-->
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
                         <element>${basedir}/conf</element>
