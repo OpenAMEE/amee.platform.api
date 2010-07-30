@@ -34,7 +34,7 @@ public class ResourceAcceptManager extends ResourceManager {
             MediaType mediaType = entity.getMediaType();
             if (acceptors.containsKey(mediaType.getName())) {
                 // Send RequestWrapper to ResourceAcceptor.
-                Object result = null;
+                Object result;
                 RequestWrapper requestWrapper = getRequestWrapper(entity);
                 try {
                     result = acceptors.get(mediaType.getName()).handle(requestWrapper);
