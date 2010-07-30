@@ -1,7 +1,11 @@
 package com.amee.base.resource;
 
 import com.amee.base.domain.Version;
+import com.amee.base.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RequestWrapper implements Serializable {
 
@@ -203,6 +203,46 @@ public class RequestWrapper implements Serializable {
             return new String(body, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Caught UnsupportedEncodingException: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Returns the request body as a Document.
+     * <p/>
+     * TODO: Get ValidationException to be more informative.
+     *
+     * @return document
+     */
+    public Document getBodyAsDocument() {
+        try {
+            if (hasBody()) {
+                return new SAXBuilder().build(getBodyAsString());
+            } else {
+                throw new RuntimeException("Cannot create a Document when there is an empty body.");
+            }
+        } catch (JDOMException e) {
+            throw new ValidationException();
+        } catch (IOException e) {
+            throw new ValidationException();
+        }
+    }
+
+    /**
+     * Returns the request body as a JSONObject.
+     * <p/>
+     * TODO: Get ValidationException to be more informative.
+     *
+     * @return JSONObject
+     */
+    public JSONObject getBodyAsJSONObject() {
+        try {
+            if (hasBody()) {
+                return new JSONObject(getBodyAsString());
+            } else {
+                throw new RuntimeException("Cannot create a JSONObject when there is an empty body.");
+            }
+        } catch (JSONException e) {
+            throw new ValidationException();
         }
     }
 

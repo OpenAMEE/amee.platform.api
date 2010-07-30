@@ -67,8 +67,13 @@ public class LocalResourceHandler implements ResourceHandler {
         } catch (InterruptedException e) {
             log.error("handleWithTimeout() Caught InterruptedException (aborting): " + e.getMessage(), e);
         } catch (ExecutionException e) {
-            log.debug("handleWithTimeout() Caught ExecutionException: " + e.getMessage());
-            throw new RuntimeException("Caught ExecutionException whilst handling: " + e.getMessage(), e);
+            // We expect ResourceExceptions sometimes.
+            if ((e.getCause() != null) && ResourceException.class.isAssignableFrom(e.getCause().getClass())) {
+                throw (ResourceException) e.getCause();
+            } else {
+                log.error("handleWithTimeout() Caught unexpected ExecutionException: " + e.getMessage());
+                throw new RuntimeException("Caught ExecutionException whilst handling: " + e.getMessage(), e);
+            }
         } finally {
             log.debug("handleWithTimeout() Canceling the task via its Future.");
             // TODO: One day we should switch this to true.
