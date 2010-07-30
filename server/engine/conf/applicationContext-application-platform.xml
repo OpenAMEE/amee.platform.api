@@ -245,7 +245,16 @@
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionFormAcceptor"/>
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionFormAcceptor"/>
+                    </bean>
+                </entry>
+                <entry key="application/xml">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionDOMAcceptor"/>
+                    </bean>
                 </entry>
             </map>
         </property>
