@@ -10,10 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
 
 public class RequestWrapper implements Serializable {
@@ -216,7 +213,7 @@ public class RequestWrapper implements Serializable {
     public Document getBodyAsDocument() {
         try {
             if (hasBody()) {
-                return new SAXBuilder().build(getBodyAsString());
+                return new SAXBuilder().build(new ByteArrayInputStream(getBody()));
             } else {
                 throw new RuntimeException("Cannot create a Document when there is an empty body.");
             }
