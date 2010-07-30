@@ -2,6 +2,7 @@ package com.amee.platform.resource.tag;
 
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.tag.EntityTag;
@@ -9,8 +10,6 @@ import com.amee.domain.tag.Tag;
 import com.amee.service.tag.TagService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,7 @@ public class TagsFormAcceptor implements ResourceAcceptor {
     private TagValidationHelper validationHelper;
 
     @Transactional(rollbackFor = {ValidationException.class})
-    public JSONObject handle(RequestWrapper requestWrapper) throws ValidationException {
-        TagAcceptorRenderer renderer = new TagAcceptorJSONRenderer();
+    public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Create new Tag.
         Tag tag = new Tag();
         validationHelper.setTag(tag);
@@ -66,49 +64,9 @@ public class TagsFormAcceptor implements ResourceAcceptor {
                 log.debug("handle() No entity.");
             }
             // Woo!
-            renderer.ok();
+            return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validationHelper.getValidationResult());
-        }
-        return (JSONObject) renderer.getResult();
-    }
-
-    public interface TagAcceptorRenderer {
-
-        public void start();
-
-        public void ok();
-
-        public Object getResult();
-    }
-
-    public static class TagAcceptorJSONRenderer implements TagAcceptorRenderer {
-
-        private JSONObject rootObj;
-
-        public TagAcceptorJSONRenderer() {
-            super();
-            start();
-        }
-
-        public void start() {
-            rootObj = new JSONObject();
-        }
-
-        public void ok() {
-            put(rootObj, "status", "OK");
-        }
-
-        public JSONObject getResult() {
-            return rootObj;
-        }
-
-        protected JSONObject put(JSONObject o, String key, Object value) {
-            try {
-                return o.put(key, value);
-            } catch (JSONException e) {
-                throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-            }
         }
     }
 }

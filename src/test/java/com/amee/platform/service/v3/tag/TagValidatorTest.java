@@ -1,11 +1,13 @@
 package com.amee.platform.service.v3.tag;
 
 import com.amee.domain.tag.Tag;
+import com.amee.platform.resource.tag.TagValidator;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TagValidatorTest {
 

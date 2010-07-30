@@ -1,14 +1,9 @@
 package com.amee.platform.resource.category;
 
-import com.amee.base.resource.MissingAttributeException;
-import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.service.data.DataService;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -25,29 +20,23 @@ public class DataCategoryFormAcceptor implements ResourceAcceptor {
     private DataCategoryValidationHelper validationHelper;
 
     @Transactional(rollbackFor = {ValidationException.class})
-    public JSONObject handle(RequestWrapper requestWrapper) throws ValidationException {
-        try {
-            JSONObject o = new JSONObject();
-            String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-            if (categoryIdentifier != null) {
-                DataCategory dataCategory = dataService.getDataCategoryByUid(categoryIdentifier);
-                if (dataCategory != null) {
-                    validationHelper.setDataCategory(dataCategory);
-                    if (validationHelper.isValid(requestWrapper.getFormParameters())) {
-                        o.put("status", "OK");
-                        dataService.invalidate(dataCategory);
-                    } else {
-                        throw new ValidationException(validationHelper.getValidationResult());
-                    }
+    public Object handle(RequestWrapper requestWrapper) throws ValidationException {
+        String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+        if (categoryIdentifier != null) {
+            DataCategory dataCategory = dataService.getDataCategoryByUid(categoryIdentifier);
+            if (dataCategory != null) {
+                validationHelper.setDataCategory(dataCategory);
+                if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+                    dataService.invalidate(dataCategory);
+                    return ResponseHelper.getOK(requestWrapper);
                 } else {
-                    throw new NotFoundException();
+                    throw new ValidationException(validationHelper.getValidationResult());
                 }
             } else {
-                throw new MissingAttributeException("categoryIdentifier");
+                throw new NotFoundException();
             }
-            return o;
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        } else {
+            throw new MissingAttributeException("categoryIdentifier");
         }
     }
 }

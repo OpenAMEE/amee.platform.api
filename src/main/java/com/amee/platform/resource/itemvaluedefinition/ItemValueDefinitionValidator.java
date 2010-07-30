@@ -45,10 +45,12 @@ public class ItemValueDefinitionValidator extends BaseValidator {
                     public int validate(Object o, Errors e) {
                         // Ensure ItemValueDefinition path is unique amongst peers.
                         ItemValueDefinition itemValueDefinition = (ItemValueDefinition) o;
-                        for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
-                            if ((itemValueDefinition != ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
-                                e.rejectValue("path", "duplicate");
-                                break;
+                        if (itemValueDefinition.getItemDefinition() != null) {
+                            for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
+                                if ((itemValueDefinition != ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
+                                    e.rejectValue("path", "duplicate");
+                                    break;
+                                }
                             }
                         }
                         return ValidationSpecification.CONTINUE;

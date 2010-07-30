@@ -1,5 +1,6 @@
 package com.amee.platform.service.v3.search;
 
+import com.amee.platform.resource.search.SearchFilterValidator;
 import com.amee.platform.search.SearchFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.junit.Test;
