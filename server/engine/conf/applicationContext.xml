@@ -14,7 +14,11 @@
                            http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
     <!-- Placeholder property configuration -->
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+        <!-- Set a value that should be treated as <code>null</code> when resolved as a placeholder value -->
+        <property name="nullValue" value="NULL"/>
+    </bean>
 
     <!-- Annotations and other stuff -->
     <context:load-time-weaver/>

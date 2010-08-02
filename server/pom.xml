@@ -189,41 +189,58 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <!--DB_URL_PREFIX>jdbc</DB_URL_PREFIX-->
-                        <DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>
-                        <!--DB_URL>hsqldb:mem:amee</DB_URL-->
-                        <DB_URL>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL>
-                        <!--DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER-->
-                        <DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER>
-                        <!--DB_USERNAME>sa</DB_USERNAME-->
-                        <DB_USERNAME>amee</DB_USERNAME>
-                        <!--DB_PSWD></DB_PSWD-->
-                        <DB_PSWD>amee</DB_PSWD>
+
+                        <!-- HSQLDB -->
+                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <DB_URL>hsqldb:mem:amee_test</DB_URL>
+                        <DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>
+                        <DB_USERNAME>sa</DB_USERNAME>
+                        <DB_PSWD>NULL</DB_PSWD>
+                        <VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>
+
+                        <!-- MySQL -->
+                        <!--DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX-->
+                        <!--DB_URL>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL-->
+                        <!--DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER-->
+                        <!--DB_USERNAME>amee</DB_USERNAME-->
+                        <!--DB_PSWD>amee</DB_PSWD-->
+                        <!--VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY-->
+
+                        <!-- RabbitMQ -->
                         <MESSAGING_RUN_SLEEP>30000</MESSAGING_RUN_SLEEP>
                         <RABBIT_MQ_ADDRESS>127.0.0.1</RABBIT_MQ_ADDRESS>
                         <RABBIT_MQ_PORT>5672</RABBIT_MQ_PORT>
                         <RABBIT_MQ_USERNAME>guest</RABBIT_MQ_USERNAME>
                         <RABBIT_MQ_PASSWORD>guest</RABBIT_MQ_PASSWORD>
                         <MESSAGING_SCOPE>live</MESSAGING_SCOPE>
+
+                        <!-- AMEE platform -->
                         <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
                         <AMEE_INSTANCE_NAME>test</AMEE_INSTANCE_NAME>
+                        <HOST_NAME>localhost</HOST_NAME>
+                        <PROTOCOL>http</PROTOCOL>
+                        <PORT>8888</PORT>
+                        
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
                         <AMEE_HOME>${basedir}</AMEE_HOME>
                         <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
                         <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
                         <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</CACHE_MANAGER_CLASS>
-                        <HOST_NAME>local-platform-api.amee.com</HOST_NAME>
-                        <PROTOCOL>http</PROTOCOL>
-                        <PORT>8888</PORT>
                         <MASTER_INDEX>false</MASTER_INDEX>
                     </environmentVariables>
                     <systemPropertyVariables>
+
+                        <!-- Hibernate -->
                         <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider</amee.cacheProviderClass>
                         <amee.useQueryCache>false</amee.useQueryCache>
                         <amee.useSecondLevelCache>false</amee.useSecondLevelCache>
-                        <!--amee.hibernateDialect>org.hibernate.dialect.HSQLDialect</amee.hibernateDialect-->
-                        <amee.hibernateDialect>org.hibernate.dialect.MySQLInnoDBDialect</amee.hibernateDialect>
+                        <amee.hibernateDialect>org.hibernate.dialect.HSQLDialect</amee.hibernateDialect>
+                        <!--amee.hibernateDialect>org.hibernate.dialect.MySQLInnoDBDialect</amee.hibernateDialect-->
+
+                        <!-- Set this to create to automatically create schema. Required for hsqldb:mem. -->
+                        <hibernate.hbm2ddl.auto>create</hibernate.hbm2ddl.auto>
+                        
                         <log4j.configuration>test-log4j.xml</log4j.configuration>
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
