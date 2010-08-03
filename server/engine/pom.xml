@@ -22,6 +22,13 @@
             <artifactId>amee-base</artifactId>
             <version>${amee-base.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-api-restlet</artifactId>
+            <version>${amee-platform-api.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Runtime Dependencies. -->
         <dependency>
@@ -150,6 +157,22 @@
             <version>${org-aspectj.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!--dependency>
+            <groupId>org.restlet</groupId>
+            <artifactId>org.restlet.ext.spring</artifactId>
+            <version>${restlet.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency-->
 
     </dependencies>
 
