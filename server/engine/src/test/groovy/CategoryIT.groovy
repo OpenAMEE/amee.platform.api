@@ -7,15 +7,6 @@ import static org.junit.Assert.*
 
 class CategoryIT extends BaseApiTest {
 
-    def uids = ['CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04',
-            '54C8A44254AA', '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A']
-
-    def names = ['Root', 'Home', 'Appliances', 'Computers', 'Generic',
-            'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic']
-
-    def wikiNames = ['Root', 'Home', 'Appliances', 'Computers', 'Computers_generic',
-            'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic']
-
     @Test
     @Ignore("POST not implemented in API")
     void createCategory() {
@@ -37,7 +28,7 @@ class CategoryIT extends BaseApiTest {
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
-        assertEquals 10, response.data.categories.size()
+        assertEquals uids.size(), response.data.categories.size()
         assert uids == response.data.categories.collect {it.uid}
         assert names == response.data.categories.collect {it.name}
         assert wikiNames == response.data.categories.collect {it.wikiName}
@@ -53,7 +44,7 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'false', response.data.Categories.@truncated.text()
 
         def allCategories = response.data.Categories.Category
-        assertEquals 10, allCategories.size()
+        assertEquals uids.size(), allCategories.size()
         assert uids == allCategories.@uid*.text()
         assert names == allCategories.Name*.text()
         assert wikiNames == allCategories.WikiName*.text()
@@ -61,41 +52,76 @@ class CategoryIT extends BaseApiTest {
 
     @Test
     void filterByAuthorityJson() {
-
+        client.contentType = JSON
+        def response = client.get(path: '/3/categories',
+            query: ['authority': 'enterprise'])
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals 8, response.data.categories.size()
     }
 
     @Test
     void filterByAuthorityXml() {
-        
+        client.contentType = XML
+        def response = client.get(path: '/3/categories',
+            query: ['authority': 'enterprise'])
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+
+        def allCategories = response.data.Categories.Category
+        assertEquals 8, allCategories.size()
     }
 
     @Test
     void filterByTagsJson() {
-
+        client.contentType = JSON
+        def response = client.get(path: '/3/categories',
+            query: ['tags': 'electrical'])
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals 4, response.data.categories.size()
     }
 
     @Test
     void filterByTagsXml() {
-        
+        client.contentType = XML
+        def response = client.get(path: '/3/categories',
+            query: ['tags': 'electrical'])
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+
+        def allCategories = response.data.Categories.Category
+        assertEquals 4, allCategories.size()
     }
 
     @Test
-    void filterBySearchJson() {
-
+    void filterByPathJson() {
+        client.contentType = JSON
+        def response = client.get(path: '/3/categories',
+            query: ['fullPath': '/home/appliances/*'])
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals 7, response.data.categories.size()
     }
 
     @Test
-    void filterBySearchXml() {
-        
-    }
+    void filterByPathXml() {
+        client.contentType = XML
+        def response = client.get(path: '/3/categories',
+            query: ['fullPath': '/home/appliances/*'])
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
 
-    @Test
-    void filterByFullPathJson() {
-
-    }
-
-    @Test
-    void filterByFullPathXml() {
-
+        def allCategories = response.data.Categories.Category
+        assertEquals 7, allCategories.size()
     }
 }
