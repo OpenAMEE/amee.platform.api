@@ -524,12 +524,29 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public Set<ItemValueUsage> getItemValueUsages() {
         try {
             if (getConfiguration().has("usages")) {
-                return ItemValueUsage.getItemValueUsages(getConfiguration().getJSONArray("usages"));
+                return ItemValueUsage.deserialize(getConfiguration().getJSONArray("usages"));
             } else {
                 return new HashSet<ItemValueUsage>();
             }
         } catch (JSONException e) {
             // This should never happen as the various configuration methods are protective.
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Replaces the configuration 'usages' block with a serialization of the supplied
+     * Set of ItemValueUsages.
+     *
+     * @param itemValueUsages to place in the configuration
+     */
+    public void setItemValueUsages(Set<ItemValueUsage> itemValueUsages) {
+        try {
+            JSONObject configuration = getConfiguration();
+            configuration.put("usages", ItemValueUsage.serialize(itemValueUsages));
+            setConfiguration(configuration);
+        } catch (JSONException e) {
+            // Should never happen...
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
     }

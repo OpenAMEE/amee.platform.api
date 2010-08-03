@@ -75,7 +75,23 @@ public class ItemValueUsage implements Serializable {
         return getName();
     }
 
-    public static Set<ItemValueUsage> getItemValueUsages(JSONArray itemValueUsageArr) {
+    public static JSONArray serialize(Set<ItemValueUsage> itemValueUsages) {
+        try {
+            JSONArray arr = new JSONArray();
+            for (ItemValueUsage itemValueUsage : itemValueUsages) {
+                JSONObject obj = new JSONObject();
+                obj.put("name", itemValueUsage.getName());
+                obj.put("type", itemValueUsage.getType().toString());
+                arr.put(obj);
+            }
+            return arr;
+        } catch (JSONException e) {
+            // Should never happen...
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
+    public static Set<ItemValueUsage> deserialize(JSONArray itemValueUsageArr) {
         Set<ItemValueUsage> itemValueUsages = new HashSet<ItemValueUsage>();
         if (itemValueUsageArr != null) {
             for (int i = 0; i < itemValueUsageArr.length(); i++) {

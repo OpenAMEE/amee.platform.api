@@ -54,7 +54,7 @@ public class ItemValueUsageTest {
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.REQUIRED.toString()));
             arr.put(new JSONObject().put("name", "usage2").put("type", ValueUsageType.FORBIDDEN.toString()));
             arr.put(new JSONObject().put("name", "usage3").put("type", ValueUsageType.OPTIONAL.toString()));
-            Set<ItemValueUsage> itemValueUsages = ItemValueUsage.getItemValueUsages(arr);
+            Set<ItemValueUsage> itemValueUsages = ItemValueUsage.deserialize(arr);
             assertTrue("There should be 3 ItemValueUsages.", itemValueUsages.size() == 3);
         } catch (IllegalArgumentException e) {
             fail("Should not throw IllegalArgumentException: " + e.getMessage());
@@ -70,7 +70,7 @@ public class ItemValueUsageTest {
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.REQUIRED.toString()));
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.FORBIDDEN.toString()));
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.OPTIONAL.toString()));
-            ItemValueUsage.getItemValueUsages(arr);
+            ItemValueUsage.deserialize(arr);
         } catch (IllegalArgumentException e) {
             // Swallow.
             return;
@@ -82,7 +82,7 @@ public class ItemValueUsageTest {
 
     @Test
     public void canParseEmptyItemValueUsagesJSON() {
-        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.getItemValueUsages(null).isEmpty());
-        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.getItemValueUsages(new JSONArray()).isEmpty());
+        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.deserialize(null).isEmpty());
+        assertTrue("There should be 0 ItemValueUsages.", ItemValueUsage.deserialize(new JSONArray()).isEmpty());
     }
 }
