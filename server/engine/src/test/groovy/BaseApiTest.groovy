@@ -49,7 +49,7 @@ abstract class BaseApiTest {
 
         // Get the HTTP client
         def config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL())
-        client = new RESTClient("http://${config.api.host}:${config.api.port}", 'application/json')
+        client = new RESTClient("http://${config.api.host}:${config.api.port}")
         client.auth.basic config.api.user, config.api.password
     }
 }
