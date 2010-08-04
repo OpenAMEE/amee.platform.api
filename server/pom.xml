@@ -225,9 +225,7 @@
                         <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
                         <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
-                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-                        </CACHE_MANAGER_CLASS>
-                        <MASTER_INDEX>false</MASTER_INDEX>
+                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</CACHE_MANAGER_CLASS>
                     </environmentVariables>
                     <systemPropertyVariables>
 
@@ -250,8 +248,12 @@
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.key</amee.saltFile>
-                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider
-                        </org.joda.time.DateTimeZone.Provider>
+                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider</org.joda.time.DateTimeZone.Provider>
+                        <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>
+                        <amee.masterIndex>true</amee.masterIndex>
+                        <amee.clearIndex>true</amee.clearIndex>
+                        <amee.indexDataCategories>true</amee.indexDataCategories>
+                        <amee.indexDataItems>true</amee.indexDataItems>
                     </systemPropertyVariables>
                     <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
                     </argLine>
