@@ -75,12 +75,6 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     private Set<ReturnValueDefinition> returnValueDefinitions = new HashSet<ReturnValueDefinition>();
 
     /**
-     * A comma separated (CSV) list of 'usages'.
-     */
-    @Column(name = "USAGES")
-    private String usages = "";
-
-    /**
      * A locally cached List of 'usages'.
      */
     @Transient
@@ -268,7 +262,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
      * @return String representation of the usages property
      */
     public String getUsagesString() {
-        return usages;
+        return getMetadataValue("usages");
     }
 
     /**
@@ -277,11 +271,9 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
      * @param usages value to set
      */
     public void setUsages(String usages) {
-        if (usages == null) {
-            usages = "";
-        }
-        this.usages = usages;
+        getOrCreateMetadata("usages").setValue(usages);
         usagesList = null;
+        onModify();
     }
 
     /**
@@ -293,7 +285,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
     public List<String> getUsages() {
         if (usagesList == null) {
             usagesList = new ArrayList<String>();
-            for (String usage : usages.split(",")) {
+            for (String usage : getUsagesString().split(",")) {
                 if (!usage.trim().isEmpty()) {
                     usagesList.add(usage.trim());
                 }

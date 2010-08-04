@@ -22,8 +22,6 @@ package com.amee.domain.data;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
@@ -38,19 +36,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Resource;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "DATA_CATEGORY")
@@ -67,14 +55,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
     public final static int AUTHORITY_MAX_SIZE = 255;
-
-    @Transient
-    @Resource
-    private IMetadataService metadataService;
-
-    @Transient
-    @Resource
-    private ILocaleService localeService;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "DATA_CATEGORY_ID")
@@ -102,9 +82,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "ALIASED_TO_ID")
     private List<DataCategory> aliases = new ArrayList<DataCategory>();
-
-    @Transient
-    private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
 
     public DataCategory() {
         super();
@@ -298,34 +275,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         onModify();
     }
 
-    // TODO: The following three methods are cut-and-pasted between various entities. They should be consolidated.
-
-    private Metadata getMetadata(String key) {
-        if (!metadatas.containsKey(key)) {
-            metadatas.put(key, metadataService.getMetadataForEntity(this, key));
-        }
-        return metadatas.get(key);
-    }
-
-    private String getMetadataValue(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata != null) {
-            return metadata.getValue();
-        } else {
-            return "";
-        }
-    }
-
-    protected Metadata getOrCreateMetadata(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata == null) {
-            metadata = new Metadata(this, key);
-            metadataService.persist(metadata);
-            metadatas.put(key, metadata);
-        }
-        return metadata;
-    }
-
     @Override
     public void setStatus(AMEEStatus status) {
         this.status = status;
@@ -336,13 +285,5 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
 
     public ObjectType getObjectType() {
         return ObjectType.DC;
-    }
-
-    public void setMetadataService(IMetadataService metadataService) {
-        this.metadataService = metadataService;
-    }
-
-    public void setLocaleService(ILocaleService localeService) {
-        this.localeService = localeService;
     }
 }

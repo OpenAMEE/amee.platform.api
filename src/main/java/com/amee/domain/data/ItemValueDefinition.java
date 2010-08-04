@@ -54,14 +54,6 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public final static int WIKI_DOC_MIN_SIZE = 0;
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_SIZE;
 
-    @Transient
-    @Resource
-    private IMetadataService metadataService;
-
-    @Transient
-    @Resource
-    private ILocaleService localeService;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ITEM_DEFINITION_ID")
     private ItemDefinition itemDefinition;
@@ -125,9 +117,6 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
      */
     @Transient
     private JSONObject configurationObj;
-
-    @Transient
-    private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
 
     @Transient
     private Builder builder;
@@ -483,12 +472,13 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
      * @param configuration String value to set
      */
     public void setConfiguration(String configuration) {
-        if (configuration == null) {
-            configuration = "{}";
-        }
         try {
+            if (configuration == null) {
+                configuration = "{}";
+            }
             configurationObj = new JSONObject(configuration);
             getOrCreateMetadata("configuration").setValue(configurationObj.toString());
+            onModify();
         } catch (JSONException e) {
             throw new IllegalArgumentException("The configuration argument was not valid JSON.");
         }
@@ -553,34 +543,6 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
         onModify();
     }
 
-    // TODO: The following three methods are cut-and-pasted between various entities. They should be consolidated.
-
-    private Metadata getMetadata(String key) {
-        if (!metadatas.containsKey(key)) {
-            metadatas.put(key, metadataService.getMetadataForEntity(this, key));
-        }
-        return metadatas.get(key);
-    }
-
-    private String getMetadataValue(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata != null) {
-            return metadata.getValue();
-        } else {
-            return "";
-        }
-    }
-
-    protected Metadata getOrCreateMetadata(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata == null) {
-            metadata = new Metadata(this, key);
-            metadataService.persist(metadata);
-            metadatas.put(key, metadata);
-        }
-        return metadata;
-    }
-
     public String getLabel() {
         return getItemDefinition().getName() + "/" + getPath();
     }
@@ -605,13 +567,5 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     public ObjectType getObjectType() {
         return ObjectType.IVD;
-    }
-
-    public void setMetadataService(IMetadataService metadataService) {
-        this.metadataService = metadataService;
-    }
-
-    public void setLocaleService(ILocaleService localeService) {
-        this.localeService = localeService;
     }
 }

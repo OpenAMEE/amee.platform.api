@@ -21,7 +21,6 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.TimeZoneHolder;
@@ -35,14 +34,10 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Resource;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @DiscriminatorValue("DI")
@@ -55,16 +50,9 @@ public class DataItem extends Item {
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);
 
-    @Transient
-    @Resource
-    private IMetadataService metadataService;
-
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = true)
     @Index(name = "PATH_IND")
     private String path = "";
-
-    @Transient
-    private Map<String, Metadata> metadatas = new HashMap<String, Metadata>();
 
     public DataItem() {
         super();
@@ -260,34 +248,6 @@ public class DataItem extends Item {
         onModify();
     }
 
-    // TODO: The following three methods are cut-and-pasted between various entities. They should be consolidated.
-
-    private Metadata getMetadata(String key) {
-        if (!metadatas.containsKey(key)) {
-            metadatas.put(key, metadataService.getMetadataForEntity(this, key));
-        }
-        return metadatas.get(key);
-    }
-
-    private String getMetadataValue(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata != null) {
-            return metadata.getValue();
-        } else {
-            return "";
-        }
-    }
-
-    protected Metadata getOrCreateMetadata(String key) {
-        Metadata metadata = getMetadata(key);
-        if (metadata == null) {
-            metadata = new Metadata(this, key);
-            metadataService.persist(metadata);
-            metadatas.put(key, metadata);
-        }
-        return metadata;
-    }
-
     public ObjectType getObjectType() {
         return ObjectType.DI;
     }
@@ -315,9 +275,5 @@ public class DataItem extends Item {
     @Override
     public StartEndDate getEndDate() {
         return null;
-    }
-
-    public void setMetadataService(IMetadataService metadataService) {
-        this.metadataService = metadataService;
     }
 }

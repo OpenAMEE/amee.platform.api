@@ -26,17 +26,28 @@ import com.amee.domain.auth.AuthorizationContext;
 import com.amee.domain.auth.Permission;
 import com.amee.persist.BaseEntity;
 
+import javax.annotation.Resource;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Extends BaseEntity to add state (status) and permissions.
  */
 @MappedSuperclass
 public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityReference {
+
+    @Transient
+    @Resource
+    protected IMetadataService metadataService;
+
+    @Transient
+    @Resource
+    protected ILocaleService localeService;
 
     /**
      * Represents the state of the entity.
@@ -49,6 +60,9 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      */
     @Transient
     private AccessSpecification accessSpecification;
+
+    @Transient
+    private Map<String, Metadata> metadatas;
 
     /**
      * Default constructor.
@@ -230,5 +244,42 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
 
     public void setEntity(AMEEEntity entity) {
         // do nothing
+    }
+
+    protected Metadata getMetadata(String key) {
+        if (metadatas == null) {
+            metadatas = new HashMap<String, Metadata>();
+        }
+        if (!metadatas.containsKey(key)) {
+            metadatas.put(key, metadataService.getMetadataForEntity(this, key));
+        }
+        return metadatas.get(key);
+    }
+
+    protected String getMetadataValue(String key) {
+        Metadata metadata = getMetadata(key);
+        if (metadata != null) {
+            return metadata.getValue();
+        } else {
+            return "";
+        }
+    }
+
+    protected Metadata getOrCreateMetadata(String key) {
+        Metadata metadata = getMetadata(key);
+        if (metadata == null) {
+            metadata = new Metadata(this, key);
+            metadataService.persist(metadata);
+            metadatas.put(key, metadata);
+        }
+        return metadata;
+    }
+
+    public void setMetadataService(IMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
+
+    public void setLocaleService(ILocaleService localeService) {
+        this.localeService = localeService;
     }
 }
