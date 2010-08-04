@@ -121,14 +121,6 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     private boolean isForceTimeSeries;
 
     /**
-     * A String containing an arbitrary sized JSON object containing configuration data for the
-     * ItemValueDefinition. Primary use will be for validation and 'usages'. This will be stored in
-     * a TEXT column in the database.
-     */
-    @Column(name = "CONFIGURATION")
-    private String configuration = "";
-
-    /**
      * A JSONObject based on the deserialized form of the configuration property.
      */
     @Transient
@@ -459,7 +451,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
      * @return the configuration value
      */
     public String getConfigurationString() {
-        return configuration;
+        return getMetadataValue("configuration");
     }
 
     /**
@@ -471,6 +463,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public JSONObject getConfiguration() {
         if (configurationObj == null) {
             try {
+                String configuration = getConfigurationString();
                 if (!configuration.isEmpty()) {
                     configurationObj = new JSONObject(configuration);
                 } else {
@@ -495,7 +488,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
         }
         try {
             configurationObj = new JSONObject(configuration);
-            this.configuration = configurationObj.toString();
+            getOrCreateMetadata("configuration").setValue(configurationObj.toString());
         } catch (JSONException e) {
             throw new IllegalArgumentException("The configuration argument was not valid JSON.");
         }

@@ -1,6 +1,7 @@
 package com.amee.domain.data;
 
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IMetadataService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,11 +16,13 @@ public class ItemValueDefinitionTest {
     public final static String MOCK_CONFIGURATION_WITH_USAGES =
             "{\"usages\":[{\"name\":\"usage_1\",\"type\":\"required\"},{\"name\":\"usage_2\",\"type\":\"optional\"}]}";
 
+    private IMetadataService mockMetadataService;
     private ItemValueDefinition itemValueDef;
     private ItemDefinition mockItemDef;
 
     @Before
     public void setUp() {
+        mockMetadataService = mock(IMetadataService.class);
         itemValueDef = new ItemValueDefinition();
         mockItemDef = mock(ItemDefinition.class);
         itemValueDef.setItemDefinition(mockItemDef);
@@ -52,6 +55,7 @@ public class ItemValueDefinitionTest {
     @Test
     public void canUseUsagesInConfiguration() {
         ItemValueDefinition itemValueDefinition = new ItemValueDefinition();
+        itemValueDefinition.setMetadataService(mockMetadataService);
         assertTrue("ItemValueDefinition should contain 0 ItemValueUsages. ",
                 itemValueDefinition.getItemValueUsages().isEmpty());
         itemValueDefinition.setConfiguration(MOCK_CONFIGURATION_WITH_USAGES);
