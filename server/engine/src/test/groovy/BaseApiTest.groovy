@@ -42,12 +42,18 @@ abstract class BaseApiTest {
         // TODO: Start this before all integration tests. exec-maven-plugin?
         // Start the restlet container
         container = context.getBean("platformContainer")
+
+        println "Starting container..."
         container.start()
+
+        // Wait 5 seconds to allow the search index to be built (there must be a better way to do this?)
+        sleep(5000)
     }
 
     @AfterClass
     static void stop() {
         try {
+            println "Stopping container..."
             container.stop()
         } catch (e) {
             // Do nothing
