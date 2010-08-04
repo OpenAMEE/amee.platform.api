@@ -24,13 +24,7 @@ package com.amee.domain.data;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A Map of {@link ItemValue} instances.
@@ -144,6 +138,7 @@ public class ItemValueMap extends HashMap {
         for (ItemValue itemValue : itemValues) {
             if (!itemValue.getStartDate().after(startDate)) {
                 selected = itemValue;
+                selected.setHistoryAvailable(itemValues.size() > 1);
                 break;
             }
         }

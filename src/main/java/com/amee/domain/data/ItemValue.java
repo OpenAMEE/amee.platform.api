@@ -20,19 +20,10 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.Builder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.LocaleHolder;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
-import com.amee.platform.science.AmountCompoundUnit;
-import com.amee.platform.science.AmountPerUnit;
-import com.amee.platform.science.AmountUnit;
-import com.amee.platform.science.ExternalValue;
-import com.amee.platform.science.StartEndDate;
+import com.amee.platform.science.*;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -45,13 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -93,6 +78,9 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
     @Transient
     private Builder builder;
 
+    @Transient
+    private boolean historyAvailable = false;
+
     public ItemValue() {
         super();
     }
@@ -105,10 +93,6 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         item.addItemValue(this);
         // Default startDate is that of the parent Item.
         this.startDate = item.getStartDate();
-    }
-
-    public void setBuilder(Builder builder) {
-        this.builder = builder;
     }
 
     public String getUsableValue() {
@@ -326,5 +310,17 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
      */
     public boolean isConvertible() {
         return true;
+    }
+
+    public void setBuilder(Builder builder) {
+        this.builder = builder;
+    }
+
+    public boolean isHistoryAvailable() {
+        return historyAvailable;
+    }
+
+    public void setHistoryAvailable(boolean historyAvailable) {
+        this.historyAvailable = historyAvailable;
     }
 }
