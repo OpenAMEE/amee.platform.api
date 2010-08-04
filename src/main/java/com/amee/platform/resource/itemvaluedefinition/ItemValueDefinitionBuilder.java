@@ -67,10 +67,14 @@ public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean name = requestWrapper.getMatrixParameters().containsKey("name");
         boolean path = requestWrapper.getMatrixParameters().containsKey("path");
+        boolean value = requestWrapper.getMatrixParameters().containsKey("value");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
         boolean wikiDoc = requestWrapper.getMatrixParameters().containsKey("wikiDoc");
         boolean itemDefinition = requestWrapper.getMatrixParameters().containsKey("itemDefinition");
         boolean usages = requestWrapper.getMatrixParameters().containsKey("usages");
+        boolean choices = requestWrapper.getMatrixParameters().containsKey("choices");
+        boolean units = requestWrapper.getMatrixParameters().containsKey("units");
+        boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
 
         // New ItemValueDefinition & basic.
         renderer.newItemValueDefinition(itemValueDefinition);
@@ -82,6 +86,9 @@ public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
         }
         if (path || full) {
             renderer.addPath();
+        }
+        if (value || full) {
+            renderer.addValue();
         }
         if (audit || full) {
             renderer.addAudit();
@@ -95,6 +102,15 @@ public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
         }
         if (usages || full) {
             renderer.addUsages();
+        }
+        if (choices || full) {
+            renderer.addChoices();
+        }
+        if (units || full) {
+            renderer.addUnits();
+        }
+        if (flags || full) {
+            renderer.addFlags();
         }
     }
 

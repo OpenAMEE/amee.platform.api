@@ -61,6 +61,11 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
     }
 
     @Override
+    public void addValue() {
+        put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
+    }
+
+    @Override
     public void addAudit() {
         put(itemValueDefinitionObj, "status", itemValueDefinition.getStatus().getName());
         put(itemValueDefinitionObj, "created", DATE_FORMAT.print(itemValueDefinition.getCreated().getTime()));
@@ -90,6 +95,28 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
             put(itemValueUsageObj, "type", itemValueUsage.getType().toString());
             itemValueUsagesArr.put(itemValueUsageObj);
         }
+    }
+
+    @Override
+    public void addChoices() {
+        put(itemValueDefinitionObj, "choices", itemValueDefinition.getChoices());
+    }
+
+    @Override
+    public void addUnits() {
+        if (itemValueDefinition.hasUnit()) {
+            put(itemValueDefinitionObj, "unit", itemValueDefinition.getUnit().toString());
+        }
+        if (itemValueDefinition.hasPerUnit()) {
+            put(itemValueDefinitionObj, "perUnit", itemValueDefinition.getPerUnit().toString());
+        }
+    }
+
+    @Override
+    public void addFlags() {
+        put(itemValueDefinitionObj, "drillDown", itemValueDefinition.isDrillDown());
+        put(itemValueDefinitionObj, "fromData", itemValueDefinition.isFromData());
+        put(itemValueDefinitionObj, "fromProfile", itemValueDefinition.isFromProfile());
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

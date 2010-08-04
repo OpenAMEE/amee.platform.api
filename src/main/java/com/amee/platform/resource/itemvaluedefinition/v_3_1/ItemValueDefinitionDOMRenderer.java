@@ -59,6 +59,11 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
     }
 
     @Override
+    public void addValue() {
+        itemValueDefinitionElem.addContent(new Element("Value").setText(itemValueDefinition.getValue()));
+    }
+
+    @Override
     public void addAudit() {
         itemValueDefinitionElem.setAttribute("status", itemValueDefinition.getStatus().getName());
         itemValueDefinitionElem.setAttribute("created", DATE_FORMAT.print(itemValueDefinition.getCreated().getTime()));
@@ -88,6 +93,29 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
             valueElem.addContent(new Element("Type").setText(itemValueUsage.getType().toString()));
             itemValueUsagesElem.addContent(valueElem);
         }
+    }
+
+    @Override
+    public void addChoices() {
+        itemValueDefinitionElem.addContent(new Element("Choices").setText(itemValueDefinition.getChoices()));
+    }
+
+    @Override
+    public void addUnits() {
+        if (itemValueDefinition.hasUnit()) {
+            itemValueDefinitionElem.addContent(new Element("Unit").setText(itemValueDefinition.getUnit().toString()));
+        }
+        if (itemValueDefinition.hasPerUnit()) {
+            itemValueDefinitionElem.addContent(new Element("PerUnit").setText(itemValueDefinition.getPerUnit().toString()));
+        }
+    }
+
+
+    @Override
+    public void addFlags() {
+        itemValueDefinitionElem.addContent(new Element("DrillDown").setText(Boolean.toString(itemValueDefinition.isDrillDown())));
+        itemValueDefinitionElem.addContent(new Element("FromData").setText(Boolean.toString(itemValueDefinition.isFromData())));
+        itemValueDefinitionElem.addContent(new Element("FromProfile").setText(Boolean.toString(itemValueDefinition.isFromProfile())));
     }
 
     public Element getItemValueDefinitionElement() {

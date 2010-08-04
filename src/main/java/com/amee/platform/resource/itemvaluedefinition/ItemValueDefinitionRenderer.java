@@ -21,6 +21,8 @@ public interface ItemValueDefinitionRenderer {
 
     public void addPath();
 
+    public void addValue();
+
     public void addAudit();
 
     public void addWikiDoc();
@@ -28,6 +30,12 @@ public interface ItemValueDefinitionRenderer {
     public void addItemDefinition(ItemDefinition id);
 
     public void addUsages();
+
+    public void addChoices();
+
+    public void addFlags();
+
+    public void addUnits();
 
     public Object getObject();
 }

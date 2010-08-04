@@ -267,6 +267,7 @@ public class DataItemBuilder implements ResourceBuilder {
                     put(valueObj, "perUnit", itemValue.getPerUnit().toString());
                     put(valueObj, "compoundUnit", itemValue.getCompoundUnit().toString());
                 }
+                put(valueObj, "history", itemValue.isHistoryAvailable());
                 valuesArr.put(valueObj);
             }
         }
@@ -367,6 +368,7 @@ public class DataItemBuilder implements ResourceBuilder {
             dataItemElem.addContent(valuesElem);
             for (ItemValue itemValue : dataItem.getItemValues()) {
                 Element valueElem = new Element("Value");
+                valueElem.setAttribute("history", Boolean.toString(itemValue.isHistoryAvailable()));
                 valueElem.addContent(new Element("Path").setText(itemValue.getPath()));
                 valueElem.addContent(new Element("Value").setText(itemValue.getValue()));
                 if (itemValue.hasUnit()) {
