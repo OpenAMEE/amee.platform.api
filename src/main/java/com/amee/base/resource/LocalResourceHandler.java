@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  * A ResourceHandler which proxies handling of the RequestWrapper to the Spring bean identified in the
  * target property. A target ResourceHandler will be found in the Spring context which matches the Version
  * supported for the current request. The target ResourceHandler will be invoked with a Future
- * with the timeout value.
+ * with the timeout value (if this is greater than zero).
  */
 @Service
 @Scope("prototype")
@@ -28,7 +28,7 @@ public class LocalResourceHandler implements ResourceHandler {
 
     private String target = "";
 
-    private int timeout = 30;
+    private int timeout = 0;
 
     public Object handle(RequestWrapper requestWrapper) {
         // Lookup target bean.
@@ -37,7 +37,11 @@ public class LocalResourceHandler implements ResourceHandler {
             // Target bean found, send request there and get result object.
             // Only ResourceHandler derived implementations are supported.
             if (ResourceHandler.class.isAssignableFrom(target.getClass())) {
-                return handleWithTimeout(requestWrapper, (ResourceHandler) target);
+                if (getTimeout() > 0) {
+                    return handleWithTimeout(requestWrapper, (ResourceHandler) target);
+                } else {
+                    return ((ResourceHandler) target).handle(requestWrapper);
+                }
             } else {
                 // Target bean type not supported.
                 log.warn("handle() Target bean type not supported: " + target.getClass());
@@ -50,6 +54,12 @@ public class LocalResourceHandler implements ResourceHandler {
         }
     }
 
+    /**
+     *
+     * @param requestWrapper
+     * @param handler
+     * @return
+     */
     protected Object handleWithTimeout(final RequestWrapper requestWrapper, final ResourceHandler handler) {
         Object response = null;
         Callable<Object> task = new Callable<Object>() {

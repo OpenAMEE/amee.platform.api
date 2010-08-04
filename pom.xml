@@ -25,7 +25,7 @@
         <org.json.version>2.0</org.json.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         <spy-memcached.version>2.4</spy-memcached.version>
-        <wrapper.version>3.4.0</wrapper.version>
+        <wrapper-standard.version>3.5.3</wrapper-standard.version>
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -115,8 +115,8 @@
         </dependency>
         <dependency>
             <groupId>tanukisoft</groupId>
-            <artifactId>wrapper</artifactId>
-            <version>${wrapper.version}</version>
+            <artifactId>wrapper-standard</artifactId>
+            <version>${wrapper-standard.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
