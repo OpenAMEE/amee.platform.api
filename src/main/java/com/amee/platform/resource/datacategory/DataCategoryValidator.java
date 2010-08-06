@@ -1,4 +1,4 @@
-package com.amee.platform.resource.category;
+package com.amee.platform.resource.datacategory;
 
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.data.DataCategory;

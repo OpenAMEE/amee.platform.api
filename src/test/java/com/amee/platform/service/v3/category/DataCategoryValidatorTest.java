@@ -2,7 +2,7 @@ package com.amee.platform.service.v3.category;
 
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.DataCategory;
-import com.amee.platform.resource.category.DataCategoryValidator;
+import com.amee.platform.resource.datacategory.DataCategoryValidator;
 import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;

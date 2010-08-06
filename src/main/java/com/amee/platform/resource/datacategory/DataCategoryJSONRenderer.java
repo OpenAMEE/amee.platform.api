@@ -1,4 +1,4 @@
-package com.amee.platform.resource.category;
+package com.amee.platform.resource.datacategory;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
