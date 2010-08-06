@@ -105,7 +105,7 @@
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="categories"/>
         <property name="builder">
-            <bean class="com.amee.platform.resource.category.DataCategoriesBuilder"/>
+            <bean class="com.amee.platform.resource.datacategory.DataCategoriesBuilder"/>
         </property>
         <!--<property name="acceptors">-->
         <!--<map>-->
@@ -125,12 +125,12 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.resource.category.DataCategoryBuilder"/>
+            <bean class="com.amee.platform.resource.datacategory.DataCategoryBuilder"/>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.category.DataCategoryFormAcceptor"/>
+                    <bean class="com.amee.platform.resource.datacategory.DataCategoryFormAcceptor"/>
                 </entry>
             </map>
         </property>
