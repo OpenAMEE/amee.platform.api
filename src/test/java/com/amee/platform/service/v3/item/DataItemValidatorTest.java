@@ -3,7 +3,7 @@ package com.amee.platform.service.v3.item;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
 import com.amee.domain.data.DataItem;
-import com.amee.platform.resource.item.DataItemValidator;
+import com.amee.platform.resource.dataitem.DataItemValidator;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;

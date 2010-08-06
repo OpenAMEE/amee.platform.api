@@ -1,4 +1,4 @@
-package com.amee.platform.resource.item;
+package com.amee.platform.resource.dataitem;
 
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;

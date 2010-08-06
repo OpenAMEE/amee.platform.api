@@ -1,4 +1,4 @@
-package com.amee.platform.resource.item;
+package com.amee.platform.resource.dataitem;
 
 import com.amee.base.resource.*;
 import com.amee.domain.data.DataCategory;
@@ -50,14 +50,6 @@ public class DataItemBuilder implements ResourceBuilder {
         renderer = new RendererHelper<DataItemRenderer>().getRenderer(requestWrapper, RENDERERS);
         // Get Environment.
         Environment environment = environmentService.getEnvironmentByName("AMEE");
-//        // Authenticate - Create sample User.
-//        User sampleUser = new User();
-//        sampleUser.setEnvironment(environment);
-//        sampleUser.setUsername(requestWrapper.getAttributes().get("username"));
-//        sampleUser.setPasswordInClear(requestWrapper.getAttributes().get("password"));
-//        // Authenticate - Check sample User.
-//        User authUser = authenticationService.authenticate(sampleUser);
-//        if (authUser != null) {
         // Get DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
@@ -85,9 +77,6 @@ public class DataItemBuilder implements ResourceBuilder {
         } else {
             throw new MissingAttributeException("categoryIdentifier");
         }
-//        } else {
-//            renderer.notAuthenticated();
-//        }
         return renderer.getObject();
     }
 

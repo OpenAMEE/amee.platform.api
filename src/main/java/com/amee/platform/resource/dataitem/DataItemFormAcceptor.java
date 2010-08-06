@@ -1,4 +1,4 @@
-package com.amee.platform.resource.item;
+package com.amee.platform.resource.dataitem;
 
 import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
