@@ -59,7 +59,7 @@ public class ItemValueDefinitionDOMAcceptor extends com.amee.platform.resource.i
 
     protected void handleItemValueUsages(Element rootElement, ItemValueDefinition itemValueDefinition) {
         // Do we have ItemValueUsages to parse?
-        Element ItemValueUsagesElem = rootElement.getChild("ItemValueUsages");
+        Element ItemValueUsagesElem = rootElement.getChild("Usages");
         if (ItemValueUsagesElem != null) {
             // Create collections for ItemValueUsages and ValidationResults.
             Set<ItemValueUsage> itemValueUsages = new HashSet<ItemValueUsage>();
@@ -67,7 +67,7 @@ public class ItemValueDefinitionDOMAcceptor extends com.amee.platform.resource.i
             // Parse all ItemValueUsages.
             for (Object o : ItemValueUsagesElem.getChildren()) {
                 Element childElem = (Element) o;
-                if (childElem.getName().equals("ItemValueUsage")) {
+                if (childElem.getName().equals("Usage")) {
                     // Create parameters map containing the name and type values.
                     Map<String, String> parameters = new HashMap<String, String>();
                     Element nameElem = childElem.getChild("Name");

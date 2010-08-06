@@ -112,14 +112,14 @@ public class DataItemsBuilder implements ResourceBuilder {
 
         public void setTruncated(boolean truncated);
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer();
+        public DataItemRenderer getDataItemRenderer();
 
         public Object getObject();
     }
 
     public static class DataItemsJSONRenderer implements DataItemsBuilder.DataItemsRenderer {
 
-        private DataItemBuilder.DataItemJSONRenderer dataItemRenderer;
+        private DataItemJSONRenderer dataItemRenderer;
         private JSONObject rootObj;
         private JSONArray itemsArr;
 
@@ -129,7 +129,7 @@ public class DataItemsBuilder implements ResourceBuilder {
         }
 
         public void start() {
-            dataItemRenderer = new DataItemBuilder.DataItemJSONRenderer(false);
+            dataItemRenderer = new DataItemJSONRenderer(false);
             rootObj = new JSONObject();
             itemsArr = new JSONArray();
             put(rootObj, "items", itemsArr);
@@ -148,7 +148,7 @@ public class DataItemsBuilder implements ResourceBuilder {
             put(rootObj, "resultsTruncated", truncated);
         }
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer() {
+        public DataItemRenderer getDataItemRenderer() {
             return dataItemRenderer;
         }
 
@@ -167,13 +167,13 @@ public class DataItemsBuilder implements ResourceBuilder {
 
     public static class DataItemsDOMRenderer implements DataItemsBuilder.DataItemsRenderer {
 
-        private DataItemBuilder.DataItemDOMRenderer dataItemRenderer;
+        private DataItemDOMRenderer dataItemRenderer;
         private Element rootElem;
         private Element itemsElem;
 
         public DataItemsDOMRenderer() {
             super();
-            dataItemRenderer = new DataItemBuilder.DataItemDOMRenderer(false);
+            dataItemRenderer = new DataItemDOMRenderer(false);
             start();
         }
 
@@ -195,7 +195,7 @@ public class DataItemsBuilder implements ResourceBuilder {
             itemsElem.setAttribute("truncated", "" + truncated);
         }
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer() {
+        public DataItemRenderer getDataItemRenderer() {
             return dataItemRenderer;
         }
 

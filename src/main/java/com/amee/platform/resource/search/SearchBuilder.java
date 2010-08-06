@@ -10,6 +10,9 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.platform.resource.category.DataCategoryBuilder;
 import com.amee.platform.resource.item.DataItemBuilder;
+import com.amee.platform.resource.item.DataItemDOMRenderer;
+import com.amee.platform.resource.item.DataItemJSONRenderer;
+import com.amee.platform.resource.item.DataItemRenderer;
 import com.amee.platform.search.SearchFilter;
 import com.amee.platform.search.SearchService;
 import org.jdom.Document;
@@ -106,7 +109,7 @@ public class SearchBuilder implements ResourceBuilder {
 
         public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer();
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer();
+        public DataItemRenderer getDataItemRenderer();
 
         public Object getObject();
     }
@@ -114,14 +117,14 @@ public class SearchBuilder implements ResourceBuilder {
     public static class SearchJSONRenderer implements SearchRenderer {
 
         private DataCategoryBuilder.DataCategoryJSONRenderer dataCategoryRenderer;
-        private DataItemBuilder.DataItemJSONRenderer dataItemRenderer;
+        private DataItemJSONRenderer dataItemRenderer;
         private JSONObject rootObj;
         private JSONArray resultsArr;
 
         public SearchJSONRenderer() {
             super();
             this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryJSONRenderer(false);
-            this.dataItemRenderer = new DataItemBuilder.DataItemJSONRenderer(false);
+            this.dataItemRenderer = new DataItemJSONRenderer(false);
             start();
         }
 
@@ -151,7 +154,7 @@ public class SearchBuilder implements ResourceBuilder {
             return dataCategoryRenderer;
         }
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer() {
+        public DataItemRenderer getDataItemRenderer() {
             return dataItemRenderer;
         }
 
@@ -171,14 +174,14 @@ public class SearchBuilder implements ResourceBuilder {
     public static class SearchDOMRenderer implements SearchRenderer {
 
         private DataCategoryBuilder.DataCategoryDOMRenderer dataCategoryRenderer;
-        private DataItemBuilder.DataItemDOMRenderer dataItemRenderer;
+        private DataItemDOMRenderer dataItemRenderer;
         private Element rootElem;
         private Element resultsElem;
 
         public SearchDOMRenderer() {
             super();
             this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryDOMRenderer(false);
-            this.dataItemRenderer = new DataItemBuilder.DataItemDOMRenderer(false);
+            this.dataItemRenderer = new DataItemDOMRenderer(false);
             start();
         }
 
@@ -208,7 +211,7 @@ public class SearchBuilder implements ResourceBuilder {
             return dataCategoryRenderer;
         }
 
-        public DataItemBuilder.DataItemRenderer getDataItemRenderer() {
+        public DataItemRenderer getDataItemRenderer() {
             return dataItemRenderer;
         }
 
