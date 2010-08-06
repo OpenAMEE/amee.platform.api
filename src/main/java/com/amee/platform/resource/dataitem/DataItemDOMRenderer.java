@@ -12,6 +12,7 @@ public class DataItemDOMRenderer implements DataItemRenderer {
     private DataItem dataItem;
     private Element rootElem;
     private Element dataItemElem;
+    private Element valuesElem;
 
     public DataItemDOMRenderer() {
         this(true);
@@ -81,23 +82,24 @@ public class DataItemDOMRenderer implements DataItemRenderer {
         e.addContent(new Element("Name").setText(itemDefinition.getName()));
     }
 
-    public void addValues() {
+    public void startValues() {
         Element valuesElem = new Element("Values");
         dataItemElem.addContent(valuesElem);
-        for (ItemValue itemValue : dataItem.getItemValues()) {
-            Element valueElem = new Element("Value");
-            valueElem.setAttribute("history", Boolean.toString(itemValue.isHistoryAvailable()));
-            valueElem.addContent(new Element("Path").setText(itemValue.getPath()));
-            valueElem.addContent(new Element("Value").setText(itemValue.getValue()));
-            if (itemValue.hasUnit()) {
-                valueElem.addContent(new Element("Unit").setText(itemValue.getUnit().toString()));
-            }
-            if (itemValue.hasPerUnit()) {
-                valueElem.addContent(new Element("PerUnit").setText(itemValue.getPerUnit().toString()));
-                valueElem.addContent(new Element("CompoundUnit").setText(itemValue.getCompoundUnit().toString()));
-            }
-            valuesElem.addContent(valueElem);
+    }
+
+    public void newValue(ItemValue itemValue) {
+        Element valueElem = new Element("Value");
+        valueElem.setAttribute("history", Boolean.toString(itemValue.isHistoryAvailable()));
+        valueElem.addContent(new Element("Path").setText(itemValue.getPath()));
+        valueElem.addContent(new Element("Value").setText(itemValue.getValue()));
+        if (itemValue.hasUnit()) {
+            valueElem.addContent(new Element("Unit").setText(itemValue.getUnit().toString()));
         }
+        if (itemValue.hasPerUnit()) {
+            valueElem.addContent(new Element("PerUnit").setText(itemValue.getPerUnit().toString()));
+            valueElem.addContent(new Element("CompoundUnit").setText(itemValue.getCompoundUnit().toString()));
+        }
+        valuesElem.addContent(valueElem);
     }
 
     public Element getDataItemElement() {

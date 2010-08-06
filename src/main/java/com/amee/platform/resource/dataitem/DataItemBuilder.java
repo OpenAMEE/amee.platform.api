@@ -4,6 +4,7 @@ import com.amee.base.resource.*;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.data.ItemValue;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.path.PathItemGroup;
 import com.amee.service.auth.AuthenticationService;
@@ -124,7 +125,10 @@ public class DataItemBuilder implements ResourceBuilder {
             renderer.addItemDefinition(id);
         }
         if (values || full) {
-            renderer.addValues();
+            renderer.startValues();
+            for (ItemValue itemValue : dataItem.getItemValues()) {
+                renderer.newValue(itemValue);
+            }
         }
     }
 

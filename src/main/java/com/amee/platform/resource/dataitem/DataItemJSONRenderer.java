@@ -13,6 +13,7 @@ public class DataItemJSONRenderer implements DataItemRenderer {
     private DataItem dataItem;
     private JSONObject rootObj;
     private JSONObject dataItemObj;
+    private JSONArray valuesArr;
 
     public DataItemJSONRenderer() {
         this(true);
@@ -83,23 +84,24 @@ public class DataItemJSONRenderer implements DataItemRenderer {
         put(dataItemObj, "itemDefinition", itemDefinitionObj);
     }
 
-    public void addValues() {
+    public void startValues() {
         JSONArray valuesArr = new JSONArray();
         put(dataItemObj, "values", valuesArr);
-        for (ItemValue itemValue : dataItem.getItemValues()) {
-            JSONObject valueObj = new JSONObject();
-            put(valueObj, "path", itemValue.getPath());
-            put(valueObj, "value", itemValue.getValue());
-            if (itemValue.hasUnit()) {
-                put(valueObj, "unit", itemValue.getUnit().toString());
-            }
-            if (itemValue.hasPerUnit()) {
-                put(valueObj, "perUnit", itemValue.getPerUnit().toString());
-                put(valueObj, "compoundUnit", itemValue.getCompoundUnit().toString());
-            }
-            put(valueObj, "history", itemValue.isHistoryAvailable());
-            valuesArr.put(valueObj);
+    }
+
+    public void newValue(ItemValue itemValue) {
+        JSONObject valueObj = new JSONObject();
+        put(valueObj, "path", itemValue.getPath());
+        put(valueObj, "value", itemValue.getValue());
+        if (itemValue.hasUnit()) {
+            put(valueObj, "unit", itemValue.getUnit().toString());
         }
+        if (itemValue.hasPerUnit()) {
+            put(valueObj, "perUnit", itemValue.getPerUnit().toString());
+            put(valueObj, "compoundUnit", itemValue.getCompoundUnit().toString());
+        }
+        put(valueObj, "history", itemValue.isHistoryAvailable());
+        valuesArr.put(valueObj);
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

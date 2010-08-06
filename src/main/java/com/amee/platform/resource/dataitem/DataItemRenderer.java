@@ -2,6 +2,7 @@ package com.amee.platform.resource.dataitem;
 
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.data.ItemValue;
 import com.amee.domain.path.PathItem;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -32,7 +33,9 @@ public interface DataItemRenderer {
 
     public void addItemDefinition(ItemDefinition id);
 
-    public void addValues();
+    public void startValues();
+
+    public void newValue(ItemValue itemValue);
 
     public Object getObject();
 }
