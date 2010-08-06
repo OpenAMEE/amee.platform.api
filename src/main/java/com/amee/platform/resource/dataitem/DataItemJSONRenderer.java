@@ -8,13 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by IntelliJ IDEA.
- * User: dig
- * Date: Aug 6, 2010
- * Time: 1:41:15 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DataItemJSONRenderer implements DataItemRenderer {
 
     private DataItem dataItem;

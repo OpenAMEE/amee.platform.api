@@ -88,20 +88,20 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
         public void setTruncated(boolean truncated);
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer();
+        public DataCategoryRenderer getDataCategoryRenderer();
 
         public E getObject();
     }
 
     public static class DataCategoriesJSONRenderer implements DataCategoriesBuilder.DataCategoriesRenderer {
 
-        private DataCategoryBuilder.DataCategoryJSONRenderer dataCategoryRenderer;
+        private DataCategoryJSONRenderer dataCategoryRenderer;
         private JSONObject rootObj;
         private JSONArray categoriesArr;
 
         public DataCategoriesJSONRenderer() {
             super();
-            this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryJSONRenderer(false);
+            this.dataCategoryRenderer = new DataCategoryJSONRenderer(false);
             start();
         }
 
@@ -123,7 +123,7 @@ public class DataCategoriesBuilder implements ResourceBuilder {
             put(rootObj, "resultsTruncated", truncated);
         }
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
+        public DataCategoryRenderer getDataCategoryRenderer() {
             return dataCategoryRenderer;
         }
 
@@ -142,13 +142,13 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
     public static class DataCategoriesDOMRenderer implements DataCategoriesBuilder.DataCategoriesRenderer {
 
-        private DataCategoryBuilder.DataCategoryDOMRenderer dataCategoryRenderer;
+        private DataCategoryDOMRenderer dataCategoryRenderer;
         private Element rootElem;
         private Element categoriesElem;
 
         public DataCategoriesDOMRenderer() {
             super();
-            this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryDOMRenderer(false);
+            this.dataCategoryRenderer = new DataCategoryDOMRenderer(false);
             start();
         }
 
@@ -170,7 +170,7 @@ public class DataCategoriesBuilder implements ResourceBuilder {
             categoriesElem.setAttribute("truncated", "" + truncated);
         }
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
+        public DataCategoryRenderer getDataCategoryRenderer() {
             return dataCategoryRenderer;
         }
 

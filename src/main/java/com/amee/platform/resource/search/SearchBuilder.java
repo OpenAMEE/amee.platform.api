@@ -9,6 +9,9 @@ import com.amee.domain.AMEEEntity;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.platform.resource.category.DataCategoryBuilder;
+import com.amee.platform.resource.category.DataCategoryDOMRenderer;
+import com.amee.platform.resource.category.DataCategoryJSONRenderer;
+import com.amee.platform.resource.category.DataCategoryRenderer;
 import com.amee.platform.resource.dataitem.DataItemBuilder;
 import com.amee.platform.resource.dataitem.DataItemDOMRenderer;
 import com.amee.platform.resource.dataitem.DataItemJSONRenderer;
@@ -107,7 +110,7 @@ public class SearchBuilder implements ResourceBuilder {
 
         public void setTruncated(boolean truncated);
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer();
+        public DataCategoryRenderer getDataCategoryRenderer();
 
         public DataItemRenderer getDataItemRenderer();
 
@@ -116,14 +119,14 @@ public class SearchBuilder implements ResourceBuilder {
 
     public static class SearchJSONRenderer implements SearchRenderer {
 
-        private DataCategoryBuilder.DataCategoryJSONRenderer dataCategoryRenderer;
+        private DataCategoryJSONRenderer dataCategoryRenderer;
         private DataItemJSONRenderer dataItemRenderer;
         private JSONObject rootObj;
         private JSONArray resultsArr;
 
         public SearchJSONRenderer() {
             super();
-            this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryJSONRenderer(false);
+            this.dataCategoryRenderer = new DataCategoryJSONRenderer(false);
             this.dataItemRenderer = new DataItemJSONRenderer(false);
             start();
         }
@@ -150,7 +153,7 @@ public class SearchBuilder implements ResourceBuilder {
             put(rootObj, "resultsTruncated", truncated);
         }
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
+        public DataCategoryRenderer getDataCategoryRenderer() {
             return dataCategoryRenderer;
         }
 
@@ -173,14 +176,14 @@ public class SearchBuilder implements ResourceBuilder {
 
     public static class SearchDOMRenderer implements SearchRenderer {
 
-        private DataCategoryBuilder.DataCategoryDOMRenderer dataCategoryRenderer;
+        private DataCategoryDOMRenderer dataCategoryRenderer;
         private DataItemDOMRenderer dataItemRenderer;
         private Element rootElem;
         private Element resultsElem;
 
         public SearchDOMRenderer() {
             super();
-            this.dataCategoryRenderer = new DataCategoryBuilder.DataCategoryDOMRenderer(false);
+            this.dataCategoryRenderer = new DataCategoryDOMRenderer(false);
             this.dataItemRenderer = new DataItemDOMRenderer(false);
             start();
         }
@@ -207,7 +210,7 @@ public class SearchBuilder implements ResourceBuilder {
             resultsElem.setAttribute("truncated", "" + truncated);
         }
 
-        public DataCategoryBuilder.DataCategoryRenderer getDataCategoryRenderer() {
+        public DataCategoryRenderer getDataCategoryRenderer() {
             return dataCategoryRenderer;
         }
 
