@@ -50,6 +50,9 @@ public class VersionTest {
         assertTrue(new Version("2.2").before(new Version("2.3")));
         assertTrue(new Version("2.2.2").before(new Version("2.2.3")));
         assertTrue(new Version("2.1.1").before(new Version("2.1")));
+        assertTrue(new Version("2.1.1").before(new Version("2.1.x")));
+        assertTrue(new Version("2.x").before(new Version("3")));
+        assertTrue(new Version("2.2.2").before(new Version("2.2.x")));
     }
 
     @Test
@@ -60,5 +63,22 @@ public class VersionTest {
         assertTrue(new Version("2.3").after(new Version("2.2")));
         assertTrue(new Version("2.2.3").after(new Version("2.2.2")));
         assertTrue(new Version("2.1").after(new Version("2.1.1")));
+        assertTrue(new Version("2.1.x").after(new Version("2.1.1")));
+        assertTrue(new Version("3").after(new Version("2.x")));
+        assertTrue(new Version("2.2.x").after(new Version("2.2.2")));
+    }
+
+    @Test
+    public void shouldHaveSameHashcode() {
+        assertTrue(new Version("0").hashCode() == new Version("0").hashCode());
+        assertTrue(new Version("10").hashCode() == new Version("10").hashCode());
+        assertTrue(new Version("x").hashCode() == new Version("x").hashCode());
+    }
+
+    @Test
+    public void shouldNotHaveSameHashcode() {
+        assertTrue(new Version("0").hashCode() != new Version("1").hashCode());
+        assertTrue(new Version("10").hashCode() != new Version("20").hashCode());
+        assertTrue(new Version("0").hashCode() != new Version("x").hashCode());
     }
 }

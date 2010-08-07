@@ -17,7 +17,7 @@ public class RequestWrapper implements Serializable {
 
     private String target = "";
     private Version version;
-    private Set<String> acceptedMediaTypes = new HashSet<String>();
+    private List<String> acceptedMediaTypes = new ArrayList<String>();
     private Map<String, String> attributes = new HashMap<String, String>();
     private Map<String, String> matrixParameters = new HashMap<String, String>();
     private Map<String, String> queryParameters = new HashMap<String, String>();
@@ -31,7 +31,7 @@ public class RequestWrapper implements Serializable {
 
     public RequestWrapper(
             Version version,
-            Set<String> acceptedMediaTypes,
+            List<String> acceptedMediaTypes,
             Map<String, String> attributes) {
         this();
         setVersion(version);
@@ -41,7 +41,7 @@ public class RequestWrapper implements Serializable {
 
     public RequestWrapper(
             Version version,
-            Set<String> acceptedMediaTypes,
+            List<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters) {
@@ -52,7 +52,7 @@ public class RequestWrapper implements Serializable {
 
     public RequestWrapper(
             Version version,
-            Set<String> acceptedMediaTypes,
+            List<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
@@ -64,7 +64,7 @@ public class RequestWrapper implements Serializable {
 
     public RequestWrapper(
             Version version,
-            Set<String> acceptedMediaTypes,
+            List<String> acceptedMediaTypes,
             Map<String, String> attributes,
             Map<String, String> matrixParameters,
             Map<String, String> queryParameters,
@@ -80,7 +80,7 @@ public class RequestWrapper implements Serializable {
         try {
             setTarget(obj.getString("target"));
             setVersion(new Version(obj.getString("version")));
-            addToSet(getAcceptedMediaTypes(), obj, "acceptedMediaTypes");
+            addToList(getAcceptedMediaTypes(), obj, "acceptedMediaTypes");
             addToMap(getAttributes(), obj, "attributes");
             addToMap(getMatrixParameters(), obj, "matrixParameters");
             addToMap(getQueryParameters(), obj, "queryParameters");
@@ -120,7 +120,7 @@ public class RequestWrapper implements Serializable {
         }
     }
 
-    protected void addToSet(Set<String> s, JSONObject obj, String name) throws JSONException {
+    protected void addToList(List<String> s, JSONObject obj, String name) throws JSONException {
         JSONArray arr = obj.getJSONArray(name);
         for (int i = 0; i < arr.length(); i++) {
             s.add((String) arr.get(i));
@@ -144,11 +144,11 @@ public class RequestWrapper implements Serializable {
         this.version = version;
     }
 
-    public Set<String> getAcceptedMediaTypes() {
+    public List<String> getAcceptedMediaTypes() {
         return acceptedMediaTypes;
     }
 
-    public void setAcceptedMediaTypes(Set<String> acceptedMediaTypes) {
+    public void setAcceptedMediaTypes(List<String> acceptedMediaTypes) {
         this.acceptedMediaTypes.clear();
         if (acceptedMediaTypes != null) {
             this.acceptedMediaTypes.addAll(acceptedMediaTypes);

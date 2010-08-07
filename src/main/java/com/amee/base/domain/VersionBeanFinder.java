@@ -6,15 +6,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A service bean to aid in discovery of beans whilst respecting the Since and Until annotations.
  */
 @Service
 public class VersionBeanFinder implements ApplicationContextAware {
+
+    public interface VersionBeanMatcher {
+        public boolean matches(Object bean);
+    }
 
     private final Log log = LogFactory.getLog(getClass());
 
@@ -30,29 +32,53 @@ public class VersionBeanFinder implements ApplicationContextAware {
      * @return the matching bean
      */
     public Object getBeanForVersion(String className, Version version) {
-        Object bean = null;
-        TreeMap<Version, String> candidates =
-                new TreeMap<Version, String>(getBeanNamesForVersion(className, version));
+        return getBeanForVersion(className, version, null);
+    }
+
+    /**
+     * Finds a bean of type className which is appropriate for the supplied Version. The most
+     * appropriate bean is that which has the most recent Since version but is not excluded by an until
+     * version. If a VersionBeanMatcher is supplied then this is used to select the correct bean where
+     * more than one exists for the Version.
+     *
+     * @param className for requested bean
+     * @param version   to take into account
+     * @param matcher   a matcher
+     * @return the matching bean
+     */
+    public Object getBeanForVersion(String className, Version version, VersionBeanMatcher matcher) {
+        TreeMap<Version, List<String>> candidates =
+                new TreeMap<Version, List<String>>(getBeanNamesForVersion(className, version));
         if (!candidates.isEmpty()) {
-            bean = applicationContext.getBean(candidates.get(candidates.lastKey()));
+            if (matcher == null) {
+                // Get the first bean in the list and ignore the rest.
+                return applicationContext.getBean(candidates.get(candidates.lastKey()).get(0));
+            } else {
+                // Check all candidates with the matcher.
+                for (Version v : candidates.descendingKeySet()) {
+                    for (String beanName : candidates.get(v)) {
+                        Object bean = applicationContext.getBean(beanName);
+                        if (matcher.matches(bean)) {
+                            return bean;
+                        }
+                    }
+                }
+            }
         }
-        return bean;
+        return null;
     }
 
     /**
      * Gets a Map of bean names keyed by their Since version which are of type className and
      * are appropriate given the supplied Version. Appropriate bean names are those where the
      * supplied version is not less than the Since version and not greater than the Until version.
-     * <p/>
-     * TODO: This implementation causes an exhaustive search of beans. There is an opportunity for improvement.
-     * TODO: In development testing this took 38ms on the first run and then 1ms on subsequent runs.
      *
      * @param className for requested bean
      * @param version   to take into account
      * @return map of bean names keyed by their Since version
      */
-    public Map<Version, String> getBeanNamesForVersion(String className, Version version) {
-        Map<Version, String> candidates = new HashMap<Version, String>();
+    protected Map<Version, List<String>> getBeanNamesForVersion(String className, Version version) {
+        Map<Version, List<String>> candidates = new HashMap<Version, List<String>>();
         try {
             // Iterate over all bean names matching the target type.
             Class clazz = Class.forName(className);
@@ -69,23 +95,30 @@ public class VersionBeanFinder implements ApplicationContextAware {
                             Version until = new Version(sinceAnn.value());
                             if (!version.after(until)) {
                                 // We have a candidate.
-                                candidates.put(since, beanName);
+                                addCandidate(candidates, since, beanName);
                             }
                         } else {
                             // Until not specified.
                             // We have a candidate.
-                            candidates.put(since, beanName);
+                            addCandidate(candidates, since, beanName);
                         }
                     }
                 } else {
                     // No since, so mark as V0.
-                    candidates.put(new Version("0"), beanName);
+                    addCandidate(candidates, new Version("0"), beanName);
                 }
             }
         } catch (ClassNotFoundException e) {
             log.warn("getHandler() Class not found: " + className);
         }
         return candidates;
+    }
+
+    protected void addCandidate(Map<Version, List<String>> candidates, Version version, String beanName) {
+        if (candidates.get(version) == null) {
+            candidates.put(version, new ArrayList<String>());
+        }
+        candidates.get(version).add(beanName);
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {

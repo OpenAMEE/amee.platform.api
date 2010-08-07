@@ -35,6 +35,10 @@ public class Version implements Serializable, Comparable {
         return (this == o) || Version.class.isAssignableFrom(o.getClass()) && (compareTo(o) == 0);
     }
 
+    public int hashCode() {
+        return getVersion().hashCode();
+    }
+
     public int compareTo(Object o) {
         if (this == o) return 0;
         if (!Version.class.isAssignableFrom(o.getClass())) throw new ClassCastException();
