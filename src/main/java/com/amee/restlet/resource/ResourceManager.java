@@ -9,10 +9,7 @@ import org.restlet.data.Preference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ResourceManager {
 
@@ -42,6 +39,10 @@ public class ResourceManager {
 
     protected boolean isTimedOut(JSONObject result) {
         return isStatus(result, "TIMED_OUT");
+    }
+
+    protected boolean isMediaTypeNotSupported(JSONObject result) {
+        return isStatus(result, "MEDIA_TYPE_NOT_SUPPORTED");
     }
 
     protected boolean isStatus(JSONObject result, String status) {
@@ -79,8 +80,8 @@ public class ResourceManager {
         return getRequest().getResourceRef().getQueryAsForm().getValuesMap();
     }
 
-    protected Set<String> getAcceptedMediaTypes() {
-        Set<String> acceptedMediaTypes = new HashSet<String>();
+    protected List<String> getAcceptedMediaTypes() {
+        List<String> acceptedMediaTypes = new ArrayList<String>();
         for (Preference<MediaType> p : getRequest().getClientInfo().getAcceptedMediaTypes()) {
             acceptedMediaTypes.add(p.getMetadata().toString());
         }
