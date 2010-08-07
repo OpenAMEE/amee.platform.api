@@ -15,20 +15,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @Scope("prototype")
 public class DataCategoryBuilder implements ResourceBuilder {
-
-
-    private final static Map<String, Class> RENDERERS = new HashMap<String, Class>() {
-        {
-            put("application/json", DataCategoryJSONRenderer.class);
-            put("application/xml", DataCategoryDOMRenderer.class);
-        }
-    };
 
     @Autowired
     private EnvironmentService environmentService;
@@ -42,30 +31,37 @@ public class DataCategoryBuilder implements ResourceBuilder {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private RendererBeanFinder rendererBeanFinder;
+
     private DataCategoryRenderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Renderer.
-        renderer = new RendererHelper<DataCategoryRenderer>().getRenderer(requestWrapper, RENDERERS);
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
-        // Get the DataCategory identifier.
-        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (dataCategoryIdentifier != null) {
-            // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
-            if (dataCategory != null) {
-                // Handle the DataCategory.
-                this.handle(requestWrapper, dataCategory, renderer);
-                renderer.ok();
+        renderer = (DataCategoryRenderer) rendererBeanFinder.getRenderer(DataCategoryRenderer.class, requestWrapper);
+        if (renderer != null) {
+            // Get Environment.
+            Environment environment = environmentService.getEnvironmentByName("AMEE");
+            // Get the DataCategory identifier.
+            String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+            if (dataCategoryIdentifier != null) {
+                // Get DataCategory.
+                DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+                if (dataCategory != null) {
+                    // Handle the DataCategory.
+                    this.handle(requestWrapper, dataCategory, renderer);
+                    renderer.ok();
+                } else {
+                    throw new NotFoundException();
+                }
             } else {
-                throw new NotFoundException();
+                throw new MissingAttributeException("categoryIdentifier");
             }
+            return renderer.getObject();
         } else {
-            throw new MissingAttributeException("categoryIdentifier");
+            throw new MediaTypeNotSupportedException();
         }
-        return renderer.getObject();
     }
 
     public void handle(
@@ -118,5 +114,4 @@ public class DataCategoryBuilder implements ResourceBuilder {
             }
         }
     }
-
 }

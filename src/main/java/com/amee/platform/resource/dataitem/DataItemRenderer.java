@@ -1,5 +1,6 @@
 package com.amee.platform.resource.dataitem;
 
+import com.amee.base.resource.Renderer;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
@@ -7,13 +8,9 @@ import com.amee.domain.path.PathItem;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public interface DataItemRenderer {
+public interface DataItemRenderer extends Renderer {
 
     public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
-    public void start();
-
-    public void ok();
 
     public void newDataItem(DataItem dataItem);
 

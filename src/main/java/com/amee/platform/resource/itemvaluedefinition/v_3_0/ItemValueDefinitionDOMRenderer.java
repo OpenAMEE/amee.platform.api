@@ -1,5 +1,15 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_0;
 
+import com.amee.base.domain.Since;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+/**
+ * Version 3.0 does not include the value, usages, choices, units or flags that are part of the 3.1 representation.
+ */
+@Service("itemValueDefinitionDOMRenderer_3_0_0")
+@Scope("prototype")
+@Since("3.0.0")
 public class ItemValueDefinitionDOMRenderer extends com.amee.platform.resource.itemvaluedefinition.v_3_1.ItemValueDefinitionDOMRenderer {
 
     @Override

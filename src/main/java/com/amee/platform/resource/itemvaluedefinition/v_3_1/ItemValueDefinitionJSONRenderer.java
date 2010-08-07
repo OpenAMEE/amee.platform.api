@@ -1,5 +1,6 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
+import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -7,7 +8,12 @@ import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionRendere
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service("itemValueDefinitionJSONRenderer_3_1_0")
+@Scope("prototype")
+@Since("3.1.0")
 public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRenderer {
 
     private ItemValueDefinition itemValueDefinition;
@@ -129,6 +135,10 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
 
     public JSONObject getItemValueDefinitionJSONObject() {
         return itemValueDefinitionObj;
+    }
+
+    public String getMediaType() {
+        return "application/json";
     }
 
     @Override

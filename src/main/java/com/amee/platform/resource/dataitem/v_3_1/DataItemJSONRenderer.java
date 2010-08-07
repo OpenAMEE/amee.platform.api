@@ -1,19 +1,26 @@
-package com.amee.platform.resource.dataitem;
+package com.amee.platform.resource.dataitem.v_3_1;
 
+import com.amee.base.domain.Since;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.path.PathItem;
+import com.amee.platform.resource.dataitem.DataItemRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service("dataItemJSONRenderer_3_1_0")
+@Scope("prototype")
+@Since("3.1.0")
 public class DataItemJSONRenderer implements DataItemRenderer {
 
-    private DataItem dataItem;
-    private JSONObject rootObj;
-    private JSONObject dataItemObj;
-    private JSONArray valuesArr;
+    protected DataItem dataItem;
+    protected JSONObject rootObj;
+    protected JSONObject dataItemObj;
+    protected JSONArray valuesArr;
 
     public DataItemJSONRenderer() {
         this(true);
@@ -85,7 +92,7 @@ public class DataItemJSONRenderer implements DataItemRenderer {
     }
 
     public void startValues() {
-        JSONArray valuesArr = new JSONArray();
+        valuesArr = new JSONArray();
         put(dataItemObj, "values", valuesArr);
     }
 
@@ -114,6 +121,10 @@ public class DataItemJSONRenderer implements DataItemRenderer {
 
     public JSONObject getDataItemJSONObject() {
         return dataItemObj;
+    }
+
+    public String getMediaType() {
+        return "application/json";
     }
 
     public Object getObject() {

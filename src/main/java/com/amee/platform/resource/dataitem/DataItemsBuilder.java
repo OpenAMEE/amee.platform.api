@@ -11,29 +11,14 @@ import com.amee.platform.search.DataItemFilterValidationHelper;
 import com.amee.platform.search.SearchService;
 import com.amee.service.data.DataService;
 import com.amee.service.environment.EnvironmentService;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @Scope("prototype")
 public class DataItemsBuilder implements ResourceBuilder {
-
-    private final static Map<String, Class> RENDERERS = new HashMap<String, Class>() {
-        {
-            put("application/json", DataItemsJSONRenderer.class);
-            put("application/xml", DataItemsDOMRenderer.class);
-        }
-    };
 
     @Autowired
     private EnvironmentService environmentService;
@@ -50,41 +35,48 @@ public class DataItemsBuilder implements ResourceBuilder {
     @Autowired
     private DataItemFilterValidationHelper validationHelper;
 
+    @Autowired
+    private RendererBeanFinder rendererBeanFinder;
+
     private DataItemsRenderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Renderer.
-        renderer = new RendererHelper<DataItemsRenderer>().getRenderer(requestWrapper, RENDERERS);
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
-        // Get DataCategory identifier.
-        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (dataCategoryIdentifier != null) {
-            // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
-            if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
-                // Create filter and do search.
-                DataItemFilter filter = new DataItemFilter(dataCategory.getItemDefinition());
-                filter.setLoadDataItemValues(
-                        requestWrapper.getMatrixParameters().containsKey("full") ||
-                                requestWrapper.getMatrixParameters().containsKey("values"));
-                filter.setLoadMetadatas(
-                        requestWrapper.getMatrixParameters().containsKey("full") ||
-                                requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
-                                requestWrapper.getMatrixParameters().containsKey("provenance"));
-                validationHelper.setDataItemFilter(filter);
-                if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
-                    handle(requestWrapper, dataCategory, filter, renderer);
-                    renderer.ok();
+        renderer = (DataItemsRenderer) rendererBeanFinder.getRenderer(DataItemsRenderer.class, requestWrapper);
+        if (renderer != null) {
+            // Get Environment.
+            Environment environment = environmentService.getEnvironmentByName("AMEE");
+            // Get DataCategory identifier.
+            String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+            if (dataCategoryIdentifier != null) {
+                // Get DataCategory.
+                DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+                if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
+                    // Create filter and do search.
+                    DataItemFilter filter = new DataItemFilter(dataCategory.getItemDefinition());
+                    filter.setLoadDataItemValues(
+                            requestWrapper.getMatrixParameters().containsKey("full") ||
+                                    requestWrapper.getMatrixParameters().containsKey("values"));
+                    filter.setLoadMetadatas(
+                            requestWrapper.getMatrixParameters().containsKey("full") ||
+                                    requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                                    requestWrapper.getMatrixParameters().containsKey("provenance"));
+                    validationHelper.setDataItemFilter(filter);
+                    if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+                        handle(requestWrapper, dataCategory, filter, renderer);
+                        renderer.ok();
+                    } else {
+                        throw new ValidationException(validationHelper.getValidationResult());
+                    }
                 } else {
-                    throw new ValidationException(validationHelper.getValidationResult());
+                    throw new NotFoundException();
                 }
             } else {
-                throw new NotFoundException();
+                throw new MissingAttributeException("categoryIdentifier");
             }
         } else {
-            throw new MissingAttributeException("categoryIdentifier");
+            throw new MediaTypeNotSupportedException();
         }
         return renderer.getObject();
     }
@@ -102,105 +94,4 @@ public class DataItemsBuilder implements ResourceBuilder {
         }
     }
 
-    public interface DataItemsRenderer {
-
-        public void ok();
-
-        public void start();
-
-        public void newDataItem();
-
-        public void setTruncated(boolean truncated);
-
-        public DataItemRenderer getDataItemRenderer();
-
-        public Object getObject();
-    }
-
-    public static class DataItemsJSONRenderer implements DataItemsBuilder.DataItemsRenderer {
-
-        private DataItemJSONRenderer dataItemRenderer;
-        private JSONObject rootObj;
-        private JSONArray itemsArr;
-
-        public DataItemsJSONRenderer() {
-            super();
-            start();
-        }
-
-        public void start() {
-            dataItemRenderer = new DataItemJSONRenderer(false);
-            rootObj = new JSONObject();
-            itemsArr = new JSONArray();
-            put(rootObj, "items", itemsArr);
-        }
-
-        public void ok() {
-            put(rootObj, "status", "OK");
-        }
-
-
-        public void newDataItem() {
-            itemsArr.put(dataItemRenderer.getDataItemJSONObject());
-        }
-
-        public void setTruncated(boolean truncated) {
-            put(rootObj, "resultsTruncated", truncated);
-        }
-
-        public DataItemRenderer getDataItemRenderer() {
-            return dataItemRenderer;
-        }
-
-        protected JSONObject put(JSONObject o, String key, Object value) {
-            try {
-                return o.put(key, value);
-            } catch (JSONException e) {
-                throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-            }
-        }
-
-        public Object getObject() {
-            return rootObj;
-        }
-    }
-
-    public static class DataItemsDOMRenderer implements DataItemsBuilder.DataItemsRenderer {
-
-        private DataItemDOMRenderer dataItemRenderer;
-        private Element rootElem;
-        private Element itemsElem;
-
-        public DataItemsDOMRenderer() {
-            super();
-            dataItemRenderer = new DataItemDOMRenderer(false);
-            start();
-        }
-
-        public void start() {
-            rootElem = new Element("Representation");
-            itemsElem = new Element("Items");
-            rootElem.addContent(itemsElem);
-        }
-
-        public void ok() {
-            rootElem.addContent(new Element("Status").setText("OK"));
-        }
-
-        public void newDataItem() {
-            itemsElem.addContent(dataItemRenderer.getDataItemElement());
-        }
-
-        public void setTruncated(boolean truncated) {
-            itemsElem.setAttribute("truncated", "" + truncated);
-        }
-
-        public DataItemRenderer getDataItemRenderer() {
-            return dataItemRenderer;
-        }
-
-        public Object getObject() {
-            return new Document(rootElem);
-        }
-    }
 }

@@ -6,7 +6,11 @@ import com.amee.domain.path.PathItem;
 import com.amee.domain.tag.Tag;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service
+@Scope("prototype")
 public class DataCategoryDOMRenderer implements DataCategoryRenderer {
 
     private DataCategory dataCategory;
@@ -99,6 +103,10 @@ public class DataCategoryDOMRenderer implements DataCategoryRenderer {
 
     public Element getDataCategoryElement() {
         return dataCategoryElem;
+    }
+
+    public String getMediaType() {
+        return "application/xml";
     }
 
     public Document getObject() {

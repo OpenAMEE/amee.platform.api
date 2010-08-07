@@ -1,18 +1,25 @@
-package com.amee.platform.resource.dataitem;
+package com.amee.platform.resource.dataitem.v_3_1;
 
+import com.amee.base.domain.Since;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.path.PathItem;
+import com.amee.platform.resource.dataitem.DataItemRenderer;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service("dataItemDOMRenderer_3_1_0")
+@Scope("prototype")
+@Since("3.1.0")
 public class DataItemDOMRenderer implements DataItemRenderer {
 
-    private DataItem dataItem;
-    private Element rootElem;
-    private Element dataItemElem;
-    private Element valuesElem;
+    protected DataItem dataItem;
+    protected Element rootElem;
+    protected Element dataItemElem;
+    protected Element valuesElem;
 
     public DataItemDOMRenderer() {
         this(true);
@@ -83,7 +90,7 @@ public class DataItemDOMRenderer implements DataItemRenderer {
     }
 
     public void startValues() {
-        Element valuesElem = new Element("Values");
+        valuesElem = new Element("Values");
         dataItemElem.addContent(valuesElem);
     }
 
@@ -104,6 +111,10 @@ public class DataItemDOMRenderer implements DataItemRenderer {
 
     public Element getDataItemElement() {
         return dataItemElem;
+    }
+
+    public String getMediaType() {
+        return "application/xml";
     }
 
     public Object getObject() {

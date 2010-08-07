@@ -16,20 +16,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @Scope("prototype")
 public class DataItemBuilder implements ResourceBuilder {
-
-
-    private final static Map<String, Class> RENDERERS = new HashMap<String, Class>() {
-        {
-            put("application/json", DataItemJSONRenderer.class);
-            put("application/xml", DataItemDOMRenderer.class);
-        }
-    };
 
     @Autowired
     private EnvironmentService environmentService;
@@ -43,42 +32,49 @@ public class DataItemBuilder implements ResourceBuilder {
     @Autowired
     private PathItemService pathItemService;
 
+    @Autowired
+    private RendererBeanFinder rendererBeanFinder;
+
     private DataItemRenderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Renderer.
-        renderer = new RendererHelper<DataItemRenderer>().getRenderer(requestWrapper, RENDERERS);
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
-        // Get DataCategory identifier.
-        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (dataCategoryIdentifier != null) {
-            // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
-            if (dataCategory != null) {
-                // Get DataItem identifier.
-                String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
-                if (dataItemIdentifier != null) {
-                    // Get DataItem.
-                    DataItem dataItem = dataService.getDataItemByUid(dataCategory, dataItemIdentifier);
-                    if (dataItem != null) {
-                        // Handle the DataItem.
-                        this.handle(requestWrapper, dataItem, renderer);
-                        renderer.ok();
+        renderer = (DataItemRenderer) rendererBeanFinder.getRenderer(DataItemRenderer.class, requestWrapper);
+        if (renderer != null) {
+            // Get Environment.
+            Environment environment = environmentService.getEnvironmentByName("AMEE");
+            // Get DataCategory identifier.
+            String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+            if (dataCategoryIdentifier != null) {
+                // Get DataCategory.
+                DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+                if (dataCategory != null) {
+                    // Get DataItem identifier.
+                    String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
+                    if (dataItemIdentifier != null) {
+                        // Get DataItem.
+                        DataItem dataItem = dataService.getDataItemByUid(dataCategory, dataItemIdentifier);
+                        if (dataItem != null) {
+                            // Handle the DataItem.
+                            this.handle(requestWrapper, dataItem, renderer);
+                            renderer.ok();
+                        } else {
+                            throw new NotFoundException();
+                        }
                     } else {
-                        throw new NotFoundException();
+                        throw new MissingAttributeException("itemIdentifier");
                     }
                 } else {
-                    throw new MissingAttributeException("itemIdentifier");
+                    throw new NotFoundException();
                 }
             } else {
-                throw new NotFoundException();
+                throw new MissingAttributeException("categoryIdentifier");
             }
+            return renderer.getObject();
         } else {
-            throw new MissingAttributeException("categoryIdentifier");
+            throw new MediaTypeNotSupportedException();
         }
-        return renderer.getObject();
     }
 
     public void handle(
@@ -131,5 +127,4 @@ public class DataItemBuilder implements ResourceBuilder {
             }
         }
     }
-
 }

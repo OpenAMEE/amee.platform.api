@@ -1,5 +1,6 @@
 package com.amee.platform.resource.datacategory;
 
+import com.amee.base.resource.Renderer;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.PathItem;
@@ -7,13 +8,9 @@ import com.amee.domain.tag.Tag;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public interface DataCategoryRenderer {
+public interface DataCategoryRenderer extends Renderer {
 
     public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
-    public void start();
-
-    public void ok();
 
     public void newDataCategory(DataCategory dataCategory);
 
@@ -36,6 +33,4 @@ public interface DataCategoryRenderer {
     public void startTags();
 
     public void newTag(Tag tag);
-
-    public Object getObject();
 }

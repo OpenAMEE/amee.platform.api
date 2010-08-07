@@ -7,11 +7,13 @@ import com.amee.domain.environment.Environment;
 import com.amee.service.definition.DefinitionService;
 import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-
-public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
+@Service
+@Scope("prototype")
+public class ItemValueDefinitionBuilder implements ResourceBuilder {
 
     @Autowired
     private EnvironmentService environmentService;
@@ -19,42 +21,50 @@ public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
     @Autowired
     private DefinitionService definitionService;
 
+    @Autowired
+    private RendererBeanFinder rendererBeanFinder;
+
     private ItemValueDefinitionRenderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Renderer.
-        renderer = new RendererHelper<ItemValueDefinitionRenderer>().getRenderer(requestWrapper, getRenderers());
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
-        // Get ItemDefinition identifier.
-        String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
-        if (itemDefinitionIdentifier != null) {
-            // Get ItemDefinition.
-            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
-                    environment, itemDefinitionIdentifier);
-            if (itemDefinition != null) {
-                // Get ItemValueDefinition identifier.
-                String itemValueDefinitionIdentifier = requestWrapper.getAttributes().get("itemValueDefinitionIdentifier");
-                if (itemValueDefinitionIdentifier != null) {
-                    // Get ItemValueDefinition.
-                    ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(
-                            itemDefinition, itemValueDefinitionIdentifier);
-                    if (itemValueDefinition != null) {
-                        // Handle the ItemValueDefinition.
-                        handle(requestWrapper, itemValueDefinition, renderer);
-                        renderer.ok();
+        renderer = (ItemValueDefinitionRenderer) rendererBeanFinder.getRenderer(ItemValueDefinitionRenderer.class, requestWrapper);
+        if (renderer != null) {
+
+            // Get Environment.
+            Environment environment = environmentService.getEnvironmentByName("AMEE");
+            // Get ItemDefinition identifier.
+            String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
+            if (itemDefinitionIdentifier != null) {
+                // Get ItemDefinition.
+                ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
+                        environment, itemDefinitionIdentifier);
+                if (itemDefinition != null) {
+                    // Get ItemValueDefinition identifier.
+                    String itemValueDefinitionIdentifier = requestWrapper.getAttributes().get("itemValueDefinitionIdentifier");
+                    if (itemValueDefinitionIdentifier != null) {
+                        // Get ItemValueDefinition.
+                        ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(
+                                itemDefinition, itemValueDefinitionIdentifier);
+                        if (itemValueDefinition != null) {
+                            // Handle the ItemValueDefinition.
+                            handle(requestWrapper, itemValueDefinition, renderer);
+                            renderer.ok();
+                        } else {
+                            throw new NotFoundException();
+                        }
                     } else {
-                        throw new NotFoundException();
+                        throw new MissingAttributeException("itemValueDefinitionIdentifier");
                     }
                 } else {
-                    throw new MissingAttributeException("itemValueDefinitionIdentifier");
+                    throw new NotFoundException();
                 }
             } else {
-                throw new NotFoundException();
+                throw new MissingAttributeException("itemDefinitionIdentifier");
             }
         } else {
-            throw new MissingAttributeException("itemDefinitionIdentifier");
+            throw new MediaTypeNotSupportedException();
         }
         return renderer.getObject();
     }
@@ -113,6 +123,4 @@ public abstract class ItemValueDefinitionBuilder implements ResourceBuilder {
             renderer.addFlags();
         }
     }
-
-    public abstract Map<String, Class> getRenderers();
 }

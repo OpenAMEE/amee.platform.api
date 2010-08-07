@@ -1,17 +1,14 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
+import com.amee.base.resource.Renderer;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public interface ItemValueDefinitionRenderer {
+public interface ItemValueDefinitionRenderer extends Renderer {
 
     public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
-    public void start();
-
-    public void ok();
 
     public void newItemValueDefinition(ItemValueDefinition itemValueDefinition);
 

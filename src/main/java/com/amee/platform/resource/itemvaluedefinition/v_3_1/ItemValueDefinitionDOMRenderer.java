@@ -1,12 +1,18 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
+import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionRenderer;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service("itemValueDefinitionDOMRenderer_3_1_0")
+@Scope("prototype")
+@Since("3.1.0")
 public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRenderer {
 
     private ItemValueDefinition itemValueDefinition;
@@ -120,6 +126,10 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
 
     public Element getItemValueDefinitionElement() {
         return itemValueDefinitionElem;
+    }
+
+    public String getMediaType() {
+        return "application/xml";
     }
 
     @Override

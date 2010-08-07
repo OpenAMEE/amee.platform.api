@@ -7,7 +7,11 @@ import com.amee.domain.tag.Tag;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service
+@Scope("prototype")
 public class DataCategoryJSONRenderer implements DataCategoryRenderer {
 
     private DataCategory dataCategory;
@@ -109,6 +113,10 @@ public class DataCategoryJSONRenderer implements DataCategoryRenderer {
 
     public JSONObject getDataCategoryJSONObject() {
         return dataCategoryObj;
+    }
+
+    public String getMediaType() {
+        return "application/json";
     }
 
     public JSONObject getObject() {
