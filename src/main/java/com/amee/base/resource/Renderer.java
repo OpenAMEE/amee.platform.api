@@ -2,7 +2,7 @@ package com.amee.base.resource;
 
 public interface Renderer {
 
-    public void start();
+    public void start(RequestWrapper requestWrapper);
 
     public void ok();
 
