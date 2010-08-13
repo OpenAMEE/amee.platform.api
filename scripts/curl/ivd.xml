@@ -2,18 +2,18 @@
 <ItemValueDefinition>
     <Path>county</Path>
     <Name>County</Name>
-    <ItemValueUsages>
-        <ItemValueUsage>
+    <Usages>
+        <Usage>
             <Name>Usage One</Name>
             <Type>REQUIRED</Type>
-        </ItemValueUsage>
-        <ItemValueUsage>
+        </Usage>
+        <Usage>
             <Name>Usage Two</Name>
             <Type>OPTIONAL</Type>
-        </ItemValueUsage>
-        <ItemValueUsage>
+        </Usage>
+        <Usage>
             <Name>Usage Three</Name>
             <Type>OPTIONAL</Type>
-        </ItemValueUsage>
-    </ItemValueUsages>
+        </Usage>
+    </Usages>
 </ItemValueDefinition>
