@@ -11,7 +11,7 @@ class CategoryIT extends BaseApiTest {
     @Ignore("POST not implemented in API")
     void createCategory() {
         client.contentType = JSON
-        def reponse = client.post(
+        def response = client.post(
             path: '/3/categories/CATEGORY1',
             body: [wikiName: 'testWikiName'],
             requestContentType: URLENC)
