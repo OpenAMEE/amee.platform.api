@@ -253,7 +253,21 @@
         <!--</property>-->
     </bean>
 
-    <!-- TODO: itemValueDefinitionsResource -->
+    <bean id="itemValueDefinitionsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>itemDefinitionIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsBuilder"/>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="itemValueDefinitionResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
