@@ -63,7 +63,7 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
         }
     }
 
-    protected void handle(
+    public void handle(
             RequestWrapper requestWrapper,
             ItemValueDefinition itemValueDefinition) {
 

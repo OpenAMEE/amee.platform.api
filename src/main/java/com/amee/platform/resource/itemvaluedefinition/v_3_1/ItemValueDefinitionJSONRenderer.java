@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service("itemValueDefinitionJSONRenderer_3_1_0")
 @Scope("prototype")
 @Since("3.1.0")
@@ -82,12 +84,14 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
 
     @Override
     public void addUsages() {
+        Collection<ItemValueUsage> itemDefinitionUsages = itemValueDefinition.getItemDefinition().getItemValueUsages();
         JSONArray itemValueUsagesArr = new JSONArray();
         put(itemValueDefinitionObj, "usages", itemValueUsagesArr);
         for (ItemValueUsage itemValueUsage : itemValueDefinition.getItemValueUsages()) {
             JSONObject itemValueUsageObj = new JSONObject();
             put(itemValueUsageObj, "name", itemValueUsage.getName());
             put(itemValueUsageObj, "type", itemValueUsage.getType().toString());
+            put(itemValueUsageObj, "active", Boolean.toString(itemDefinitionUsages.contains(itemValueUsage)));
             itemValueUsagesArr.put(itemValueUsageObj);
         }
     }

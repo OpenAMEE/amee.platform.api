@@ -10,6 +10,8 @@ import org.jdom.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service("itemValueDefinitionDOMRenderer_3_1_0")
 @Scope("prototype")
 @Since("3.1.0")
@@ -80,12 +82,14 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
 
     @Override
     public void addUsages() {
+        Collection<ItemValueUsage> itemDefinitionUsages = itemValueDefinition.getItemDefinition().getItemValueUsages();
         Element itemValueUsagesElem = new Element("Usages");
         itemValueDefinitionElem.addContent(itemValueUsagesElem);
         for (ItemValueUsage itemValueUsage : itemValueDefinition.getItemValueUsages()) {
             Element valueElem = new Element("Usage");
             valueElem.addContent(new Element("Name").setText(itemValueUsage.getName()));
             valueElem.addContent(new Element("Type").setText(itemValueUsage.getType().toString()));
+            valueElem.setAttribute("active", Boolean.toString(itemDefinitionUsages.contains(itemValueUsage)));
             itemValueUsagesElem.addContent(valueElem);
         }
     }
