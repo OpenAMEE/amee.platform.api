@@ -89,9 +89,8 @@ public class DataItemsBuilder implements ResourceBuilder {
         ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
         for (DataItem dataItem : resultsWrapper.getResults()) {
-            dataItemBuilder.handle(requestWrapper, dataItem, renderer.getDataItemRenderer());
-            renderer.newDataItem();
+            dataItemBuilder.handle(requestWrapper, dataItem);
+            renderer.newDataItem(dataItemBuilder.getDataItemRenderer(requestWrapper));
         }
     }
-
 }

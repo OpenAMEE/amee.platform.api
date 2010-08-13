@@ -19,17 +19,6 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
     private Element rootElem;
     private Element itemValueDefinitionElem;
 
-    public ItemValueDefinitionDOMRenderer() {
-        this(true);
-    }
-
-    public ItemValueDefinitionDOMRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     @Override
     public void start() {
         rootElem = new Element("Representation");
@@ -116,16 +105,11 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
         }
     }
 
-
     @Override
     public void addFlags() {
         itemValueDefinitionElem.addContent(new Element("DrillDown").setText(Boolean.toString(itemValueDefinition.isDrillDown())));
         itemValueDefinitionElem.addContent(new Element("FromData").setText(Boolean.toString(itemValueDefinition.isFromData())));
         itemValueDefinitionElem.addContent(new Element("FromProfile").setText(Boolean.toString(itemValueDefinition.isFromProfile())));
-    }
-
-    public Element getItemValueDefinitionElement() {
-        return itemValueDefinitionElem;
     }
 
     public String getMediaType() {

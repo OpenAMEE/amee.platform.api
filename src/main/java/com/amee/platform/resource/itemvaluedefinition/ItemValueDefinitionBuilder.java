@@ -24,55 +24,51 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
-    private ItemValueDefinitionRenderer renderer;
+    private ItemValueDefinitionRenderer itemValueDefinitionRenderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Renderer.
-        renderer = (ItemValueDefinitionRenderer) rendererBeanFinder.getRenderer(ItemValueDefinitionRenderer.class, requestWrapper);
-        if (renderer != null) {
-
-            // Get Environment.
-            Environment environment = environmentService.getEnvironmentByName("AMEE");
-            // Get ItemDefinition identifier.
-            String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
-            if (itemDefinitionIdentifier != null) {
-                // Get ItemDefinition.
-                ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
-                        environment, itemDefinitionIdentifier);
-                if (itemDefinition != null) {
-                    // Get ItemValueDefinition identifier.
-                    String itemValueDefinitionIdentifier = requestWrapper.getAttributes().get("itemValueDefinitionIdentifier");
-                    if (itemValueDefinitionIdentifier != null) {
-                        // Get ItemValueDefinition.
-                        ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(
-                                itemDefinition, itemValueDefinitionIdentifier);
-                        if (itemValueDefinition != null) {
-                            // Handle the ItemValueDefinition.
-                            handle(requestWrapper, itemValueDefinition, renderer);
-                            renderer.ok();
-                        } else {
-                            throw new NotFoundException();
-                        }
+        // Get Environment.
+        Environment environment = environmentService.getEnvironmentByName("AMEE");
+        // Get ItemDefinition identifier.
+        String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
+        if (itemDefinitionIdentifier != null) {
+            // Get ItemDefinition.
+            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
+                    environment, itemDefinitionIdentifier);
+            if (itemDefinition != null) {
+                // Get ItemValueDefinition identifier.
+                String itemValueDefinitionIdentifier = requestWrapper.getAttributes().get("itemValueDefinitionIdentifier");
+                if (itemValueDefinitionIdentifier != null) {
+                    // Get ItemValueDefinition.
+                    ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(
+                            itemDefinition, itemValueDefinitionIdentifier);
+                    if (itemValueDefinition != null) {
+                        // Handle the ItemValueDefinition.
+                        handle(requestWrapper, itemValueDefinition);
+                        ItemValueDefinitionRenderer renderer = getItemValueDefinitionRenderer(requestWrapper);
+                        renderer.ok();
+                        return renderer.getObject();
                     } else {
-                        throw new MissingAttributeException("itemValueDefinitionIdentifier");
+                        throw new NotFoundException();
                     }
                 } else {
-                    throw new NotFoundException();
+                    throw new MissingAttributeException("itemValueDefinitionIdentifier");
                 }
             } else {
-                throw new MissingAttributeException("itemDefinitionIdentifier");
+                throw new NotFoundException();
             }
         } else {
-            throw new MediaTypeNotSupportedException();
+            throw new MissingAttributeException("itemDefinitionIdentifier");
         }
-        return renderer.getObject();
     }
 
     protected void handle(
             RequestWrapper requestWrapper,
-            ItemValueDefinition itemValueDefinition,
-            ItemValueDefinitionRenderer renderer) {
+            ItemValueDefinition itemValueDefinition) {
+
+        ItemValueDefinitionRenderer renderer = getItemValueDefinitionRenderer(requestWrapper);
+        renderer.start();
 
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean name = requestWrapper.getMatrixParameters().containsKey("name");
@@ -122,5 +118,12 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
         if (flags || full) {
             renderer.addFlags();
         }
+    }
+
+    public ItemValueDefinitionRenderer getItemValueDefinitionRenderer(RequestWrapper requestWrapper) {
+        if (itemValueDefinitionRenderer == null) {
+            itemValueDefinitionRenderer = (ItemValueDefinitionRenderer) rendererBeanFinder.getRenderer(ItemValueDefinitionRenderer.class, requestWrapper);
+        }
+        return itemValueDefinitionRenderer;
     }
 }

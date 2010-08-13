@@ -13,11 +13,6 @@ public class TagsDOMRenderer implements TagsRenderer {
     private Element rootElem;
     private Element tagsElem;
 
-    public TagsDOMRenderer() {
-        super();
-        start();
-    }
-
     public void start() {
         rootElem = new Element("Representation");
         tagsElem = new Element("Tags");

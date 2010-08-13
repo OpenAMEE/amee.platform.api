@@ -14,11 +14,6 @@ public class TagsJSONRenderer implements TagsRenderer {
     private JSONObject rootObj;
     private JSONArray tagsArr;
 
-    public TagsJSONRenderer() {
-        super();
-        start();
-    }
-
     public void start() {
         rootObj = new JSONObject();
         tagsArr = new JSONArray();

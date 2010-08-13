@@ -20,17 +20,6 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
     private JSONObject rootObj;
     private JSONObject itemValueDefinitionObj;
 
-    public ItemValueDefinitionJSONRenderer() {
-        this(true);
-    }
-
-    public ItemValueDefinitionJSONRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     @Override
     public void start() {
         rootObj = new JSONObject();
@@ -131,10 +120,6 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
-    }
-
-    public JSONObject getItemValueDefinitionJSONObject() {
-        return itemValueDefinitionObj;
     }
 
     public String getMediaType() {

@@ -1,6 +1,5 @@
 package com.amee.platform.resource.tag;
 
-import com.amee.base.resource.MediaTypeNotSupportedException;
 import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
@@ -25,23 +24,28 @@ public class TagsBuilder implements ResourceBuilder {
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
-    private TagsRenderer renderer;
+    private TagsRenderer tagsRenderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        renderer = (TagsRenderer) rendererBeanFinder.getRenderer(TagsRenderer.class, requestWrapper);
-        if (renderer != null) {
-            handle(renderer, tagResourceService.getEntity(requestWrapper));
-            renderer.ok();
-            return renderer.getObject();
-        } else {
-            throw new MediaTypeNotSupportedException();
-        }
+        handle(requestWrapper, tagResourceService.getEntity(requestWrapper));
+        TagsRenderer renderer = getTagsRenderer(requestWrapper);
+        renderer.ok();
+        return renderer.getObject();
     }
 
-    protected void handle(TagsRenderer renderer, IAMEEEntityReference entity) {
+    protected void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity) {
+        TagsRenderer renderer = getTagsRenderer(requestWrapper);
+        renderer.start();
         for (Tag tag : tagService.getTags(entity)) {
             renderer.newTag(tag);
         }
+    }
+
+    public TagsRenderer getTagsRenderer(RequestWrapper requestWrapper) {
+        if (tagsRenderer == null) {
+            tagsRenderer = (TagsRenderer) rendererBeanFinder.getRenderer(TagsRenderer.class, requestWrapper);
+        }
+        return tagsRenderer;
     }
 }

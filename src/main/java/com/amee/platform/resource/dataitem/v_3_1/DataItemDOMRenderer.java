@@ -21,17 +21,6 @@ public class DataItemDOMRenderer implements DataItemRenderer {
     protected Element dataItemElem;
     protected Element valuesElem;
 
-    public DataItemDOMRenderer() {
-        this(true);
-    }
-
-    public DataItemDOMRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     public void start() {
         rootElem = new Element("Representation");
     }
@@ -107,10 +96,6 @@ public class DataItemDOMRenderer implements DataItemRenderer {
             valueElem.addContent(new Element("CompoundUnit").setText(itemValue.getCompoundUnit().toString()));
         }
         valuesElem.addContent(valueElem);
-    }
-
-    public Element getDataItemElement() {
-        return dataItemElem;
     }
 
     public String getMediaType() {

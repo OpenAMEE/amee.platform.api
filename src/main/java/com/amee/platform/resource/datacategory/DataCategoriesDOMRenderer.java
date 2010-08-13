@@ -9,15 +9,8 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class DataCategoriesDOMRenderer implements DataCategoriesRenderer {
 
-    private DataCategoryDOMRenderer dataCategoryRenderer;
     private Element rootElem;
     private Element categoriesElem;
-
-    public DataCategoriesDOMRenderer() {
-        super();
-        this.dataCategoryRenderer = new DataCategoryDOMRenderer(false);
-        start();
-    }
 
     public void start() {
         rootElem = new Element("Representation");
@@ -29,16 +22,12 @@ public class DataCategoriesDOMRenderer implements DataCategoriesRenderer {
         rootElem.addContent(new Element("Status").setText("OK"));
     }
 
-    public void newDataCategory() {
-        categoriesElem.addContent(dataCategoryRenderer.getDataCategoryElement());
+    public void newDataCategory(DataCategoryRenderer dataCategoryRenderer) {
+        categoriesElem.addContent(((Document) dataCategoryRenderer.getObject()).getRootElement().getChild("Category").detach());
     }
 
     public void setTruncated(boolean truncated) {
         categoriesElem.setAttribute("truncated", "" + truncated);
-    }
-
-    public DataCategoryRenderer getDataCategoryRenderer() {
-        return dataCategoryRenderer;
     }
 
     public String getMediaType() {

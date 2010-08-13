@@ -19,17 +19,6 @@ public class DataCategoryJSONRenderer implements DataCategoryRenderer {
     private JSONObject dataCategoryObj;
     private JSONArray tagsArr;
 
-    public DataCategoryJSONRenderer() {
-        this(true);
-    }
-
-    public DataCategoryJSONRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     public void start() {
         rootObj = new JSONObject();
     }
@@ -109,10 +98,6 @@ public class DataCategoryJSONRenderer implements DataCategoryRenderer {
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
-    }
-
-    public JSONObject getDataCategoryJSONObject() {
-        return dataCategoryObj;
     }
 
     public String getMediaType() {

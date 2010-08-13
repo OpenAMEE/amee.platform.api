@@ -6,15 +6,11 @@ import com.amee.platform.resource.dataitem.DataItemRenderer;
 
 public interface SearchRenderer extends Renderer {
 
-    public void newDataCategory();
+    public void newDataCategory(DataCategoryRenderer dataCategoryRenderer);
 
-    public void newDataItem();
+    public void newDataItem(DataItemRenderer dataItemRenderer);
 
     public void setTruncated(boolean truncated);
-
-    public DataCategoryRenderer getDataCategoryRenderer();
-
-    public DataItemRenderer getDataItemRenderer();
 
     public Object getObject();
 }

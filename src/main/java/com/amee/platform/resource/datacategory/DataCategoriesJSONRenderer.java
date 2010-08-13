@@ -10,15 +10,8 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class DataCategoriesJSONRenderer implements DataCategoriesRenderer {
 
-    private DataCategoryJSONRenderer dataCategoryRenderer;
     private JSONObject rootObj;
     private JSONArray categoriesArr;
-
-    public DataCategoriesJSONRenderer() {
-        super();
-        this.dataCategoryRenderer = new DataCategoryJSONRenderer(false);
-        start();
-    }
 
     public void start() {
         rootObj = new JSONObject();
@@ -30,16 +23,16 @@ public class DataCategoriesJSONRenderer implements DataCategoriesRenderer {
         put(rootObj, "status", "OK");
     }
 
-    public void newDataCategory() {
-        categoriesArr.put(dataCategoryRenderer.getDataCategoryJSONObject());
+    public void newDataCategory(DataCategoryRenderer dataCategoryRenderer) {
+        try {
+            categoriesArr.put(((JSONObject) dataCategoryRenderer.getObject()).getJSONObject("category"));
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
     }
 
     public void setTruncated(boolean truncated) {
         put(rootObj, "resultsTruncated", truncated);
-    }
-
-    public DataCategoryRenderer getDataCategoryRenderer() {
-        return dataCategoryRenderer;
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

@@ -22,17 +22,6 @@ public class DataItemJSONRenderer implements DataItemRenderer {
     protected JSONObject dataItemObj;
     protected JSONArray valuesArr;
 
-    public DataItemJSONRenderer() {
-        this(true);
-    }
-
-    public DataItemJSONRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     public void start() {
         rootObj = new JSONObject();
     }
@@ -117,10 +106,6 @@ public class DataItemJSONRenderer implements DataItemRenderer {
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
-    }
-
-    public JSONObject getDataItemJSONObject() {
-        return dataItemObj;
     }
 
     public String getMediaType() {

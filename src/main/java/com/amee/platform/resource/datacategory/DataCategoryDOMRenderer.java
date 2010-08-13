@@ -18,17 +18,6 @@ public class DataCategoryDOMRenderer implements DataCategoryRenderer {
     private Element dataCategoryElem;
     private Element tagsElem;
 
-    public DataCategoryDOMRenderer() {
-        this(true);
-    }
-
-    public DataCategoryDOMRenderer(boolean start) {
-        super();
-        if (start) {
-            start();
-        }
-    }
-
     public void start() {
         rootElem = new Element("Representation");
     }
@@ -99,10 +88,6 @@ public class DataCategoryDOMRenderer implements DataCategoryRenderer {
         Element tagElem = new Element("Tag");
         tagsElem.addContent(tagElem);
         tagElem.addContent(new Element("Tag").setText(tag.getTag()));
-    }
-
-    public Element getDataCategoryElement() {
-        return dataCategoryElem;
     }
 
     public String getMediaType() {

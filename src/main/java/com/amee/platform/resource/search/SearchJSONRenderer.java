@@ -1,26 +1,19 @@
 package com.amee.platform.resource.search;
 
-import com.amee.platform.resource.datacategory.DataCategoryJSONRenderer;
 import com.amee.platform.resource.datacategory.DataCategoryRenderer;
 import com.amee.platform.resource.dataitem.DataItemRenderer;
-import com.amee.platform.resource.dataitem.v_3_1.DataItemJSONRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
+@Service
+@Scope("prototype")
 public class SearchJSONRenderer implements SearchRenderer {
 
-    private DataCategoryJSONRenderer dataCategoryRenderer;
-    private DataItemJSONRenderer dataItemRenderer;
     private JSONObject rootObj;
     private JSONArray resultsArr;
-
-    public SearchJSONRenderer() {
-        super();
-        this.dataCategoryRenderer = new DataCategoryJSONRenderer(false);
-        this.dataItemRenderer = new DataItemJSONRenderer(false);
-        start();
-    }
 
     public void start() {
         rootObj = new JSONObject();
@@ -32,24 +25,26 @@ public class SearchJSONRenderer implements SearchRenderer {
         put(rootObj, "status", "OK");
     }
 
-    public void newDataCategory() {
-        resultsArr.put(dataCategoryRenderer.getDataCategoryJSONObject());
+    @Override
+    public void newDataCategory(DataCategoryRenderer dataCategoryRenderer) {
+        try {
+            resultsArr.put(((JSONObject) dataCategoryRenderer.getObject()).getJSONObject("category"));
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
     }
 
-    public void newDataItem() {
-        resultsArr.put(dataItemRenderer.getDataItemJSONObject());
+    @Override
+    public void newDataItem(DataItemRenderer dataItemRenderer) {
+        try {
+            resultsArr.put(((JSONObject) dataItemRenderer.getObject()).getJSONObject("item"));
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
     }
 
     public void setTruncated(boolean truncated) {
         put(rootObj, "resultsTruncated", truncated);
-    }
-
-    public DataCategoryRenderer getDataCategoryRenderer() {
-        return dataCategoryRenderer;
-    }
-
-    public DataItemRenderer getDataItemRenderer() {
-        return dataItemRenderer;
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

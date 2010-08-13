@@ -1,7 +1,6 @@
 package com.amee.platform.resource.search;
 
 import com.amee.base.domain.ResultsWrapper;
-import com.amee.base.resource.MediaTypeNotSupportedException;
 import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
@@ -37,51 +36,55 @@ public class SearchBuilder implements ResourceBuilder {
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
-    private SearchRenderer renderer;
+    private SearchRenderer searchRenderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        renderer = (SearchRenderer) rendererBeanFinder.getRenderer(SearchRenderer.class, requestWrapper);
-        if (renderer != null) {
-            SearchFilter filter = new SearchFilter();
-            filter.setLoadDataItemValues(
-                    requestWrapper.getMatrixParameters().containsKey("full") ||
-                            requestWrapper.getMatrixParameters().containsKey("values"));
-            filter.setLoadMetadatas(
-                    requestWrapper.getMatrixParameters().containsKey("full") ||
-                            requestWrapper.getMatrixParameters().containsKey("authority") ||
-                            requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
-                            requestWrapper.getMatrixParameters().containsKey("provenance"));
-            validationHelper.setSearchFilter(filter);
-            if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
-                handle(requestWrapper, filter, renderer);
-                renderer.ok();
-            } else {
-                throw new ValidationException(validationHelper.getValidationResult());
-            }
+        SearchFilter filter = new SearchFilter();
+        filter.setLoadDataItemValues(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("values"));
+        filter.setLoadMetadatas(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("authority") ||
+                        requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                        requestWrapper.getMatrixParameters().containsKey("provenance"));
+        validationHelper.setSearchFilter(filter);
+        if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+            handle(requestWrapper, filter);
+            SearchRenderer renderer = getSearchRenderer(requestWrapper);
+            renderer.ok();
             return renderer.getObject();
         } else {
-            throw new MediaTypeNotSupportedException();
+            throw new ValidationException(validationHelper.getValidationResult());
         }
     }
 
     protected void handle(
             RequestWrapper requestWrapper,
-            SearchFilter filter,
-            SearchRenderer renderer) {
+            SearchFilter filter) {
+        SearchRenderer renderer = getSearchRenderer(requestWrapper);
+        renderer.start();
         ResultsWrapper<AMEEEntity> resultsWrapper = searchService.getEntities(filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
         for (AMEEEntity entity : resultsWrapper.getResults()) {
             switch (entity.getObjectType()) {
                 case DC:
-                    dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity, renderer.getDataCategoryRenderer());
-                    renderer.newDataCategory();
+                    dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
+                    renderer.newDataCategory(dataCategoryBuilder.getDataCategoryRenderer(requestWrapper));
                     break;
                 case DI:
-                    dataItemBuilder.handle(requestWrapper, (DataItem) entity, renderer.getDataItemRenderer());
-                    renderer.newDataItem();
+                    dataItemBuilder.handle(requestWrapper, (DataItem) entity);
+                    renderer.newDataItem(dataItemBuilder.getDataItemRenderer(requestWrapper));
                     break;
             }
         }
+    }
+
+    public SearchRenderer getSearchRenderer(RequestWrapper requestWrapper) {
+        if (searchRenderer == null) {
+            searchRenderer = (SearchRenderer) rendererBeanFinder.getRenderer(SearchRenderer.class, requestWrapper);
+        }
+        return searchRenderer;
     }
 }

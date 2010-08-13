@@ -34,40 +34,37 @@ public class DataCategoryBuilder implements ResourceBuilder {
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
-    private DataCategoryRenderer renderer;
+    private DataCategoryRenderer dataCategoryRenderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Renderer.
-        renderer = (DataCategoryRenderer) rendererBeanFinder.getRenderer(DataCategoryRenderer.class, requestWrapper);
-        if (renderer != null) {
-            // Get Environment.
-            Environment environment = environmentService.getEnvironmentByName("AMEE");
-            // Get the DataCategory identifier.
-            String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-            if (dataCategoryIdentifier != null) {
-                // Get DataCategory.
-                DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
-                if (dataCategory != null) {
-                    // Handle the DataCategory.
-                    this.handle(requestWrapper, dataCategory, renderer);
-                    renderer.ok();
-                } else {
-                    throw new NotFoundException();
-                }
+        // Get Environment.
+        Environment environment = environmentService.getEnvironmentByName("AMEE");
+        // Get the DataCategory identifier.
+        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+        if (dataCategoryIdentifier != null) {
+            // Get DataCategory.
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+            if (dataCategory != null) {
+                // Handle the DataCategory.
+                this.handle(requestWrapper, dataCategory);
+                DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
+                renderer.ok();
+                return renderer.getObject();
             } else {
-                throw new MissingAttributeException("categoryIdentifier");
+                throw new NotFoundException();
             }
-            return renderer.getObject();
         } else {
-            throw new MediaTypeNotSupportedException();
+            throw new MissingAttributeException("categoryIdentifier");
         }
     }
 
     public void handle(
             RequestWrapper requestWrapper,
-            DataCategory dataCategory,
-            DataCategoryRenderer renderer) {
+            DataCategory dataCategory) {
+
+        DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
+        renderer.start();
 
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
@@ -113,5 +110,12 @@ public class DataCategoryBuilder implements ResourceBuilder {
                 renderer.newTag(tag);
             }
         }
+    }
+
+    public DataCategoryRenderer getDataCategoryRenderer(RequestWrapper requestWrapper) {
+        if (dataCategoryRenderer == null) {
+            dataCategoryRenderer = (DataCategoryRenderer) rendererBeanFinder.getRenderer(DataCategoryRenderer.class, requestWrapper);
+        }
+        return dataCategoryRenderer;
     }
 }
