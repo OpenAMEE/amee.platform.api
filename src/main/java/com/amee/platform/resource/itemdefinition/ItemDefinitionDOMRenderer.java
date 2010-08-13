@@ -18,7 +18,6 @@ public class ItemDefinitionDOMRenderer implements ItemDefinitionRenderer {
     private ItemDefinition itemDefinition;
     private Element rootElem;
     private Element itemDefinitionElem;
-    private Element itemValueDefinitionsElem;
 
     @Override
     public void start() {
@@ -42,6 +41,13 @@ public class ItemDefinitionDOMRenderer implements ItemDefinitionRenderer {
     @Override
     public void addBasic() {
         itemDefinitionElem.setAttribute("uid", itemDefinition.getUid());
+    }
+
+    @Override
+    public void addAudit() {
+        itemDefinitionElem.setAttribute("status", itemDefinition.getStatus().getName());
+        itemDefinitionElem.setAttribute("created", DATE_FORMAT.print(itemDefinition.getCreated().getTime()));
+        itemDefinitionElem.setAttribute("modified", DATE_FORMAT.print(itemDefinition.getModified().getTime()));
     }
 
     @Override

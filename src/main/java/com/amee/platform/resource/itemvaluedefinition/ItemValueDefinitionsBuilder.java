@@ -1,8 +1,9 @@
-package com.amee.platform.resource.itemdefinition;
+package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.*;
 import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.environment.Environment;
 import com.amee.service.definition.DefinitionService;
 import com.amee.service.environment.EnvironmentService;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 @Since("3.1.0")
-public class ItemDefinitionBuilder implements ResourceBuilder {
+public class ItemValueDefinitionsBuilder implements ResourceBuilder {
 
     @Autowired
     private EnvironmentService environmentService;
@@ -23,9 +24,12 @@ public class ItemDefinitionBuilder implements ResourceBuilder {
     private DefinitionService definitionService;
 
     @Autowired
+    private ItemValueDefinitionBuilder itemValueDefinitionBuilder;
+
+    @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
-    private ItemDefinitionRenderer itemDefinitionRenderer;
+    private ItemValueDefinitionsRenderer itemValueDefinitionsRenderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
@@ -40,7 +44,7 @@ public class ItemDefinitionBuilder implements ResourceBuilder {
             if (itemDefinition != null) {
                 // Handle the ItemDefinition.
                 handle(requestWrapper, itemDefinition);
-                ItemDefinitionRenderer renderer = getItemDefinitionRenderer(requestWrapper);
+                ItemValueDefinitionsRenderer renderer = getItemValueDefinitionsRenderer(requestWrapper);
                 renderer.ok();
                 return renderer.getObject();
             } else {
@@ -51,42 +55,23 @@ public class ItemDefinitionBuilder implements ResourceBuilder {
         }
     }
 
-    protected void handle(
-            RequestWrapper requestWrapper,
-            ItemDefinition itemDefinition) {
+    protected void handle(RequestWrapper requestWrapper, ItemDefinition itemDefinition) {
 
-        ItemDefinitionRenderer renderer = getItemDefinitionRenderer(requestWrapper);
+        // Start Renderer.
+        ItemValueDefinitionsRenderer renderer = getItemValueDefinitionsRenderer(requestWrapper);
         renderer.start();
 
-        boolean full = requestWrapper.getMatrixParameters().containsKey("full");
-        boolean name = requestWrapper.getMatrixParameters().containsKey("name");
-        boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
-        boolean drillDown = requestWrapper.getMatrixParameters().containsKey("drillDown");
-        boolean usages = requestWrapper.getMatrixParameters().containsKey("usages");
-
-        // New ItemValueDefinition & basic.
-        renderer.newItemDefinition(itemDefinition);
-        renderer.addBasic();
-
-        // Optional attributes.
-        if (name || full) {
-            renderer.addName();
-        }
-        if (audit || full) {
-            renderer.addAudit();
-        }
-        if (drillDown || full) {
-            renderer.addDrillDown();
-        }
-        if (usages || full) {
-            renderer.addUsages();
+        // Add ItemValueDefinition.
+        for (ItemValueDefinition itemValueDefinition : itemDefinition.getActiveItemValueDefinitions()) {
+            itemValueDefinitionBuilder.handle(requestWrapper, itemValueDefinition);
+            renderer.newItemValueDefinition(itemValueDefinitionBuilder.getItemValueDefinitionRenderer(requestWrapper));
         }
     }
 
-    public ItemDefinitionRenderer getItemDefinitionRenderer(RequestWrapper requestWrapper) {
-        if (itemDefinitionRenderer == null) {
-            itemDefinitionRenderer = (ItemDefinitionRenderer) rendererBeanFinder.getRenderer(ItemDefinitionRenderer.class, requestWrapper);
+    public ItemValueDefinitionsRenderer getItemValueDefinitionsRenderer(RequestWrapper requestWrapper) {
+        if (itemValueDefinitionsRenderer == null) {
+            itemValueDefinitionsRenderer = (ItemValueDefinitionsRenderer) rendererBeanFinder.getRenderer(ItemValueDefinitionsRenderer.class, requestWrapper);
         }
-        return itemDefinitionRenderer;
+        return itemValueDefinitionsRenderer;
     }
 }
