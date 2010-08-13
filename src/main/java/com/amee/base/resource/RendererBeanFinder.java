@@ -18,12 +18,19 @@ public class RendererBeanFinder {
     }
 
     public Renderer getRenderer(final String className, final RequestWrapper requestWrapper) {
-        return (Renderer) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion(), new VersionBeanFinder.VersionBeanMatcher() {
+        // Get the Renderer with the supplied class name.
+        Renderer renderer = (Renderer) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion(), new VersionBeanFinder.VersionBeanMatcher() {
             @Override
             public boolean matches(Object bean) {
                 Renderer renderer = (Renderer) bean;
                 return requestWrapper.getAcceptedMediaTypes().contains(renderer.getMediaType());
             }
         });
+        // A Renderer must exist or we shall throw a MediaTypeNotSupportedException.
+        if (renderer != null) {
+            return renderer;
+        } else {
+            throw new MediaTypeNotSupportedException();
+        }
     }
 }
