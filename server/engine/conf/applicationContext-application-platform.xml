@@ -20,10 +20,9 @@
         <property name="attachments">
             <map>
                 <entry key="">
-                    <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
-                        <constructor-arg index="0" ref="platformApplication"/>
+                    <bean class="com.amee.restlet.transaction.TransactionControllerFilter">
                         <property name="next">
-                            <bean class="com.amee.platform.restlet.TransactionFilter">
+                            <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
                                 <constructor-arg index="0" ref="platformApplication"/>
                                 <property name="next" ref="versionsRouter"/>
                             </bean>

@@ -33,6 +33,7 @@
         <commons-lang.version>2.5</commons-lang.version>
         <commons-logging.version>1.1.1</commons-logging.version>
         <groovy.version>1.7.3</groovy.version>
+        <!--<h2.version>1.2.140</h2.version>-->
         <hibernate-core.version>3.5.1-Final</hibernate-core.version>
         <hibernate-memcached.version>1.2.2</hibernate-memcached.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
@@ -188,6 +189,14 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
+
+                        <!-- H2 -->
+                        <!--<DB_URL_PREFIX>jdbc</DB_URL_PREFIX>-->
+                        <!--<DB_URL>h2:mem:amee_test</DB_URL>-->
+                        <!--<DB_DRIVER>org.h2.Driver</DB_DRIVER>-->
+                        <!--<DB_USERNAME>sa</DB_USERNAME>-->
+                        <!--<DB_PSWD>NULL</DB_PSWD>-->
+                        <!--<VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>-->
 
                         <!-- HSQLDB -->
                         <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
@@ -475,6 +484,12 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency-->
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
