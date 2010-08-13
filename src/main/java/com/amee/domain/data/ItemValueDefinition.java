@@ -34,9 +34,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Resource;
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "ITEM_VALUE_DEFINITION")
@@ -52,7 +54,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
     public final static int CHOICES_MAX_SIZE = 255;
     public final static int ALLOWED_ROLES_MAX_SIZE = 255;
     public final static int WIKI_DOC_MIN_SIZE = 0;
-    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_SIZE;
+    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ITEM_DEFINITION_ID")

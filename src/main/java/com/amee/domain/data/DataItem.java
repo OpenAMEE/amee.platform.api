@@ -44,7 +44,7 @@ import java.util.Date;
 public class DataItem extends Item {
 
     public final static int PATH_MAX_SIZE = 255;
-    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_SIZE;
+    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch

@@ -17,18 +17,18 @@ import javax.persistence.Table;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Metadata extends AMEEEntity {
 
-    public final static int NAME_SIZE = 255;
+    public final static int NAME_MAX_SIZE = 255;
     // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
-    public final static int VALUE_SIZE = 32767;
+    public final static int VALUE_MAX_SIZE = 32767;
 
     @Embedded
     private AMEEEntityReference entityReference = new AMEEEntityReference();
 
-    @Column(name = "NAME", nullable = false, length = NAME_SIZE)
+    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
     @Index(name = "NAME_IND")
     private String name = "";
 
-    @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
+    @Column(name = "VALUE", nullable = false, length = VALUE_MAX_SIZE)
     private String value = "";
 
     public Metadata() {

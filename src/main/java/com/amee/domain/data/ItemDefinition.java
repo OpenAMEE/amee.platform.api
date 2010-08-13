@@ -20,10 +20,7 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
-import com.amee.domain.APIVersion;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
@@ -47,17 +44,21 @@ import java.util.*;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemDefinition extends AMEEEnvironmentEntity {
 
-    public final static int NAME_SIZE = 255;
-    public final static int DRILL_DOWN_SIZE = 255;
+    public final static int NAME_MIN_SIZE = 3;
+    public final static int NAME_MAX_SIZE = 255;
+    public final static int DRILL_DOWN_MIN_SIZE = 0;
+    public final static int DRILL_DOWN_MAX_SIZE = 255;
+    public final static int USAGES_MIN_SIZE = 0;
+    public final static int USAGES_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
 
     @Transient
     @Resource
     private ILocaleService localeService;
 
-    @Column(name = "NAME", length = NAME_SIZE, nullable = false)
+    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "DRILL_DOWN", length = DRILL_DOWN_SIZE, nullable = true)
+    @Column(name = "DRILL_DOWN", length = DRILL_DOWN_MAX_SIZE, nullable = true)
     private String drillDown = "";
 
     @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -292,6 +293,22 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
             }
         }
         return usagesList;
+    }
+
+    public List<ItemValueUsage> getItemValueUsages() {
+        List<ItemValueUsage> itemValueUsages = new ArrayList<ItemValueUsage>();
+        for (String usage : getUsages()) {
+            itemValueUsages.add(new ItemValueUsage(usage));
+        }
+        return itemValueUsages;
+    }
+
+    public Set<ItemValueUsage> getAllItemValueUsages() {
+        Set<ItemValueUsage> allItemValueUsages = new HashSet<ItemValueUsage>();
+        for (ItemValueDefinition itemValueDefinition : getActiveItemValueDefinitions()) {
+            allItemValueUsages.addAll(itemValueDefinition.getItemValueUsages());
+        }
+        return allItemValueUsages;
     }
 
     /**

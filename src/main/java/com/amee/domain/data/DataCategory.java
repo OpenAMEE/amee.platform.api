@@ -52,7 +52,7 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     public final static int PATH_MAX_SIZE = 255;
     public final static int WIKI_NAME_MIN_SIZE = 3;
     public final static int WIKI_NAME_MAX_SIZE = 255;
-    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_SIZE;
+    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
     public final static int AUTHORITY_MAX_SIZE = 255;
 
