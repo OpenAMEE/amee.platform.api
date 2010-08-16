@@ -1,0 +1,57 @@
+package com.amee.platform.resource.returnvaluedefinition;
+
+import com.amee.base.validation.ValidationHelper;
+import com.amee.domain.data.ReturnValueDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.Validator;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Service
+@Scope("prototype")
+public class ReturnValueDefinitionValidationHelper extends ValidationHelper {
+
+    @Autowired
+    private ReturnValueDefinitionValidator returnValueDefinitionValidator;
+
+    private ReturnValueDefinition returnValueDefinition;
+    private Set<String> allowedFields;
+
+    @Override
+    public Object getObject() {
+        return returnValueDefinition;
+    }
+
+    @Override
+    protected Validator getValidator() {
+        return returnValueDefinitionValidator;
+    }
+
+    @Override
+    public String getName() {
+        return "returnValueDefinition";
+    }
+
+    @Override
+    public String[] getAllowedFields() {
+        if (allowedFields == null) {
+            allowedFields = new HashSet<String>();
+            allowedFields.add("type");
+            allowedFields.add("unit");
+            allowedFields.add("perUnit");
+            allowedFields.add("isDefault");
+        }
+        return allowedFields.toArray(new String[]{});
+    }
+
+    public ReturnValueDefinition getReturnValueDefinition() {
+        return returnValueDefinition;
+    }
+
+    public void setReturnValueDefinition(ReturnValueDefinition returnValueDefinition) {
+        this.returnValueDefinition = returnValueDefinition;
+    }
+}
