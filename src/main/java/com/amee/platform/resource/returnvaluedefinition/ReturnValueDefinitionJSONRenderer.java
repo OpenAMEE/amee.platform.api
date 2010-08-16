@@ -63,6 +63,11 @@ public class ReturnValueDefinitionJSONRenderer implements ReturnValueDefinitionR
         put(returnValueDefinitionObj, "perUnit", returnValueDefinition.getPerUnit().toString());
     }
 
+    @Override
+    public void addFlags() {
+        put(returnValueDefinitionObj, "default", Boolean.toString(returnValueDefinition.isDefault()));
+    }
+
     protected JSONObject put(JSONObject o, String key, Object value) {
         try {
             return o.put(key, value);

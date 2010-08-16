@@ -2,7 +2,6 @@ package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionValidator;
 import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;

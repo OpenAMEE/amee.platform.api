@@ -58,6 +58,11 @@ public class ReturnValueDefinitionDOMRenderer implements ReturnValueDefinitionRe
         returnValueDefinitionElem.addContent(new Element("PerUnit").setText(returnValueDefinition.getPerUnit().toString()));
     }
 
+    @Override
+    public void addFlags() {
+        returnValueDefinitionElem.addContent(new Element("Default").setText(Boolean.toString(returnValueDefinition.isDefault())));
+    }
+
     public String getMediaType() {
         return "application/xml";
     }

@@ -20,5 +20,7 @@ public interface ReturnValueDefinitionRenderer extends Renderer {
 
     public void addUnits();
 
+    public void addFlags();
+
     public Object getObject();
 }
