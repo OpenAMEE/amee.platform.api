@@ -327,12 +327,12 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.service.v3.definition.ReturnValueDefinitionBuilder"/>
+            <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionBuilder"/>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.service.v3.definition.ReturnValueDefinitionFormAcceptor"/>
+                    <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionFormAcceptor"/>
                 </entry>
             </map>
         </property>
