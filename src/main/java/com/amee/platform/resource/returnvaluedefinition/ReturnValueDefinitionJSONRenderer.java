@@ -1,12 +1,7 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
-import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.data.ItemValueUsage;
 import com.amee.domain.data.ReturnValueDefinition;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionRenderer;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
@@ -65,7 +60,7 @@ public class ReturnValueDefinitionJSONRenderer implements ReturnValueDefinitionR
 
     @Override
     public void addFlags() {
-        put(returnValueDefinitionObj, "default", Boolean.toString(returnValueDefinition.isDefault()));
+        put(returnValueDefinitionObj, "default", Boolean.toString(returnValueDefinition.isDefaultType()));
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

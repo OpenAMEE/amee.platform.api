@@ -1,15 +1,14 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.domain.data.ReturnValueDefinition;
+import com.amee.platform.science.AmountPerUnit;
+import com.amee.platform.science.AmountUnit;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ReturnValueDefinitionValidatorTest {
 
@@ -20,9 +19,9 @@ public class ReturnValueDefinitionValidatorTest {
         BindException errorsGood = new BindException(good, "good");
 
         good.setType("CO2");
-        good.setUnit("kg");
-        good.setPerUnit("month");
-        good.setDefault(true);
+        good.setUnit(AmountUnit.valueOf("kg"));
+        good.setPerUnit(AmountPerUnit.valueOf("month"));
+        good.setDefaultType(true);
 
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());

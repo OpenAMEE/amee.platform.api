@@ -60,7 +60,7 @@ public class ReturnValueDefinitionDOMRenderer implements ReturnValueDefinitionRe
 
     @Override
     public void addFlags() {
-        returnValueDefinitionElem.addContent(new Element("Default").setText(Boolean.toString(returnValueDefinition.isDefault())));
+        returnValueDefinitionElem.addContent(new Element("Default").setText(Boolean.toString(returnValueDefinition.isDefaultType())));
     }
 
     public String getMediaType() {
