@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.tag;
+package com.amee.platform.resource.tag;
 
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagValidator;

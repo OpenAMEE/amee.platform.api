@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.search;
+package com.amee.platform.resource.search;
 
 import com.amee.platform.resource.search.SearchFilterValidator;
 import com.amee.platform.search.SearchFilter;
