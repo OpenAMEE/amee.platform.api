@@ -15,7 +15,6 @@
 
     <!-- Placeholder property configuration -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-
         <!-- Set a value that should be treated as <code>null</code> when resolved as a placeholder value -->
         <property name="nullValue" value="NULL"/>
     </bean>
@@ -70,9 +69,9 @@
     <bean id="searchService" class="com.amee.platform.search.SearchService"/>
     <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryService"/>
     <bean id="luceneService" class="com.amee.platform.search.LuceneServiceImpl">
-        <property name="snapShooterPath" value="${CURRENT_HOME}/bin/snapshooter" />
-        <property name="indexDirPath" value="${AMEE_HOME}/lucene" />
-        <property name="snapTime" value="300" />
+        <property name="snapShooterPath" value="${CURRENT_HOME}/bin/snapshooter"/>
+        <property name="indexDirPath" value="${AMEE_HOME}/lucene"/>
+        <property name="snapTime" value="300"/>
     </bean>
     <bean id="searchIndexBuilder" class="com.amee.platform.search.SearchIndexBuilder"/>
 

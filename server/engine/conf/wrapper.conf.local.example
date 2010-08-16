@@ -1,13 +1,16 @@
+#encoding=UTF-8
+# Configuration files must begin with a line specifying the encoding of the the file.
+
 # JAVA_HOME
 set.default.JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 set.JDK_HOME=%JAVA_HOME%
 
 # Java Library Path
-wrapper.java.library.path.1=%LIB_HOME%/wrapper/macosx-universal-64
+wrapper.java.library.path.1=%LIB_HOME%/wrapper/macosx-x86-64
 
 # AMEE_SERVER_NAME
 set.AMEE_SERVER_NAME=localhost
-set.AMEE_INSTANCE_NAME=local_api
+set.AMEE_INSTANCE_NAME=local
 
 # Log levels
 set.LOG_LEVEL=DEBUG
@@ -15,14 +18,17 @@ set.DEFAULT_LOG_LEVEL=INFO
 
 # Extra Java Parameters
 wrapper.java.additional.100=-Xdebug
-wrapper.java.additional.101=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5008
+wrapper.java.additional.101=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
 wrapper.java.additional.102=-Dcom.sun.management.jmxremote.port=9990
 wrapper.java.additional.103=-Dcom.sun.management.jmxremote.authenticate=false
 wrapper.java.additional.104=-Dcom.sun.management.jmxremote.ssl=false
-wrapper.java.additional.205=-XX:+PrintGCDetails
+wrapper.java.additional.105=-XX:+PrintGCDetails
+
+# Scheduler
+set.AUTO_START_SCHEDULER=true
 
 # Host names
-set.HOST_NAME=local-platform-api.amee.com
+set.HOST_NAME=platform-api-local.amee.com
 
 # PROTOCOL
 set.PROTOCOL=ajp
@@ -32,14 +38,16 @@ set.PORT=8040
 
 # Memory sizing
 wrapper.java.initmemory=256
-wrapper.java.maxmemory=512
+wrapper.java.maxmemory=1024
 
 # Database
 set.DB_USERNAME=amee
 set.DB_PSWD=amee
-set.DB_URL=mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false
-set.DB_DRIVER=net.sf.log4jdbc.DriverSpy
+set.DB_HOST=localhost
+set.DB_NAME=amee
 set.DB_URL_PREFIX=jdbc:log4jdbc
+set.DB_URL=mysql://%DB_HOST%:3306/%DB_NAME%?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false
+set.DB_DRIVER=net.sf.log4jdbc.DriverSpy
 set.VALIDATION_QUERY=SELECT 1 FROM DUAL
 
 # Search index.
@@ -48,17 +56,17 @@ set.INDEX_DATA_CATEGORIES=false
 set.INDEX_DATA_ITEMS=false
 
 # The master server where all updates to the Lucene index happen. There can be only one.
-set.MASTER_INDEX=false
+set.MASTER_INDEX=true
 
 # The license.
 wrapper.license.type=NODE
-wrapper.license.id=201005210018
+wrapper.license.id=201006210016
 wrapper.license.licensee=AMEE UK (Diggory Briercliffe)
-wrapper.license.host_id=0026b0eab692
+wrapper.license.host_id=58b035f5ef33
 wrapper.license.features=pro, 64bit, test
 wrapper.license.upgrade_term.begin_date=2010-05-21
 wrapper.license.upgrade_term.end_date=2011-05-21
-wrapper.license.key.1=1d37-de0f-7d1e-97ff
-wrapper.license.key.2=f733-c547-1981-baef
-wrapper.license.key.3=3279-3d7d-e8b4-91d6
-wrapper.license.key.4=ebb3-6c01-8e47-886c
+wrapper.license.key.1=b586-efcd-e14e-9559
+wrapper.license.key.2=eac7-487d-e8cf-86d1
+wrapper.license.key.3=e8dc-9f14-2329-3525
+wrapper.license.key.4=518d-daff-51f6-a0bf

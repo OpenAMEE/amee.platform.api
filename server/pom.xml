@@ -14,14 +14,14 @@
     <properties>
         <!-- Internal Versions. -->
         <amee-platform-api.version>3.0</amee-platform-api.version>
-        <amee-base.version>1.0.3</amee-base.version>
-        <amee-persist.version>1.0.5</amee-persist.version>
-        <amee-messaging.version>1.0.3</amee-messaging.version>
+        <amee-base.version>1.0.4-SNAPSHOT</amee-base.version>
+        <amee-persist.version>1.0.6-SNAPSHOT</amee-persist.version>
+        <amee-messaging.version>1.0.4-SNAPSHOT</amee-messaging.version>
         <amee-platform-science.version>1.0.9</amee-platform-science.version>
-        <amee-platform-domain.version>1.0.5</amee-platform-domain.version>
-        <amee-platform-service.version>1.0.7</amee-platform-service.version>
-        <amee-platform-resource.version>1.0.7</amee-platform-resource.version>
-        <amee-restlet.version>1.0.5</amee-restlet.version>
+        <amee-platform-domain.version>1.0.6-SNAPSHOT</amee-platform-domain.version>
+        <amee-platform-service.version>1.0.8-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-resource.version>1.0.8-SNAPSHOT</amee-platform-resource.version>
+        <amee-restlet.version>1.0.6-SNAPSHOT</amee-restlet.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
@@ -51,10 +51,9 @@
         <restlet.version>1.1.10</restlet.version>
         <slf4j.version>1.5.11</slf4j.version>
         <spring.version>3.0.2.RELEASE</spring.version>
-        <wrapper.version>3.4.0</wrapper.version>
         <xml-apis.version>1.3.04</xml-apis.version>
         <!-- Paths. -->
-        <amee.home>/var/www/apps/platform-api</amee.home>
+        <amee.home>/var/www/apps/platform-api-local</amee.home>
         <amee.current>${amee.home}/current</amee.current>
         <amee.current.lib>${amee.current}/lib</amee.current.lib>
         <!-- Other. -->
@@ -224,23 +223,26 @@
                         <MESSAGING_SCOPE>live</MESSAGING_SCOPE>
 
                         <!-- AMEE platform -->
+                        <AMEE_APP_NAME>platform-api</AMEE_APP_NAME>
                         <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
                         <AMEE_INSTANCE_NAME>test</AMEE_INSTANCE_NAME>
                         <HOST_NAME>localhost</HOST_NAME>
                         <PROTOCOL>http</PROTOCOL>
                         <PORT>8888</PORT>
-                        
+
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
                         <AMEE_HOME>${basedir}</AMEE_HOME>
                         <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
                         <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
-                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</CACHE_MANAGER_CLASS>
+                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
+                        </CACHE_MANAGER_CLASS>
                     </environmentVariables>
                     <systemPropertyVariables>
 
                         <!-- Hibernate -->
-                        <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider</amee.cacheProviderClass>
+                        <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider
+                        </amee.cacheProviderClass>
                         <amee.useQueryCache>false</amee.useQueryCache>
                         <amee.useSecondLevelCache>false</amee.useSecondLevelCache>
                         <amee.hibernateDialect>org.hibernate.dialect.HSQLDialect</amee.hibernateDialect>
@@ -248,7 +250,7 @@
 
                         <!-- Set this to create to automatically create schema. Required for hsqldb:mem. -->
                         <hibernate.hbm2ddl.auto>create</hibernate.hbm2ddl.auto>
-                        
+
                         <log4j.configuration>test-log4j.xml</log4j.configuration>
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
@@ -257,14 +259,16 @@
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.key</amee.saltFile>
-                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider</org.joda.time.DateTimeZone.Provider>
+                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider
+                        </org.joda.time.DateTimeZone.Provider>
                         <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>
                         <amee.masterIndex>true</amee.masterIndex>
                         <amee.clearIndex>true</amee.clearIndex>
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                     </systemPropertyVariables>
-                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar</argLine>
+                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
+                    </argLine>
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
                         <element>${basedir}/conf</element>
