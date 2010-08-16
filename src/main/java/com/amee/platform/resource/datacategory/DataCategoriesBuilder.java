@@ -57,10 +57,10 @@ public class DataCategoriesBuilder implements ResourceBuilder {
     protected void handle(
             RequestWrapper requestWrapper,
             DataCategoryFilter filter) {
-
+        // Setup Renderer.
         DataCategoriesRenderer renderer = getDataCategoriesRenderer(requestWrapper);
         renderer.start();
-
+        // Add Data Categories to Renderer.
         ResultsWrapper<DataCategory> resultsWrapper = searchService.getDataCategories(filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
         for (DataCategory dataCategory : resultsWrapper.getResults()) {
