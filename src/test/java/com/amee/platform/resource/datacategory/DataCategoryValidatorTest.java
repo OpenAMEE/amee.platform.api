@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.category;
+package com.amee.platform.resource.datacategory;
 
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.DataCategory;

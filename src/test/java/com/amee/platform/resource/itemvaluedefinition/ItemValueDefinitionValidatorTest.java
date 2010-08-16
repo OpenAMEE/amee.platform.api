@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.definition;
+package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.ItemValueDefinition;

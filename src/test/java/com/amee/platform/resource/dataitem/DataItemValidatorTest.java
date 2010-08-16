@@ -1,4 +1,4 @@
-package com.amee.platform.service.v3.item;
+package com.amee.platform.resource.dataitem;
 
 import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
