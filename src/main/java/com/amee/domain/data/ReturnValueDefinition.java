@@ -49,8 +49,8 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
     @Column(name = "PER_UNIT")
     private String perUnit;
 
-    @Column(name = "IS_DEFAULT")
-    private boolean isDefault;
+    @Column(name = "DEFAULT_TYPE")
+    private boolean defaultType;
 
     public ReturnValueDefinition() {
         super();
@@ -74,24 +74,24 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
         return (unit != null) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setUnit(AmountUnit unit) {
+        this.unit = unit.toString();
     }
 
     public AmountPerUnit getPerUnit() {
         return (perUnit != null) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
-    public void setPerUnit(String perUnit) {
-        this.perUnit = perUnit;
+    public void setPerUnit(AmountPerUnit perUnit) {
+        this.perUnit = perUnit.toString();
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public boolean isDefaultType() {
+        return defaultType;
     }
 
-    public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
+    public void setDefaultType(boolean isDefault) {
+        this.defaultType = isDefault;
     }
 
     public ItemDefinition getItemDefinition() {
