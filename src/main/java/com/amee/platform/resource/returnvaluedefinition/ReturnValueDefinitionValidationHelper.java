@@ -1,9 +1,11 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.base.validation.ValidationHelper;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.PerUnitEditor;
 import com.amee.platform.resource.UnitEditor;
+import com.amee.platform.resource.ValueDefinitionEditor;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class ReturnValueDefinitionValidationHelper extends ValidationHelper {
     @Autowired
     private ReturnValueDefinitionValidator returnValueDefinitionValidator;
 
+    @Autowired
+    private ValueDefinitionEditor valueDefinitionEditor;
+
     private ReturnValueDefinition returnValueDefinition;
     private Set<String> allowedFields;
 
@@ -29,6 +34,7 @@ public class ReturnValueDefinitionValidationHelper extends ValidationHelper {
     protected void registerCustomEditors(DataBinder dataBinder) {
         dataBinder.registerCustomEditor(AmountUnit.class, "unit", new UnitEditor());
         dataBinder.registerCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
+        dataBinder.registerCustomEditor(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
     }
 
     @Override
@@ -54,6 +60,7 @@ public class ReturnValueDefinitionValidationHelper extends ValidationHelper {
             allowedFields.add("unit");
             allowedFields.add("perUnit");
             allowedFields.add("defaultType");
+            allowedFields.add("valueDefinition");
         }
         return allowedFields.toArray(new String[]{});
     }

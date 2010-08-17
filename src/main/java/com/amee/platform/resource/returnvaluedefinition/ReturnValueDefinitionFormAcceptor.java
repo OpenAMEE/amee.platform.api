@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.0.0")
 public class ReturnValueDefinitionFormAcceptor extends ReturnValueDefinitionAcceptor {
 
     @Autowired
