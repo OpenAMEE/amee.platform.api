@@ -67,32 +67,29 @@ public class ReturnValueDefinitionValidatorTest {
         assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));        
     }
 
-//    @Test
-//    public void testUnitGreaterThanMax() {
-//        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
-//        ReturnValueDefinition bad = new ReturnValueDefinition();
-//        BindException errorsBad = new BindException(bad, "bad");
-//
-//        bad.setType("CO2");
-//        String unitGreaterThanMax = RandomStringUtils.random(ReturnValueDefinition.UNIT_MAX_SIZE + 1);
-//        bad.setUnit(unitGreaterThanMax);
-//
-//        validator.validate(bad, errorsBad);
-//        assertTrue("Object should fail validation", errorsBad.hasErrors());
-//        assertTrue("'unit' field should be in error", errorsBad.hasFieldErrors("unit"));
-//    }
-//
-//    @Test
-//    public void testUnitBadChars() {
-//        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
-//        ReturnValueDefinition bad = new ReturnValueDefinition();
-//        BindException errorsBad = new BindException(bad, "bad");
-//
-//        bad.setType("CO2");
-//        bad.setUnit("!!!!");
-//
-//        validator.validate(bad, errorsBad);
-//        assertTrue("Object should fail validation", errorsBad.hasErrors());
-//        assertTrue("'unit' field should be in error", errorsBad.hasFieldErrors("unit"));
-//    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidUnit() {
+        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinition bad = new ReturnValueDefinition();
+        BindException errorsBad = new BindException(bad, "bad");
+
+        bad.setType("CO2");
+        bad.setUnit(AmountUnit.valueOf("NOT_A_UNIT"));
+        bad.setPerUnit(AmountPerUnit.valueOf("month"));
+
+        validator.validate(bad, errorsBad);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidPerUnit() {
+        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinition bad = new ReturnValueDefinition();
+        BindException errorsBad = new BindException(bad, "bad");
+
+        bad.setType("CO2");
+        bad.setUnit(AmountUnit.valueOf("kg"));
+        bad.setPerUnit(AmountPerUnit.valueOf("NOT_A_PER_UNIT"));
+
+        validator.validate(bad, errorsBad);
+    }
 }

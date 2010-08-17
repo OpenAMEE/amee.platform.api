@@ -12,7 +12,6 @@ public class ReturnValueDefinitionValidator extends BaseValidator {
 
     // Alpha numerics & underscore.
     private final static String TYPE_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
-    private final static String UNIT_PATTERN_STRING = TYPE_PATTERN_STRING;
 
     public ReturnValueDefinitionValidator() {
         super();
@@ -37,19 +36,13 @@ public class ReturnValueDefinitionValidator extends BaseValidator {
     private void addUnit() {
         add(new ValidationSpecification()
                 .setName("unit")
-                .setMinSize(ReturnValueDefinition.UNIT_MIN_SIZE)
-                .setMaxSize(ReturnValueDefinition.UNIT_MAX_SIZE)
-                .setFormat(UNIT_PATTERN_STRING)
-                .setAllowEmpty(true)
+                .setAllowEmpty(true)                
         );
     }
 
     private void addPerUnit() {
         add(new ValidationSpecification()
                 .setName("perUnit")
-                .setMinSize(ReturnValueDefinition.PER_UNIT_MIN_SIZE)
-                .setMaxSize(ReturnValueDefinition.PER_UNIT_MAX_SIZE)
-                .setFormat(UNIT_PATTERN_STRING)
                 .setAllowEmpty(true)
         );
     }

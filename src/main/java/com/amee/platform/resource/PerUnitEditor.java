@@ -7,10 +7,10 @@ public class PerUnitEditor extends PropertyEditorSupport {
 
     @Override
     public void setAsText(String text) {
-        if (text != null) {
+        if (!text.isEmpty()) {
             setValue(AmountPerUnit.valueOf(text));
         } else {
-            throw new IllegalArgumentException("value was null");
+            setValue(AmountPerUnit.ONE);
         }
     }
 }
