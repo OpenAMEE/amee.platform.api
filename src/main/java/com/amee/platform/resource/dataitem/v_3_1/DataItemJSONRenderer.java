@@ -40,7 +40,6 @@ public class DataItemJSONRenderer implements DataItemRenderer {
 
     public void addBasic() {
         put(dataItemObj, "uid", dataItem.getUid());
-        put(dataItemObj, "type", dataItem.getObjectType().getName());
     }
 
     public void addName() {

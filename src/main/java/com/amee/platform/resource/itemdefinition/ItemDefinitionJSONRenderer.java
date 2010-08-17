@@ -42,7 +42,13 @@ public class ItemDefinitionJSONRenderer implements ItemDefinitionRenderer {
     @Override
     public void addBasic() {
         put(itemDefinitionObj, "uid", itemDefinition.getUid());
-        put(itemDefinitionObj, "type", itemDefinition.getObjectType().getName());
+    }
+
+    @Override
+    public void addAudit() {
+        put(itemDefinitionObj, "status", itemDefinition.getStatus().getName());
+        put(itemDefinitionObj, "created", DATE_FORMAT.print(itemDefinition.getCreated().getTime()));
+        put(itemDefinitionObj, "modified", DATE_FORMAT.print(itemDefinition.getModified().getTime()));
     }
 
     @Override

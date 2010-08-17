@@ -37,7 +37,6 @@ public class DataCategoryJSONRenderer implements DataCategoryRenderer {
 
     public void addBasic() {
         put(dataCategoryObj, "uid", dataCategory.getUid());
-        put(dataCategoryObj, "type", dataCategory.getObjectType().getName());
         put(dataCategoryObj, "name", dataCategory.getName());
         put(dataCategoryObj, "wikiName", dataCategory.getWikiName());
     }

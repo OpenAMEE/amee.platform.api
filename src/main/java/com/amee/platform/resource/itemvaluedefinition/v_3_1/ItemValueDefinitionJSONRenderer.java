@@ -44,7 +44,6 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
     @Override
     public void addBasic() {
         put(itemValueDefinitionObj, "uid", itemValueDefinition.getUid());
-        put(itemValueDefinitionObj, "type", itemValueDefinition.getObjectType().getName());
     }
 
     @Override

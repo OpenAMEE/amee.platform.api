@@ -13,6 +13,8 @@ public interface ItemDefinitionRenderer extends Renderer {
 
     public void addBasic();
 
+    public void addAudit();
+
     public void addName();
 
     public void addDrillDown();
