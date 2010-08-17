@@ -230,6 +230,20 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         return Collections.unmodifiableSet(activeItemValueDefinitions);
     }
 
+    public Set<ReturnValueDefinition> getReturnValueDefinitions() {
+        return getActiveReturnValueDefinitions();
+    }
+
+    public Set<ReturnValueDefinition> getActiveReturnValueDefinitions() {
+        Set<ReturnValueDefinition> activeReturnValueDefinitions = new HashSet<ReturnValueDefinition>();
+        for (ReturnValueDefinition returnValueDefinition : returnValueDefinitions) {
+            if (!returnValueDefinition.isTrash()) {
+                activeReturnValueDefinitions.add(returnValueDefinition);
+            }
+        }
+        return Collections.unmodifiableSet(activeReturnValueDefinitions);
+    }
+
     public ObjectType getObjectType() {
         return ObjectType.ID;
     }
