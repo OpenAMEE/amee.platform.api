@@ -15,7 +15,7 @@ public enum ValueUsageType implements Serializable {
     // Hibernate has mapped them to ordinal values.
     // Any new values must be appended to the list.
     UNDEFINED("UNDEFINED", "Undefined"),
-    REQUIRED("REQUIRED", "Required"),
+    COMPULSORY("COMPULSORY", "Compulsory"),
     FORBIDDEN("FORBIDDEN", "Forbidden"),
     OPTIONAL("OPTIONAL", "Optional"),
     IGNORED("IGNORED", "Ignored");
