@@ -6,13 +6,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ItemValueUsage implements Serializable {
 
     public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
+
+    private final static Comparator<ItemValueUsage> COMPARATOR_BY_NAME =
+            new Comparator<ItemValueUsage>() {
+                @Override
+                public int compare(ItemValueUsage left, ItemValueUsage right) {
+                    return left.getName().compareTo(right.getName());
+                }
+            };
 
     private String name = "";
     private ValueUsageType type = ValueUsageType.UNDEFINED;
@@ -75,6 +84,10 @@ public class ItemValueUsage implements Serializable {
         return getName();
     }
 
+    public static Comparator<ItemValueUsage> getComparatorByName() {
+        return COMPARATOR_BY_NAME;
+    }
+
     public static JSONArray serialize(Set<ItemValueUsage> itemValueUsages) {
         try {
             JSONArray arr = new JSONArray();
@@ -92,7 +105,7 @@ public class ItemValueUsage implements Serializable {
     }
 
     public static Set<ItemValueUsage> deserialize(JSONArray itemValueUsageArr) {
-        Set<ItemValueUsage> itemValueUsages = new HashSet<ItemValueUsage>();
+        Set<ItemValueUsage> itemValueUsages = new TreeSet<ItemValueUsage>(getComparatorByName());
         if (itemValueUsageArr != null) {
             for (int i = 0; i < itemValueUsageArr.length(); i++) {
                 try {
