@@ -315,7 +315,28 @@
         <!--</property>-->
     </bean>
 
-    <!-- TODO: returnValueDefinitionsResource -->
+    <bean id="returnValueDefinitionsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="true"/>
+        <property name="attributeNames">
+            <set>
+                <value>itemDefinitionIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsBuilder"/>
+            </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsFormAcceptor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
     <bean id="returnValueDefinitionResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
