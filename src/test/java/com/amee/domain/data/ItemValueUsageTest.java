@@ -22,24 +22,24 @@ public class ItemValueUsageTest {
         assertEquals("Two identically named ItemValueUsages should be equal.",
                 new ItemValueUsage("a_name"), new ItemValueUsage("a_name"));
         assertEquals("Two identically named & typed ItemValueUsages should be equal.",
-                new ItemValueUsage("a_name", ValueUsageType.REQUIRED), new ItemValueUsage("a_name", ValueUsageType.REQUIRED));
+                new ItemValueUsage("a_name", ValueUsageType.COMPULSORY), new ItemValueUsage("a_name", ValueUsageType.COMPULSORY));
         assertEquals("Two identically named but differently typed ItemValueUsages should be equal.",
-                new ItemValueUsage("a_name", ValueUsageType.REQUIRED), new ItemValueUsage("a_name", ValueUsageType.OPTIONAL));
+                new ItemValueUsage("a_name", ValueUsageType.COMPULSORY), new ItemValueUsage("a_name", ValueUsageType.OPTIONAL));
         assertFalse("Two differently named ItemValueUsages should not be equal.",
                 new ItemValueUsage("a_name").equals(new ItemValueUsage("a_different_name")));
         assertFalse("Two differently named & typed ItemValueUsages should not be equal.",
-                new ItemValueUsage("a_name", ValueUsageType.REQUIRED).equals(new ItemValueUsage("a_different_name", ValueUsageType.OPTIONAL)));
+                new ItemValueUsage("a_name", ValueUsageType.COMPULSORY).equals(new ItemValueUsage("a_different_name", ValueUsageType.OPTIONAL)));
         assertFalse("Two differently named but identically typed ItemValueUsages should not be equal.",
-                new ItemValueUsage("a_name", ValueUsageType.REQUIRED).equals(new ItemValueUsage("a_different_name", ValueUsageType.REQUIRED)));
+                new ItemValueUsage("a_name", ValueUsageType.COMPULSORY).equals(new ItemValueUsage("a_different_name", ValueUsageType.COMPULSORY)));
     }
 
     @Test
     public void canParseCorrectItemValueUsageJSON() {
         try {
-            JSONObject itemValueUsageObj = new JSONObject().put("name", "usage").put("type", ValueUsageType.REQUIRED.toString());
+            JSONObject itemValueUsageObj = new JSONObject().put("name", "usage").put("type", ValueUsageType.COMPULSORY.toString());
             ItemValueUsage itemValueUsage = new ItemValueUsage(itemValueUsageObj);
             assertTrue("New ItemValueUsage should have correct name.", itemValueUsage.getName().equalsIgnoreCase("usage"));
-            assertTrue("New ItemValueUsage should have correct type.", itemValueUsage.getType().equals(ValueUsageType.REQUIRED));
+            assertTrue("New ItemValueUsage should have correct type.", itemValueUsage.getType().equals(ValueUsageType.COMPULSORY));
         } catch (IllegalArgumentException e) {
             fail("Should not throw IllegalArgumentException: " + e.getMessage());
         } catch (JSONException e) {
@@ -51,7 +51,7 @@ public class ItemValueUsageTest {
     public void canParseCorrectItemValueUsagesJSON() {
         try {
             JSONArray arr = new JSONArray();
-            arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.REQUIRED.toString()));
+            arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.COMPULSORY.toString()));
             arr.put(new JSONObject().put("name", "usage2").put("type", ValueUsageType.FORBIDDEN.toString()));
             arr.put(new JSONObject().put("name", "usage3").put("type", ValueUsageType.OPTIONAL.toString()));
             Set<ItemValueUsage> itemValueUsages = ItemValueUsage.deserialize(arr);
@@ -67,7 +67,7 @@ public class ItemValueUsageTest {
     public void canParseIncorrectItemValueUsagesJSON() {
         try {
             JSONArray arr = new JSONArray();
-            arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.REQUIRED.toString()));
+            arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.COMPULSORY.toString()));
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.FORBIDDEN.toString()));
             arr.put(new JSONObject().put("name", "usage1").put("type", ValueUsageType.OPTIONAL.toString()));
             ItemValueUsage.deserialize(arr);

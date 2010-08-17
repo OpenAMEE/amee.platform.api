@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class ItemValueDefinitionTest {
 
     public final static String MOCK_CONFIGURATION_WITH_USAGES =
-            "{\"usages\":[{\"name\":\"usage_1\",\"type\":\"required\"},{\"name\":\"usage_2\",\"type\":\"optional\"}]}";
+            "{\"usages\":[{\"name\":\"usage_1\",\"type\":\"compulsory\"},{\"name\":\"usage_2\",\"type\":\"optional\"}]}";
 
     private IMetadataService mockMetadataService;
     private ItemValueDefinition itemValueDef;
