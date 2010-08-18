@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue
 
 class ItemValueDefinitionIT extends BaseApiTest {
 
+  // TODO: 3.0 tests.
+
   @Test
   @Ignore("Item Value Definition POST not implemented in API")
   void createItemValueDefinition() {

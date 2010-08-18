@@ -6,10 +6,8 @@ import static org.junit.Assert.*
 
 class ItemDefinitionIT extends BaseApiTest {
 
-  // This starts off as 2 but will change in updateItemDefinition.
-  def expectedUsagesCount = 2;
-  def expectedUsageNames = ['usage1', 'usage2'];
-  def expectedUsagePresents = ['false', 'true'];
+  def static expectedUsageNames = ['usage1', 'usage2'];
+  def static expectedUsagePresents = ['false', 'true'];
 
   @Test
   @Ignore("Item Definition POST not implemented in API")
@@ -37,7 +35,7 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.status;
     assertEquals 'Computers Generic', response.data.itemDefinition.name;
     assertEquals 'device,rating', response.data.itemDefinition.drillDown;
-    assertEquals expectedUsagesCount, response.data.itemDefinition.usages.size();
+    assertEquals expectedUsageNames.size(), response.data.itemDefinition.usages.size();
     assert expectedUsageNames == response.data.itemDefinition.usages.collect {it.name};
     assert expectedUsagePresents == response.data.itemDefinition.usages.collect {it.present};
   }
@@ -53,7 +51,7 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.ItemDefinition.Name.text();
     assertEquals 'device,rating', response.data.ItemDefinition.DrillDown.text();
     def allUsages = response.data.ItemDefinition.Usages.Usage;
-    assertEquals expectedUsagesCount, allUsages.size();
+    assertEquals expectedUsageNames.size(), allUsages.size();
     assertTrue(expectedUsageNames == allUsages.Name*.text());
     assertTrue(expectedUsagePresents == allUsages.@present*.text());
   }
@@ -70,9 +68,8 @@ class ItemDefinitionIT extends BaseApiTest {
             contentType: JSON);
     assertEquals 201, responsePut.status;
     // We added a usage.
-    expectedUsagesCount++;
-    expectedUsageNames = ['usage1', 'usage2', 'usage3'];
-    expectedUsagePresents = ['false', 'true', 'true'];
+    expectedUsageNames[2] = 'usage3';
+    expectedUsagePresents[2] = 'true';
     // 2) Check values have been updated.
     client.contentType = JSON;
     def responseGet = client.get(path: '/3.1/definitions/11D3548466F2;full');
@@ -82,7 +79,7 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'OK', responseGet.data.status;
     assertEquals 'newName', responseGet.data.itemDefinition.name;
     assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown;
-    assertEquals expectedUsagesCount, responseGet.data.itemDefinition.usages.size();
+    assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size();
     assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name});
     assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present});
   }
