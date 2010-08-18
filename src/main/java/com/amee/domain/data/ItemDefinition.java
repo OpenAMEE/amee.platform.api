@@ -20,7 +20,11 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.*;
+import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.APIVersion;
+import com.amee.domain.ILocaleService;
+import com.amee.domain.Metadata;
+import com.amee.domain.ObjectType;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
@@ -35,8 +39,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "ITEM_DEFINITION")
@@ -278,6 +294,10 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
      */
     public String getUsagesString() {
         return getMetadataValue("usages");
+    }
+
+    public void setUsagesString(String usages) {
+        setUsages(usages);
     }
 
     /**
