@@ -1,5 +1,6 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
+import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import org.json.JSONException;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
+@Since("3.1.0")
 public class ReturnValueDefinitionJSONRenderer implements ReturnValueDefinitionRenderer {
 
     private ReturnValueDefinition returnValueDefinition;

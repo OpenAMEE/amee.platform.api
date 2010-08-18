@@ -1,8 +1,6 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.base.domain.Since;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionRenderer;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsRenderer;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.context.annotation.Scope;
@@ -10,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
+@Since("3.1.0")
 public class ReturnValueDefinitionsDOMRenderer implements ReturnValueDefinitionsRenderer {
 
     private Element rootElem;
@@ -27,7 +26,7 @@ public class ReturnValueDefinitionsDOMRenderer implements ReturnValueDefinitions
 
     public void newReturnValueDefinition(ReturnValueDefinitionRenderer returnValueDefinitionRenderer) {
         returnValueDefinitionsElem.addContent(
-            ((Document) returnValueDefinitionRenderer.getObject()).getRootElement().getChild("ReturnValueDefinition").detach());
+                ((Document) returnValueDefinitionRenderer.getObject()).getRootElement().getChild("ReturnValueDefinition").detach());
     }
 
     public String getMediaType() {

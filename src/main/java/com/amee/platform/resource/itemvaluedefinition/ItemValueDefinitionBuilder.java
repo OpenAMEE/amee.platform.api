@@ -1,5 +1,6 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
+import com.amee.base.domain.Since;
 import com.amee.base.resource.*;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
+@Since("3.0.0")
 public class ItemValueDefinitionBuilder implements ResourceBuilder {
 
     @Autowired
