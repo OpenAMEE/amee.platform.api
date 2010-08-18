@@ -46,7 +46,7 @@ public class ReturnValueDefinitionBuilder implements ResourceBuilder {
                 String returnValueDefinitionIdentifier = requestWrapper.getAttributes().get("returnValueDefinitionIdentifier");
                 if (returnValueDefinitionIdentifier != null) {
                     // Get ReturnValueDefinition.
-                    ReturnValueDefinition returnValueDefinition = definitionService.getreturnValueDefinitionByUid(
+                    ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(
                             itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
                         // Handle the ReturnValueDefinition.

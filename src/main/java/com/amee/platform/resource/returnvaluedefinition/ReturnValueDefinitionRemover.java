@@ -30,7 +30,7 @@ public class ReturnValueDefinitionRemover implements ResourceRemover {
             if (itemDefinition != null) {
                 String returnValueDefinitionIdentifier = requestWrapper.getAttributes().get("returnValueDefinitionIdentifier");
                 if (returnValueDefinitionIdentifier != null) {
-                    ReturnValueDefinition returnValueDefinition = definitionService.getreturnValueDefinitionByUid(itemDefinition, returnValueDefinitionIdentifier);
+                    ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
                         definitionService.remove(returnValueDefinition);
                         return ResponseHelper.getOK(requestWrapper);
