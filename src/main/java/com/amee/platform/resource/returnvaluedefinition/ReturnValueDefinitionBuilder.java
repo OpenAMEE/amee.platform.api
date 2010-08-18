@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.1.0")
 public class ReturnValueDefinitionBuilder implements ResourceBuilder {
 
+    // TODO: Include ValueDefinition.
+    // TODO: Add audit (created, modified).
+
     @Autowired
     private EnvironmentService environmentService;
 

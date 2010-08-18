@@ -15,11 +15,10 @@ import java.beans.PropertyEditorSupport;
 public class ValueDefinitionEditor extends PropertyEditorSupport {
 
     @Autowired
-    DefinitionService definitionService;
+    private DefinitionService definitionService;
 
     @Autowired
-    EnvironmentService environmentService;
-    
+    private EnvironmentService environmentService;
 
     @Override
     public void setAsText(String text) {

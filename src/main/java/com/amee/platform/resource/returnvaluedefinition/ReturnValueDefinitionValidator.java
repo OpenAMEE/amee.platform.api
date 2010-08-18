@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 @Scope("prototype")
 public class ReturnValueDefinitionValidator extends BaseValidator {
 
+    // TODO: If defaultType is set to true then no other peer RVD should have defaultType set to true.
+
     // Alpha numerics & underscore.
     private final static String TYPE_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
@@ -36,7 +38,7 @@ public class ReturnValueDefinitionValidator extends BaseValidator {
     private void addUnit() {
         add(new ValidationSpecification()
                 .setName("unit")
-                .setAllowEmpty(true)                
+                .setAllowEmpty(true)
         );
     }
 
