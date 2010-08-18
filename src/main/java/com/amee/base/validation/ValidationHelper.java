@@ -131,6 +131,7 @@ public abstract class ValidationHelper {
         validationResult.setErrors(getErrors());
         // Add the values.
         // NOTE: This is not required and was commented out 2010/08/18 by DB. Left here for reference.
+        // NOTE: https://jira.amee.com/browse/PL-3275
         // for (String field : getAllowedFields()) {
         //     Object value = getErrors().getFieldValue(field);
         //     if ((value != null) && (value instanceof String)) {
