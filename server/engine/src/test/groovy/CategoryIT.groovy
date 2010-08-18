@@ -28,10 +28,10 @@ class CategoryIT extends BaseApiTest {
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
-        assertEquals uids.size(), response.data.categories.size()
-        assert uids == response.data.categories.collect {it.uid}
-        assert names == response.data.categories.collect {it.name}
-        assert wikiNames == response.data.categories.collect {it.wikiName}
+        assertEquals categoryUids.size(), response.data.categories.size()
+        assert categoryUids == response.data.categories.collect {it.uid}
+        assert categoryNames == response.data.categories.collect {it.name}
+        assert categoryWikiNames == response.data.categories.collect {it.wikiName}
     }
 
     @Test
@@ -44,10 +44,10 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'false', response.data.Categories.@truncated.text()
 
         def allCategories = response.data.Categories.Category
-        assertEquals uids.size(), allCategories.size()
-        assert uids == allCategories.@uid*.text()
-        assert names == allCategories.Name*.text()
-        assert wikiNames == allCategories.WikiName*.text()
+        assertEquals categoryUids.size(), allCategories.size()
+        assert categoryUids == allCategories.@uid*.text()
+        assert categoryNames == allCategories.Name*.text()
+        assert categoryWikiNames == allCategories.WikiName*.text()
     }
 
     @Test
