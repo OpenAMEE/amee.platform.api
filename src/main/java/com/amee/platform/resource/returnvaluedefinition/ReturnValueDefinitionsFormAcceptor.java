@@ -30,7 +30,11 @@ public class ReturnValueDefinitionsFormAcceptor extends ReturnValueDefinitionsAc
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
             log.debug("handle() Persist ReturnValueDefinition.");
             definitionService.save(returnValueDefinition);
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(
+                    requestWrapper,
+                    "/" + requestWrapper.getVersion() +
+                            "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
+                            "/returnvalues/" + returnValueDefinition.getUid());
         } else {
             throw new ValidationException(validationHelper.getValidationResult());
         }
