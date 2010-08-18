@@ -5,13 +5,12 @@ import static org.junit.Assert.*
 
 class ReturnValueDefinitionIT extends BaseApiTest {
 
-  // TODO: Remover.
-
   def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
   def static returnValueDefinitionTypes = ['co2', 'co2e'];
 
   @Test
   void createReturnValueDefinition() {
+
     // Create a new RVD.
     def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -33,6 +32,33 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'application/json', responseGet.contentType;
     assertTrue responseGet.data instanceof net.sf.json.JSON;
     assertEquals 'OK', responseGet.data.status;
+  }
+
+  @Test
+  void removeReturnValueDefinitionJson() {
+
+    // Create a new RVD.
+    def responsePost = client.post(
+            path: "/3.1/definitions/11D3548466F2/returnvalues",
+            body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status;
+    assertTrue responsePost.headers['Location'] != null;
+    assertTrue responsePost.headers['Location'].value != null;
+    def location = responsePost.headers['Location'].value;
+
+    // Then delete it
+    def responseDelete = client.delete(path: location);
+    assertEquals 200, responseDelete.status;
+
+    // We should get a 404 here
+    try {
+      client.get(path: location);
+      fail 'Should have thrown exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
   }
 
   @Test

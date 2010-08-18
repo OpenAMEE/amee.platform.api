@@ -368,9 +368,12 @@
                 </entry>
             </map>
         </property>
-        <!--<property name="remover">-->
-        <!--<bean class="com.amee.platform.service.v3.definition.ReturnValueDefinitionRemover"/>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionRemover"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Search. -->
