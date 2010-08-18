@@ -147,23 +147,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
   }
 
   @Test
-  void updateReturnValueDefinitionTypeEmpty() {
+  void updateInvalidReturnValueDefinition() {
     updateReturnValueDefinitionFieldJson('type', 'empty', '');
-  }
-
-  @Test
-  void updateReturnValueDefinitionTypeLong() {
     updateReturnValueDefinitionFieldJson('type', 'long', String.randomString(256));
-  }
-
-  @Test
-  void updateReturnValueDefinitionUnitBadTypeMismatch() {
     updateReturnValueDefinitionFieldJson('unit', 'typeMismatch', 'not_a_unit');
-  }
-
-  @Test
-  void updateReturnValueDefinitionPerUnitTypeMismatch() {
     updateReturnValueDefinitionFieldJson('perUnit', 'typeMismatch', 'not_a_per_unit');
+    updateReturnValueDefinitionFieldJson('valueDefinition', 'typeMismatch', 'AAAAAAAAAAAA');
   }
 
   void updateReturnValueDefinitionFieldJson(field, code, value) {
@@ -175,7 +164,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
               body: body,
               requestContentType: URLENC,
               contentType: JSON);
-      fail 'Response status code should have been 400.';
+      fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
     } catch (HttpResponseException e) {
       def response = e.response;
       assertEquals 400, response.status;
