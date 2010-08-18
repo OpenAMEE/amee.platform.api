@@ -219,11 +219,13 @@
                 <entry key="/{itemDefinitionIdentifier}/returnvalues">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="returnValueDefinitionsResource"/>
+                        <property name="since" value="3.1.0"/>
                     </bean>
                 </entry>
                 <entry key="/{itemDefinitionIdentifier}/returnvalues/{returnValueDefinitionIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="returnValueDefinitionResource"/>
+                        <property name="since" value="3.1.0"/>
                     </bean>
                 </entry>
             </map>
@@ -332,7 +334,10 @@
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsFormAcceptor"/>
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsFormAcceptor"/>
+                    </bean>
                 </entry>
             </map>
         </property>
@@ -348,12 +353,18 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionBuilder"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionBuilder"/>
+            </bean>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionFormAcceptor"/>
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionFormAcceptor"/>
+                    </bean>
                 </entry>
             </map>
         </property>
