@@ -12,18 +12,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "RETURN_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ReturnValueDefinition extends AMEEEnvironmentEntity {
+
+    // TODO: Never allow nulls for the values. Encapsulate as with other entities. Provide default values. Protect for NPEs.
+    // TODO: Are the unit size constants required?
 
     public static final int TYPE_MIN_SIZE = 1;
     public static final int TYPE_MAX_SIZE = 255;
