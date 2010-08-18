@@ -5,7 +5,7 @@
     <Usages>
         <Usage>
             <Name>Usage One</Name>
-            <Type>REQUIRED</Type>
+            <Type>COMPULSORY</Type>
         </Usage>
         <Usage>
             <Name>Usage Two</Name>

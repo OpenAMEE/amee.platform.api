@@ -8,7 +8,7 @@ class SearchIT extends BaseApiTest {
     @Test
     void searchJson() {
         client.contentType = JSON
-        def response = client.get(path: '/3/search',
+        def response = client.get(path: '/3.0/search',
             query: ['q': 'cooking'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -20,7 +20,7 @@ class SearchIT extends BaseApiTest {
     @Test
     void searchXml() {
         client.contentType = XML
-        def response = client.get(path: '/3/search',
+        def response = client.get(path: '/3.0/search',
             query: ['q': 'cooking'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType

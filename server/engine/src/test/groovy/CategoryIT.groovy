@@ -12,7 +12,7 @@ class CategoryIT extends BaseApiTest {
     void createCategory() {
         client.contentType = JSON
         def response = client.post(
-            path: '/3/categories/CATEGORY1',
+            path: '/3.0/categories/CATEGORY1',
             body: [wikiName: 'testWikiName'],
             requestContentType: URLENC)
 
@@ -22,7 +22,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void getCategoriesJson() {
         client.contentType = JSON
-        def response = client.get(path: '/3/categories')
+        def response = client.get(path: '/3.0/categories')
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -37,7 +37,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void getCategoriesXml() {
         client.contentType = XML
-        def response = client.get(path: '/3/categories')
+        def response = client.get(path: '/3.0/categories')
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -53,7 +53,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByAuthorityJson() {
         client.contentType = JSON
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['authority': 'enterprise'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -65,7 +65,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByAuthorityXml() {
         client.contentType = XML
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['authority': 'enterprise'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
@@ -78,7 +78,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByTagsJson() {
         client.contentType = JSON
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['tags': 'electrical'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -90,7 +90,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByTagsXml() {
         client.contentType = XML
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['tags': 'electrical'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
@@ -103,7 +103,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByPathJson() {
         client.contentType = JSON
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['fullPath': '/home/appliances/*'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -115,7 +115,7 @@ class CategoryIT extends BaseApiTest {
     @Test
     void filterByPathXml() {
         client.contentType = XML
-        def response = client.get(path: '/3/categories',
+        def response = client.get(path: '/3.0/categories',
             query: ['fullPath': '/home/appliances/*'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
