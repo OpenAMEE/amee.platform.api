@@ -11,10 +11,7 @@ import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Status;
+import org.restlet.data.*;
 import org.restlet.resource.Representation;
 
 import java.io.IOException;
@@ -66,8 +63,10 @@ public class ResourceAcceptManager extends ResourceManager {
     public void handle(JSONObject result) {
         if (isOk(result)) {
             if (getRequest().getMethod().equals(Method.POST)) {
+                handleLocation(result);
                 getResponse().setStatus(Status.SUCCESS_CREATED);
             } else if (getRequest().getMethod().equals(Method.PUT)) {
+                handleLocation(result);
                 getResponse().setStatus(Status.SUCCESS_CREATED);
             } else {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
@@ -98,6 +97,16 @@ public class ResourceAcceptManager extends ResourceManager {
             getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
         } else {
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+        }
+    }
+
+    public void handleLocation(JSONObject result) {
+        try {
+            if (result.has("location")) {
+                getResponse().setLocationRef(new Reference(result.getString("location")));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
     }
 
@@ -138,6 +147,13 @@ public class ResourceAcceptManager extends ResourceManager {
             }
         } else {
             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+        }
+    }
+
+    public void handleLocation(Element result) {
+        String location = result.getChildText("Location");
+        if (location != null) {
+            getResponse().setLocationRef(new Reference(location));
         }
     }
 
