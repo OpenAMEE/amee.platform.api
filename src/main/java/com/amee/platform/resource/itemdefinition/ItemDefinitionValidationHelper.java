@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -41,9 +42,14 @@ public class ItemDefinitionValidationHelper extends ValidationHelper {
             allowedFields = new HashSet<String>();
             allowedFields.add("name");
             allowedFields.add("drillDown");
-            allowedFields.add("usages");
+            allowedFields.add("usagesString");
         }
         return allowedFields.toArray(new String[]{});
+    }
+
+    @Override
+    protected void beforeBind(Map<String, String> values) {
+        this.renameValue(values, "usages", "usagesString");
     }
 
     public ItemDefinition getItemDefinition() {

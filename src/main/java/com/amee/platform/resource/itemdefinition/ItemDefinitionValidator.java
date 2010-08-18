@@ -40,7 +40,7 @@ public class ItemDefinitionValidator extends BaseValidator {
 
     private void addUsages() {
         add(new ValidationSpecification()
-                .setName("usages")
+                .setName("usagesString")
                 .setMinSize(ItemDefinition.USAGES_MIN_SIZE)
                 .setMaxSize(ItemDefinition.USAGES_MAX_SIZE)
                 .setAllowEmpty(true)
