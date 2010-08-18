@@ -16,8 +16,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionsJson() {
-    client.contentType = JSON;
-    def response = client.get(path: '/3.1/definitions/11D3548466F2/values;full');
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/values;full',
+            contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
@@ -27,8 +28,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionsXml() {
-    client.contentType = XML
-    def response = client.get(path: '/3.1/definitions/11D3548466F2/values;full');
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/values;full',
+            contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
@@ -38,8 +40,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionJson() {
-    client.contentType = JSON;
-    def response = client.get(path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full');
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
@@ -59,8 +62,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionXml() {
-    client.contentType = XML
-    def response = client.get(path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full');
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();

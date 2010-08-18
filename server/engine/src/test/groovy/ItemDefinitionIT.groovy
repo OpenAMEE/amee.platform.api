@@ -57,7 +57,7 @@ class ItemDefinitionIT extends BaseApiTest {
   }
 
   @Test
-  void updateItemDefinition() {
+  void updateItemDefinitionJson() {
     // 1) Do the update.
     def responsePut = client.put(
             path: '/3.1/definitions/11D3548466F2',
@@ -71,8 +71,9 @@ class ItemDefinitionIT extends BaseApiTest {
     expectedUsageNames[2] = 'usage3';
     expectedUsagePresents[2] = 'true';
     // 2) Check values have been updated.
-    client.contentType = JSON;
-    def responseGet = client.get(path: '/3.1/definitions/11D3548466F2;full');
+    def responseGet = client.get(
+            path: '/3.1/definitions/11D3548466F2;full',
+            contentType: JSON);
     assertEquals 200, responseGet.status;
     assertEquals 'application/json', responseGet.contentType;
     assertTrue responseGet.data instanceof net.sf.json.JSON;
@@ -86,20 +87,20 @@ class ItemDefinitionIT extends BaseApiTest {
 
   @Test
   void updateItemDefinitionNameEmpty() {
-    updateItemDefinitionField('name', 'empty', '');
+    updateItemDefinitionFieldJson('name', 'empty', '');
   }
 
   @Test
   void updateItemDefinitionNameShort() {
-    updateItemDefinitionField('name', 'short', 'a');
+    updateItemDefinitionFieldJson('name', 'short', 'a');
   }
 
   @Test
   void updateItemDefinitionNameLong() {
-    updateItemDefinitionField('name', 'long', String.randomString(256));
+    updateItemDefinitionFieldJson('name', 'long', String.randomString(256));
   }
 
-  void updateItemDefinitionField(field, code, value) {
+  void updateItemDefinitionFieldJson(field, code, value) {
     try {
       def body = [:];
       body[field] = value;
