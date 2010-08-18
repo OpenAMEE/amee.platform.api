@@ -236,7 +236,7 @@ public class GenericResource extends Resource {
         }
     }
 
-    public void setRemover(ResourceRemover<JSONObject> remover) {
+    public void setRemover(ResourceRemover remover) {
         getRemoveManager().setRemover(remover);
     }
 
