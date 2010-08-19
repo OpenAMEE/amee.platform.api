@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.APIVersion;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -115,6 +116,17 @@ public class ItemValueDefinitionJSONRenderer implements ItemValueDefinitionRende
         put(itemValueDefinitionObj, "drillDown", itemValueDefinition.isDrillDown());
         put(itemValueDefinitionObj, "fromData", itemValueDefinition.isFromData());
         put(itemValueDefinitionObj, "fromProfile", itemValueDefinition.isFromProfile());
+    }
+
+    @Override
+    public void addVersions() {
+        JSONArray versionsArr = new JSONArray();
+        put(itemValueDefinitionObj, "versions", versionsArr);
+        for (APIVersion apiVersion : itemValueDefinition.getAPIVersions()) {
+            JSONObject versionObj = new JSONObject();
+            put(versionObj, "version", apiVersion.getVersion());
+            versionsArr.put(versionObj);
+        }
     }
 
     protected JSONObject put(JSONObject o, String key, Object value) {

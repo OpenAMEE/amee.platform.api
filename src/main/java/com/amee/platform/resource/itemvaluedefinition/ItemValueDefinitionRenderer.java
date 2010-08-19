@@ -34,5 +34,7 @@ public interface ItemValueDefinitionRenderer extends Renderer {
 
     public void addUnits();
 
+    public void addVersions();
+
     public Object getObject();
 }

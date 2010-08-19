@@ -36,4 +36,9 @@ public class ItemValueDefinitionDOMRenderer extends com.amee.platform.resource.i
     public void addFlags() {
         // Not in 3.0.
     }
+
+    @Override
+    public void addVersions() {
+        // Not in 3.0.
+    }
 }

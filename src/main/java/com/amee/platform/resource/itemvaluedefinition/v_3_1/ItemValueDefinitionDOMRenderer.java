@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.APIVersion;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -114,6 +115,17 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
         itemValueDefinitionElem.addContent(new Element("DrillDown").setText(Boolean.toString(itemValueDefinition.isDrillDown())));
         itemValueDefinitionElem.addContent(new Element("FromData").setText(Boolean.toString(itemValueDefinition.isFromData())));
         itemValueDefinitionElem.addContent(new Element("FromProfile").setText(Boolean.toString(itemValueDefinition.isFromProfile())));
+    }
+
+    @Override
+    public void addVersions() {
+        Element versionsElem = new Element("Versions");
+        itemValueDefinitionElem.addContent(versionsElem);
+        for (APIVersion apiVersion : itemValueDefinition.getAPIVersions()) {
+            Element versionElem = new Element("Version");
+            versionElem.addContent(new Element("Version").setText(apiVersion.getVersion()));
+            versionsElem.addContent(versionElem);
+        }
     }
 
     public String getMediaType() {

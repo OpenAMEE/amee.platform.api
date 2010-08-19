@@ -83,6 +83,7 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
         boolean choices = requestWrapper.getMatrixParameters().containsKey("choices");
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
         boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
+        boolean versions = requestWrapper.getMatrixParameters().containsKey("versions");
 
         // New ItemValueDefinition & basic.
         renderer.newItemValueDefinition(itemValueDefinition);
@@ -119,6 +120,9 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
         }
         if (flags || full) {
             renderer.addFlags();
+        }
+        if (versions || full) {
+            renderer.addVersions();
         }
     }
 
