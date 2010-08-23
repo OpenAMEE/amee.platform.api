@@ -116,8 +116,10 @@ public class ResourceAcceptManager extends ResourceManager {
             String status = result.getChild("Status").getValue();
             if (status.equals("OK")) {
                 if (getRequest().getMethod().equals(Method.POST)) {
+                    handleLocation(result);
                     getResponse().setStatus(Status.SUCCESS_CREATED);
                 } else if (getRequest().getMethod().equals(Method.PUT)) {
+                    handleLocation(result);
                     getResponse().setStatus(Status.SUCCESS_CREATED);
                 } else {
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
