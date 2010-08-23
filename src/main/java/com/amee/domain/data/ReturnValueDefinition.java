@@ -114,7 +114,7 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
 
     @Override
     public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
+        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
     }
 
     public AmountCompoundUnit getCompoundUnit() {

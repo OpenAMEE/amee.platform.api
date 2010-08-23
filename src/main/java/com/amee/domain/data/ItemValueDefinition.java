@@ -129,7 +129,7 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
 
     @Override
     public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
+        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
     }
 
     public ItemValueDefinition(ItemDefinition itemDefinition) {
