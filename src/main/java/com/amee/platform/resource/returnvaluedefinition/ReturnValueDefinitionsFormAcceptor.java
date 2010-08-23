@@ -30,6 +30,7 @@ public class ReturnValueDefinitionsFormAcceptor extends ReturnValueDefinitionsAc
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
             log.debug("handle() Persist ReturnValueDefinition.");
             definitionService.save(returnValueDefinition);
+            definitionService.invalidate(returnValueDefinition.getItemDefinition());
             return ResponseHelper.getOK(
                     requestWrapper,
                     "/" + requestWrapper.getVersion() +

@@ -44,8 +44,12 @@ public class ItemValueDefinitionDOMAcceptor extends com.amee.platform.resource.i
             // Update the ItemValueDefinition and validate. 
             itemValueDefinitionValidationHelper.setItemValueDefinition(itemValueDefinition);
             if (itemValueDefinitionValidationHelper.isValid(parameters)) {
-                // Validation passed.
+                // ItemValueDefinition validation passed.
+                // Handle and validate ItemValueUsages.
                 handleItemValueUsages(rootElem, itemValueDefinition);
+                // ItemValueUsages validation passed.
+                // Invalidate and return a response.
+                definitionService.invalidate(itemValueDefinition.getItemDefinition());
                 return ResponseHelper.getOK(requestWrapper);
             } else {
                 // Validation failed.

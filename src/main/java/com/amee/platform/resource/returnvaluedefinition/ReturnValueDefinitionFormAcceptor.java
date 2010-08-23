@@ -20,6 +20,7 @@ public class ReturnValueDefinitionFormAcceptor extends ReturnValueDefinitionAcce
     protected Object handle(RequestWrapper requestWrapper, ReturnValueDefinition returnValueDefinition) {
         validationHelper.setReturnValueDefinition(returnValueDefinition);
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+            definitionService.invalidate(returnValueDefinition.getItemDefinition());
             return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validationHelper.getValidationResult());

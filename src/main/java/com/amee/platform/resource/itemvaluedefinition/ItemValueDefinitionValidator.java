@@ -47,7 +47,7 @@ public class ItemValueDefinitionValidator extends BaseValidator {
                         ItemValueDefinition itemValueDefinition = (ItemValueDefinition) o;
                         if (itemValueDefinition.getItemDefinition() != null) {
                             for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
-                                if ((itemValueDefinition != ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
+                                if (!itemValueDefinition.equals(ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
                                     e.rejectValue("path", "duplicate");
                                     break;
                                 }

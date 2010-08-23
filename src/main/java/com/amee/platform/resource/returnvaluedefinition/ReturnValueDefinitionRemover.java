@@ -33,6 +33,7 @@ public class ReturnValueDefinitionRemover implements ResourceRemover {
                     ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
                         definitionService.remove(returnValueDefinition);
+                        definitionService.invalidate(returnValueDefinition.getItemDefinition());
                         return ResponseHelper.getOK(requestWrapper);
                     } else {
                         throw new NotFoundException();

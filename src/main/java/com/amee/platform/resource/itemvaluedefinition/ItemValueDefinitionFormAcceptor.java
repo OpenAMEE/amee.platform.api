@@ -20,6 +20,7 @@ public class ItemValueDefinitionFormAcceptor extends ItemValueDefinitionAcceptor
     protected Object handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition) {
         validationHelper.setItemValueDefinition(itemValueDefinition);
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+            definitionService.invalidate(itemValueDefinition.getItemDefinition());
             return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validationHelper.getValidationResult());
