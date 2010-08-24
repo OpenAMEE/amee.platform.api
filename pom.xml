@@ -5,7 +5,7 @@
     <name>amee-base</name>
     <groupId>com.amee</groupId>
     <artifactId>amee-base</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
