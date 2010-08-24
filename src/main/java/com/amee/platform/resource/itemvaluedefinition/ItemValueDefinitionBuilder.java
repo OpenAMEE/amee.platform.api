@@ -79,6 +79,7 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
         boolean wikiDoc = requestWrapper.getMatrixParameters().containsKey("wikiDoc");
         boolean itemDefinition = requestWrapper.getMatrixParameters().containsKey("itemDefinition");
+        boolean valueDefinition = requestWrapper.getMatrixParameters().containsKey("valueDefinition");
         boolean usages = requestWrapper.getMatrixParameters().containsKey("usages");
         boolean choices = requestWrapper.getMatrixParameters().containsKey("choices");
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
@@ -106,8 +107,10 @@ public class ItemValueDefinitionBuilder implements ResourceBuilder {
             renderer.addWikiDoc();
         }
         if ((itemDefinition || full) && (itemValueDefinition.getItemDefinition() != null)) {
-            ItemDefinition id = itemValueDefinition.getItemDefinition();
-            renderer.addItemDefinition(id);
+            renderer.addItemDefinition(itemValueDefinition.getItemDefinition());
+        }
+        if ((valueDefinition || full) && (itemValueDefinition.getValueDefinition() != null)) {
+            renderer.addValueDefinition(itemValueDefinition.getValueDefinition());
         }
         if (usages || full) {
             renderer.addUsages();

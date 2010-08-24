@@ -1,6 +1,7 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import org.json.JSONException;
@@ -54,6 +55,15 @@ public class ReturnValueDefinitionJSONRenderer implements ReturnValueDefinitionR
         put(itemDefinitionObj, "uid", itemDefinition.getUid());
         put(itemDefinitionObj, "name", itemDefinition.getName());
         put(returnValueDefinitionObj, "itemDefinition", itemDefinitionObj);
+    }
+
+    @Override
+    public void addValueDefinition(ValueDefinition valueDefinition) {
+        JSONObject itemDefinitionObj = new JSONObject();
+        put(itemDefinitionObj, "uid", valueDefinition.getUid());
+        put(itemDefinitionObj, "name", valueDefinition.getName());
+        put(itemDefinitionObj, "valueType", valueDefinition.getValueType().getName());
+        put(returnValueDefinitionObj, "valueDefinition", itemDefinitionObj);
     }
 
     @Override

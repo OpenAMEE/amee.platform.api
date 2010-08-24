@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_0;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.ValueDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,11 @@ public class ItemValueDefinitionDOMRenderer extends com.amee.platform.resource.i
 
     @Override
     public void addVersions() {
+        // Not in 3.0.
+    }
+
+    @Override
+    public void addValueDefinition(ValueDefinition vd) {
         // Not in 3.0.
     }
 }

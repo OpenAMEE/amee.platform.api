@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.resource.Renderer;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import org.joda.time.format.DateTimeFormatter;
@@ -25,6 +26,8 @@ public interface ItemValueDefinitionRenderer extends Renderer {
     public void addWikiDoc();
 
     public void addItemDefinition(ItemDefinition id);
+
+    public void addValueDefinition(ValueDefinition vd);
 
     public void addUsages();
 

@@ -2,6 +2,7 @@ package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.APIVersion;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -79,6 +80,15 @@ public class ItemValueDefinitionDOMRenderer implements ItemValueDefinitionRender
         itemValueDefinitionElem.addContent(e);
         e.setAttribute("uid", itemDefinition.getUid());
         e.addContent(new Element("Name").setText(itemDefinition.getName()));
+    }
+
+    @Override
+    public void addValueDefinition(ValueDefinition valueDefinition) {
+        Element e = new Element("ValueDefinition");
+        itemValueDefinitionElem.addContent(e);
+        e.setAttribute("uid", valueDefinition.getUid());
+        e.addContent(new Element("Name").setText(valueDefinition.getName()));
+        e.addContent(new Element("ValueType").setText(valueDefinition.getValueType().getName()));
     }
 
     @Override

@@ -77,6 +77,7 @@ public class ReturnValueDefinitionBuilder implements ResourceBuilder {
 
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean itemDefinition = requestWrapper.getMatrixParameters().containsKey("itemDefinition");
+        boolean valueDefinition = requestWrapper.getMatrixParameters().containsKey("valueDefinition");
         boolean type = requestWrapper.getMatrixParameters().containsKey("type");
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
         boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
@@ -87,8 +88,10 @@ public class ReturnValueDefinitionBuilder implements ResourceBuilder {
 
         // Optional attributes.
         if ((itemDefinition || full) && (returnValueDefinition.getItemDefinition() != null)) {
-            ItemDefinition id = returnValueDefinition.getItemDefinition();
-            renderer.addItemDefinition(id);
+            renderer.addItemDefinition(returnValueDefinition.getItemDefinition());
+        }
+        if ((valueDefinition || full) && (returnValueDefinition.getValueDefinition() != null)) {
+            renderer.addValueDefinition(returnValueDefinition.getValueDefinition());
         }
         if (units || full) {
             renderer.addUnits();

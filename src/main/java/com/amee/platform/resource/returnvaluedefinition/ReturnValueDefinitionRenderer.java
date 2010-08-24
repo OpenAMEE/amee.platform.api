@@ -1,6 +1,7 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.base.resource.Renderer;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import org.joda.time.format.DateTimeFormatter;
@@ -15,6 +16,8 @@ public interface ReturnValueDefinitionRenderer extends Renderer {
     public void addBasic();
 
     public void addItemDefinition(ItemDefinition id);
+
+    public void addValueDefinition(ValueDefinition vd);
 
     public void addType();
 
