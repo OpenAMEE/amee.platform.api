@@ -77,6 +77,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'true', response.data.returnValueDefinition['default'];
     assertEquals '11D3548466F2', response.data.returnValueDefinition.itemDefinition.uid;
     assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name;
+    assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid;
+    assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name;
+    assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
   }
 
   @Test
@@ -94,6 +97,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'true', response.data.ReturnValueDefinition.Default.text();
     assertEquals '11D3548466F2', response.data.ReturnValueDefinition.ItemDefinition.@uid.text();
     assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text();
+    assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text();
+    assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text();
+    assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
   }
 
   @Test

@@ -52,6 +52,10 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals false, response.data.itemValueDefinition.fromProfile;
     assertEquals true, response.data.itemValueDefinition.fromData;
     assertEquals '11D3548466F2', response.data.itemValueDefinition.itemDefinition.uid;
+    assertEquals 'Computers Generic', response.data.itemValueDefinition.itemDefinition.name;
+    assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid;
+    assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name;
+    assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType;
     assertEquals 2, response.data.itemValueDefinition.usages.size();
     assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name};
     assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type};
@@ -73,6 +77,10 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text();
     assertEquals 'true', response.data.ItemValueDefinition.FromData.text();
     assertEquals '11D3548466F2', response.data.ItemValueDefinition.ItemDefinition.@uid.text();
+    assertEquals 'Computers Generic', response.data.ItemValueDefinition.ItemDefinition.Name.text();
+    assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text();
+    assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text();
+    assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
     def allUsages = response.data.ItemValueDefinition.Usages.Usage;
     assertEquals 2, allUsages.size();
     assert ['usage2', 'usage3'] == allUsages.Name*.text();
