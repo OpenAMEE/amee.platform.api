@@ -13,8 +13,8 @@
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee-base.version>1.0.4-SNAPSHOT</amee-base.version>
-        <amee-platform-service.version>1.0.8-SNAPSHOT</amee-platform-service.version>
+        <amee-base.version>1.0.4</amee-base.version>
+        <amee-platform-service.version>1.0.8</amee-platform-service.version>
         <!-- External Versions. -->
         <junit.version>4.7</junit.version>
         <org-json.version>2.0</org-json.version>
