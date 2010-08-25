@@ -5,7 +5,6 @@ import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.service.data.DataService;
-import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -14,9 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 public class DataItemFormAcceptor implements ResourceAcceptor {
-
-    @Autowired
-    private EnvironmentService environmentService;
 
     @Autowired
     private DataService dataService;
@@ -30,8 +26,7 @@ public class DataItemFormAcceptor implements ResourceAcceptor {
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(
-                    environmentService.getEnvironmentByName("AMEE"), dataCategoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if (dataCategory != null) {
                 // Get DataItem identifier.
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");

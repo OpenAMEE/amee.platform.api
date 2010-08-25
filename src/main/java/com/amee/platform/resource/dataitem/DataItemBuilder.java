@@ -5,11 +5,9 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.environment.Environment;
 import com.amee.domain.path.PathItemGroup;
 import com.amee.service.auth.AuthenticationService;
 import com.amee.service.data.DataService;
-import com.amee.service.environment.EnvironmentService;
 import com.amee.service.path.PathItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 public class DataItemBuilder implements ResourceBuilder {
-
-    @Autowired
-    private EnvironmentService environmentService;
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -39,13 +34,11 @@ public class DataItemBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
         // Get DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if (dataCategory != null) {
                 // Get DataItem identifier.
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
@@ -98,7 +91,7 @@ public class DataItemBuilder implements ResourceBuilder {
             renderer.addName();
         }
         if (path || full) {
-            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup(dataItem.getEnvironment());
+            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup();
             renderer.addPath(pathItemGroup.findByUId(dataItem.getDataCategory().getUid()));
         }
         if (parent || full) {

@@ -3,11 +3,9 @@ package com.amee.platform.resource.datacategory;
 import com.amee.base.resource.*;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.environment.Environment;
 import com.amee.domain.path.PathItemGroup;
 import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
-import com.amee.service.environment.EnvironmentService;
 import com.amee.service.path.PathItemService;
 import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 public class DataCategoryBuilder implements ResourceBuilder {
-
-    @Autowired
-    private EnvironmentService environmentService;
 
     @Autowired
     private DataService dataService;
@@ -38,13 +33,11 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
         // Get the DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if (dataCategory != null) {
                 // Handle the DataCategory.
                 this.handle(requestWrapper, dataCategory);
@@ -82,7 +75,7 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
         // Optionals.
         if (path || full) {
-            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup(dataCategory.getEnvironment());
+            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup();
             renderer.addPath(pathItemGroup.findByUId(dataCategory.getUid()));
         }
         if (parent || full) {

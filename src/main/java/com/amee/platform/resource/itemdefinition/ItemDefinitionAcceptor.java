@@ -7,14 +7,10 @@ import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.service.definition.DefinitionService;
-import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
-
-    @Autowired
-    protected EnvironmentService environmentService;
 
     @Autowired
     protected DefinitionService definitionService;
@@ -25,8 +21,7 @@ public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
         if (itemDefinitionIdentifier != null) {
             // Get ItemDefinition.
-            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
-                    environmentService.getEnvironmentByName("AMEE"), itemDefinitionIdentifier);
+            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
             if (itemDefinition != null) {
                 return handle(requestWrapper, itemDefinition);
             } else {

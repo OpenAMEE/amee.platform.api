@@ -2,7 +2,6 @@ package com.amee.platform.resource;
 
 import com.amee.domain.ValueDefinition;
 import com.amee.service.definition.DefinitionService;
-import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,13 +16,10 @@ public class ValueDefinitionEditor extends PropertyEditorSupport {
     @Autowired
     private DefinitionService definitionService;
 
-    @Autowired
-    private EnvironmentService environmentService;
-
     @Override
     public void setAsText(String text) {
         if (!text.isEmpty()) {
-            ValueDefinition valueDefinition = definitionService.getValueDefinition(environmentService.getEnvironmentByName("AMEE"), text);
+            ValueDefinition valueDefinition = definitionService.getValueDefinition(text);
             if (valueDefinition != null) {
                 setValue(valueDefinition);
             } else {

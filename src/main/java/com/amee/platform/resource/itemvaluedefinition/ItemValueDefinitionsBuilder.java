@@ -4,9 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.*;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.environment.Environment;
 import com.amee.service.definition.DefinitionService;
-import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.1.0")
 public class ItemValueDefinitionsBuilder implements ResourceBuilder {
-
-    @Autowired
-    private EnvironmentService environmentService;
 
     @Autowired
     private DefinitionService definitionService;
@@ -33,14 +28,11 @@ public class ItemValueDefinitionsBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
         // Get ItemDefinition identifier.
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
         if (itemDefinitionIdentifier != null) {
             // Get ItemDefinition.
-            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(
-                    environment, itemDefinitionIdentifier);
+            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
             if (itemDefinition != null) {
                 // Handle the ItemDefinition.
                 handle(requestWrapper, itemDefinition);

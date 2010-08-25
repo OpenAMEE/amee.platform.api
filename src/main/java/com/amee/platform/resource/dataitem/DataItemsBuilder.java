@@ -5,12 +5,10 @@ import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
-import com.amee.domain.environment.Environment;
 import com.amee.platform.search.DataItemFilter;
 import com.amee.platform.search.DataItemFilterValidationHelper;
 import com.amee.platform.search.SearchService;
 import com.amee.service.data.DataService;
-import com.amee.service.environment.EnvironmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 public class DataItemsBuilder implements ResourceBuilder {
-
-    @Autowired
-    private EnvironmentService environmentService;
 
     @Autowired
     private DataService dataService;
@@ -42,13 +37,11 @@ public class DataItemsBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get Environment.
-        Environment environment = environmentService.getEnvironmentByName("AMEE");
         // Get DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(environment, dataCategoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
                 // Create filter and do search.
                 DataItemFilter filter = new DataItemFilter(dataCategory.getItemDefinition());
