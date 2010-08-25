@@ -358,16 +358,6 @@
 
     <!-- **** Kiwi - Entities **** -->
 
-    <!-- Environment -->
-    <cache name="com.amee.domain.environment.Environment"
-           maxElementsInMemory="10"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
     <!-- User -->
     <cache name="com.amee.domain.auth.User"
            maxElementsInMemory="2000"
@@ -440,16 +430,6 @@
 
     <!-- SiteService -->
     <cache name="query.siteService"
-           maxElementsInMemory="200"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
-    <!-- EnvironmentService -->
-    <cache name="query.environmentService"
            maxElementsInMemory="200"
            eternal="false"
            overflowToDisk="false"
