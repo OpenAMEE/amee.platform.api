@@ -20,13 +20,14 @@
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.platform.science.*;
 import com.amee.domain.Builder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
+import com.amee.domain.environment.Environment;
 import com.amee.domain.profile.ProfileItem;
+import com.amee.platform.science.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +64,7 @@ public class ProfileItemBuilder implements Builder {
         }
         obj.put("itemValues", itemValues);
         if (detailed) {
-            obj.put("environment", item.getEnvironment().getJSONObject(false));
+            obj.put("environment", Environment.ENVIRONMENT.getJSONObject(false));
             obj.put("itemDefinition", item.getItemDefinition().getJSONObject(false));
             obj.put("dataCategory", item.getDataCategory().getIdentityJSONObject());
         }
@@ -83,7 +84,7 @@ public class ProfileItemBuilder implements Builder {
         }
         element.appendChild(itemValuesElem);
         if (detailed) {
-            element.appendChild(item.getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(item.getItemDefinition().getIdentityElement(document));
             element.appendChild(item.getDataCategory().getIdentityElement(document));
         }
@@ -137,7 +138,7 @@ public class ProfileItemBuilder implements Builder {
         if (noteArray.length() > 0) {
             amounts.put("note", noteArray);
         }
-        
+
         obj.put("amounts", amounts);
 
         // Convert to user's time zone

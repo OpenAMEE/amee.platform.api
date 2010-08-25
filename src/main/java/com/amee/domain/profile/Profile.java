@@ -20,13 +20,14 @@
 package com.amee.domain.profile;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
 import com.amee.domain.auth.AuthorizationContext;
 import com.amee.domain.auth.Permission;
 import com.amee.domain.auth.PermissionEntry;
 import com.amee.domain.auth.User;
+import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -35,19 +36,14 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "PROFILE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Profile extends AMEEEnvironmentEntity implements Pathable {
+public class Profile extends AMEEEntity implements Pathable {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "USER_ID")
@@ -64,7 +60,7 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
     }
 
     public Profile(User user) {
-        super(user.getEnvironment());
+        super();
         setUser(user);
     }
 
@@ -81,7 +77,7 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
             obj.put("created", getCreated().toString());
             obj.put("modified", getModified().toString());
             obj.put("user", getUser().getIdentityJSONObject());
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
         }
         return obj;
     }
@@ -103,7 +99,7 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
             element.appendChild(getUser().getIdentityElement(document));
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
         }
         return element;
     }
@@ -126,7 +122,7 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
         authorizationContext.getEntries().clear();
         // Create Permission stating that this Profile is owned by the associated User, if the User is active.
         if (authorizationContext.getPrincipals().contains(getUser())) {
-            permissions.add(new Permission(getEnvironment(), getUser(), this, PermissionEntry.OWN));
+            permissions.add(new Permission(getUser(), this, PermissionEntry.OWN));
         }
         return permissions;
     }

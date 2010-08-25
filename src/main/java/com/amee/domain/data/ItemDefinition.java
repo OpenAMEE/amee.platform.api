@@ -20,11 +20,7 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
-import com.amee.domain.APIVersion;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.Metadata;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
@@ -39,26 +35,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Table(name = "ITEM_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public class ItemDefinition extends AMEEEnvironmentEntity {
+public class ItemDefinition extends AMEEEntity {
 
     public final static int NAME_MIN_SIZE = 3;
     public final static int NAME_MAX_SIZE = 255;
@@ -101,12 +85,8 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         super();
     }
 
-    public ItemDefinition(Environment environment) {
-        super(environment);
-    }
-
-    public ItemDefinition(Environment environment, String name) {
-        this(environment);
+    public ItemDefinition(String name) {
+        this();
         setName(name);
     }
 
@@ -166,7 +146,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         if (detailed) {
             obj.put("created", getCreated());
             obj.put("modified", getModified());
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
         }
         return obj;
     }
@@ -187,7 +167,7 @@ public class ItemDefinition extends AMEEEnvironmentEntity {
         if (detailed) {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
         }
         return element;
     }

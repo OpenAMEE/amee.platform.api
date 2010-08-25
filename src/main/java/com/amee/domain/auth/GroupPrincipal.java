@@ -1,10 +1,11 @@
 package com.amee.domain.auth;
 
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEEntityReference;
-import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
+import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;
@@ -12,15 +13,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * A GroupPrincipal joins a Group to a principal via an EntityReference.
@@ -30,7 +23,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "GROUP_PRINCIPAL")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class GroupPrincipal extends AMEEEnvironmentEntity implements Comparable {
+public class GroupPrincipal extends AMEEEntity implements Comparable {
 
     /**
      * The Group that the principal is a member of.
@@ -54,7 +47,7 @@ public class GroupPrincipal extends AMEEEnvironmentEntity implements Comparable 
     }
 
     public GroupPrincipal(Group group, IAMEEEntityReference principal) {
-        super(group.getEnvironment());
+        this();
         setGroup(group);
         setPrincipalReference(new AMEEEntityReference(principal));
     }
@@ -76,7 +69,7 @@ public class GroupPrincipal extends AMEEEnvironmentEntity implements Comparable 
         obj.put("group", getGroup().getIdentityJSONObject());
         obj.put("principal", getPrincipalReference().getJSONObject());
         if (detailed) {
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("created", getCreated());
             obj.put("modified", getModified());
         }
@@ -97,7 +90,7 @@ public class GroupPrincipal extends AMEEEnvironmentEntity implements Comparable 
         element.appendChild(getGroup().getIdentityElement(document));
         element.appendChild(getPrincipalReference().getElement(document, "Principal"));
         if (detailed) {
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
         }

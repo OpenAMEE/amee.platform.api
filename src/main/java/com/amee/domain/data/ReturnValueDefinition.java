@@ -1,6 +1,6 @@
 package com.amee.domain.data;
 
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
 import com.amee.domain.ValueDefinition;
@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Table(name = "RETURN_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public class ReturnValueDefinition extends AMEEEnvironmentEntity {
+public class ReturnValueDefinition extends AMEEEntity {
 
     // TODO: Never allow nulls for the values. Encapsulate as with other entities. Provide default values. Protect for NPEs.
     // TODO: Are the unit size constants required?
@@ -55,7 +55,7 @@ public class ReturnValueDefinition extends AMEEEnvironmentEntity {
     }
 
     public ReturnValueDefinition(ItemDefinition itemDefinition) {
-        super(itemDefinition.getEnvironment());
+        super();
         setItemDefinition(itemDefinition);
         itemDefinition.add(this);
     }

@@ -21,7 +21,6 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalValue;
 import com.amee.platform.science.InternalValue;
@@ -38,24 +37,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Inheritance
@@ -63,7 +46,7 @@ import java.util.Set;
 @DiscriminatorColumn(name = "TYPE", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
+public abstract class Item extends AMEEEntity implements Pathable {
 
     public final static int NAME_MAX_SIZE = 255;
 
@@ -99,7 +82,7 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
     }
 
     public Item(DataCategory dataCategory, ItemDefinition itemDefinition) {
-        super(dataCategory.getEnvironment());
+        this();
         setDataCategory(dataCategory);
         setItemDefinition(itemDefinition);
     }
@@ -151,7 +134,6 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
             entities.add(dc);
             dc = dc.getDataCategory();
         }
-        entities.add(getEnvironment());
         Collections.reverse(entities);
         return entities;
     }

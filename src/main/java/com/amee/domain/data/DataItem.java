@@ -25,6 +25,7 @@ import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
+import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
@@ -96,7 +97,7 @@ public class DataItem extends Item {
         if (detailed) {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(getItemDefinition().getIdentityElement(document));
             element.appendChild(getDataCategory().getIdentityElement(document));
         }
@@ -136,7 +137,7 @@ public class DataItem extends Item {
         if (detailed) {
             obj.put("created", getCreated());
             obj.put("modified", getModified());
-            obj.put("environment", getEnvironment().getJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getJSONObject());
             obj.put("itemDefinition", getItemDefinition().getJSONObject());
             obj.put("dataCategory", getDataCategory().getIdentityJSONObject());
         }

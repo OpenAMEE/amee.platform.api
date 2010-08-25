@@ -35,7 +35,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class ValueDefinition extends AMEEEnvironmentEntity {
+public class ValueDefinition extends AMEEEntity {
 
     @Column(name = "NAME")
     private String name = "";
@@ -50,9 +50,8 @@ public class ValueDefinition extends AMEEEnvironmentEntity {
         super();
     }
 
-    public ValueDefinition(Environment environment, String name, ValueType valueType) {
+    public ValueDefinition(String name, ValueType valueType) {
         this();
-        setEnvironment(environment);
         setName(name);
         setValueType(valueType);
     }
@@ -70,7 +69,7 @@ public class ValueDefinition extends AMEEEnvironmentEntity {
             obj.put("created", getCreated());
             obj.put("modified", getModified());
             obj.put("description", getDescription());
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
         }
         return obj;
     }
@@ -92,7 +91,7 @@ public class ValueDefinition extends AMEEEnvironmentEntity {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
             element.appendChild(XMLUtils.getElement(document, "Description", getDescription()));
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
         }
         return element;
     }

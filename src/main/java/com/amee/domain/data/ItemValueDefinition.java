@@ -44,7 +44,7 @@ import java.util.Set;
 @Table(name = "ITEM_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public class ItemValueDefinition extends AMEEEnvironmentEntity implements ExternalValue {
+public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
 
     public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
@@ -127,13 +127,8 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
         super();
     }
 
-    @Override
-    public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
-    }
-
     public ItemValueDefinition(ItemDefinition itemDefinition) {
-        super(itemDefinition.getEnvironment());
+        this();
         setItemDefinition(itemDefinition);
         itemDefinition.add(this);
     }
@@ -142,6 +137,12 @@ public class ItemValueDefinition extends AMEEEnvironmentEntity implements Extern
         this(itemDefinition);
         setName(name);
     }
+
+    @Override
+    public boolean isTrash() {
+        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
+    }
+
 
     public boolean isUsableValue() {
         return getValue() != null && !getValue().isEmpty();

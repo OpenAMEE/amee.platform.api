@@ -3,7 +3,7 @@ package com.amee.domain.auth;
 import com.amee.base.crypto.CryptoException;
 import com.amee.base.crypto.InternalCrypto;
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.APIVersion;
 import com.amee.domain.LocaleConstants;
 import com.amee.domain.ObjectType;
@@ -16,12 +16,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.TimeZone;
 
 /**
@@ -38,7 +33,7 @@ import java.util.TimeZone;
 @Entity
 @Table(name = "USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class User extends AMEEEnvironmentEntity implements Comparable {
+public class User extends AMEEEntity implements Comparable {
 
     public final static int USERNAME_SIZE = 20;
     public final static int PASSWORD_SIZE = 40;
@@ -79,12 +74,8 @@ public class User extends AMEEEnvironmentEntity implements Comparable {
         super();
     }
 
-    public User(Environment environment) {
-        super(environment);
-    }
-
-    public User(Environment environment, String username, String password, String name) {
-        this(environment);
+    public User(String username, String password, String name) {
+        this();
         setUsername(username);
         setPasswordInClear(password);
         setName(name);
@@ -112,7 +103,7 @@ public class User extends AMEEEnvironmentEntity implements Comparable {
             obj.put("username", getUsername());
             obj.put("name", getName());
             obj.put("email", getEmail());
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("created", getCreated());
             obj.put("modified", getModified());
         }
@@ -145,7 +136,7 @@ public class User extends AMEEEnvironmentEntity implements Comparable {
             element.appendChild(XMLUtils.getElement(document, "Name", getName()));
             element.appendChild(XMLUtils.getElement(document, "Username", getUsername()));
             element.appendChild(XMLUtils.getElement(document, "Email", getEmail()));
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
         }
