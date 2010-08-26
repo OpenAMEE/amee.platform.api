@@ -337,7 +337,7 @@
     </cache>
 
     <!-- Environment Path Item Groups -->
-    <cache name="EnvironmentPIGs"
+    <cache name="PIGs"
            maxElementsInMemory="5"
            eternal="false"
            overflowToDisk="false"
