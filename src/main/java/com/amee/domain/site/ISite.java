@@ -25,8 +25,6 @@ public interface ISite {
 
     public String getActiveSkinPath();
 
-    public String getEnvironmentName();
-
     public boolean isSecureAvailable();
 
     public boolean isCheckRemoteAddress();
