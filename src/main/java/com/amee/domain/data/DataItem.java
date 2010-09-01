@@ -211,14 +211,6 @@ public class DataItem extends Item {
         return getElement(document, detailed, false);
     }
 
-    public String getResolvedPath() {
-        if (getPath().isEmpty()) {
-            return getUid();
-        } else {
-            return getPath();
-        }
-    }
-
     public String getPath() {
         return path;
     }

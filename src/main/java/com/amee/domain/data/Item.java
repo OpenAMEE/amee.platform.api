@@ -38,24 +38,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 @Inheritance
@@ -93,6 +77,9 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
 
     @Transient
     private Date effectiveEndDate;
+
+    @Transient
+    private transient String fullPath;
 
     public Item() {
         super();
@@ -180,20 +167,40 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
         return name;
     }
 
-    public String getDisplayPath() {
-        if (getPath().length() > 0) {
-            return getPath();
-        } else {
-            return getUid();
-        }
-    }
-
     public String getDisplayName() {
         if (getName().length() > 0) {
             return getName();
         } else {
             return getDisplayPath();
         }
+    }
+
+    public String getDisplayPath() {
+        if (!getPath().isEmpty()) {
+            return getPath();
+        } else {
+            return getUid();
+        }
+    }
+
+    /**
+     * Get the full path of this Item.
+     *
+     * @return the full path
+     */
+    public String getFullPath() {
+        // Need to build the fullPath?
+        if (fullPath == null) {
+            // Is there a parent.
+            if (getDataCategory() != null) {
+                // There is a parent.
+                fullPath = getDataCategory().getFullPath() + "/" + getDisplayPath();
+            } else {
+                // There must be a parent.
+                throw new RuntimeException("Item has no parent.");
+            }
+        }
+        return fullPath;
     }
 
     /**

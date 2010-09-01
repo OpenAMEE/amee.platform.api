@@ -81,6 +81,9 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
     @Transient
     private boolean historyAvailable = false;
 
+    @Transient
+    private transient String fullPath;
+
     public ItemValue() {
         super();
     }
@@ -151,6 +154,26 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
 
     public String getDisplayPath() {
         return getPath();
+    }
+
+    /**
+     * Get the full path of this Item.
+     *
+     * @return the full path
+     */
+    public String getFullPath() {
+        // Need to build the fullPath?
+        if (fullPath == null) {
+            // Is there a parent.
+            if (getItem() != null) {
+                // There is a parent.
+                fullPath = getItem().getFullPath() + "/" + getDisplayPath();
+            } else {
+                // There must be a parent.
+                throw new RuntimeException("Item has no parent.");
+            }
+        }
+        return fullPath;
     }
 
     public ItemValueDefinition getItemValueDefinition() {

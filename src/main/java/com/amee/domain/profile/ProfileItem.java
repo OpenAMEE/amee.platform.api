@@ -16,13 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -218,10 +212,6 @@ public class ProfileItem extends Item {
         return builder.getElement(document, b);
     }
 
-    public ObjectType getObjectType() {
-        return ObjectType.PI;
-    }
-
     public boolean hasNonZeroPerTimeValues() {
         for (ItemValue iv : getItemValues()) {
             if (iv.hasPerTimeUnit() && iv.isNonZero()) {
@@ -247,5 +237,9 @@ public class ProfileItem extends Item {
     @Override
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH) || getDataItem().isTrash() || getProfile().isTrash();
+    }
+
+    public ObjectType getObjectType() {
+        return ObjectType.PI;
     }
 }

@@ -35,12 +35,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,23 +164,27 @@ public class Profile extends AMEEEnvironmentEntity implements Pathable {
         this.path = path;
     }
 
-    public ObjectType getObjectType() {
-        return ObjectType.PR;
-    }
-
-    public String getDisplayPath() {
-        if (getPath().length() > 0) {
-            return getPath();
-        } else {
-            return getUid();
-        }
-    }
-
     public String getDisplayName() {
         if (getName().length() > 0) {
             return getName();
         } else {
             return getDisplayPath();
         }
+    }
+
+    public String getDisplayPath() {
+        if (!getPath().isEmpty()) {
+            return getPath();
+        } else {
+            return getUid();
+        }
+    }
+
+    public String getFullPath() {
+        return getDisplayPath();
+    }
+
+    public ObjectType getObjectType() {
+        return ObjectType.PR;
     }
 }

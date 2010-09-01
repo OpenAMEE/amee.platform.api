@@ -37,8 +37,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "DATA_CATEGORY")
@@ -75,13 +73,8 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @Index(name = "WIKI_NAME_IND")
     private String wikiName = "";
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ALIASED_TO_ID")
-    private DataCategory aliasedTo;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ALIASED_TO_ID")
-    private List<DataCategory> aliases = new ArrayList<DataCategory>();
+    @Transient
+    private transient String fullPath;
 
     public DataCategory() {
         super();
@@ -177,6 +170,26 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         }
     }
 
+    /**
+     * Get the full path of this DataCategory.
+     *
+     * @return the full path
+     */
+    public String getFullPath() {
+        // Need to build the fullPath?
+        if (fullPath == null) {
+            // Is there a parent.
+            if (getDataCategory() != null) {
+                // There is a parent.
+                fullPath = getDataCategory().getFullPath() + "/" + getDisplayPath();
+            } else {
+                // This is the root.
+                fullPath = "";
+            }
+        }
+        return fullPath;
+    }
+
     public DataCategory getDataCategory() {
         return dataCategory;
     }
@@ -232,20 +245,7 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH) ||
                 ((getDataCategory() != null) && getDataCategory().isTrash()) ||
-                ((getAliasedCategory() != null) && getAliasedCategory().isTrash()) ||
                 ((getItemDefinition() != null) && getItemDefinition().isTrash());
-    }
-
-    public DataCategory getAliasedCategory() {
-        return aliasedTo;
-    }
-
-    public void setAliasedTo(DataCategory aliasedTo) {
-        this.aliasedTo = aliasedTo;
-    }
-
-    public List<DataCategory> getAliases() {
-        return aliases;
     }
 
     public String getWikiDoc() {
@@ -278,9 +278,6 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
     @Override
     public void setStatus(AMEEStatus status) {
         this.status = status;
-        for (DataCategory alias : aliases) {
-            alias.setStatus(status);
-        }
     }
 
     public ObjectType getObjectType() {

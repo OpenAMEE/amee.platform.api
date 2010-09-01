@@ -33,6 +33,8 @@ public interface Pathable extends IdentityObject {
 
     public String getDisplayPath();
 
+    public String getFullPath();
+
     public boolean isDeprecated();
 
     public ObjectType getObjectType();
