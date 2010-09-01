@@ -3,6 +3,7 @@ package com.amee.domain.data.builder.v1;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.environment.Environment;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -49,7 +50,7 @@ public class ItemValueDefinitionBuilder implements Builder {
             obj.put("fromProfile", itemValueDefinition.isFromProfile());
             obj.put("fromData", itemValueDefinition.isFromData());
             obj.put("allowedRoles", itemValueDefinition.getAllowedRoles());
-            obj.put("environment", itemValueDefinition.getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("itemDefinition", itemValueDefinition.getItemDefinition().getIdentityJSONObject());
         }
         return obj;
@@ -69,7 +70,7 @@ public class ItemValueDefinitionBuilder implements Builder {
             element.appendChild(XMLUtils.getElement(document, "Value", itemValueDefinition.getValue()));
             element.appendChild(XMLUtils.getElement(document, "Choices", itemValueDefinition.getChoices()));
             element.appendChild(XMLUtils.getElement(document, "AllowedRoles", itemValueDefinition.getAllowedRoles()));
-            element.appendChild(itemValueDefinition.getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(itemValueDefinition.getItemDefinition().getIdentityElement(document));
         }
         return element;

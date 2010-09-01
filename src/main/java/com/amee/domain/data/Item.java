@@ -21,7 +21,6 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEEnvironmentEntity;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalValue;
 import com.amee.platform.science.InternalValue;
@@ -47,7 +46,7 @@ import java.util.*;
 @DiscriminatorColumn(name = "TYPE", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
+public abstract class Item extends AMEEEntity implements Pathable {
 
     public final static int NAME_MAX_SIZE = 255;
 
@@ -86,7 +85,7 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
     }
 
     public Item(DataCategory dataCategory, ItemDefinition itemDefinition) {
-        super(dataCategory.getEnvironment());
+        this();
         setDataCategory(dataCategory);
         setItemDefinition(itemDefinition);
     }
@@ -138,7 +137,6 @@ public abstract class Item extends AMEEEnvironmentEntity implements Pathable {
             entities.add(dc);
             dc = dc.getDataCategory();
         }
-        entities.add(getEnvironment());
         Collections.reverse(entities);
         return entities;
     }

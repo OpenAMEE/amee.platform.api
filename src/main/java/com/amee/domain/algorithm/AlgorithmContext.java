@@ -2,7 +2,6 @@ package com.amee.domain.algorithm;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.ObjectType;
-import com.amee.domain.environment.Environment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -10,7 +9,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 /**
- * This class defines a global algorithm context that can be inhereted by algorithms
+ * This class defines a global algorithm context that can be inherited by algorithms
  */
 @Entity
 @DiscriminatorValue("ALC")
@@ -20,12 +19,8 @@ public class AlgorithmContext extends AbstractAlgorithm {
         super();
     }
 
-    public AlgorithmContext(Environment environment) {
-        super(environment);
-    }
-
-    public AlgorithmContext(Environment environment, String content) {
-        super(environment, content);
+    public AlgorithmContext(String content) {
+        super(content);
     }
 
     public Element getIdentityElement(Document document) {

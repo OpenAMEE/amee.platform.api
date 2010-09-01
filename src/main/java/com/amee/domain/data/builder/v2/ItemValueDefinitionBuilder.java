@@ -4,6 +4,7 @@ import com.amee.base.utils.XMLUtils;
 import com.amee.domain.APIVersion;
 import com.amee.domain.Builder;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.environment.Environment;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +66,7 @@ public class ItemValueDefinitionBuilder implements Builder {
             obj.put("value", itemValueDefinition.getValue());
             obj.put("choices", itemValueDefinition.getChoices());
             obj.put("allowedRoles", itemValueDefinition.getAllowedRoles());
-            obj.put("environment", itemValueDefinition.getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("itemDefinition", itemValueDefinition.getItemDefinition().getIdentityJSONObject());
             obj.put("aliasedTo", itemValueDefinition.getAliasedTo() == null ? JSONObject.NULL : itemValueDefinition.getAliasedTo().getIdentityJSONObject());
             JSONArray apiVersions = new JSONArray();
@@ -102,7 +103,7 @@ public class ItemValueDefinitionBuilder implements Builder {
             element.appendChild(XMLUtils.getElement(document, "Value", itemValueDefinition.getValue()));
             element.appendChild(XMLUtils.getElement(document, "Choices", itemValueDefinition.getChoices()));
             element.appendChild(XMLUtils.getElement(document, "AllowedRoles", itemValueDefinition.getAllowedRoles()));
-            element.appendChild(itemValueDefinition.getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(itemValueDefinition.getItemDefinition().getIdentityElement(document));
             if (itemValueDefinition.getAliasedTo() != null) {
                 element.appendChild(itemValueDefinition.getAliasedTo().getIdentityElement(document));

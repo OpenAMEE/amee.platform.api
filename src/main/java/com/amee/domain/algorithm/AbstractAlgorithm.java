@@ -1,7 +1,7 @@
 package com.amee.domain.algorithm;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Table(name = "ALGORITHM")
 @DiscriminatorColumn(name = "TYPE", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public abstract class AbstractAlgorithm extends AMEEEnvironmentEntity {
+public abstract class AbstractAlgorithm extends AMEEEntity {
 
     public final static int NAME_SIZE = 255;
 
@@ -34,12 +34,8 @@ public abstract class AbstractAlgorithm extends AMEEEnvironmentEntity {
         super();
     }
 
-    public AbstractAlgorithm(Environment environment) {
-        super(environment);
-    }
-
-    public AbstractAlgorithm(Environment environment, String content) {
-        super(environment);
+    public AbstractAlgorithm(String content) {
+        this();
         setContent(content);
     }
 
@@ -55,7 +51,7 @@ public abstract class AbstractAlgorithm extends AMEEEnvironmentEntity {
         if (detailed) {
             obj.put("created", getCreated());
             obj.put("modified", getModified());
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
         }
         return obj;
     }
@@ -78,7 +74,7 @@ public abstract class AbstractAlgorithm extends AMEEEnvironmentEntity {
         if (detailed) {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
         }
         return element;
     }

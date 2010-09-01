@@ -20,7 +20,7 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
@@ -42,7 +42,7 @@ import javax.persistence.*;
 @Table(name = "DATA_CATEGORY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
+public class DataCategory extends AMEEEntity implements Pathable {
 
     public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
@@ -80,18 +80,14 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         super();
     }
 
-    public DataCategory(Environment environment) {
-        super(environment);
-    }
-
-    public DataCategory(Environment environment, String name, String path) {
-        this(environment);
+    public DataCategory(String name, String path) {
+        this();
         setName(name);
         setPath(path);
     }
 
     public DataCategory(DataCategory dataCategory) {
-        this(dataCategory.getEnvironment());
+        this();
         setDataCategory(dataCategory);
     }
 
@@ -119,7 +115,7 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         if (detailed) {
             obj.put("created", getCreated().toString());
             obj.put("modified", getModified().toString());
-            obj.put("environment", getEnvironment().getJSONObject(false));
+            obj.put("environment", Environment.ENVIRONMENT.getJSONObject(false));
             if (getDataCategory() != null) {
                 obj.put("dataCategory", getDataCategory().getIdentityJSONObject());
             }
@@ -143,7 +139,7 @@ public class DataCategory extends AMEEEnvironmentEntity implements Pathable {
         if (detailed) {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             if (getDataCategory() != null) {
                 element.appendChild(getDataCategory().getIdentityElement(document));
             }

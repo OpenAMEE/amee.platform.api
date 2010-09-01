@@ -1,7 +1,7 @@
 package com.amee.domain.auth;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEnvironmentEntity;
+import com.amee.domain.AMEEEntity;
 import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
@@ -30,7 +30,7 @@ import javax.persistence.Table;
 // can't use 'GROUP' as that is a reserved word in SQL
 @Table(name = "GROUPS")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Group extends AMEEEnvironmentEntity implements Comparable {
+public class Group extends AMEEEntity implements Comparable {
 
     public final static int NAME_SIZE = 100;
     public final static int DESCRIPTION_SIZE = 1000;
@@ -46,12 +46,7 @@ public class Group extends AMEEEnvironmentEntity implements Comparable {
         super();
     }
 
-    public Group(Environment environment) {
-        super(environment);
-    }
-
-    public Group(Environment environment, String name) {
-        super(environment);
+    public Group(String name) {
         setName(name);
     }
 
@@ -72,7 +67,7 @@ public class Group extends AMEEEnvironmentEntity implements Comparable {
         obj.put("name", getName());
         obj.put("description", getDescription());
         if (detailed) {
-            obj.put("environment", getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("created", getCreated());
             obj.put("modified", getModified());
         }
@@ -95,7 +90,7 @@ public class Group extends AMEEEnvironmentEntity implements Comparable {
         element.appendChild(XMLUtils.getElement(document, "Name", getName()));
         element.appendChild(XMLUtils.getElement(document, "Description", getName()));
         if (detailed) {
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
         }

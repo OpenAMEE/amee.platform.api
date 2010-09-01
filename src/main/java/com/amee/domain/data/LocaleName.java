@@ -21,12 +21,7 @@
  */
 package com.amee.domain.data;
 
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEEntityReference;
-import com.amee.domain.AMEEEnvironmentEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.IAMEEEntityReference;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -37,7 +32,7 @@ import javax.persistence.Table;
 import java.util.Locale;
 
 /**
- * Provides a Locale-to-name mapping for an {@link AMEEEnvironmentEntity} instance.
+ * Provides a Locale-to-name mapping for an {@link AMEEEntity} instance.
  * <p/>
  * The name in this context is that of the {@link com.amee.domain.path.Pathable} interface.
  * <p/>

@@ -23,7 +23,6 @@ import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.environment.Environment;
 import com.amee.platform.science.AlgorithmException;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -31,11 +30,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
@@ -65,12 +60,8 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
         return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
     }
 
-    public Algorithm(Environment environment) {
-        super(environment);
-    }
-
     public Algorithm(ItemDefinition itemDefinition, String content) {
-        super(itemDefinition.getEnvironment(), content);
+        super(content);
         setItemDefinition(itemDefinition);
         itemDefinition.add(this);
     }

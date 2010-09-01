@@ -21,7 +21,6 @@
  */
 package com.amee.domain;
 
-
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.algorithm.AlgorithmContext;
 import com.amee.domain.auth.Group;

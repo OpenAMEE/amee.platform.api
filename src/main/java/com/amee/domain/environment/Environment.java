@@ -3,52 +3,76 @@ package com.amee.domain.environment;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.ObjectType;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.util.Date;
 
-@Entity
-@Table(name = "ENVIRONMENT")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Environment extends AMEEEntity implements Comparable {
 
-    public final static int NAME_SIZE = 255;
-    public final static int PATH_SIZE = 255;
-    public final static int DESCRIPTION_SIZE = 1000;
-    public final static int OWNER_SIZE = 255;
+    /**
+     * A mock 'entity' so that existing API responses continue to look the same.
+     */
+    // TODO: Original dates.
+    public final static Environment ENVIRONMENT =
+            new Environment(
+                    2L,
+                    "5F5887BCF726",
+                    "AMEE",
+                    "",
+                    "",
+                    10,
+                    10,
+                    new Date(),
+                    new Date(),
+                    "");
 
-    @Column(name = "NAME", length = NAME_SIZE, nullable = false)
-    private String name = "";
-
-    @Column(name = "PATH", length = PATH_SIZE, nullable = false)
-    private String path = "";
-
-    @Column(name = "DESCRIPTION", length = DESCRIPTION_SIZE, nullable = false)
-    private String description = "";
-
-    @Column(name = "OWNER", length = OWNER_SIZE, nullable = false)
-    private String owner = "";
-
-    @Column(name = "ITEMS_PER_PAGE", nullable = false)
+    private String name;
+    private String path;
+    private String description;
+    private String owner;
     private Integer itemsPerPage = 10;
-
-    @Column(name = "ITEMS_PER_FEED", nullable = false)
     private Integer itemsPerFeed = 10;
 
     public Environment() {
         super();
+        setName("");
+        setPath("");
+        setDescription("");
+        setOwner("");
+        setItemsPerPage(10);
+        setItemsPerFeed(10);
     }
 
     public Environment(String name) {
         this();
         setName(name);
+    }
+
+    public Environment(
+            Long id,
+            String uid,
+            String name,
+            String path,
+            String description,
+            Integer itemsPerPage,
+            Integer itemsPerFeed,
+            Date created,
+            Date modified,
+            String owner) {
+        this();
+        setId(id);
+        setUid(uid);
+        setName(name);
+        setPath(path);
+        setDescription(description);
+        setItemsPerPage(itemsPerPage);
+        setItemsPerFeed(itemsPerFeed);
+        setCreated(created);
+        setModified(modified);
+        setOwner(owner);
     }
 
     public int compareTo(Object o) {
@@ -104,16 +128,6 @@ public class Environment extends AMEEEntity implements Comparable {
 
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, this);
-    }
-
-    public void populate(org.dom4j.Element element) {
-        setUid(element.attributeValue("uid"));
-        setName(element.elementText("Name"));
-        setPath(element.elementText("Path"));
-        setDescription(element.elementText("Description"));
-        setOwner(element.elementText("Owner"));
-        setItemsPerPage(element.elementText("ItemsPerPage"));
-        setItemsPerFeed(element.elementText("ItemsPerFeed"));
     }
 
     public String getName() {

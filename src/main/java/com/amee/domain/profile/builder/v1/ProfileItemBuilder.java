@@ -1,22 +1,22 @@
 /**
-* This file is part of AMEE.
-*
-* AMEE is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* AMEE is free software and is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-* Created by http://www.dgen.net.
-* Website http://www.amee.cc
-*/
+ * This file is part of AMEE.
+ *
+ * AMEE is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AMEE is free software and is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Created by http://www.dgen.net.
+ * Website http://www.amee.cc
+ */
 package com.amee.domain.profile.builder.v1;
 
 import com.amee.base.utils.XMLUtils;
@@ -24,6 +24,7 @@ import com.amee.domain.Builder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.v1.ItemValueBuilder;
+import com.amee.domain.environment.Environment;
 import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.StartEndDate;
@@ -46,7 +47,7 @@ public class ProfileItemBuilder implements Builder {
     public ProfileItemBuilder(ProfileItem item) {
         this.item = item;
     }
-    
+
     public void buildElement(JSONObject obj, boolean detailed) throws JSONException {
         obj.put("uid", item.getUid());
         obj.put("name", item.getDisplayName());
@@ -59,7 +60,7 @@ public class ProfileItemBuilder implements Builder {
         if (detailed) {
             obj.put("created", item.getCreated());
             obj.put("modified", item.getModified());
-            obj.put("environment", item.getEnvironment().getIdentityJSONObject());
+            obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("itemDefinition", item.getItemDefinition().getIdentityJSONObject());
             obj.put("dataCategory", item.getDataCategory().getIdentityJSONObject());
         }
@@ -77,7 +78,7 @@ public class ProfileItemBuilder implements Builder {
         if (detailed) {
             element.setAttribute("created", item.getCreated().toString());
             element.setAttribute("modified", item.getModified().toString());
-            element.appendChild(item.getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(item.getItemDefinition().getIdentityElement(document));
             element.appendChild(item.getDataCategory().getIdentityElement(document));
         }
@@ -106,7 +107,7 @@ public class ProfileItemBuilder implements Builder {
 
         if (!item.isSingleFlight()) {
             element.appendChild(XMLUtils.getElement(document, "AmountPerMonth",
-                item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue() + ""));
+                    item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue() + ""));
         } else {
             element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmounts().defaultValueAsDouble() + ""));
         }

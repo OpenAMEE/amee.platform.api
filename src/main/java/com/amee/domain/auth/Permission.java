@@ -1,10 +1,6 @@
 package com.amee.domain.auth;
 
-import com.amee.domain.AMEEEntityReference;
-import com.amee.domain.AMEEEnvironmentEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.IAMEEEntityReference;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -14,14 +10,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,7 +39,7 @@ import java.util.Set;
 @Entity
 @Table(name = "PERMISSION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Permission extends AMEEEnvironmentEntity implements Comparable {
+public class Permission extends AMEEEntity implements Comparable {
 
     public final static int ENTRIES_MAX_SIZE = 1000;
 
@@ -95,24 +84,19 @@ public class Permission extends AMEEEnvironmentEntity implements Comparable {
         super();
     }
 
-    public Permission(Environment environment) {
+    public Permission(IAMEEEntityReference principal, IAMEEEntityReference entity) {
         this();
-        setEnvironment(environment);
-    }
-
-    public Permission(Environment environment, IAMEEEntityReference principal, IAMEEEntityReference entity) {
-        this(environment);
         setPrincipalReference(new AMEEEntityReference(principal));
         setEntityReference(new AMEEEntityReference(entity));
     }
 
-    public Permission(Environment environment, IAMEEEntityReference principal, IAMEEEntityReference entity, PermissionEntry entry) {
-        this(environment, principal, entity);
+    public Permission(IAMEEEntityReference principal, IAMEEEntityReference entity, PermissionEntry entry) {
+        this(principal, entity);
         addEntry(entry);
     }
 
-    public Permission(Environment environment, IAMEEEntityReference principal, IAMEEEntityReference entity, Collection<PermissionEntry> entries) {
-        this(environment, principal, entity);
+    public Permission(IAMEEEntityReference principal, IAMEEEntityReference entity, Collection<PermissionEntry> entries) {
+        this(principal, entity);
         addEntries(entries);
     }
 
@@ -140,7 +124,7 @@ public class Permission extends AMEEEnvironmentEntity implements Comparable {
         if (detailed) {
             obj.put("created", getCreated());
             obj.put("modified", getModified());
-            obj.put("environmentUid", getEnvironment().getUid());
+            obj.put("environmentUid", Environment.ENVIRONMENT.getUid());
         }
         return obj;
     }
@@ -162,7 +146,7 @@ public class Permission extends AMEEEnvironmentEntity implements Comparable {
         if (detailed) {
             element.setAttribute("created", getCreated().toString());
             element.setAttribute("modified", getModified().toString());
-            element.appendChild(getEnvironment().getIdentityElement(document));
+            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
         }
         return element;
     }
