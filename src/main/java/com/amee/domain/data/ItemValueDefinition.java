@@ -24,6 +24,7 @@ import com.amee.domain.*;
 import com.amee.domain.data.builder.v2.ItemValueDefinitionBuilder;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.*;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
@@ -289,7 +290,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public AmountUnit getUnit() {
-        return (unit != null) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
     public AmountUnit getCanonicalUnit() {
@@ -297,7 +298,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public AmountPerUnit getPerUnit() {
-        return (perUnit != null) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
+        return StringUtils.isNotBlank(perUnit)  ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     public AmountPerUnit getCanonicalPerUnit() {

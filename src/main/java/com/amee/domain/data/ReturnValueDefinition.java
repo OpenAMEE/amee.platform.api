@@ -7,6 +7,7 @@ import com.amee.domain.ValueDefinition;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -69,7 +70,7 @@ public class ReturnValueDefinition extends AMEEEntity {
     }
 
     public AmountUnit getUnit() {
-        return (unit != null) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
     public void setUnit(AmountUnit unit) {
@@ -77,7 +78,7 @@ public class ReturnValueDefinition extends AMEEEntity {
     }
 
     public AmountPerUnit getPerUnit() {
-        return (perUnit != null) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
+        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     public void setPerUnit(AmountPerUnit perUnit) {

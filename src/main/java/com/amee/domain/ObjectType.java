@@ -40,7 +40,7 @@ import java.io.Serializable;
 
 public enum ObjectType implements Serializable {
 
-    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD;
+    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD, DINV, DINVH, DITV, DITVH, PINV, PITV;
 
     private String[] names = {
             "DC",
@@ -63,7 +63,13 @@ public enum ObjectType implements Serializable {
             "MD",
             "TA",
             "ET",
-            "RVD"};
+            "RVD",
+            "DINV",
+            "DINVH",
+            "DITV",
+            "DITVH",
+            "PINV",
+            "PITV"};
 
     private String[] labels = {
             "DataCategory",
@@ -86,7 +92,13 @@ public enum ObjectType implements Serializable {
             "Metadata",
             "Tag",
             "EntityTag",
-            "ReturnValueDefinition"};
+            "ReturnValueDefinition",
+            "DataItemNumberValue",
+            "DataItemNumberValueHistory",
+            "DataItemTextValue",
+            "DataItemTextValueHistory",
+            "ProfileItemNumberValue",
+            "ProfileItemTextValue"};
 
     public String toString() {
         return getName();

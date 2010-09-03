@@ -97,6 +97,26 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         this.startDate = item.getStartDate();
     }
 
+    protected void copyTo(ItemValue o) {
+        super.copyTo(o);
+        o.localeService = localeService;
+        o.itemValueDefinition = itemValueDefinition;
+        o.item = item;
+        o.value = value;
+        o.unit = unit;
+        o.perUnit = perUnit;
+        o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
+        o.builder = builder;
+        o.historyAvailable = historyAvailable;
+        o.fullPath = fullPath;
+    }
+
+    public ItemValue getCopy() {
+        ItemValue clone = new ItemValue();
+        copyTo(clone);
+        return clone;
+    }
+
     public String getUsableValue() {
         if (!isUsableValue())
             return null;
@@ -220,12 +240,12 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         return new StartEndDate(startDate);
     }
 
-    public boolean isDouble() {
-        return getItemValueDefinition().isDouble();
-    }
-
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public boolean isDouble() {
+        return getItemValueDefinition().isDouble();
     }
 
     public ObjectType getObjectType() {
@@ -233,7 +253,7 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
     }
 
     public AmountUnit getUnit() {
-        return (unit != null) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnit();
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnit();
     }
 
     public AmountUnit getCanonicalUnit() {
@@ -270,18 +290,22 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         this.perUnit = perUnit;
     }
 
+    @Override
     public AmountCompoundUnit getCompoundUnit() {
         return getUnit().with(getPerUnit());
     }
 
+    @Override
     public AmountCompoundUnit getCanonicalCompoundUnit() {
         return getItemValueDefinition().getCanonicalCompoundUnit();
     }
 
+    @Override
     public boolean hasUnit() {
         return getItemValueDefinition().hasUnit();
     }
 
+    @Override
     public boolean hasPerUnit() {
         return getItemValueDefinition().hasPerUnit();
     }
@@ -294,22 +318,6 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         return getItemValueDefinition().isDouble() &&
                 !StringUtils.isBlank(getValue()) &&
                 Double.parseDouble(getValue()) != 0.0;
-    }
-
-    public ItemValue getCopy() {
-        ItemValue clone = new ItemValue();
-        clone.setUid(getUid());
-        clone.setItemValueDefinition(getItemValueDefinition());
-        clone.setValue(getValue());
-        clone.setItem(getItem());
-        clone.setStartDate(getStartDate());
-        if (hasUnit()) {
-            clone.setUnit(getUnit().toString());
-        }
-        if (hasPerUnit()) {
-            clone.setPerUnit(getPerUnit().toString());
-        }
-        return clone;
     }
 
     public String getLabel() {

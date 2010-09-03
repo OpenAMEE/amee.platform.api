@@ -17,6 +17,14 @@
         <class>com.amee.domain.data.ItemValueDefinition</class>
         <class>com.amee.domain.data.ReturnValueDefinition</class>
         <class>com.amee.domain.data.LocaleName</class>
+        <class>com.amee.domain.item.data.DataItemNumberValue</class>
+        <class>com.amee.domain.item.data.DataItemNumberValueHistory</class>
+        <class>com.amee.domain.item.data.DataItemTextValue</class>
+        <class>com.amee.domain.item.data.DataItemTextValueHistory</class>
+        <class>com.amee.domain.item.data.NuDataItem</class>
+        <class>com.amee.domain.item.profile.NuProfileItem</class>
+        <class>com.amee.domain.item.profile.ProfileItemNumberValue</class>
+        <class>com.amee.domain.item.profile.ProfileItemTextValue</class>
         <class>com.amee.domain.profile.Profile</class>
         <class>com.amee.domain.profile.ProfileItem</class>
         <class>com.amee.domain.tag.Tag</class>
