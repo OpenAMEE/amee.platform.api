@@ -32,19 +32,19 @@ public class MockExternalValue implements ExternalValue {
     }
 
     public AmountUnit getUnit() {
-        return (unit != null) ? AmountUnit.valueOf(unit) : getCanonicalUnit();
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getCanonicalUnit();
     }
 
     public AmountPerUnit getPerUnit() {
-        return (perUnit != null) ? AmountPerUnit.valueOf(perUnit) : getCanonicalPerUnit();
+        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : getCanonicalPerUnit();
     }
 
     public AmountUnit getCanonicalUnit() {
-        return (canonicalUnit != null) ? AmountUnit.valueOf(canonicalUnit) : AmountUnit.ONE;
+        return StringUtils.isNotBlank(canonicalUnit) ? AmountUnit.valueOf(canonicalUnit) : AmountUnit.ONE;
     }
 
     public AmountPerUnit getCanonicalPerUnit() {
-        return (canonicalPerUnit != null) ? AmountPerUnit.valueOf(canonicalPerUnit) : AmountPerUnit.ONE;
+        return StringUtils.isNotBlank(canonicalPerUnit) ? AmountPerUnit.valueOf(canonicalPerUnit) : AmountPerUnit.ONE;
     }
 
     public AmountCompoundUnit getCompoundUnit() {
