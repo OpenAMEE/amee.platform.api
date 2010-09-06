@@ -24,6 +24,8 @@ import com.amee.domain.Builder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.Item;
 import com.amee.domain.data.ItemValue;
+import com.amee.domain.data.LegacyItemValue;
+import com.amee.domain.data.LegacyItemValueToItemValueTransformer;
 import com.amee.domain.profile.ProfileItem;
 import com.amee.domain.profile.builder.v2.ProfileItemBuilder;
 import com.amee.platform.science.StartEndDate;
@@ -38,6 +40,10 @@ public class ItemValueBuilder implements Builder {
 
     public ItemValueBuilder(ItemValue itemValue) {
         this.itemValue = itemValue;
+    }
+
+    public ItemValueBuilder(LegacyItemValue itemValue) {
+        this.itemValue = (ItemValue) LegacyItemValueToItemValueTransformer.getInstance().transform(itemValue);
     }
 
     public JSONObject getJSONObject(boolean detailed) throws JSONException {

@@ -39,7 +39,7 @@ import java.util.Map;
  * Extends BaseEntity to add state (status) and permissions.
  */
 @MappedSuperclass
-public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityReference {
+public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
 
     @Transient
     @Resource
@@ -128,6 +128,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      * @param authorizationContext to consider
      * @return permissions list
      */
+    @Override
     public List<Permission> handleAuthorizationContext(AuthorizationContext authorizationContext) {
         return new ArrayList<Permission>();
     }
@@ -137,6 +138,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return the entity ID
      */
+    @Override
     public Long getEntityId() {
         return getId();
     }
@@ -146,6 +148,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return the entity UID
      */
+    @Override
     public String getEntityUid() {
         return getUid();
     }
@@ -155,6 +158,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return entity status
      */
+    @Override
     public AMEEStatus getStatus() {
         return status;
     }
@@ -164,6 +168,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return ordinal of AMEEStatus
      */
+    @Override
     public int getStatusCode() {
         return status.ordinal();
     }
@@ -173,6 +178,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return true if the entity state is TRASH
      */
+    @Override
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH);
     }
@@ -182,6 +188,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return true if the entity state is ACTIVE
      */
+    @Override
     public boolean isActive() {
         return status.equals(AMEEStatus.ACTIVE);
     }
@@ -191,6 +198,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return true if the entity state is DEPRECATED
      */
+    @Override
     public boolean isDeprecated() {
         return status.equals((AMEEStatus.DEPRECATED));
     }
@@ -200,6 +208,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @param status to set
      */
+    @Override
     public void setStatus(AMEEStatus status) {
         this.status = status;
     }
@@ -209,6 +218,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @param name represeting status
      */
+    @Override
     public void setStatus(String name) {
         if (name != null) {
             try {
@@ -225,6 +235,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @return the AccessSpecification for this entity in the current thread
      */
+    @Override
     public AccessSpecification getAccessSpecification() {
         return accessSpecification;
     }
@@ -234,15 +245,18 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntityRefere
      *
      * @param accessSpecification for this entity
      */
+    @Override
     public void setAccessSpecification(AccessSpecification accessSpecification) {
         this.accessSpecification = accessSpecification;
     }
 
-    public AMEEEntity getEntity() {
+    @Override
+    public IAMEEEntity getEntity() {
         return this;
     }
 
-    public void setEntity(AMEEEntity entity) {
+    @Override
+    public void setEntity(IAMEEEntity entity) {
         // do nothing
     }
 

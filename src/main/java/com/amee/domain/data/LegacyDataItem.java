@@ -35,14 +35,17 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.persistence.*;
+import java.util.Date;
+
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.Date;
 
 @Entity
 @DiscriminatorValue("DI")
-public class DataItem extends Item {
+public class LegacyDataItem extends LegacyItem {
 
     public final static int PATH_MAX_SIZE = 255;
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
@@ -55,17 +58,20 @@ public class DataItem extends Item {
     @Index(name = "PATH_IND")
     private String path = "";
 
-    public DataItem() {
+    @Transient
+    private transient DataItem adapter;
+
+    public LegacyDataItem() {
         super();
     }
 
-    public DataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
+    public LegacyDataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
         super(dataCategory, itemDefinition);
     }
 
     public String getLabel() {
         String label = "";
-        ItemValue itemValue;
+        LegacyItemValue itemValue;
         ItemDefinition itemDefinition = getItemDefinition();
         for (Choice choice : itemDefinition.getDrillDownChoices()) {
             itemValue = getItemValue(choice.getName());
@@ -104,7 +110,7 @@ public class DataItem extends Item {
     }
 
     private void buildElementItemValues(Document document, Element itemValuesElem) {
-        for (ItemValue itemValue : getItemValues()) {
+        for (LegacyItemValue itemValue : getItemValues()) {
             itemValue.setBuilder(new ItemValueBuilder(itemValue));
             itemValuesElem.appendChild(itemValue.getElement(document, false));
         }
@@ -116,7 +122,7 @@ public class DataItem extends Item {
             Element itemValueSeries = document.createElement("ItemValueSeries");
             itemValueSeries.setAttribute("path", path);
             for (Object o2 : getAllItemValues(path)) {
-                ItemValue itemValue = (ItemValue) o2;
+                LegacyItemValue itemValue = (LegacyItemValue) o2;
                 itemValue.setBuilder(new ItemValueBuilder(itemValue));
                 itemValueSeries.appendChild(itemValue.getElement(document, false));
             }
@@ -144,7 +150,7 @@ public class DataItem extends Item {
     }
 
     private void buildJSONItemValues(JSONArray itemValues) throws JSONException {
-        for (ItemValue itemValue : getItemValues()) {
+        for (LegacyItemValue itemValue : getItemValues()) {
             itemValue.setBuilder(new ItemValueBuilder(itemValue));
             itemValues.put(itemValue.getJSONObject(false));
         }
@@ -156,7 +162,7 @@ public class DataItem extends Item {
             JSONObject values = new JSONObject();
             JSONArray valueSet = new JSONArray();
             for (Object o2 : getAllItemValues(path)) {
-                ItemValue itemValue = (ItemValue) o2;
+                LegacyItemValue itemValue = (LegacyItemValue) o2;
                 itemValue.setBuilder(new ItemValueBuilder(itemValue));
                 valueSet.put(itemValue.getJSONObject(false));
             }
@@ -169,7 +175,7 @@ public class DataItem extends Item {
      * Get the JSON representation of this DataItem.
      *
      * @param detailed    - true if a detailed representation is required.
-     * @param showHistory - true if the representation should include any historical sequences of {@link ItemValue)s.
+     * @param showHistory - true if the representation should include any historical sequences of {@link com.amee.domain.data.LegacyItemValue)s.
      * @return the JSON representation.
      * @throws JSONException
      */
@@ -193,7 +199,7 @@ public class DataItem extends Item {
      * Get the DOM representation of this DataItem.
      *
      * @param detailed    - true if a detailed representation is required.
-     * @param showHistory - true if the representation should include any historical sequences of {@link ItemValue)s.
+     * @param showHistory - true if the representation should include any historical sequences of {@link com.amee.domain.data.LegacyItemValue)s.
      * @return the DOM representation.
      */
     public Element getElement(Document document, boolean detailed, boolean showHistory) {
@@ -268,5 +274,13 @@ public class DataItem extends Item {
     @Override
     public StartEndDate getEndDate() {
         return null;
+    }
+
+    public DataItem getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(DataItem adapter) {
+        this.adapter = adapter;
     }
 }

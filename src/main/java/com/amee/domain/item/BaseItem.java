@@ -20,6 +20,7 @@
 package com.amee.domain.item;
 
 import com.amee.domain.AMEEEntity;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.Pathable;
@@ -93,8 +94,8 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
         return fullPath;
     }
 
-    public List<AMEEEntity> getHierarchy() {
-        List<AMEEEntity> entities = new ArrayList<AMEEEntity>();
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
         entities.add(this);
         DataCategory dc = getDataCategory();
         while (dc != null) {

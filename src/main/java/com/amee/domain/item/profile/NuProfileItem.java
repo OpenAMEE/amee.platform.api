@@ -129,6 +129,6 @@ public class NuProfileItem extends BaseItem {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.PI;
+        return ObjectType.NPI;
     }
 }

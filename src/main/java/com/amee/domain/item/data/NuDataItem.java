@@ -99,6 +99,6 @@ public class NuDataItem extends BaseItem {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.DI;
+        return ObjectType.NDI;
     }
 }

@@ -21,10 +21,7 @@ package com.amee.domain.path;
 
 import com.amee.base.utils.UidGen;
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.APIObject;
-import com.amee.domain.IAMEEEntityReference;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.auth.AccessSpecification;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +47,7 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
     private final Set<PathItem> children = Collections.synchronizedSet(new TreeSet<PathItem>());
     private boolean deprecated;
     private ThreadLocal<AccessSpecification> accessSpecification;
-    private ThreadLocal<AMEEEntity> entity;
+    private ThreadLocal<IAMEEEntity> entity;
 
     public PathItem() {
         super();
@@ -441,7 +438,7 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
         this.accessSpecification.set(accessSpecification);
     }
 
-    public AMEEEntity getEntity() {
+    public IAMEEEntity getEntity() {
         if (entity != null) {
             return entity.get();
         } else {
@@ -449,8 +446,8 @@ public class PathItem implements IAMEEEntityReference, APIObject, Comparable {
         }
     }
 
-    public void setEntity(AMEEEntity entity) {
-        this.entity = new ThreadLocal<AMEEEntity>();
+    public void setEntity(IAMEEEntity entity) {
+        this.entity = new ThreadLocal<IAMEEEntity>();
         this.entity.set(entity);
     }
 }

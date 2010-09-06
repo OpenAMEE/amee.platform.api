@@ -72,7 +72,7 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
      * A transient reference to the actual entity.
      */
     @Transient
-    private AMEEEntity entity;
+    private IAMEEEntity entity;
 
     /**
      * Default constructor.
@@ -296,11 +296,11 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
         this.accessSpecification = accessSpecification;
     }
 
-    public AMEEEntity getEntity() {
+    public IAMEEEntity getEntity() {
         return entity;
     }
 
-    public void setEntity(AMEEEntity entity) {
+    public void setEntity(IAMEEEntity entity) {
         this.entity = entity;
     }
 }

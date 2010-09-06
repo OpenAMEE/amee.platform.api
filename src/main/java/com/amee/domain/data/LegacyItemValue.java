@@ -42,7 +42,7 @@ import java.util.Date;
 @Table(name = "ITEM_VALUE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
+public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalValue {
 
     // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
     public final static int VALUE_SIZE = 32767;
@@ -59,7 +59,7 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ITEM_ID")
-    private Item item;
+    private LegacyItem item;
 
     @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
     private String value = "";
@@ -83,11 +83,14 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
     @Transient
     private transient String fullPath;
 
-    public ItemValue() {
+    @Transient
+    private transient ItemValue adapter;
+
+    public LegacyItemValue() {
         super();
     }
 
-    public ItemValue(ItemValueDefinition itemValueDefinition, Item item, String value) {
+    public LegacyItemValue(ItemValueDefinition itemValueDefinition, LegacyItem item, String value) {
         this();
         setItemValueDefinition(itemValueDefinition);
         setItem(item);
@@ -97,7 +100,7 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         this.startDate = item.getStartDate();
     }
 
-    protected void copyTo(ItemValue o) {
+    protected void copyTo(LegacyItemValue o) {
         super.copyTo(o);
         o.localeService = localeService;
         o.itemValueDefinition = itemValueDefinition;
@@ -111,8 +114,8 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         o.fullPath = fullPath;
     }
 
-    public ItemValue getCopy() {
-        ItemValue clone = new ItemValue();
+    public LegacyItemValue getCopy() {
+        LegacyItemValue clone = new LegacyItemValue();
         copyTo(clone);
         return clone;
     }
@@ -199,11 +202,11 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
         this.itemValueDefinition = itemValueDefinition;
     }
 
-    public Item getItem() {
+    public LegacyItem getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(LegacyItem item) {
         this.item = item;
     }
 
@@ -348,5 +351,13 @@ public class ItemValue extends AMEEEntity implements Pathable, ExternalValue {
 
     public void setHistoryAvailable(boolean historyAvailable) {
         this.historyAvailable = historyAvailable;
+    }
+
+    public ItemValue getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(ItemValue adapter) {
+        this.adapter = adapter;
     }
 }

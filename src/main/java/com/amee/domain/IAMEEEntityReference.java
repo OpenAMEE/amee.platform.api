@@ -64,7 +64,7 @@ public interface IAMEEEntityReference {
      */
     public void setAccessSpecification(AccessSpecification accessSpecification);
 
-    public AMEEEntity getEntity();
+    public IAMEEEntity getEntity();
 
-    public void setEntity(AMEEEntity entity);
+    public void setEntity(IAMEEEntity entity);
 }

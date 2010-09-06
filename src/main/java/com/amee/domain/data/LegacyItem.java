@@ -21,6 +21,7 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalValue;
 import com.amee.platform.science.InternalValue;
@@ -46,7 +47,7 @@ import java.util.*;
 @DiscriminatorColumn(name = "TYPE", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Configurable(autowire = Autowire.BY_TYPE)
-public abstract class Item extends AMEEEntity implements Pathable {
+public abstract class LegacyItem extends AMEEEntity implements Pathable {
 
     public final static int NAME_MAX_SIZE = 255;
 
@@ -60,7 +61,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private List<ItemValue> itemValues = new ArrayList<ItemValue>();
+    private List<LegacyItemValue> itemValues = new ArrayList<LegacyItemValue>();
 
     @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
@@ -69,7 +70,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
     private ItemValueMap itemValuesMap;
 
     @Transient
-    private Set<ItemValue> activeItemValues;
+    private Set<LegacyItemValue> activeItemValues;
 
     @Transient
     private Date effectiveStartDate;
@@ -80,11 +81,11 @@ public abstract class Item extends AMEEEntity implements Pathable {
     @Transient
     private transient String fullPath;
 
-    public Item() {
+    public LegacyItem() {
         super();
     }
 
-    public Item(DataCategory dataCategory, ItemDefinition itemDefinition) {
+    public LegacyItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
         this();
         setDataCategory(dataCategory);
         setItemDefinition(itemDefinition);
@@ -93,11 +94,11 @@ public abstract class Item extends AMEEEntity implements Pathable {
     /**
      * Copy values from this instance to the supplied instance.
      * <p/>
-     * Does not copy ItemValues.
+     * Does not copy LegacyItemValues.
      *
      * @param o Object to copy values to
      */
-    protected void copyTo(Item o) {
+    protected void copyTo(LegacyItem o) {
         super.copyTo(o);
         o.itemDefinition = itemDefinition;
         o.dataCategory = dataCategory;
@@ -106,14 +107,14 @@ public abstract class Item extends AMEEEntity implements Pathable {
         o.effectiveEndDate = (effectiveEndDate != null) ? (Date) effectiveEndDate.clone() : null;
     }
 
-    public void addItemValue(ItemValue itemValue) {
+    public void addItemValue(LegacyItemValue itemValue) {
         itemValues.add(itemValue);
         resetItemValueCollections();
     }
 
     public Set<ItemValueDefinition> getItemValueDefinitions() {
         Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
-        for (ItemValue itemValue : getActiveItemValues()) {
+        for (LegacyItemValue itemValue : getActiveItemValues()) {
             itemValueDefinitions.add(itemValue.getItemValueDefinition());
         }
         return itemValueDefinitions;
@@ -129,8 +130,8 @@ public abstract class Item extends AMEEEntity implements Pathable {
         return XMLUtils.getIdentityElement(document, this);
     }
 
-    public List<AMEEEntity> getHierarchy() {
-        List<AMEEEntity> entities = new ArrayList<AMEEEntity>();
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
         entities.add(this);
         DataCategory dc = getDataCategory();
         while (dc != null) {
@@ -202,36 +203,36 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Get an unmodifiable List of {@link ItemValue}s owned by this Item.
+     * Get an unmodifiable List of {@link com.amee.domain.data.LegacyItemValue}s owned by this Item.
      * <p/>
-     * For an historical sequence of {@link ItemValue}s, only the active entry for each {@link ItemValueDefinition}
+     * For an historical sequence of {@link com.amee.domain.data.LegacyItemValue}s, only the active entry for each {@link com.amee.domain.data.ItemValueDefinition}
      * for the prevailing datetime context is returned.
      *
-     * @return - the List of {@link ItemValue}
+     * @return - the List of {@link com.amee.domain.data.LegacyItemValue}
      */
-    public List<ItemValue> getItemValues() {
+    public List<LegacyItemValue> getItemValues() {
         return Collections.unmodifiableList(getItemValuesMap().getAll(getEffectiveStartDate()));
     }
 
     /**
-     * Get an unmodifiable List of ALL {@link ItemValue}s owned by this Item for a particular {@link ItemValueDefinition}
+     * Get an unmodifiable List of ALL {@link com.amee.domain.data.LegacyItemValue}s owned by this Item for a particular {@link com.amee.domain.data.ItemValueDefinition}
      *
-     * @param itemValuePath - the {@link ItemValueDefinition} path
-     * @return - the List of {@link ItemValue}
+     * @param itemValuePath - the {@link com.amee.domain.data.ItemValueDefinition} path
+     * @return - the List of {@link com.amee.domain.data.LegacyItemValue}
      */
-    public List<ItemValue> getAllItemValues(String itemValuePath) {
+    public List<LegacyItemValue> getAllItemValues(String itemValuePath) {
         return Collections.unmodifiableList(getItemValuesMap().getAll(itemValuePath));
     }
 
     /**
-     * Get an unmodifiable List of all active (not deleted) {@link ItemValue}s owned by this Item.
+     * Get an unmodifiable List of all active (not deleted) {@link com.amee.domain.data.LegacyItemValue}s owned by this Item.
      *
-     * @return - the Set of {@link ItemValue}
+     * @return - the Set of {@link com.amee.domain.data.LegacyItemValue}
      */
-    private Set<ItemValue> getActiveItemValues() {
+    private Set<LegacyItemValue> getActiveItemValues() {
         if (activeItemValues == null) {
-            activeItemValues = new HashSet<ItemValue>();
-            for (ItemValue iv : itemValues) {
+            activeItemValues = new HashSet<LegacyItemValue>();
+            for (LegacyItemValue iv : itemValues) {
                 if (!iv.isTrash()) {
                     activeItemValues.add(iv);
                 }
@@ -241,15 +242,15 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Return an {@link ItemValueMap} of {@link ItemValue}s belonging to this Item.
-     * The key is the value returned by {@link com.amee.domain.data.ItemValue#getDisplayPath()}.
+     * Return an {@link com.amee.domain.data.ItemValueMap} of {@link com.amee.domain.data.LegacyItemValue}s belonging to this Item.
+     * The key is the value returned by {@link LegacyItemValue#getDisplayPath()}.
      *
-     * @return {@link ItemValueMap}
+     * @return {@link com.amee.domain.data.ItemValueMap}
      */
     public ItemValueMap getItemValuesMap() {
         if (itemValuesMap == null) {
             itemValuesMap = new ItemValueMap();
-            for (ItemValue itemValue : getActiveItemValues()) {
+            for (LegacyItemValue itemValue : getActiveItemValues()) {
                 itemValuesMap.put(itemValue.getDisplayPath(), itemValue);
             }
         }
@@ -257,16 +258,16 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Attempt to match an {@link ItemValue} belonging to this Item using some identifier. The identifier may be a path
+     * Attempt to match an {@link com.amee.domain.data.LegacyItemValue} belonging to this Item using some identifier. The identifier may be a path
      * or UID.
      *
-     * @param identifier - a value to be compared to the path and then the uid of the {@link ItemValue}s belonging
+     * @param identifier - a value to be compared to the path and then the uid of the {@link com.amee.domain.data.LegacyItemValue}s belonging
      *                   to this Item.
-     * @param startDate  - the startDate to use in the {@link ItemValue} lookup
-     * @return the matched {@link ItemValue} or NULL if no match is found.
+     * @param startDate  - the startDate to use in the {@link com.amee.domain.data.LegacyItemValue} lookup
+     * @return the matched {@link com.amee.domain.data.LegacyItemValue} or NULL if no match is found.
      */
-    public ItemValue getItemValue(String identifier, Date startDate) {
-        ItemValue iv = getItemValuesMap().get(identifier, startDate);
+    public LegacyItemValue getItemValue(String identifier, Date startDate) {
+        LegacyItemValue iv = getItemValuesMap().get(identifier, startDate);
         if (iv == null) {
             iv = getByUid(identifier);
         }
@@ -274,33 +275,33 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Get an {@link ItemValue} belonging to this Item using some identifier and prevailing datetime context.
+     * Get an {@link com.amee.domain.data.LegacyItemValue} belonging to this Item using some identifier and prevailing datetime context.
      *
-     * @param identifier - a value to be compared to the path and then the uid of the {@link ItemValue}s belonging
+     * @param identifier - a value to be compared to the path and then the uid of the {@link com.amee.domain.data.LegacyItemValue}s belonging
      *                   to this Item.
-     * @return the matched {@link ItemValue} or NULL if no match is found.
+     * @return the matched {@link com.amee.domain.data.LegacyItemValue} or NULL if no match is found.
      */
-    public ItemValue getItemValue(String identifier) {
+    public LegacyItemValue getItemValue(String identifier) {
         return getItemValue(identifier, getEffectiveStartDate());
     }
 
     /**
-     * Get an {@link ItemValue} by UID
+     * Get an {@link com.amee.domain.data.LegacyItemValue} by UID
      *
-     * @param uid - the {@link ItemValue} UID
-     * @return the {@link ItemValue} if found or NULL
+     * @param uid - the {@link com.amee.domain.data.LegacyItemValue} UID
+     * @return the {@link com.amee.domain.data.LegacyItemValue} if found or NULL
      */
-    private ItemValue getByUid(final String uid) {
-        return (ItemValue) CollectionUtils.find(getActiveItemValues(), new Predicate() {
+    private LegacyItemValue getByUid(final String uid) {
+        return (LegacyItemValue) CollectionUtils.find(getActiveItemValues(), new Predicate() {
             public boolean evaluate(Object o) {
-                ItemValue iv = (ItemValue) o;
+                LegacyItemValue iv = (LegacyItemValue) o;
                 return iv.getUid().equals(uid);
             }
         });
     }
 
     /**
-     * Add the Item's {@link ItemValue} collection to the passed {@link com.amee.platform.science.InternalValue} collection.
+     * Add the Item's {@link com.amee.domain.data.LegacyItemValue} collection to the passed {@link com.amee.platform.science.InternalValue} collection.
      *
      * @param values - the {@link com.amee.platform.science.InternalValue} collection
      */
@@ -308,8 +309,8 @@ public abstract class Item extends AMEEEntity implements Pathable {
     public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
         ItemValueMap itemValueMap = getItemValuesMap();
         for (Object path : itemValueMap.keySet()) {
-            // Get all ItemValues with this ItemValueDefinition path.
-            List<ItemValue> itemValues = getAllItemValues((String) path);
+            // Get all LegacyItemValues with this ItemValueDefinition path.
+            List<LegacyItemValue> itemValues = getAllItemValues((String) path);
             if (itemValues.size() > 1 || itemValues.get(0).getItemValueDefinition().isForceTimeSeries()) {
                 appendTimeSeriesItemValue(values, itemValues);
             } else if (itemValues.size() == 1) {
@@ -318,13 +319,13 @@ public abstract class Item extends AMEEEntity implements Pathable {
         }
     }
 
-    // Add an ItemValue timeseries to the InternalValue collection.
+    // Add an LegacyItemValue timeseries to the InternalValue collection.
 
     @SuppressWarnings("unchecked")
-    private void appendTimeSeriesItemValue(Map<ItemValueDefinition, InternalValue> values, List<ItemValue> itemValues) {
+    private void appendTimeSeriesItemValue(Map<ItemValueDefinition, InternalValue> values, List<LegacyItemValue> itemValues) {
         ItemValueDefinition ivd = itemValues.get(0).getItemValueDefinition();
 
-        // Add all ItemValues with usable values
+        // Add all LegacyItemValues with usable values
         List<ExternalValue> usableSet = (List<ExternalValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
 
         if (!usableSet.isEmpty()) {
@@ -333,9 +334,9 @@ public abstract class Item extends AMEEEntity implements Pathable {
         }
     }
 
-    // Add a single-valued ItemValue to the InternalValue collection.
+    // Add a single-valued LegacyItemValue to the InternalValue collection.
 
-    private void appendSingleValuedItemValue(Map<ItemValueDefinition, InternalValue> values, ItemValue itemValue) {
+    private void appendSingleValuedItemValue(Map<ItemValueDefinition, InternalValue> values, LegacyItemValue itemValue) {
         if (itemValue.isUsableValue()) {
             values.put(itemValue.getItemValueDefinition(), new InternalValue(itemValue));
             log.debug("appendSingleValuedItemValue() - added single value " + itemValue.getPath());
@@ -378,7 +379,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
     /**
      * Check whether a date is within the lifetime of an Item.
      *
-     * @param date - the {@link Date} to check if within the lifetime as this Item.
+     * @param date - the {@link java.util.Date} to check if within the lifetime as this Item.
      * @return true if the the passed date is greater or equal to the start date of this Item
      *         and less than the end date of this Item, otherwise false.
      */
@@ -388,10 +389,10 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Set the effective start date for {@link ItemValue} look-ups.
+     * Set the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
      *
-     * @param effectiveStartDate - the effective start date for {@link ItemValue} look-ups. If NULL or
-     *                           before {@link com.amee.domain.data.Item#getStartDate()} this value is ignored.
+     * @param effectiveStartDate - the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups. If NULL or
+     *                           before {@link com.amee.domain.data.LegacyItem#getStartDate()} this value is ignored.
      */
     public void setEffectiveStartDate(Date effectiveStartDate) {
         if ((effectiveStartDate != null) && effectiveStartDate.before(getStartDate())) {
@@ -402,7 +403,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Get the effective start date for {@link ItemValue} look-ups.
+     * Get the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
      *
      * @return - the effective start date. If no date has been explicitly specified,
      *         then the Item startDate is returned.
@@ -416,10 +417,10 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Set the effective end date for {@link ItemValue} look-ups.
+     * Set the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
      *
-     * @param effectiveEndDate - the effective end date for {@link ItemValue} look-ups. If NULL or
-     *                         after {@link com.amee.domain.data.Item#getEndDate()} (if set) this value is ignored.
+     * @param effectiveEndDate - the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups. If NULL or
+     *                         after {@link com.amee.domain.data.LegacyItem#getEndDate()} (if set) this value is ignored.
      */
     public void setEffectiveEndDate(Date effectiveEndDate) {
         if ((getEndDate() != null) && (effectiveEndDate != null) && effectiveEndDate.after(getEndDate())) {
@@ -430,7 +431,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Get the effective end date for {@link ItemValue} look-ups.
+     * Get the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
      *
      * @return - the effective end date. If no date has been explicitly specified,
      *         then the Item endDate is returned.
@@ -458,16 +459,16 @@ public abstract class Item extends AMEEEntity implements Pathable {
     }
 
     /**
-     * Check if there exists amongst the current set of ItemValues, an entry with the given
+     * Check if there exists amongst the current set of LegacyItemValues, an entry with the given
      * itemValueDefinition and startDate.
      *
-     * @param itemValueDefinition - an {@link ItemValueDefinition}
-     * @param startDate           - an {@link ItemValue} startDate
+     * @param itemValueDefinition - an {@link com.amee.domain.data.ItemValueDefinition}
+     * @param startDate           - an {@link com.amee.domain.data.LegacyItemValue} startDate
      * @return - true if the newItemValue is unique, otherwise false
      */
     public boolean isUnique(ItemValueDefinition itemValueDefinition, StartEndDate startDate) {
         String uniqueId = itemValueDefinition.getUid() + startDate.getTime();
-        for (ItemValue iv : getActiveItemValues()) {
+        for (LegacyItemValue iv : getActiveItemValues()) {
             String checkId = iv.getItemValueDefinition().getUid() + iv.getStartDate().getTime();
             if (uniqueId.equals(checkId)) {
                 return false;
@@ -475,39 +476,7 @@ public abstract class Item extends AMEEEntity implements Pathable {
         }
         return true;
     }
+
+    public abstract Item getAdapter();
 }
 
-/**
- * Basic Predicate testing {@link ItemValue} instances for usable values.
- * {@see ItemValue#isUsableValue()}
- */
-class UsableValuePredicate implements Predicate {
-    public boolean evaluate(Object o) {
-        return ((ItemValue) o).isUsableValue();
-    }
-}
-
-/**
- * Predicate for obtaining the latest ItemValue in an historical sequence.
- */
-class CurrentItemValuePredicate implements Predicate {
-
-    private List<ItemValue> itemValues;
-
-    public CurrentItemValuePredicate(List<ItemValue> itemValues) {
-        this.itemValues = itemValues;
-    }
-
-    public boolean evaluate(Object o) {
-        ItemValue iv = (ItemValue) o;
-        StartEndDate startDate = iv.getStartDate();
-        String path = iv.getItemValueDefinition().getPath();
-        for (ItemValue itemValue : itemValues) {
-            if (startDate.before(itemValue.getStartDate()) &&
-                    itemValue.getItemValueDefinition().getPath().equals(path)) {
-                return false;
-            }
-        }
-        return true;
-    }
-}

@@ -4,9 +4,9 @@ import com.amee.domain.AMEEStatus;
 import com.amee.domain.Builder;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
-import com.amee.domain.data.Item;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.data.LegacyDataItem;
+import com.amee.domain.data.LegacyItem;
+import com.amee.domain.data.LegacyItemValue;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
@@ -41,7 +41,7 @@ import java.util.Date;
 
 @Entity
 @DiscriminatorValue("PI")
-public class ProfileItem extends Item {
+public class LegacyProfileItem extends LegacyItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "PROFILE_ID")
@@ -49,7 +49,7 @@ public class ProfileItem extends Item {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "DATA_ITEM_ID")
-    private DataItem dataItem;
+    private LegacyDataItem dataItem;
 
     @Column(name = "START_DATE")
     @Index(name = "START_DATE_IND")
@@ -69,17 +69,20 @@ public class ProfileItem extends Item {
     @Resource
     private CO2CalculationService calculationService;
 
-    public ProfileItem() {
+    @Transient
+    private transient ProfileItem adapter;
+
+    public LegacyProfileItem() {
         super();
     }
 
-    public ProfileItem(Profile profile, DataItem dataItem) {
+    public LegacyProfileItem(Profile profile, LegacyDataItem dataItem) {
         super(dataItem.getDataCategory(), dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
     }
 
-    public ProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
+    public LegacyProfileItem(Profile profile, DataCategory dataCategory, LegacyDataItem dataItem) {
         super(dataCategory, dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
@@ -89,9 +92,9 @@ public class ProfileItem extends Item {
         this.builder = builder;
     }
 
-    public ProfileItem getCopy() {
+    public LegacyProfileItem getCopy() {
         log.debug("getCopy()");
-        ProfileItem profileItem = new ProfileItem();
+        LegacyProfileItem profileItem = new LegacyProfileItem();
         copyTo(profileItem);
         return profileItem;
     }
@@ -101,7 +104,7 @@ public class ProfileItem extends Item {
      *
      * @param o Object to copy values to
      */
-    protected void copyTo(ProfileItem o) {
+    protected void copyTo(LegacyProfileItem o) {
         super.copyTo(o);
         o.profile = profile;
         o.dataItem = dataItem;
@@ -124,11 +127,11 @@ public class ProfileItem extends Item {
         this.profile = profile;
     }
 
-    public DataItem getDataItem() {
+    public LegacyDataItem getDataItem() {
         return dataItem;
     }
 
-    public void setDataItem(DataItem dataItem) {
+    public void setDataItem(LegacyDataItem dataItem) {
         if (dataItem != null) {
             this.dataItem = dataItem;
         }
@@ -170,7 +173,7 @@ public class ProfileItem extends Item {
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
-            calculationService.calculate(this);
+            calculationService.calculate(getAdapter());
         }
         return amounts;
     }
@@ -213,7 +216,7 @@ public class ProfileItem extends Item {
     }
 
     public boolean hasNonZeroPerTimeValues() {
-        for (ItemValue iv : getItemValues()) {
+        for (LegacyItemValue iv : getItemValues()) {
             if (iv.hasPerTimeUnit() && iv.isNonZero()) {
                 return true;
             }
@@ -224,7 +227,7 @@ public class ProfileItem extends Item {
     //TODO - TEMP HACK - will remove as soon we decide how to handle return units in V1 correctly.
 
     public boolean isSingleFlight() {
-        for (ItemValue iv : getItemValues()) {
+        for (LegacyItemValue iv : getItemValues()) {
             if ((iv.getName().startsWith("IATA") && iv.getValue().length() > 0) ||
                     (iv.getName().startsWith("Lat") && !iv.getValue().equals("-999")) ||
                     (iv.getName().startsWith("Lon") && !iv.getValue().equals("-999"))) {
@@ -241,5 +244,14 @@ public class ProfileItem extends Item {
 
     public ObjectType getObjectType() {
         return ObjectType.PI;
+    }
+
+
+    public ProfileItem getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(ProfileItem adapter) {
+        this.adapter = adapter;
     }
 }
