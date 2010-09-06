@@ -19,6 +19,7 @@
  */
 package com.amee.domain.data;
 
+import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
@@ -30,6 +31,10 @@ import org.w3c.dom.Element;
 
 @Configurable(autowire = Autowire.BY_TYPE)
 public class DataItem extends Item {
+
+    public final static int PATH_MAX_SIZE = LegacyDataItem.PATH_MAX_SIZE;
+    public final static int WIKI_DOC_MAX_SIZE = LegacyDataItem.WIKI_DOC_MAX_SIZE;
+    public final static int PROVENANCE_MAX_SIZE = LegacyDataItem.PROVENANCE_MAX_SIZE;
 
     private LegacyDataItem legacyEntity;
 

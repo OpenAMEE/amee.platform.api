@@ -155,7 +155,7 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
     }
 
     public Element getIdentityElement(Document document) {
-        return XMLUtils.getIdentityElement(document, this);
+        return XMLUtils.getIdentityElement(document, "ItemValue", this);
     }
 
     public String getName() {

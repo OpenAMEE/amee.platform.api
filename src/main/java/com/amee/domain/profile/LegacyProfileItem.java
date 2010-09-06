@@ -1,5 +1,6 @@
 package com.amee.domain.profile;
 
+import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.Builder;
 import com.amee.domain.ObjectType;
@@ -115,6 +116,10 @@ public class LegacyProfileItem extends LegacyItem {
         o.calculationService = calculationService;
     }
 
+    public Element getIdentityElement(Document document) {
+        return XMLUtils.getIdentityElement(document, "DataItem", this);
+    }
+
     public String getPath() {
         return getUid();
     }
@@ -173,7 +178,7 @@ public class LegacyProfileItem extends LegacyItem {
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
-            calculationService.calculate(getAdapter());
+            calculationService.calculate(ProfileItem.getProfileItem(this));
         }
         return amounts;
     }

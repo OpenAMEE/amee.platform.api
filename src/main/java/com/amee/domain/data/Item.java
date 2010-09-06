@@ -19,25 +19,22 @@
  */
 package com.amee.domain.data;
 
-import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEEntityAdapter;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
-import org.apache.commons.collections.list.TransformedList;
 import org.joda.time.Duration;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Item extends AMEEEntityAdapter implements Pathable {
+
+    public final static int NAME_MAX_SIZE = LegacyItem.NAME_MAX_SIZE;
 
     public Item() {
         super();
@@ -97,14 +94,20 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         return getLegacyEntity().getFullPath();
     }
 
-    @SuppressWarnings(value = "unchecked")
     public List<ItemValue> getItemValues() {
-        return TransformedList.decorate(getLegacyEntity().getItemValues(), LegacyItemValueToItemValueTransformer.getInstance());
+        List<ItemValue> itemValues = new ArrayList<ItemValue>();
+        for (LegacyItemValue legacyItemValue : getLegacyEntity().getItemValues()) {
+            itemValues.add(ItemValue.getItemValue(legacyItemValue));
+        }
+        return itemValues;
     }
 
-    @SuppressWarnings(value = "unchecked")
     public List<ItemValue> getAllItemValues(String itemValuePath) {
-        return TransformedList.decorate(getLegacyEntity().getAllItemValues(itemValuePath), LegacyItemValueToItemValueTransformer.getInstance());
+        List<ItemValue> itemValues = new ArrayList<ItemValue>();
+        for (LegacyItemValue legacyItemValue : getLegacyEntity().getAllItemValues(itemValuePath)) {
+            itemValues.add(ItemValue.getItemValue(legacyItemValue));
+        }
+        return itemValues;
     }
 
     @Deprecated

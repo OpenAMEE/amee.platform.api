@@ -11,9 +11,9 @@
         <class>com.amee.domain.auth.Permission</class>
         <class>com.amee.domain.auth.User</class>
         <class>com.amee.domain.data.DataCategory</class>
-        <class>com.amee.domain.data.DataItem</class>
+        <class>com.amee.domain.data.LegacyDataItem</class>
         <class>com.amee.domain.data.ItemDefinition</class>
-        <class>com.amee.domain.data.ItemValue</class>
+        <class>com.amee.domain.data.LegacyItemValue</class>
         <class>com.amee.domain.data.ItemValueDefinition</class>
         <class>com.amee.domain.data.ReturnValueDefinition</class>
         <class>com.amee.domain.data.LocaleName</class>
@@ -26,7 +26,7 @@
         <class>com.amee.domain.item.profile.ProfileItemNumberValue</class>
         <class>com.amee.domain.item.profile.ProfileItemTextValue</class>
         <class>com.amee.domain.profile.Profile</class>
-        <class>com.amee.domain.profile.ProfileItem</class>
+        <class>com.amee.domain.profile.LegacyProfileItem</class>
         <class>com.amee.domain.tag.Tag</class>
         <class>com.amee.domain.tag.EntityTag</class>
         <properties>

@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.List;
 import java.util.Map;
 
 public class ProfileItemBuilder implements Builder {

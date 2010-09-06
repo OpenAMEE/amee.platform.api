@@ -126,9 +126,7 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
 
     public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
 
-    public Element getIdentityElement(Document document) {
-        return XMLUtils.getIdentityElement(document, this);
-    }
+    public abstract Element getIdentityElement(Document document);
 
     public List<IAMEEEntityReference> getHierarchy() {
         List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();

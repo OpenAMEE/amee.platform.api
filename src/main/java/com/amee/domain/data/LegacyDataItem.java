@@ -130,6 +130,10 @@ public class LegacyDataItem extends LegacyItem {
         }
     }
 
+    public Element getIdentityElement(Document document) {
+        return XMLUtils.getIdentityElement(document, "DataItem", this);
+    }
+
     private void buildJSON(JSONObject obj, boolean detailed, boolean showHistory) throws JSONException {
         obj.put("uid", getUid());
         obj.put("name", getDisplayName());
