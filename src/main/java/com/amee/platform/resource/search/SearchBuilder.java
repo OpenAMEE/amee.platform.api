@@ -6,6 +6,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.AMEEEntity;
+import com.amee.domain.IAMEEEntity;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.platform.resource.datacategory.DataCategoryBuilder;
@@ -65,9 +66,9 @@ public class SearchBuilder implements ResourceBuilder {
             SearchFilter filter) {
         SearchRenderer renderer = getSearchRenderer(requestWrapper);
         renderer.start();
-        ResultsWrapper<AMEEEntity> resultsWrapper = searchService.getEntities(filter);
+        ResultsWrapper<IAMEEEntity> resultsWrapper = searchService.getEntities(filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
-        for (AMEEEntity entity : resultsWrapper.getResults()) {
+        for (IAMEEEntity entity : resultsWrapper.getResults()) {
             switch (entity.getObjectType()) {
                 case DC:
                     dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
