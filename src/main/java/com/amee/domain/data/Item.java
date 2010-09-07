@@ -21,6 +21,8 @@ package com.amee.domain.data;
 
 import com.amee.domain.AMEEEntityAdapter;
 import com.amee.domain.IAMEEEntityReference;
+import com.amee.domain.IItemService;
+import com.amee.domain.item.BaseItem;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
@@ -41,73 +43,133 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     }
 
     public void addItemValue(ItemValue itemValue) {
-        getLegacyEntity().addItemValue(itemValue.getLegacyEntity());
+        if (isLegacy()) {
+            getLegacyEntity().addItemValue(itemValue.getLegacyEntity());
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Set<ItemValueDefinition> getItemValueDefinitions() {
-        return getLegacyEntity().getItemValueDefinitions();
+        if (isLegacy()) {
+            return getLegacyEntity().getItemValueDefinitions();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public JSONObject getIdentityJSONObject() throws JSONException {
-        return getLegacyEntity().getIdentityJSONObject();
+        if (isLegacy()) {
+            return getLegacyEntity().getIdentityJSONObject();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
 
     public Element getIdentityElement(Document document) {
-        return getLegacyEntity().getIdentityElement(document);
+        if (isLegacy()) {
+            return getLegacyEntity().getIdentityElement(document);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public List<IAMEEEntityReference> getHierarchy() {
-        return getLegacyEntity().getHierarchy();
+        if (isLegacy()) {
+            return getLegacyEntity().getHierarchy();
+        } else {
+            return getNuEntity().getHierarchy();
+        }
     }
 
     public ItemDefinition getItemDefinition() {
-        return getLegacyEntity().getItemDefinition();
+        if (isLegacy()) {
+            return getLegacyEntity().getItemDefinition();
+        } else {
+            return getNuEntity().getItemDefinition();
+        }
     }
 
     public void setItemDefinition(ItemDefinition itemDefinition) {
-        getLegacyEntity().setItemDefinition(itemDefinition);
+        if (isLegacy()) {
+            getLegacyEntity().setItemDefinition(itemDefinition);
+        } else {
+            getNuEntity().setItemDefinition(itemDefinition);
+        }
     }
 
     public DataCategory getDataCategory() {
-        return getLegacyEntity().getDataCategory();
+        if (isLegacy()) {
+            return getLegacyEntity().getDataCategory();
+        } else {
+            return getNuEntity().getDataCategory();
+        }
     }
 
     public void setDataCategory(DataCategory dataCategory) {
-        getLegacyEntity().setDataCategory(dataCategory);
+        if (isLegacy()) {
+            getLegacyEntity().setDataCategory(dataCategory);
+        } else {
+            getNuEntity().setDataCategory(dataCategory);
+        }
     }
 
     public String getName() {
-        return getLegacyEntity().getName();
+        if (isLegacy()) {
+            return getLegacyEntity().getName();
+        } else {
+            return getNuEntity().getName();
+        }
     }
 
     public String getDisplayName() {
-        return getLegacyEntity().getDisplayName();
+        if (isLegacy()) {
+            return getLegacyEntity().getDisplayName();
+        } else {
+            return getNuEntity().getDisplayName();
+        }
     }
 
     public String getDisplayPath() {
-        return getLegacyEntity().getDisplayPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getDisplayPath();
+        } else {
+            return getNuEntity().getDisplayPath();
+        }
     }
 
     public String getFullPath() {
-        return getLegacyEntity().getFullPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getFullPath();
+        } else {
+            return getNuEntity().getFullPath();
+        }
     }
 
     public List<ItemValue> getItemValues() {
-        List<ItemValue> itemValues = new ArrayList<ItemValue>();
-        for (LegacyItemValue legacyItemValue : getLegacyEntity().getItemValues()) {
-            itemValues.add(ItemValue.getItemValue(legacyItemValue));
+        if (isLegacy()) {
+            List<ItemValue> itemValues = new ArrayList<ItemValue>();
+            for (LegacyItemValue legacyItemValue : getLegacyEntity().getItemValues()) {
+                itemValues.add(ItemValue.getItemValue(legacyItemValue));
+            }
+            return itemValues;
+        } else {
+            throw new UnsupportedOperationException();
         }
-        return itemValues;
     }
 
     public List<ItemValue> getAllItemValues(String itemValuePath) {
-        List<ItemValue> itemValues = new ArrayList<ItemValue>();
-        for (LegacyItemValue legacyItemValue : getLegacyEntity().getAllItemValues(itemValuePath)) {
-            itemValues.add(ItemValue.getItemValue(legacyItemValue));
+        if (isLegacy()) {
+            List<ItemValue> itemValues = new ArrayList<ItemValue>();
+            for (LegacyItemValue legacyItemValue : getLegacyEntity().getAllItemValues(itemValuePath)) {
+                itemValues.add(ItemValue.getItemValue(legacyItemValue));
+            }
+            return itemValues;
+        } else {
+            throw new UnsupportedOperationException();
         }
-        return itemValues;
     }
 
     @Deprecated
@@ -116,19 +178,35 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     }
 
     public ItemValue getItemValue(String identifier, Date startDate) {
-        return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier, startDate));
+        if (isLegacy()) {
+            return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier, startDate));
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public ItemValue getItemValue(String identifier) {
-        return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier));
+        if (isLegacy()) {
+            return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier));
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
-        getLegacyEntity().appendInternalValues(values);
+        if (isLegacy()) {
+            getLegacyEntity().appendInternalValues(values);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void setName(String name) {
-        getLegacyEntity().setName(name);
+        if (isLegacy()) {
+            getLegacyEntity().setName(name);
+        } else {
+            getNuEntity().setName(name);
+        }
     }
 
     public abstract StartEndDate getStartDate();
@@ -140,32 +218,68 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     }
 
     public boolean isWithinLifeTime(Date date) {
-        return getLegacyEntity().isWithinLifeTime(date);
+        if (isLegacy()) {
+            return getLegacyEntity().isWithinLifeTime(date);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void setEffectiveStartDate(Date effectiveStartDate) {
-        getLegacyEntity().setEffectiveStartDate(effectiveStartDate);
+        if (isLegacy()) {
+            getLegacyEntity().setEffectiveStartDate(effectiveStartDate);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Date getEffectiveStartDate() {
-        return getLegacyEntity().getEffectiveStartDate();
+        if (isLegacy()) {
+            return getLegacyEntity().getEffectiveStartDate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void setEffectiveEndDate(Date effectiveEndDate) {
-        getLegacyEntity().setEffectiveEndDate(effectiveEndDate);
+        if (isLegacy()) {
+            getLegacyEntity().setEffectiveEndDate(effectiveEndDate);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Date getEffectiveEndDate() {
-        return getLegacyEntity().getEffectiveEndDate();
+        if (isLegacy()) {
+            return getLegacyEntity().getEffectiveEndDate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Duration getDuration() {
-        return getLegacyEntity().getDuration();
+        if (isLegacy()) {
+            return getLegacyEntity().getDuration();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public boolean isUnique(ItemValueDefinition itemValueDefinition, StartEndDate startDate) {
-        return getLegacyEntity().isUnique(itemValueDefinition, startDate);
+        if (isLegacy()) {
+            return getLegacyEntity().isUnique(itemValueDefinition, startDate);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public boolean isLegacy() {
+        return getLegacyEntity() != null;
     }
 
     public abstract LegacyItem getLegacyEntity();
+
+    public abstract BaseItem getNuEntity();
+
+    public abstract IItemService getItemService();
 }

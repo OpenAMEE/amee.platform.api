@@ -1,10 +1,12 @@
 package com.amee.domain.profile;
 
 import com.amee.domain.Builder;
+import com.amee.domain.IItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.Item;
+import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ public class ProfileItem extends Item {
 
     private DataItem dataItem;
     private LegacyProfileItem legacyEntity;
+    private NuProfileItem nuEntity;
 
     public ProfileItem() {
         super();
@@ -63,6 +66,7 @@ public class ProfileItem extends Item {
         return ProfileItem.getProfileItem(getLegacyEntity().getCopy());
     }
 
+    @Override
     public String getPath() {
         return getLegacyEntity().getPath();
     }
@@ -92,6 +96,7 @@ public class ProfileItem extends Item {
         getLegacyEntity().setStartDate(startDate);
     }
 
+    @Override
     public StartEndDate getEndDate() {
         return getLegacyEntity().getEndDate();
     }
@@ -143,10 +148,12 @@ public class ProfileItem extends Item {
         return getLegacyEntity().isTrash();
     }
 
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.PI;
     }
 
+    @Override
     public LegacyProfileItem getLegacyEntity() {
         return legacyEntity;
     }
@@ -154,5 +161,18 @@ public class ProfileItem extends Item {
     public void setLegacyEntity(LegacyProfileItem legacyEntity) {
         this.legacyEntity = legacyEntity;
         this.dataItem = DataItem.getDataItem(legacyEntity.getDataItem());
+    }
+
+    @Override
+    public NuProfileItem getNuEntity() {
+        return nuEntity;
+    }
+
+    public void setNuEntity(NuProfileItem nuEntity) {
+        this.nuEntity = nuEntity;
+    }
+
+    public IItemService getItemService() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -6,6 +6,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.domain.profile.Profile;
+import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -34,6 +35,9 @@ public class NuProfileItem extends BaseItem {
     @Column(name = "END_DATE")
     @Index(name = "END_DATE_IND")
     protected Date endDate;
+
+    @Transient
+    private transient ProfileItem adapter;
 
     public NuProfileItem() {
         super();
@@ -130,5 +134,13 @@ public class NuProfileItem extends BaseItem {
     @Override
     public ObjectType getObjectType() {
         return ObjectType.NPI;
+    }
+
+    public ProfileItem getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(ProfileItem adapter) {
+        this.adapter = adapter;
     }
 }

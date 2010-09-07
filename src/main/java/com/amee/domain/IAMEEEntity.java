@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface IAMEEEntity extends IAMEEEntityReference, DatedObject {
 
-    AMEEStatus getStatus();
+    public AMEEStatus getStatus();
 
-    int getStatusCode();
+    public int getStatusCode();
 
-    boolean isTrash();
+    public boolean isTrash();
 
-    boolean isActive();
+    public boolean isActive();
 
-    boolean isDeprecated();
+    public boolean isDeprecated();
 
-    void setStatus(AMEEStatus status);
+    public void setStatus(AMEEStatus status);
 
-    void setStatus(String name);
+    public void setStatus(String name);
 
-    List<Permission> handleAuthorizationContext(AuthorizationContext authorizationContext);
+    public List<Permission> handleAuthorizationContext(AuthorizationContext authorizationContext);
 }

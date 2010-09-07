@@ -19,12 +19,15 @@
  */
 package com.amee.domain.data;
 
-import com.amee.domain.Metadata;
+import com.amee.domain.IDataItemService;
+import com.amee.domain.IItemService;
 import com.amee.domain.ObjectType;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +39,11 @@ public class DataItem extends Item {
     public final static int WIKI_DOC_MAX_SIZE = LegacyDataItem.WIKI_DOC_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = LegacyDataItem.PROVENANCE_MAX_SIZE;
 
+    @Autowired
+    private IDataItemService dataItemService;
+
     private LegacyDataItem legacyEntity;
+    private NuDataItem nuEntity;
 
     public DataItem() {
         super();
@@ -56,12 +63,30 @@ public class DataItem extends Item {
         getLegacyEntity().setAdapter(this);
     }
 
-    public static DataItem getDataItem(LegacyDataItem legacyDataItem) {
-        if (legacyDataItem != null) {
-            if (legacyDataItem.getAdapter() != null) {
-                return legacyDataItem.getAdapter();
+    public DataItem(NuDataItem dataItem) {
+        super();
+        setNuEntity(dataItem);
+        getNuEntity().setAdapter(this);
+    }
+
+    public static DataItem getDataItem(LegacyDataItem dataItem) {
+        if (dataItem != null) {
+            if (dataItem.getAdapter() != null) {
+                return dataItem.getAdapter();
             } else {
-                return new DataItem(legacyDataItem);
+                return new DataItem(dataItem);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static DataItem getDataItem(NuDataItem dataItem) {
+        if (dataItem != null) {
+            if (dataItem.getAdapter() != null) {
+                return dataItem.getAdapter();
+            } else {
+                return new DataItem(dataItem);
             }
         } else {
             return null;
@@ -69,75 +94,146 @@ public class DataItem extends Item {
     }
 
     public String getLabel() {
-        return getLegacyEntity().getLabel();
+        if (isLegacy()) {
+            return getLegacyEntity().getLabel();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
-        return getLegacyEntity().getJSONObject(detailed, showHistory);
+        if (isLegacy()) {
+            return getLegacyEntity().getJSONObject(detailed, showHistory);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        return getLegacyEntity().getJSONObject(detailed);
+        if (isLegacy()) {
+            return getLegacyEntity().getJSONObject(detailed);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getElement(Document document, boolean detailed, boolean showHistory) {
-        return getLegacyEntity().getElement(document, detailed, showHistory);
+        if (isLegacy()) {
+            return getLegacyEntity().getElement(document, detailed, showHistory);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getElement(Document document, boolean detailed) {
-        return getLegacyEntity().getElement(document, detailed);
+        if (isLegacy()) {
+            return getLegacyEntity().getElement(document, detailed);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public String getPath() {
-        return getLegacyEntity().getPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getPath();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void setPath(String path) {
-        getLegacyEntity().setPath(path);
+        if (isLegacy()) {
+            getLegacyEntity().setPath(path);
+        } else {
+            getNuEntity().setPath(path);
+        }
     }
 
     public String getWikiDoc() {
-        return getLegacyEntity().getWikiDoc();
+        if (isLegacy()) {
+            return getLegacyEntity().getWikiDoc();
+        } else {
+            return getNuEntity().getWikiDoc();
+        }
     }
 
     public void setWikiDoc(String wikiDoc) {
-        getLegacyEntity().setWikiDoc(wikiDoc);
+        if (isLegacy()) {
+            getLegacyEntity().setWikiDoc(wikiDoc);
+        } else {
+            getNuEntity().setWikiDoc(wikiDoc);
+        }
     }
 
     public String getProvenance() {
-        return getLegacyEntity().getProvenance();
+        if (isLegacy()) {
+            return getLegacyEntity().getProvenance();
+        } else {
+            return getNuEntity().getProvenance();
+        }
     }
 
     public void setProvenance(String provenance) {
-        getLegacyEntity().setProvenance(provenance);
+        if (isLegacy()) {
+            getLegacyEntity().setProvenance(provenance);
+        } else {
+            getNuEntity().setProvenance(provenance);
+        }
     }
 
+    @Override
+    public boolean isTrash() {
+        if (isLegacy()) {
+            return getLegacyEntity().isTrash();
+        } else {
+            return getNuEntity().isTrash();
+        }
+    }
+
+    @Override
+    public StartEndDate getStartDate() {
+        if (isLegacy()) {
+            return getLegacyEntity().getStartDate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public StartEndDate getEndDate() {
+        if (isLegacy()) {
+            return getLegacyEntity().getEndDate();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.DI;
     }
 
     @Override
-    public boolean isTrash() {
-        return getLegacyEntity().isTrash();
-    }
-
-    @Override
-    public StartEndDate getStartDate() {
-        return getLegacyEntity().getStartDate();
-    }
-
-    @Override
-    public StartEndDate getEndDate() {
-        return getLegacyEntity().getEndDate();
-    }
-
     public LegacyDataItem getLegacyEntity() {
         return legacyEntity;
     }
 
     public void setLegacyEntity(LegacyDataItem legacyEntity) {
         this.legacyEntity = legacyEntity;
+    }
+
+    @Override
+    public NuDataItem getNuEntity() {
+        return nuEntity;
+    }
+
+    public void setNuEntity(NuDataItem nuEntity) {
+        this.nuEntity = nuEntity;
+    }
+
+    public IItemService getItemService() {
+        return dataItemService;
     }
 }

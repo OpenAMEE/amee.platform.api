@@ -23,6 +23,7 @@ import com.amee.domain.AMEEStatus;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItem;
 import org.hibernate.annotations.Cache;
@@ -32,6 +33,7 @@ import org.joda.time.DateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -49,6 +51,9 @@ public class NuDataItem extends BaseItem {
 
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
+
+    @Transient
+    private transient DataItem adapter;
 
     public NuDataItem() {
         super();
@@ -100,5 +105,13 @@ public class NuDataItem extends BaseItem {
     @Override
     public ObjectType getObjectType() {
         return ObjectType.NDI;
+    }
+
+    public DataItem getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(DataItem adapter) {
+        this.adapter = adapter;
     }
 }
