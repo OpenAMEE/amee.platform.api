@@ -5,10 +5,8 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.path.PathItemGroup;
 import com.amee.service.auth.AuthenticationService;
 import com.amee.service.data.DataService;
-import com.amee.service.path.PathItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -23,9 +21,6 @@ public class DataItemBuilder implements ResourceBuilder {
 
     @Autowired
     private DataService dataService;
-
-    @Autowired
-    private PathItemService pathItemService;
 
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
@@ -91,8 +86,7 @@ public class DataItemBuilder implements ResourceBuilder {
             renderer.addName();
         }
         if (path || full) {
-            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup();
-            renderer.addPath(pathItemGroup.findByUId(dataItem.getDataCategory().getUid()));
+            renderer.addPath();
         }
         if (parent || full) {
             renderer.addParent();

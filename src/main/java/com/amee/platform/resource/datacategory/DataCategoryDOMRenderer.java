@@ -2,7 +2,6 @@ package com.amee.platform.resource.datacategory;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.path.PathItem;
 import com.amee.domain.tag.Tag;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -40,11 +39,9 @@ public class DataCategoryDOMRenderer implements DataCategoryRenderer {
         dataCategoryElem.addContent(new Element("WikiName").setText(dataCategory.getWikiName()));
     }
 
-    public void addPath(PathItem pathItem) {
+    public void addPath() {
         dataCategoryElem.addContent(new Element("Path").setText(dataCategory.getPath()));
-        if (pathItem != null) {
-            dataCategoryElem.addContent(new Element("FullPath").setText(pathItem.getFullPath()));
-        }
+        dataCategoryElem.addContent(new Element("FullPath").setText(dataCategory.getFullPath()));
     }
 
     public void addParent() {

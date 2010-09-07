@@ -4,7 +4,6 @@ import com.amee.base.domain.Since;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.path.PathItem;
 import com.amee.platform.resource.dataitem.DataItemRenderer;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -45,11 +44,9 @@ public class DataItemDOMRenderer implements DataItemRenderer {
         dataItemElem.addContent(new Element("Name").setText(dataItem.getName()));
     }
 
-    public void addPath(PathItem pathItem) {
+    public void addPath() {
         dataItemElem.addContent(new Element("Path").setText(dataItem.getPath()));
-        if (pathItem != null) {
-            dataItemElem.addContent(new Element("FullPath").setText(pathItem.getFullPath() + "/" + dataItem.getDisplayPath()));
-        }
+        dataItemElem.addContent(new Element("FullPath").setText(dataItem.getFullPath()));
     }
 
     public void addParent() {

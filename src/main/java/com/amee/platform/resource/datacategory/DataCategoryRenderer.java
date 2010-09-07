@@ -3,7 +3,6 @@ package com.amee.platform.resource.datacategory;
 import com.amee.base.resource.Renderer;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.path.PathItem;
 import com.amee.domain.tag.Tag;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -16,7 +15,7 @@ public interface DataCategoryRenderer extends Renderer {
 
     public void addBasic();
 
-    public void addPath(PathItem pathItem);
+    public void addPath();
 
     public void addParent();
 

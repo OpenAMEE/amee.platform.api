@@ -2,7 +2,6 @@ package com.amee.platform.resource.datacategory;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.path.PathItem;
 import com.amee.domain.tag.Tag;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,11 +40,9 @@ public class DataCategoryJSONRenderer implements DataCategoryRenderer {
         put(dataCategoryObj, "wikiName", dataCategory.getWikiName());
     }
 
-    public void addPath(PathItem pathItem) {
+    public void addPath() {
         put(dataCategoryObj, "path", dataCategory.getPath());
-        if (pathItem != null) {
-            put(dataCategoryObj, "fullPath", pathItem.getFullPath() + "/" + dataCategory.getDisplayPath());
-        }
+        put(dataCategoryObj, "fullPath", dataCategory.getFullPath());
     }
 
     public void addParent() {

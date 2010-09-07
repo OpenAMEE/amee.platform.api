@@ -4,7 +4,6 @@ import com.amee.base.resource.Renderer;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.path.PathItem;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -18,7 +17,7 @@ public interface DataItemRenderer extends Renderer {
 
     public void addName();
 
-    public void addPath(PathItem pathItem);
+    public void addPath();
 
     public void addParent();
 

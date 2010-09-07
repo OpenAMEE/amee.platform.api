@@ -4,7 +4,6 @@ import com.amee.base.domain.Since;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.path.PathItem;
 import com.amee.platform.resource.dataitem.DataItemRenderer;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,11 +45,9 @@ public class DataItemJSONRenderer implements DataItemRenderer {
         put(dataItemObj, "name", dataItem.getName());
     }
 
-    public void addPath(PathItem pathItem) {
+    public void addPath() {
         put(dataItemObj, "path", dataItem.getPath());
-        if (pathItem != null) {
-            put(dataItemObj, "fullPath", pathItem.getFullPath() + "/" + dataItem.getDisplayPath());
-        }
+        put(dataItemObj, "fullPath", dataItem.getFullPath());
     }
 
     public void addParent() {

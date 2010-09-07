@@ -3,10 +3,8 @@ package com.amee.platform.resource.datacategory;
 import com.amee.base.resource.*;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.path.PathItemGroup;
 import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
-import com.amee.service.path.PathItemService;
 import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,9 +17,6 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
     @Autowired
     private DataService dataService;
-
-    @Autowired
-    private PathItemService pathItemService;
 
     @Autowired
     private TagService tagService;
@@ -75,8 +70,7 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
         // Optionals.
         if (path || full) {
-            PathItemGroup pathItemGroup = pathItemService.getPathItemGroup();
-            renderer.addPath(pathItemGroup.findByUId(dataCategory.getUid()));
+            renderer.addPath();
         }
         if (parent || full) {
             renderer.addParent();
