@@ -66,10 +66,10 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     private ValueDefinition valueDefinition;
 
     @Column(name = "UNIT")
-    private String unit;
+    private String unit = "";
 
     @Column(name = "PER_UNIT")
-    private String perUnit;
+    private String perUnit = "";
 
     @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
@@ -282,10 +282,16 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public void setPerUnit(String perUnit) {
+        if (perUnit == null) {
+            perUnit = "";
+        }
         this.perUnit = perUnit;
     }
 
     public void setUnit(String unit) {
+        if (unit == null) {
+            unit = "";
+        }
         this.unit = unit;
     }
 
@@ -298,7 +304,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public AmountPerUnit getPerUnit() {
-        return StringUtils.isNotBlank(perUnit)  ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
+        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     public AmountPerUnit getCanonicalPerUnit() {
@@ -306,11 +312,11 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public boolean hasUnit() {
-        return unit != null;
+        return StringUtils.isNotBlank(unit);
     }
 
     public boolean hasPerUnit() {
-        return perUnit != null;
+        return StringUtils.isNotBlank(perUnit);
     }
 
     public boolean isValidUnit(String unit) {

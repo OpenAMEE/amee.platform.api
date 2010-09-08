@@ -20,10 +20,7 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.Metadata;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
@@ -37,6 +34,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "DATA_CATEGORY")
@@ -152,6 +152,25 @@ public class DataCategory extends AMEEEntity implements Pathable {
 
     public Element getIdentityElement(Document document) {
         return getElement(document, false);
+    }
+
+    /**
+     * Returns the hierarchy of objects including this object.
+     * <p/>
+     * Note: This only used in the O&B UI.
+     *
+     * @return list of entities in hierarchical order
+     */
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(this);
+        DataCategory dc = getDataCategory();
+        while (dc != null) {
+            entities.add(dc);
+            dc = dc.getDataCategory();
+        }
+        Collections.reverse(entities);
+        return entities;
     }
 
     public String getDisplayPath() {

@@ -36,7 +36,10 @@ import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ITEM_VALUE")
@@ -156,6 +159,26 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
 
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, "ItemValue", this);
+    }
+
+    /**
+     * Returns the hierarchy of objects including this object.
+     * <p/>
+     * Note: This only used in the O&B UI.
+     *
+     * @return list of entities in hierarchical order
+     */
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(this);
+        entities.add(this.getItem());
+        DataCategory dc = this.item.getDataCategory();
+        while (dc != null) {
+            entities.add(dc);
+            dc = dc.getDataCategory();
+        }
+        Collections.reverse(entities);
+        return entities;
     }
 
     public String getName() {

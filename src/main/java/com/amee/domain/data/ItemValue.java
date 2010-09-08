@@ -21,10 +21,10 @@ package com.amee.domain.data;
 
 import com.amee.domain.AMEEEntityAdapter;
 import com.amee.domain.Builder;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -33,6 +33,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.Date;
+import java.util.List;
 
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
@@ -105,6 +106,10 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public Element getIdentityElement(Document document) {
         return getLegacyEntity().getIdentityElement(document);
+    }
+
+    public List<IAMEEEntityReference> getHierarchy() {
+        return getLegacyEntity().getHierarchy();
     }
 
     @Override
