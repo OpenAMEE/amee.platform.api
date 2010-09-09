@@ -8,6 +8,6 @@ import org.apache.commons.collections.Predicate;
  */
 class UsableValuePredicate implements Predicate {
     public boolean evaluate(Object o) {
-        return ((ItemValue) o).isUsableValue();
+        return ((LegacyItemValue) o).isUsableValue();
     }
 }
