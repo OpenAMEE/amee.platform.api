@@ -3,6 +3,7 @@ package com.amee.domain.environment;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.ObjectType;
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -13,9 +14,8 @@ import java.util.Date;
 public class Environment extends AMEEEntity implements Comparable {
 
     /**
-     * A mock 'entity' so that existing API responses continue to look the same.
+     * A mock Environment 'entity' so that existing API responses continue to look the same.
      */
-    // TODO: Original dates.
     public final static Environment ENVIRONMENT =
             new Environment(
                     2L,
@@ -25,8 +25,8 @@ public class Environment extends AMEEEntity implements Comparable {
                     "",
                     10,
                     10,
-                    new Date(),
-                    new Date(),
+                    new DateTime(2007, 7, 27, 8, 30, 44, 0).toDate(),
+                    new DateTime(2007, 7, 27, 8, 30, 44, 0).toDate(),
                     "");
 
     private String name;
