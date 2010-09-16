@@ -174,7 +174,11 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     @Deprecated
     public ItemValueMap getItemValuesMap() {
-        throw new UnsupportedOperationException();
+        if (isLegacy()) {
+            return getLegacyEntity().getItemValuesMap();
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public ItemValue getItemValue(String identifier, Date startDate) {
