@@ -5,7 +5,8 @@ import org.junit.Test;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 
 public class AmountUnitTest {
 
@@ -129,5 +130,13 @@ public class AmountUnitTest {
         // Barrel
         assertEquals(AmountUnit.valueOf("bbl").toUnit(), NonSI.GALLON_LIQUID_US.times(42));
 
+        // One
+        assertEquals(AmountUnit.ONE.toString(), "");
+
+        // Square metre.
+        assertEquals(SI.SQUARE_METRE, AmountUnit.valueOf("m^2").toUnit());
+
+        // Cubic metre.
+        assertEquals(SI.CUBIC_METRE, AmountUnit.valueOf("m^3").toUnit());
     }
 }

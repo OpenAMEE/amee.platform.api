@@ -18,9 +18,6 @@ public class AmountUnit {
 
     protected final static UnitFormat UNIT_FORMAT = UnitFormat.getInstance();
 
-    // Any. Flag to indicate that any unit is permitted for Item Values of Item Value Definitions.
-    private final static Unit<? extends Quantity> ANY = Unit.ONE;
-
     // Define various watt based units.
     private final static Unit<Power> KILOWATT = SI.WATT.times(1000);
     private final static Unit<Power> MEGAWATT = KILOWATT.times(1000);
@@ -55,30 +52,7 @@ public class AmountUnit {
     // Define barrels
     private final static Unit<? extends Quantity> BARREL_OIL = NonSI.GALLON_LIQUID_US.times(42);
 
-    // Define Ecoinvent.
-    private final static Unit<? extends Quantity> DALYS = Unit.ONE;
-    private final static Unit<? extends Quantity> ELU = Unit.ONE;
-    private final static Unit<? extends Quantity> LU = Unit.ONE;
-    private final static Unit<? extends Quantity> NM3 = Unit.ONE;
-    private final static Unit<? extends Quantity> UBP = Unit.ONE;
-    private final static Unit<? extends Quantity> M2 = Unit.ONE;
-    private final static Unit<? extends Quantity> M2A = Unit.ONE;
-    private final static Unit<? extends Quantity> M3 = Unit.ONE;
-    private final static Unit<? extends Quantity> M3A = Unit.ONE;
-    private final static Unit<? extends Quantity> MA = Unit.ONE;
-    private final static Unit<? extends Quantity> MOLES = Unit.ONE;
-    private final static Unit<? extends Quantity> PERSON = Unit.ONE;
-    private final static Unit<? extends Quantity> PIG = Unit.ONE;
-    private final static Unit<? extends Quantity> PKM = Unit.ONE;
-    private final static Unit<? extends Quantity> POINTS = Unit.ONE;
-    private final static Unit<? extends Quantity> TKM = Unit.ONE;
-    private final static Unit<? extends Quantity> UNIT = Unit.ONE;
-    private final static Unit<? extends Quantity> VKM = Unit.ONE;
-
     {
-        // Any. Flag to indicate that any unit is permitted in extended classes.
-        UNIT_FORMAT.label(ANY, "any");
-
         // Create usable ASCII representations. JScience will use non-ASCII characters by default.
         UNIT_FORMAT.label(KILOWATT_HOUR, "kWh");
         UNIT_FORMAT.label(MEGAWATT_HOUR, "MWh");
@@ -177,26 +151,6 @@ public class AmountUnit {
 
         // Barrel
         UNIT_FORMAT.label(BARREL_OIL, "bbl");
-
-        // Ecoinvent.
-        UNIT_FORMAT.label(DALYS, "DALYs");
-        UNIT_FORMAT.label(ELU, "ELU");
-        UNIT_FORMAT.label(LU, "LU");
-        UNIT_FORMAT.label(NM3, "Nm_three"); // Was Nm3.
-        UNIT_FORMAT.label(UBP, "UBP");
-        UNIT_FORMAT.label(M2, "m_two"); // Was m2.
-        UNIT_FORMAT.label(M2A, "m_two_a"); // was m2a.
-        UNIT_FORMAT.label(M3, "m_three"); // Was m3.
-        UNIT_FORMAT.label(M3A, "m_three_a"); // was m3a.
-        UNIT_FORMAT.label(MA, "ma");
-        UNIT_FORMAT.label(MOLES, "moles");
-        UNIT_FORMAT.label(PERSON, "person");
-        UNIT_FORMAT.label(PIG, "pig");
-        UNIT_FORMAT.label(PKM, "pkm");
-        UNIT_FORMAT.label(POINTS, "points");
-        UNIT_FORMAT.label(TKM, "tkm");
-        UNIT_FORMAT.label(UNIT, "unit");
-        UNIT_FORMAT.label(VKM, "vkm");
     }
 
     public static final AmountUnit ONE = new AmountUnit(Unit.ONE);
