@@ -312,19 +312,27 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public boolean hasUnit() {
-        return StringUtils.isNotBlank(unit);
+        return StringUtils.isNotBlank(unit) && !unit.equals("any");
+    }
+
+    public boolean isAnyUnit() {
+        return StringUtils.isNotBlank(unit) && unit.equals("any");
     }
 
     public boolean hasPerUnit() {
-        return StringUtils.isNotBlank(perUnit);
+        return StringUtils.isNotBlank(perUnit) && !perUnit.equals("any");
+    }
+
+    public boolean isAnyPerUnit() {
+        return StringUtils.isNotBlank(perUnit) && perUnit.equals("any");
     }
 
     public boolean isValidUnit(String unit) {
-        return !hasUnit() || getUnit().isCompatibleWith(unit);
+        return getUnit().isCompatibleWith(unit);
     }
 
     public boolean isValidPerUnit(String perUnit) {
-        return !hasPerUnit() || getPerUnit().isCompatibleWith(perUnit);
+        return getPerUnit().isCompatibleWith(perUnit);
     }
 
     public AmountCompoundUnit getCompoundUnit() {

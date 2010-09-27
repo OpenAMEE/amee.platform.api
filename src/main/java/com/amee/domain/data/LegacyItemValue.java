@@ -328,12 +328,12 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
 
     @Override
     public boolean hasUnit() {
-        return getItemValueDefinition().hasUnit();
+        return (StringUtils.isNotBlank(unit) && getItemValueDefinition().isAnyUnit()) || getItemValueDefinition().hasUnit();
     }
 
     @Override
     public boolean hasPerUnit() {
-        return getItemValueDefinition().hasPerUnit();
+        return (StringUtils.isNotBlank(perUnit) && getItemValueDefinition().isAnyPerUnit()) || getItemValueDefinition().hasPerUnit();
     }
 
     public boolean hasPerTimeUnit() {
