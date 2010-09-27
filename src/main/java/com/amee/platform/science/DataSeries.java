@@ -110,7 +110,7 @@ public class DataSeries {
 
     DateTime getSeriesEndDate() {
         if (!dataPoints.isEmpty()) {
-            return (seriesEndDate != null)  ? seriesEndDate : dataPoints.get(dataPoints.size() - 1).getDateTime();
+            return (seriesEndDate != null) ? seriesEndDate : dataPoints.get(dataPoints.size() - 1).getDateTime();
         } else {
             return null;
         }
@@ -134,7 +134,7 @@ public class DataSeries {
             operation.setOperands(lhs, rhs);
             combinedSeries.add(new DataPoint(dateTimePoint, operation.operate().getValue()));
         }
-        DataSeries result= new DataSeries(combinedSeries);
+        DataSeries result = new DataSeries(combinedSeries);
         // the new series's start/end dates in terms of the 'window of interest' are then the largest overlap of the two
         // although usually they'll be the same as they'll be set by the query range
         result.setSeriesStartDate(getSeriesStartDate().isBefore(series.getSeriesStartDate()) ?
@@ -182,7 +182,7 @@ public class DataSeries {
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.plus(d));
         }
-        DataSeries result=new DataSeries(combinedDataPoints);
+        DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
         result.setSeriesStartDate(getSeriesStartDate());
         result.setSeriesEndDate(getSeriesEndDate());
@@ -225,7 +225,7 @@ public class DataSeries {
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.subtract(d));
         }
-        DataSeries result= new DataSeries(combinedDataPoints);
+        DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
         result.setSeriesStartDate(getSeriesStartDate());
         result.setSeriesEndDate(getSeriesEndDate());
@@ -268,7 +268,7 @@ public class DataSeries {
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.divide(d));
         }
-        DataSeries result= new DataSeries(combinedDataPoints);
+        DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
         result.setSeriesStartDate(getSeriesStartDate());
         result.setSeriesEndDate(getSeriesEndDate());
@@ -311,7 +311,7 @@ public class DataSeries {
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.multiply(d));
         }
-        DataSeries result= new DataSeries(combinedDataPoints);
+        DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
         result.setSeriesStartDate(getSeriesStartDate());
         result.setSeriesEndDate(getSeriesEndDate());
@@ -330,7 +330,7 @@ public class DataSeries {
 
         double integral = 0.0;
         Amount seriesTimeInMillis = getSeriesTimeInMillis();
-        log.info("Integrating, time range:"+getSeriesStartDate()+"->" +getSeriesEndDate() +", series length, "+dataPoints.size());
+        System.out.println("Integrating, time range:" + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length, " + dataPoints.size());
 
         if (seriesTimeInMillis == null) {
             integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
@@ -339,27 +339,27 @@ public class DataSeries {
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
                 DataPoint current = dataPoints.get(i);
-                       DateTime end;
+                DateTime end;
                 if (i == (dataPoints.size() - 1)) {
-                   end = getSeriesEndDate();
+                    end = getSeriesEndDate();
                 } else {
-                  DataPoint next=dataPoints.get(i+1);
-                  end=getSeriesEndDate().isBefore(next.getDateTime()) ? getSeriesEndDate() : next.getDateTime();
+                    DataPoint next = dataPoints.get(i + 1);
+                    end = getSeriesEndDate().isBefore(next.getDateTime()) ? getSeriesEndDate() : next.getDateTime();
                 }
                 DateTime start = getSeriesStartDate().isAfter(current.getDateTime()) ?
                         getSeriesStartDate() : current.getDateTime();
                 double segmentInMillis =
-                        end.getMillis() -start.getMillis();
+                        end.getMillis() - start.getMillis();
                 // the filtering should have removed points after the end of the window of interest
                 // but in case it hasn't (and for direct testing not via internal value)
 
                 // Add weighted average value.
                 double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.getValue();
-                log.info(
-                        "Diagnostics from integrate()"+weightedAverage+","+current.getValue()+","+i+","+dataPoints.size()+
-                        ","+segmentInMillis/(seriesTimeInMillis.getValue()));
+                System.out.println(
+                        "Diagnostics from integrate()" + weightedAverage + "," + current.getValue() + "," + i + "," + dataPoints.size() +
+                                "," + segmentInMillis / (seriesTimeInMillis.getValue()));
                 if (start.isAfter(end)) continue;
-                integral = integral+weightedAverage;
+                integral = integral + weightedAverage;
             }
         }
         return new Amount(integral);

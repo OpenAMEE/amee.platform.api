@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
@@ -25,6 +26,7 @@
 
     <!-- Build Plugins. -->
     <build>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -44,9 +46,25 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <parallel>methods</parallel>
+                    <systemProperties>
+                        <property>
+                            <name>log4j.configuration</name>
+                            <value>test-log4j.xml</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>test-log4j.xml</include>
+                </includes>
+            </testResource>
+        </testResources>
+
     </build>
 
     <!-- Dependencies. -->
@@ -140,7 +158,7 @@
                                 <source>1.6</source>
                                 <target>1.6</target>
                                 <compilerArguments>
-                                    <verbose />
+                                    <verbose/>
                                     <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
                                 </compilerArguments>
                             </configuration>

@@ -289,9 +289,9 @@ public class DataSeriesTest {
         points.add(new DataPoint(now.plusDays(30), new Amount("5")));
         points.add(new DataPoint(now.plusDays(40), new Amount("7")));
         DataSeries series = new DataSeries(points);
-        series.setSeriesStartDate(now.plusDays(start));
-        series.setSeriesEndDate(now.plusDays(end));
-        Amount window = new Amount(now.plusDays(end).getMillis() - now.plusDays(start).getMillis());
+        series.setSeriesStartDate(now.plusHours(start * 24));
+        series.setSeriesEndDate(now.plusHours(end * 24));
+        Amount window = new Amount(now.plusHours(end * 24).getMillis() - now.plusHours(start * 24).getMillis());
         assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = (2 * 5 + 3 * 10 + 5 * 5) / 20.0;
