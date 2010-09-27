@@ -4,17 +4,22 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Quantity;
-import javax.measure.unit.*;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+import javax.measure.unit.UnitFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 
 /**
  * An AmountUnit represents the unit of an Amount, eg kWh.
- *
  */
 public class AmountUnit {
 
     protected final static UnitFormat UNIT_FORMAT = UnitFormat.getInstance();
+
+    // Any. Flag to indicate that any unit is permitted for Item Values of Item Value Definitions.
+    private final static Unit<? extends Quantity> ANY = Unit.ONE;
 
     // Define various watt based units.
     private final static Unit<Power> KILOWATT = SI.WATT.times(1000);
@@ -71,6 +76,9 @@ public class AmountUnit {
     private final static Unit<? extends Quantity> VKM = Unit.ONE;
 
     {
+        // Any. Flag to indicate that any unit is permitted in extended classes.
+        UNIT_FORMAT.label(ANY, "any");
+
         // Create usable ASCII representations. JScience will use non-ASCII characters by default.
         UNIT_FORMAT.label(KILOWATT_HOUR, "kWh");
         UNIT_FORMAT.label(MEGAWATT_HOUR, "MWh");
@@ -211,6 +219,7 @@ public class AmountUnit {
     }
 
     // This is like Unit.valueOf but forces use of UNIT_FORMAT instead.
+
     protected static Unit<? extends Quantity> internalValueOf(CharSequence unit) {
         if ((unit == null) || (unit.length() == 0)) {
             throw new IllegalArgumentException("The unit argument is blank.");
@@ -241,7 +250,7 @@ public class AmountUnit {
             return unit.equals(a.unit);
         }
 
-        return false;    
+        return false;
     }
 
     /**

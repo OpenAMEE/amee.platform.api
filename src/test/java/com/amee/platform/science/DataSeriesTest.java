@@ -7,7 +7,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DataSeriesTest {
 
@@ -59,7 +60,7 @@ public class DataSeriesTest {
         sum.add(new DataPoint(now.plusDays(3), new Amount("7")));
         actual = new DataSeries(sum);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         test = lhs.plus(rhs);
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
         assertEquals("Combined series should have start date", now.plusHours(36), test.getSeriesStartDate());
@@ -73,7 +74,7 @@ public class DataSeriesTest {
         actual = new DataSeries(sum);
         test = lhs.plus(rhp);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         assertEquals("Combined series should have start date, is " + test.getSeriesStartDate() + " cf " + now.plusHours(36),
                 now.plusHours(36), test.getSeriesStartDate());
         assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
@@ -86,8 +87,6 @@ public class DataSeriesTest {
         assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
     }
-
-
 
     @Test
     public void subtract() {
@@ -102,7 +101,7 @@ public class DataSeriesTest {
         actual = new DataSeries(diff);
         test = lhs.subtract(rhs);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
 
 
@@ -112,7 +111,7 @@ public class DataSeriesTest {
         diff.add(new DataPoint(now.plusDays(3), new Amount("-1")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         test = lhs.subtract(rhp);
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
 
@@ -134,7 +133,7 @@ public class DataSeriesTest {
         actual = new DataSeries(diff);
         test = lhs.divide(rhs);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
 
         diff = new ArrayList<DataPoint>();
@@ -143,7 +142,7 @@ public class DataSeriesTest {
         diff.add(new DataPoint(now.plusDays(3), new Amount("0.75")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         test = lhs.divide(rhp);
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
 
@@ -166,7 +165,7 @@ public class DataSeriesTest {
         diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         test = lhs.multiply(rhs);
         assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
 
@@ -177,19 +176,19 @@ public class DataSeriesTest {
         diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
         actual = new DataSeries(diff);
         actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate( now.plusDays(5));
+        actual.setSeriesEndDate(now.plusDays(5));
         test = lhs.multiply(rhp);
         assertEquals("Combined series should have start date, is " + test.getSeriesStartDate() + " cf " + now.plusHours(36),
-            now.plusHours(36), test.getSeriesStartDate());
+                now.plusHours(36), test.getSeriesStartDate());
         assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
         assertEquals("Integrate should produce the correct value, is " + test.integrate() + " cf " + actual.integrate(),
-            test.integrate(), actual.integrate());
+                test.integrate(), actual.integrate());
 
         // Divide a series and a primitive
         test = lhs.multiply(rhf);
         assertEquals("Integrate should produce the correct value, is " + test.integrate() + " cf " + actual.integrate(),
-            test.integrate(), actual.integrate());
-        }
+                test.integrate(), actual.integrate());
+    }
 
     @Test
     public void queryWithNarrowerStartAndEndDate() {
@@ -207,7 +206,7 @@ public class DataSeriesTest {
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = (2 + 6) / 2.0;
         assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
     }
 
     @Test
@@ -224,7 +223,7 @@ public class DataSeriesTest {
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = (6 + 12 + 15) / 3.0;
         assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
     }
 
     @Test
@@ -241,7 +240,7 @@ public class DataSeriesTest {
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = (6 + 12) / 2.0;
         assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
     }
 
     @Test
@@ -258,7 +257,7 @@ public class DataSeriesTest {
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = 2.0;
         assertEquals("Integrate should produce the correct value ( " + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
     }
 
     @Test
@@ -274,9 +273,9 @@ public class DataSeriesTest {
         Amount window = new Amount(end.getMillis() - start.getMillis());
         assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (2+6+12)/3.0;
+        double target = (2 + 6 + 12) / 3.0;
         assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
 
     }
 
@@ -297,7 +296,7 @@ public class DataSeriesTest {
         assertNotNull("Should be able to integrate.", series.integrate());
         double target = (2 * 5 + 3 * 10 + 5 * 5) / 20.0;
         assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-            target, series.integrate().getValue(), DELTA);
+                target, series.integrate().getValue(), DELTA);
     }
 
     private void print(DataSeries test, DataSeries actual) {
