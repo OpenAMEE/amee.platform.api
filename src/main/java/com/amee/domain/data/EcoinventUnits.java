@@ -38,6 +38,10 @@ public abstract class EcoinventUnits {
             return unit;
         }
 
+        public boolean hasUnit() {
+            return unit != null;
+        }
+
         public String getSubstance() {
             return substance;
         }
@@ -51,13 +55,13 @@ public abstract class EcoinventUnits {
         ECOINVENT_UNITS = new HashMap<String, EcoinventUnit>() {
             {
                 put("CTU", new EcoinventUnit("CTU", null));
-                put("DALYs", new EcoinventUnit("DALYs", AmountUnit.valueOf("DALYs").toUnit()));
-                put("ELU", new EcoinventUnit("ELU", AmountUnit.valueOf("ELU").toUnit()));
-                put("LU", new EcoinventUnit("LU", AmountUnit.valueOf("LU").toUnit()));
+                put("DALYs", new EcoinventUnit("DALYs", null));
+                put("ELU", new EcoinventUnit("ELU", null));
+                put("LU", new EcoinventUnit("LU", null));
                 put("MJ", new EcoinventUnit("MJ", AmountUnit.valueOf("MJ").toUnit()));
                 put("MJ-Eq", new EcoinventUnit("MJ-Eq", AmountUnit.valueOf("MJ").toUnit(), "MJ-Eq"));
-                put("Nm3", new EcoinventUnit("Nm3", AmountUnit.valueOf("Nm_three").toUnit()));
-                put("UBP", new EcoinventUnit("UBP", AmountUnit.valueOf("UBP").toUnit()));
+                put("Nm3", new EcoinventUnit("Nm3", null));
+                put("UBP", new EcoinventUnit("UBP", null));
                 put("h", new EcoinventUnit("h", AmountUnit.valueOf("h").toUnit()));
                 put("ha", new EcoinventUnit("ha", AmountUnit.valueOf("ha").toUnit()));
                 put("kBq", new EcoinventUnit("kBq", AmountUnit.valueOf("kBq").toUnit()));
@@ -90,24 +94,24 @@ public abstract class EcoinventUnits {
                 put("kg waste", new EcoinventUnit("kg waste", AmountUnit.valueOf("kg").toUnit(), "waste"));
                 put("km", new EcoinventUnit("km", AmountUnit.valueOf("km").toUnit()));
                 put("m", new EcoinventUnit("m", AmountUnit.valueOf("m").toUnit()));
-                put("m2", new EcoinventUnit("m2", AmountUnit.valueOf("m_two").toUnit()));
-                put("m2.ppm.h", new EcoinventUnit("m2.ppm.h", AmountUnit.valueOf("m_two").toUnit(), "ppm.h"));
-                put("m2a", new EcoinventUnit("m2a", AmountUnit.valueOf("m_two_a").toUnit()));
-                put("m3", new EcoinventUnit("m3", AmountUnit.valueOf("m_three").toUnit()));
-                put("m3 air", new EcoinventUnit("m3 air", AmountUnit.valueOf("m_three").toUnit(), "air"));
-                put("m3 soil", new EcoinventUnit("m3 soil", AmountUnit.valueOf("m_three").toUnit(), "soil"));
-                put("m3 waste water", new EcoinventUnit("m3 waste water", AmountUnit.valueOf("m_three").toUnit(), "waste water"));
-                put("m3 waste", new EcoinventUnit("m3 waste", AmountUnit.valueOf("m_three").toUnit(), "waste"));
-                put("m3a", new EcoinventUnit("m3a", AmountUnit.valueOf("m_three_a").toUnit()));
-                put("ma", new EcoinventUnit("ma", AmountUnit.valueOf("ma").toUnit()));
-                put("moles of H+-Eq", new EcoinventUnit("moles of H+-Eq", AmountUnit.valueOf("moles").toUnit(), "of H+-Eq"));
-                put("person.ppm.h", new EcoinventUnit("person.ppm.h", AmountUnit.valueOf("person").toUnit(), "ppm.h"));
-                put("pig place", new EcoinventUnit("pig place", AmountUnit.valueOf("pig").toUnit(), "pig place"));
-                put("pkm", new EcoinventUnit("pkm", AmountUnit.valueOf("pkm").toUnit()));
-                put("points", new EcoinventUnit("points", AmountUnit.valueOf("points").toUnit()));
-                put("tkm", new EcoinventUnit("tkm", AmountUnit.valueOf("tkm").toUnit()));
-                put("unit", new EcoinventUnit("unit", AmountUnit.valueOf("unit").toUnit()));
-                put("vkm", new EcoinventUnit("vkm", AmountUnit.valueOf("vkm").toUnit()));
+                put("m2", new EcoinventUnit("m2", AmountUnit.valueOf("m^2").toUnit()));
+                put("m2.ppm.h", new EcoinventUnit("m2.ppm.h", AmountUnit.valueOf("m^2").toUnit(), "ppm.h"));
+                put("m2a", new EcoinventUnit("m2a", null));
+                put("m3", new EcoinventUnit("m3", AmountUnit.valueOf("m^3").toUnit()));
+                put("m3 air", new EcoinventUnit("m3 air", AmountUnit.valueOf("m^3").toUnit(), "air"));
+                put("m3 soil", new EcoinventUnit("m3 soil", AmountUnit.valueOf("m^3").toUnit(), "soil"));
+                put("m3 waste water", new EcoinventUnit("m3 waste water", AmountUnit.valueOf("m^3").toUnit(), "waste water"));
+                put("m3 waste", new EcoinventUnit("m3 waste", AmountUnit.valueOf("m^3").toUnit(), "waste"));
+                put("m3a", new EcoinventUnit("m3a", null));
+                put("ma", new EcoinventUnit("ma", null));
+                put("moles of H+-Eq", new EcoinventUnit("moles of H+-Eq", AmountUnit.valueOf("mol").toUnit(), "of H+-Eq"));
+                put("person.ppm.h", new EcoinventUnit("person.ppm.h", null, "ppm.h"));
+                put("pig place", new EcoinventUnit("pig place", null, "pig place"));
+                put("pkm", new EcoinventUnit("pkm", null));
+                put("points", new EcoinventUnit("points", null));
+                put("tkm", new EcoinventUnit("tkm", null));
+                put("unit", new EcoinventUnit("unit", null));
+                put("vkm", new EcoinventUnit("vkm", null));
             }
         };
     }

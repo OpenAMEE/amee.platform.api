@@ -294,7 +294,7 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
     }
 
     public AmountPerUnit getPerUnit() {
-        if (perUnit != null) {
+        if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
                 return AmountPerUnit.valueOf(getItem().getDuration());
             } else {

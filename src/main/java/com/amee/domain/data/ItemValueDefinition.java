@@ -144,7 +144,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
     }
 
-
     public boolean isUsableValue() {
         return getValue() != null && !getValue().isEmpty();
     }
@@ -296,7 +295,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public AmountUnit getUnit() {
-        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
+        return hasUnit() ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
     public AmountUnit getCanonicalUnit() {
@@ -304,7 +303,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public AmountPerUnit getPerUnit() {
-        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
+        return hasPerUnit() ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     public AmountPerUnit getCanonicalPerUnit() {
