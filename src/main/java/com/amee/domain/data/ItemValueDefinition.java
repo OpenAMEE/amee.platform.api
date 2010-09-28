@@ -327,11 +327,11 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public boolean isValidUnit(String unit) {
-        return getUnit().isCompatibleWith(unit);
+        return isAnyUnit() || getUnit().isCompatibleWith(unit);
     }
 
     public boolean isValidPerUnit(String perUnit) {
-        return getPerUnit().isCompatibleWith(perUnit);
+        return isAnyPerUnit() || getPerUnit().isCompatibleWith(perUnit);
     }
 
     public AmountCompoundUnit getCompoundUnit() {

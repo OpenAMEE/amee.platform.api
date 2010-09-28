@@ -290,6 +290,15 @@ public class DataCategory extends AMEEEntity implements Pathable {
         onModify();
     }
 
+    public String getEcoinventMetaInformation() {
+        return getMetadataValue("ecoinventMetaInformation");
+    }
+
+    public void setEcoinventMetaInformation(String authority) {
+        getOrCreateMetadata("ecoinventMetaInformation").setValue(authority);
+        onModify();
+    }
+
     @Override
     public void setStatus(AMEEStatus status) {
         this.status = status;
