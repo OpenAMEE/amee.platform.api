@@ -22,7 +22,7 @@
 
     <bean id="updateSearchIndexJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="searchService"/>
+        <property name="targetObject" ref="searchManager"/>
         <property name="targetMethod" value="update"/>
         <property name="concurrent" value="false"/>
     </bean>

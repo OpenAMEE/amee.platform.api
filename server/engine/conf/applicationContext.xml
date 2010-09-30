@@ -73,7 +73,14 @@
         <property name="indexDirPath" value="${AMEE_HOME}/lucene"/>
         <property name="snapTime" value="300"/>
     </bean>
-    <bean id="searchIndexBuilder" class="com.amee.platform.search.SearchIndexBuilder"/>
+    <bean id="searchManager" class="com.amee.platform.search.SearchManager"/>
+    <bean id="searchIndexerTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="2"/>
+        <property name="maxPoolSize" value="4"/>
+        <property name="queueCapacity" value="50"/>
+        <property name="allowCoreThreadTimeOut" value="true"/>
+        <property name="keepAliveSeconds" value="10"/>
+    </bean>
 
     <!-- DataSheetService -->
     <!-- The eternalPaths below should be kept in sync with those in /bin/warm-up-eternal-categories.sh -->
