@@ -39,7 +39,6 @@
 
     <!--
         **** Data capacity (collected from DB, with some contingency) ****
-        5 Environments
         40 APIVersions
         200 Data Categories
         200 Item Definitions
@@ -121,7 +120,7 @@
     </cache>
 
     <!-- Item -->
-    <cache name="com.amee.domain.data.Item"
+    <cache name="com.amee.domain.data.LegacyItem"
            maxElementsInMemory="12500"
            eternal="false"
            overflowToDisk="false"
@@ -129,7 +128,7 @@
            timeToLiveSeconds="1800"
            memoryStoreEvictionPolicy="LFU">
     </cache>
-    <cache name="com.amee.domain.data.Item.itemValues"
+    <cache name="com.amee.domain.data.LegacyItem.itemValues"
            maxElementsInMemory="57500"
            eternal="false"
            overflowToDisk="false"
@@ -173,7 +172,7 @@
     </cache>
 
     <!-- ItemValue -->
-    <cache name="com.amee.domain.data.ItemValue"
+    <cache name="com.amee.domain.data.LegacyItemValue"
            maxElementsInMemory="57500"
            eternal="false"
            overflowToDisk="false"
@@ -181,7 +180,7 @@
            timeToLiveSeconds="1800"
            memoryStoreEvictionPolicy="LFU">
     </cache>
-    <cache name="com.amee.domain.data.ItemValue.localeValues"
+    <cache name="com.amee.domain.data.LegacyItemValue.localeValues"
            maxElementsInMemory="57500"
            eternal="false"
            overflowToDisk="false"
@@ -336,7 +335,7 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
-    <!-- Environment Path Item Groups -->
+    <!-- Path Item Groups -->
     <cache name="PIGs"
            maxElementsInMemory="5"
            eternal="false"
@@ -356,7 +355,7 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
-    <!-- **** Kiwi - Entities **** -->
+    <!-- **** Entities **** -->
 
     <!-- User -->
     <cache name="com.amee.domain.auth.User"
