@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <!-- Scheduler configuration -->
+    <!-- Scheduler configuration. -->
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <!-- Allow us to prevent automatic startup -->
@@ -13,24 +13,40 @@
         <property name="startupDelay" value="10"/>
         <property name="triggers">
             <list>
-                <ref bean="updateSearchIndexCronTrigger"/>
+                <ref bean="searchIndexUpdateCronTrigger"/>
+                <ref bean="searchIndexFlushCronTrigger"/>
             </list>
         </property>
     </bean>
 
-    <!-- Search Index -->
+    <!-- Search index jobs. -->
 
-    <bean id="updateSearchIndexJobDetail"
+    <!-- Update search index: Job definition. -->
+    <bean id="searchIndexUpdateJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="searchManager"/>
         <property name="targetMethod" value="update"/>
         <property name="concurrent" value="false"/>
     </bean>
 
-    <!-- Fire at 10 minutes past every hour. -->
-    <bean id="updateSearchIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="updateSearchIndexJobDetail"/>
+    <!-- Update search index: Fire at 10 minutes past every hour. -->
+    <bean id="searchIndexUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="searchIndexUpdateJobDetail"/>
         <property name="cronExpression" value="0 10 * * * ?"/>
+    </bean>
+
+    <!-- Search index flush: Job definition. -->
+    <bean id="searchIndexFlushJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="luceneService"/>
+        <property name="targetMethod" value="flush"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Search index flush: Fire every 5 minutes. -->
+    <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="searchIndexFlushJobDetail"/>
+        <property name="cronExpression" value="0 0/5 * * * ?"/>
     </bean>
 
 </beans>
