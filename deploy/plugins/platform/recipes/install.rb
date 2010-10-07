@@ -1,3 +1,5 @@
+require 'fileutils'
+
 namespace :install do
   
   desc "Package and install into the SCM"
