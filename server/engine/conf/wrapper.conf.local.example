@@ -24,6 +24,14 @@ wrapper.java.additional.103=-Dcom.sun.management.jmxremote.authenticate=false
 wrapper.java.additional.104=-Dcom.sun.management.jmxremote.ssl=false
 wrapper.java.additional.105=-XX:+PrintGCDetails
 
+# Messaging
+set.RABBIT_MQ_ADDRESS=localhost
+set.RABBIT_MQ_PORT=5672
+set.RABBIT_MQ_USERNAME=platform_api
+set.RABBIT_MQ_PASSWORD=ra5zo7HdpDhtno
+set.MESSAGING_RUN_SLEEP=30000
+set.MESSAGING_SCOPE=live
+
 # Scheduler
 set.AUTO_START_SCHEDULER=true
 
