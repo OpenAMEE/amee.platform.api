@@ -3,6 +3,7 @@ package com.amee.platform.resource.search;
 import com.amee.base.validation.ValidationHelper;
 import com.amee.platform.search.MultiFieldQueryParserEditor;
 import com.amee.platform.search.ObjectTypesEditor;
+import com.amee.platform.search.QueryParserEditor;
 import com.amee.platform.search.SearchFilter;
 import org.apache.lucene.search.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class SearchFilterValidationHelper extends ValidationHelper {
         boosts.put("wikiName", 10.0f);
         boosts.put("tags", 10.0f);
         dataBinder.registerCustomEditor(Query.class, "q", new MultiFieldQueryParserEditor(fields, boosts));
+        dataBinder.registerCustomEditor(Query.class, "tags", new QueryParserEditor("tags"));
         dataBinder.registerCustomEditor(Set.class, "types", new ObjectTypesEditor());
     }
 
@@ -58,6 +60,7 @@ public class SearchFilterValidationHelper extends ValidationHelper {
         if (allowedFields == null) {
             allowedFields = new HashSet<String>();
             allowedFields.add("q");
+            allowedFields.add("tags");
             allowedFields.add("types");
             allowedFields.add("resultStart");
             allowedFields.add("resultLimit");

@@ -17,7 +17,6 @@ public class SearchFilterValidator implements Validator {
         super();
         qSpec = new ValidationSpecification();
         qSpec.setName("q");
-
     }
 
     public boolean supports(Class clazz) {
