@@ -6,8 +6,8 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
-import com.amee.platform.search.DataCategoryFilter;
-import com.amee.platform.search.DataCategoryFilterValidationHelper;
+import com.amee.platform.search.DataCategoriesFilter;
+import com.amee.platform.search.DataCategoriesFilterValidationHelper;
 import com.amee.platform.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -22,7 +22,7 @@ public class DataCategoriesBuilder implements ResourceBuilder {
     private SearchService searchService;
 
     @Autowired
-    private DataCategoryFilterValidationHelper validationHelper;
+    private DataCategoriesFilterValidationHelper validationHelper;
 
     @Autowired
     private DataCategoryBuilder dataCategoryBuilder;
@@ -34,7 +34,7 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        DataCategoryFilter filter = new DataCategoryFilter();
+        DataCategoriesFilter filter = new DataCategoriesFilter();
         filter.setLoadMetadatas(
                 requestWrapper.getMatrixParameters().containsKey("full") ||
                         requestWrapper.getMatrixParameters().containsKey("authority") ||
@@ -56,7 +56,7 @@ public class DataCategoriesBuilder implements ResourceBuilder {
 
     protected void handle(
             RequestWrapper requestWrapper,
-            DataCategoryFilter filter) {
+            DataCategoriesFilter filter) {
         // Setup Renderer.
         DataCategoriesRenderer renderer = getDataCategoriesRenderer(requestWrapper);
         renderer.start();
