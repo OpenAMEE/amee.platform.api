@@ -5,8 +5,8 @@ import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
-import com.amee.platform.search.DataItemFilter;
-import com.amee.platform.search.DataItemFilterValidationHelper;
+import com.amee.platform.search.DataItemsFilter;
+import com.amee.platform.search.DataItemsFilterValidationHelper;
 import com.amee.platform.search.SearchService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class DataItemsBuilder implements ResourceBuilder {
     private DataItemBuilder dataItemBuilder;
 
     @Autowired
-    private DataItemFilterValidationHelper validationHelper;
+    private DataItemsFilterValidationHelper validationHelper;
 
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
@@ -44,7 +44,7 @@ public class DataItemsBuilder implements ResourceBuilder {
             DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
                 // Create filter and do search.
-                DataItemFilter filter = new DataItemFilter(dataCategory.getItemDefinition());
+                DataItemsFilter filter = new DataItemsFilter(dataCategory.getItemDefinition());
                 filter.setLoadDataItemValues(
                         requestWrapper.getMatrixParameters().containsKey("full") ||
                                 requestWrapper.getMatrixParameters().containsKey("values"));
@@ -72,7 +72,7 @@ public class DataItemsBuilder implements ResourceBuilder {
     protected void handle(
             RequestWrapper requestWrapper,
             DataCategory dataCategory,
-            DataItemFilter filter) {
+            DataItemsFilter filter) {
         // Setup Renderer.
         DataItemsRenderer renderer = getDataItemsRenderer(requestWrapper);
         renderer.start();
