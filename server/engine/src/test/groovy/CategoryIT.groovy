@@ -1,6 +1,7 @@
 import org.junit.Ignore
 import org.junit.Test
-import static groovyx.net.http.ContentType.*
+import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.*
 
 class CategoryIT extends BaseApiTest {
