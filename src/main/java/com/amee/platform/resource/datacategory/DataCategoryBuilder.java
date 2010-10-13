@@ -1,9 +1,12 @@
 package com.amee.platform.resource.datacategory;
 
 import com.amee.base.resource.*;
+import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.tag.Tag;
+import com.amee.platform.resource.EntityFilter;
+import com.amee.platform.resource.EntityFilterValidationHelper;
 import com.amee.service.data.DataService;
 import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class DataCategoryBuilder implements ResourceBuilder {
     private TagService tagService;
 
     @Autowired
+    private EntityFilterValidationHelper validationHelper;
+
+    @Autowired
     private RendererBeanFinder rendererBeanFinder;
 
     private DataCategoryRenderer dataCategoryRenderer;
@@ -31,16 +37,24 @@ public class DataCategoryBuilder implements ResourceBuilder {
         // Get the DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
-            // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
-            if (dataCategory != null) {
-                // Handle the DataCategory.
-                this.handle(requestWrapper, dataCategory);
-                DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
-                renderer.ok();
-                return renderer.getObject();
+            // Validate.
+            EntityFilter filter = new EntityFilter();
+            validationHelper.setEntityFilter(filter);
+            if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+                // Get DataCategory (filter by status).
+                DataCategory dataCategory =
+                        dataService.getDataCategoryByIdentifier(dataCategoryIdentifier, filter.getStatus());
+                if (dataCategory != null) {
+                    // Handle the DataCategory.
+                    this.handle(requestWrapper, dataCategory);
+                    DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
+                    renderer.ok();
+                    return renderer.getObject();
+                } else {
+                    throw new NotFoundException();
+                }
             } else {
-                throw new NotFoundException();
+                throw new ValidationException(validationHelper.getValidationResult());
             }
         } else {
             throw new MissingAttributeException("categoryIdentifier");

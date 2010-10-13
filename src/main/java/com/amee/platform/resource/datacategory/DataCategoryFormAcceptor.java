@@ -21,10 +21,13 @@ public class DataCategoryFormAcceptor implements ResourceAcceptor {
 
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
-        String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (categoryIdentifier != null) {
-            DataCategory dataCategory = dataService.getDataCategoryByUid(categoryIdentifier);
+        // Get the DataCategory identifier.
+        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+        if (dataCategoryIdentifier != null) {
+            // Get DataCategory.
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if (dataCategory != null) {
+                // Handle the DataCategory update (entity updated via validation binding).
                 validationHelper.setDataCategory(dataCategory);
                 if (validationHelper.isValid(requestWrapper.getFormParameters())) {
                     dataService.invalidate(dataCategory);
