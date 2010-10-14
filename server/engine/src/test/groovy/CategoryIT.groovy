@@ -20,26 +20,13 @@ class CategoryIT extends BaseApiTest {
   @Test
   void getCategoryByWikiNameJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/Kitchen_generic')
+    def response = client.get(path: '/3.1/categories/Kitchen_generic;audit')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals "3C03A03B5F3A", response.data.category.uid
-    assertEquals "Generic", response.data.category.name
-    assertEquals "Kitchen_generic", response.data.category.wikiName
-  }
-
-  @Test
-  void getTrashedCategoryByWikiNameJson() {
-    client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/Kitchen_generic',
-            query: ['status': 'trash'])
-    assertEquals 200, response.status
-    assertEquals 'application/json', response.contentType
-    assertTrue response.data instanceof net.sf.json.JSON
-    assertEquals 'OK', response.data.status
-    assertEquals "3C03A03B5F2A", response.data.category.uid
+    assertEquals "ACTIVE", response.data.category.status
     assertEquals "Generic", response.data.category.name
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
@@ -47,12 +34,28 @@ class CategoryIT extends BaseApiTest {
   @Test
   void getCategoryByUidJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/3C03A03B5F3A')
+    def response = client.get(path: '/3.1/categories/3C03A03B5F3A;audit')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals "3C03A03B5F3A", response.data.category.uid
+    assertEquals "ACTIVE", response.data.category.status
+    assertEquals "Generic", response.data.category.name
+    assertEquals "Kitchen_generic", response.data.category.wikiName
+  }
+
+  @Test
+  void getTrashedCategoryByWikiNameJson() {
+    client.contentType = JSON
+    def response = client.get(path: '/3.1/categories/Kitchen_generic;audit',
+            query: ['status': 'trash'])
+    assertEquals 200, response.status
+    assertEquals 'application/json', response.contentType
+    assertTrue response.data instanceof net.sf.json.JSON
+    assertEquals 'OK', response.data.status
+    assertEquals "3C03A03B5F2A", response.data.category.uid
+    assertEquals "TRASH", response.data.category.status
     assertEquals "Generic", response.data.category.name
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
@@ -60,15 +63,31 @@ class CategoryIT extends BaseApiTest {
   @Test
   void getTrashedCategoryByUidJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/3C03A03B5F1A',
+    def response = client.get(path: '/3.1/categories/3C03A03B5F1A;audit',
             query: ['status': 'trash'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals "3C03A03B5F1A", response.data.category.uid
+    assertEquals "TRASH", response.data.category.status
     assertEquals "Generic", response.data.category.name
     assertEquals "Kitchen_generic", response.data.category.wikiName
+  }
+
+  @Test
+  void getInferredTrashedCategoryByUidJson() {
+    client.contentType = JSON
+    def response = client.get(path: '/3.1/categories/3C03A03B5F4A;audit',
+            query: ['status': 'trash'])
+    assertEquals 200, response.status
+    assertEquals 'application/json', response.contentType
+    assertTrue response.data instanceof net.sf.json.JSON
+    assertEquals 'OK', response.data.status
+    assertEquals "3C03A03B5F4A", response.data.category.uid
+    assertEquals "ACTIVE", response.data.category.status
+    assertEquals "Child", response.data.category.name
+    assertEquals "Kitchen_generic_child", response.data.category.wikiName
   }
 
   @Test
