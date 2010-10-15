@@ -13,6 +13,7 @@ abstract class BaseApiTest {
 
   static def context
   static def container
+  static def luceneService
 
   def client
 
@@ -50,6 +51,10 @@ abstract class BaseApiTest {
 
     // Wait 5 seconds to allow the search index to be built (there must be a better way to do this?)
     sleep(5000)
+
+    // Ensure index reader is re-opened.
+    luceneService = context.getBean("luceneService")
+    luceneService.checkSearcher();
   }
 
   @AfterClass
