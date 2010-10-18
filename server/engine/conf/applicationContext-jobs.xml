@@ -15,6 +15,7 @@
             <list>
                 <ref bean="searchIndexUpdateCronTrigger"/>
                 <ref bean="searchIndexFlushCronTrigger"/>
+                <ref bean="searchIndexCheckSearcherCronTrigger"/>
             </list>
         </property>
     </bean>
@@ -47,6 +48,20 @@
     <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="searchIndexFlushJobDetail"/>
         <property name="cronExpression" value="0 0/5 * * * ?"/>
+    </bean>
+
+    <!-- Search index flush: Job definition. -->
+    <bean id="searchIndexCheckSearcherJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="luceneService"/>
+        <property name="targetMethod" value="checkSearcher"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Search index Searcher check: Fire every minute. -->
+    <bean id="searchIndexCheckSearcherCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="searchIndexCheckSearcherJobDetail"/>
+        <property name="cronExpression" value="30 0/1 * * * ?"/>
     </bean>
 
 </beans>
