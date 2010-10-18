@@ -115,6 +115,8 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
     public DataCategoryRenderer getDataCategoryRenderer(RequestWrapper requestWrapper) {
         if (dataCategoryRenderer == null) {
+
+            // TODO: We should only render ecoinvent data as ecospold
             dataCategoryRenderer = (DataCategoryRenderer) rendererBeanFinder.getRenderer(DataCategoryRenderer.class, requestWrapper);
         }
         return dataCategoryRenderer;

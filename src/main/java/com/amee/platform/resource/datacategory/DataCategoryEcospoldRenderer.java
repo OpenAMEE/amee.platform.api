@@ -1,11 +1,11 @@
 package com.amee.platform.resource.datacategory;
 
+import com.amee.base.resource.MediaTypeNotSupportedException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.tag.Tag;
-import com.amee.platform.search.SearchService;
 import com.amee.service.data.DataService;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -28,9 +28,6 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
     private Element flowDataElem;
 
     @Autowired
-    private SearchService searchService;
-
-    @Autowired
     private DataService dataService;
 
     public void start() {
@@ -45,6 +42,11 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
 
     public void newDataCategory(DataCategory dataCategory) {
         this.dataCategory = dataCategory;
+
+        // Only display ecoinvent data in ecospold format.
+        if (dataCategory.getEcoinventMetaInformation().isEmpty()) {
+            throw new MediaTypeNotSupportedException();
+        }
 
         datasetElem = new Element("dataset", NS);
         if (rootElem != null) {
@@ -87,9 +89,7 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
                 } else {
                     exchangeElem.setAttribute(name, itemValue.getValue());
                 }
-                
             }
-
             flowDataElem.addContent(exchangeElem);
         }
     }
