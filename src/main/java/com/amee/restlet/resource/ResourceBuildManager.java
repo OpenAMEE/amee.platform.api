@@ -33,6 +33,9 @@ public class ResourceBuildManager extends ResourceManager {
         {
             add(MediaType.APPLICATION_XML);
             add(MediaType.APPLICATION_JSON);
+
+            MediaType.register("application/x.ecospold+xml", "Ecospold document");
+            add(MediaType.valueOf("application/x.ecospold+xml"));
         }
     };
 
@@ -153,6 +156,12 @@ public class ResourceBuildManager extends ResourceManager {
                     } catch (JDOMException e) {
                         throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
                     }
+                }
+            } else if ((result != null) && result.getName().equals("ecoSpold")) {
+                try {
+                    representation = new DomRepresentation(MediaType.valueOf("application/x.ecosold+xml"), DOM_OUTPUTTER.output(document));
+                } catch (JDOMException e) {
+                    throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
                 }
             }
         }
