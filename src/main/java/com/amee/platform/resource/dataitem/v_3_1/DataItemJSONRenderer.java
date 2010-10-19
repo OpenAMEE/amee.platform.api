@@ -45,6 +45,11 @@ public class DataItemJSONRenderer implements DataItemRenderer {
         put(dataItemObj, "name", dataItem.getName());
     }
 
+    // TODO: Implement in v_3.2.
+    public void addLabel() {
+        put(dataItemObj, "label", dataItem.getLabel());
+    }
+
     public void addPath() {
         put(dataItemObj, "path", dataItem.getPath());
         put(dataItemObj, "fullPath", dataItem.getFullPath());

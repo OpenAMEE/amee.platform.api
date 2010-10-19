@@ -17,6 +17,9 @@ public interface DataItemRenderer extends Renderer {
 
     public void addName();
 
+    // TODO: Implement in v_3.2.
+    public void addLabel();
+
     public void addPath();
 
     public void addParent();

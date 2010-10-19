@@ -39,7 +39,7 @@ public class DataItemBuilder implements ResourceBuilder {
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
                 if (dataItemIdentifier != null) {
                     // Get DataItem.
-                    DataItem dataItem = dataService.getDataItemByUid(dataCategory, dataItemIdentifier);
+                    DataItem dataItem = dataService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
                         // Handle the DataItem.
                         this.handle(requestWrapper, dataItem);
@@ -69,6 +69,7 @@ public class DataItemBuilder implements ResourceBuilder {
 
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean name = requestWrapper.getMatrixParameters().containsKey("name");
+        boolean label = requestWrapper.getMatrixParameters().containsKey("label");
         boolean path = requestWrapper.getMatrixParameters().containsKey("path");
         boolean parent = requestWrapper.getMatrixParameters().containsKey("parent");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
@@ -84,6 +85,9 @@ public class DataItemBuilder implements ResourceBuilder {
         // Optionals.
         if (name || full) {
             renderer.addName();
+        }
+        if (label || full) {
+            renderer.addLabel();
         }
         if (path || full) {
             renderer.addPath();

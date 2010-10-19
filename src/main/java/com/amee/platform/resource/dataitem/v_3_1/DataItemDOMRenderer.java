@@ -44,6 +44,11 @@ public class DataItemDOMRenderer implements DataItemRenderer {
         dataItemElem.addContent(new Element("Name").setText(dataItem.getName()));
     }
 
+    // TODO: Implement in v_3.2.
+    public void addLabel() {
+        dataItemElem.addContent(new Element("Label").setText(dataItem.getLabel()));
+    }
+
     public void addPath() {
         dataItemElem.addContent(new Element("Path").setText(dataItem.getPath()));
         dataItemElem.addContent(new Element("FullPath").setText(dataItem.getFullPath()));
