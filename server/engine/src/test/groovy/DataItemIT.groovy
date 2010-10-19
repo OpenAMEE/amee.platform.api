@@ -1,7 +1,8 @@
 import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 class DataItemIT extends BaseApiTest {
 
@@ -14,12 +15,13 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemsJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/Cooking/items;full')
+    def response = client.get(path: '/3.1/categories/Cooking/items;full',
+            query: ['resultLimit': '4'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertFalse response.data.resultsTruncated
+    assertTrue response.data.resultsTruncated
     assertEquals dataItemUids.size(), response.data.items.size()
     assert dataItemUids == response.data.items.collect {it.uid}
   }
@@ -27,11 +29,12 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemsXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.1/categories/Cooking/items;full')
+    def response = client.get(path: '/3.1/categories/Cooking/items;full',
+            query: ['resultLimit': '4'])
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
-    assertEquals 'false', response.data.Items.@truncated.text()
+    assertEquals 'true', response.data.Items.@truncated.text()
     def allDataItems = response.data.Items.Item
     assertEquals dataItemUids.size(), allDataItems.size()
     assert dataItemUids == allDataItems.@uid*.text()
@@ -39,13 +42,13 @@ class DataItemIT extends BaseApiTest {
 
   @Test
   void getDataItemJson() {
-    def response = client.get(
-            path: '/3.1/categories/Cooking/items/004CF30590A5;full',
-            contentType: JSON);
+    client.contentType = JSON
+    def response = client.get(path: '/3.1/categories/Cooking/items/004CF30590A5;full');
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
     assertEquals 'OK', response.data.status;
+    assertEquals '1, Gas', response.data.item.label;
     assertEquals '54C8A44254AA', response.data.item.categoryUid;
     assertEquals 'Cooking', response.data.item.categoryWikiName;
     assertEquals 'Cooking', response.data.item.itemDefinition.name;
@@ -54,12 +57,12 @@ class DataItemIT extends BaseApiTest {
 
   @Test
   void getDataItemXml() {
-    def response = client.get(
-            path: '/3.1/categories/Cooking/items/004CF30590A5;full',
-            contentType: XML);
+    client.contentType = XML
+    def response = client.get(path: '/3.1/categories/Cooking/items/004CF30590A5;full');
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
+    assertEquals '1, Gas', response.data.Item.Label.text();
     assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text();
     assertEquals 'Cooking', response.data.Item.CategoryWikiName.text();
     assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text();
