@@ -179,9 +179,9 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public Item getItem() {
         if (isLegacy()) {
-            return DataItem.getDataItem(getLegacyEntity().getItem());
+            return Item.getItem(getLegacyEntity().getItem());
         } else {
-            return DataItem.getDataItem(getNuEntity().getItem());
+            return Item.getItem(getNuEntity().getItem());
         }
     }
 
@@ -189,7 +189,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setItem(item.getLegacyEntity());
         } else {
-            getNuEntity().setItem(item.getNuEntity());
+            // TODO
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -312,10 +313,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public void setLegacyEntity(LegacyItemValue legacyEntity) {
+        legacyEntity.setAdapter(this);
         this.legacyEntity = legacyEntity;
-        if (legacyEntity.getItem() != null) {
-            this.item = legacyEntity.getItem().getAdapter();
-        }
     }
 
     public BaseItemValue getNuEntity() {

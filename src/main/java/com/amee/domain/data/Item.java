@@ -24,7 +24,11 @@ import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.IItemService;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.path.Pathable;
+import com.amee.domain.profile.LegacyProfileItem;
+import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.Duration;
@@ -42,7 +46,27 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     public Item() {
         super();
     }
-    
+
+    public static Item getItem(LegacyItem item) {
+        if (LegacyDataItem.class.isAssignableFrom(item.getClass())) {
+            return DataItem.getDataItem((LegacyDataItem) item);
+        } else if (LegacyProfileItem.class.isAssignableFrom(item.getClass())) {
+            return ProfileItem.getProfileItem((LegacyProfileItem) item);
+        } else {
+            throw new RuntimeException("Class not supported: " + item.getClass().toString());
+        }
+    }
+
+    public static Item getItem(BaseItem item) {
+        if (NuDataItem.class.isAssignableFrom(item.getClass())) {
+            return DataItem.getDataItem((NuDataItem) item);
+        } else if (NuProfileItem.class.isAssignableFrom(item.getClass())) {
+            return ProfileItem.getProfileItem((NuProfileItem) item);
+        } else {
+            throw new RuntimeException("Class not supported: " + item.getClass().toString());
+        }
+    }
+
     public void addItemValue(ItemValue itemValue) {
         if (isLegacy()) {
             getLegacyEntity().addItemValue(itemValue.getLegacyEntity());
