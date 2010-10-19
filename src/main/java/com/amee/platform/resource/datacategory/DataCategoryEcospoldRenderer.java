@@ -9,10 +9,15 @@ import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 @Service
 @Scope("prototype")
@@ -59,7 +64,15 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
     public void addBasic() {
 
         // Add the metainformation element
-        datasetElem.addContent(new Element("metaInformation", NS).setText(dataCategory.getEcoinventMetaInformation()));
+        try {
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = builder.build(new StringReader(dataCategory.getEcoinventMetaInformation()));
+            datasetElem.addContent(doc.getRootElement().detach());
+        } catch (JDOMException e) {
+            throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
+        }
 
         // Add the flowData (data items)
         flowDataElem = new Element("flowData", NS);
