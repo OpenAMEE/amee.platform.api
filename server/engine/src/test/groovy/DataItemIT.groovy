@@ -12,6 +12,18 @@ class DataItemIT extends BaseApiTest {
           '6C663D2B8681',
           '9EFA0CE242D0']
 
+  def itemValueValues = [
+          '1',
+          '188',
+          'BRE/MTP/dgen/defra 2007',
+          'Gas']
+
+  def itemValuePaths = [
+          'numberOfPeople',
+          'kgCO2PerYear',
+          'source',
+          'fuel']
+
   @Test
   void getDataItemsJson() {
     client.contentType = JSON
@@ -53,6 +65,9 @@ class DataItemIT extends BaseApiTest {
     assertEquals 'Cooking', response.data.item.categoryWikiName;
     assertEquals 'Cooking', response.data.item.itemDefinition.name;
     assertEquals '/home/appliances/cooking/004CF30590A5', response.data.item.fullPath;
+    assertEquals itemValueValues.size(), response.data.item.values.size();
+    assertTrue(itemValueValues == response.data.item.values.collect {it.value});
+    assertTrue(itemValuePaths == response.data.item.values.collect {it.path});
   }
 
   @Test
@@ -67,5 +82,9 @@ class DataItemIT extends BaseApiTest {
     assertEquals 'Cooking', response.data.Item.CategoryWikiName.text();
     assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text();
     assertEquals '/home/appliances/cooking/004CF30590A5', response.data.Item.FullPath.text();
+    def allValues = response.data.Item.Values.Value;
+    assertEquals itemValueValues.size(), allValues.size();
+    assertTrue(itemValueValues == allValues.Value*.text());
+    assertTrue(itemValuePaths == allValues.Path*.text());
   }
 }
