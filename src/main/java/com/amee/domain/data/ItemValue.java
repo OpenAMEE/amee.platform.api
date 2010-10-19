@@ -23,6 +23,7 @@ import com.amee.domain.AMEEEntityAdapter;
 import com.amee.domain.Builder;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
 import org.json.JSONException;
@@ -38,8 +39,8 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
 
-    private Item item;
     private LegacyItemValue legacyEntity;
+    private BaseItemValue nuEntity;
 
     public ItemValue() {
         super();
@@ -53,10 +54,16 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         getLegacyEntity().setAdapter(this);
     }
 
-    public ItemValue(LegacyItemValue legacyItemValue) {
+    public ItemValue(LegacyItemValue itemValue) {
         super();
-        setLegacyEntity(legacyItemValue);
+        setLegacyEntity(itemValue);
         getLegacyEntity().setAdapter(this);
+    }
+
+    public ItemValue(BaseItemValue itemValue) {
+        super();
+        setNuEntity(itemValue);
+        getNuEntity().setAdapter(this);
     }
 
     public static ItemValue getItemValue(LegacyItemValue legacyItemValue) {
@@ -65,6 +72,18 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
                 return legacyItemValue.getAdapter();
             } else {
                 return new ItemValue(legacyItemValue);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static ItemValue getItemValue(BaseItemValue baseItemValue) {
+        if (baseItemValue != null) {
+            if (baseItemValue.getAdapter() != null) {
+                return baseItemValue.getAdapter();
+            } else {
+                return new ItemValue(baseItemValue);
             }
         } else {
             return null;
@@ -101,7 +120,12 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public Element getElement(Document document, boolean detailed) {
-        return getLegacyEntity().getElement(document, detailed);
+        if (isLegacy()) {
+            return getLegacyEntity().getElement(document, detailed);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getIdentityElement(Document document) {
@@ -119,12 +143,20 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     @Override
     public String getDisplayName() {
-        return getLegacyEntity().getDisplayName();
+        if (isLegacy()) {
+            return getLegacyEntity().getDisplayName();
+        } else {
+            return getNuEntity().getDisplayName();
+        }
     }
 
     @Override
     public String getPath() {
-        return getLegacyEntity().getPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getPath();
+        } else {
+            return getNuEntity().getPath();
+        }
     }
 
     @Override
@@ -146,12 +178,19 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public Item getItem() {
-        return item;
+        if (isLegacy()) {
+            return DataItem.getDataItem(getLegacyEntity().getItem());
+        } else {
+            return DataItem.getDataItem(getNuEntity().getItem());
+        }
     }
 
     public void setItem(Item item) {
-        getLegacyEntity().setItem(item.getLegacyEntity());
-        this.item = item;
+        if (isLegacy()) {
+            getLegacyEntity().setItem(item.getLegacyEntity());
+        } else {
+            getNuEntity().setItem(item.getNuEntity());
+        }
     }
 
     public String getValue() {
@@ -264,6 +303,10 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         getLegacyEntity().setHistoryAvailable(historyAvailable);
     }
 
+    public boolean isLegacy() {
+        return getLegacyEntity() != null;
+    }
+
     public LegacyItemValue getLegacyEntity() {
         return legacyEntity;
     }
@@ -273,5 +316,13 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (legacyEntity.getItem() != null) {
             this.item = legacyEntity.getItem().getAdapter();
         }
+    }
+
+    public BaseItemValue getNuEntity() {
+        return nuEntity;
+    }
+
+    public void setNuEntity(BaseItemValue nuEntity) {
+        this.nuEntity = nuEntity;
     }
 }

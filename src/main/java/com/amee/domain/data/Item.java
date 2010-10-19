@@ -23,6 +23,7 @@ import com.amee.domain.AMEEEntityAdapter;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.IItemService;
 import com.amee.domain.item.BaseItem;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
@@ -41,7 +42,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     public Item() {
         super();
     }
-
+    
     public void addItemValue(ItemValue itemValue) {
         if (isLegacy()) {
             getLegacyEntity().addItemValue(itemValue.getLegacyEntity());
@@ -54,7 +55,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getItemValueDefinitions();
         } else {
-            throw new UnsupportedOperationException();
+            return getItemService().getItemValueDefinitionsInUse(getNuEntity());
         }
     }
 
@@ -156,7 +157,11 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
             }
             return itemValues;
         } else {
-            throw new UnsupportedOperationException();
+            List<ItemValue> itemValues = new ArrayList<ItemValue>();
+            for (BaseItemValue baseItemValue : getItemService().getItemValues(getNuEntity())) {
+                itemValues.add(ItemValue.getItemValue(baseItemValue));
+            }
+            return itemValues;
         }
     }
 
@@ -168,7 +173,11 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
             }
             return itemValues;
         } else {
-            throw new UnsupportedOperationException();
+            List<ItemValue> itemValues = new ArrayList<ItemValue>();
+            for (BaseItemValue baseItemValue : getItemService().getAllItemValues(getNuEntity(), itemValuePath)) {
+                itemValues.add(ItemValue.getItemValue(baseItemValue));
+            }
+            return itemValues;
         }
     }
 
@@ -177,6 +186,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getItemValuesMap();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -185,7 +195,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier, startDate));
         } else {
-            throw new UnsupportedOperationException();
+            return ItemValue.getItemValue(getItemService().getItemValue(getNuEntity(), identifier, startDate));
         }
     }
 
@@ -193,7 +203,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier));
         } else {
-            throw new UnsupportedOperationException();
+            return ItemValue.getItemValue(getItemService().getItemValue(getNuEntity(), identifier));
         }
     }
 
@@ -201,6 +211,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().appendInternalValues(values);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -225,6 +236,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().isWithinLifeTime(date);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -233,6 +245,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().setEffectiveStartDate(effectiveStartDate);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -241,6 +254,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getEffectiveStartDate();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -249,6 +263,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().setEffectiveEndDate(effectiveEndDate);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -257,6 +272,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getEffectiveEndDate();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -265,6 +281,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getDuration();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -273,7 +290,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().isUnique(itemValueDefinition, startDate);
         } else {
-            throw new UnsupportedOperationException();
+            return getItemService().isUnique(getNuEntity(), itemValueDefinition, startDate);
         }
     }
 

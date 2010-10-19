@@ -1,7 +1,7 @@
 package com.amee.domain.profile;
 
 import com.amee.domain.Builder;
-import com.amee.domain.IItemService;
+import com.amee.domain.IProfileItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
@@ -12,6 +12,7 @@ import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,7 +22,9 @@ import java.util.Date;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ProfileItem extends Item {
 
-    private DataItem dataItem;
+    @Autowired
+    private IProfileItemService profileItemService;
+
     private LegacyProfileItem legacyEntity;
     private NuProfileItem nuEntity;
 
@@ -43,15 +46,31 @@ public class ProfileItem extends Item {
     public ProfileItem(LegacyProfileItem profileItem) {
         super();
         setLegacyEntity(profileItem);
-        getLegacyEntity().setAdapter(this);
     }
 
-    public static ProfileItem getProfileItem(LegacyProfileItem legacyProfileItem) {
-        if (legacyProfileItem != null) {
-            if (legacyProfileItem.getAdapter() != null) {
-                return legacyProfileItem.getAdapter();
+    public ProfileItem(NuProfileItem profileItem) {
+        super();
+        setNuEntity(profileItem);
+    }
+
+    public static ProfileItem getProfileItem(LegacyProfileItem profileItem) {
+        if (profileItem != null) {
+            if (profileItem.getAdapter() != null) {
+                return profileItem.getAdapter();
             } else {
-                return new ProfileItem(legacyProfileItem);
+                return new ProfileItem(profileItem);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static ProfileItem getProfileItem(NuProfileItem profileItem) {
+        if (profileItem != null) {
+            if (profileItem.getAdapter() != null) {
+                return profileItem.getAdapter();
+            } else {
+                return new ProfileItem(profileItem);
             }
         } else {
             return null;
@@ -59,93 +78,176 @@ public class ProfileItem extends Item {
     }
 
     public void setBuilder(Builder builder) {
-        getLegacyEntity().setBuilder(builder);
+        if (isLegacy()) {
+            getLegacyEntity().setBuilder(builder);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public ProfileItem getCopy() {
-        return ProfileItem.getProfileItem(getLegacyEntity().getCopy());
+        if (isLegacy()) {
+            return ProfileItem.getProfileItem(getLegacyEntity().getCopy());
+        } else {
+            return ProfileItem.getProfileItem(getNuEntity().getCopy());
+        }
     }
 
     @Override
     public String getPath() {
-        return getLegacyEntity().getPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getPath();
+        } else {
+            return getNuEntity().getPath();
+        }
     }
 
     public Profile getProfile() {
-        return getLegacyEntity().getProfile();
+        if (isLegacy()) {
+            return getLegacyEntity().getProfile();
+        } else {
+            return getNuEntity().getProfile();
+        }
     }
 
     public void setProfile(Profile profile) {
-        getLegacyEntity().setProfile(profile);
+        if (isLegacy()) {
+            getLegacyEntity().setProfile(profile);
+        } else {
+            getNuEntity().setProfile(profile);
+        }
     }
 
     public DataItem getDataItem() {
-        return dataItem;
+        if (isLegacy()) {
+            return DataItem.getDataItem(getLegacyEntity().getDataItem());
+        } else {
+            return DataItem.getDataItem(getNuEntity().getDataItem());
+        }
     }
 
     public void setDataItem(DataItem dataItem) {
-        getLegacyEntity().setDataItem(dataItem.getLegacyEntity());
-        this.dataItem = dataItem;
+        if (isLegacy()) {
+            getLegacyEntity().setDataItem(dataItem.getLegacyEntity());
+        } else {
+            getNuEntity().setDataItem(dataItem.getNuEntity());
+        }
     }
 
     public StartEndDate getStartDate() {
-        return getLegacyEntity().getStartDate();
+        if (isLegacy()) {
+            return getLegacyEntity().getStartDate();
+        } else {
+            return getNuEntity().getStartDate();
+        }
     }
 
     public void setStartDate(Date startDate) {
-        getLegacyEntity().setStartDate(startDate);
+        if (isLegacy()) {
+            getLegacyEntity().setStartDate(startDate);
+        } else {
+            getNuEntity().setStartDate(startDate);
+        }
     }
 
     @Override
     public StartEndDate getEndDate() {
-        return getLegacyEntity().getEndDate();
+        if (isLegacy()) {
+            return getLegacyEntity().getEndDate();
+        } else {
+            return getNuEntity().getEndDate();
+        }
     }
 
     public void setEndDate(Date endDate) {
-        getLegacyEntity().setEndDate(endDate);
+        if (isLegacy()) {
+            getLegacyEntity().setEndDate(endDate);
+        } else {
+            getNuEntity().setEndDate(endDate);
+        }
     }
 
     public boolean isEnd() {
-        return getLegacyEntity().isEnd();
+        if (isLegacy()) {
+            return getLegacyEntity().isEnd();
+        } else {
+            return getNuEntity().isEnd();
+        }
     }
 
     public ReturnValues getAmounts(boolean recalculate) {
-        return getLegacyEntity().getAmounts(recalculate);
+        if (isLegacy()) {
+            return getLegacyEntity().getAmounts(recalculate);
+        } else {
+            return getItemService().getAmounts(getNuEntity(), recalculate);
+        }
     }
 
     public ReturnValues getAmounts() {
-        return getLegacyEntity().getAmounts();
+        return getAmounts(false);
     }
 
     @Deprecated
     public double getAmount() {
-        return getLegacyEntity().getAmount();
+        if (isLegacy()) {
+            return getLegacyEntity().getAmount();
+        } else {
+            return getItemService().getAmount(getNuEntity());
+        }
     }
 
     public void setAmounts(ReturnValues amounts) {
-        getLegacyEntity().setAmounts(amounts);
+        if (isLegacy()) {
+            getLegacyEntity().setAmounts(amounts);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public JSONObject getJSONObject(boolean b) throws JSONException {
-        return getLegacyEntity().getJSONObject(b);
+        if (isLegacy()) {
+            return getLegacyEntity().getJSONObject(b);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getElement(Document document, boolean b) {
-        return getLegacyEntity().getElement(document, b);
+        if (isLegacy()) {
+            return getLegacyEntity().getElement(document, b);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public boolean hasNonZeroPerTimeValues() {
-        return getLegacyEntity().hasNonZeroPerTimeValues();
+        if (isLegacy()) {
+            return getLegacyEntity().hasNonZeroPerTimeValues();
+        } else {
+            return getItemService().hasNonZeroPerTimeValues(getNuEntity());
+        }
     }
 
     public boolean isSingleFlight() {
-        return getLegacyEntity().isSingleFlight();
+        if (isLegacy()) {
+            return getLegacyEntity().isSingleFlight();
+        } else {
+            return getItemService().isSingleFlight(getNuEntity());
+        }
     }
 
     @Override
     public boolean isTrash() {
-        return getLegacyEntity().isTrash();
+        if (isLegacy()) {
+            return getLegacyEntity().isTrash();
+        } else {
+            return getNuEntity().isTrash();
+        }
     }
 
     @Override
@@ -159,8 +261,8 @@ public class ProfileItem extends Item {
     }
 
     public void setLegacyEntity(LegacyProfileItem legacyEntity) {
+        legacyEntity.setAdapter(this);
         this.legacyEntity = legacyEntity;
-        this.dataItem = DataItem.getDataItem(legacyEntity.getDataItem());
     }
 
     @Override
@@ -169,10 +271,11 @@ public class ProfileItem extends Item {
     }
 
     public void setNuEntity(NuProfileItem nuEntity) {
+        nuEntity.setAdapter(this);
         this.nuEntity = nuEntity;
     }
 
-    public IItemService getItemService() {
-        throw new UnsupportedOperationException();
+    public IProfileItemService getItemService() {
+        return profileItemService;
     }
 }

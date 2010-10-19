@@ -48,25 +48,21 @@ public class DataItem extends Item {
     public DataItem() {
         super();
         setLegacyEntity(new LegacyDataItem());
-        getLegacyEntity().setAdapter(this);
     }
 
     public DataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
         super();
         setLegacyEntity(new LegacyDataItem(dataCategory, itemDefinition));
-        getLegacyEntity().setAdapter(this);
     }
 
     public DataItem(LegacyDataItem dataItem) {
         super();
         setLegacyEntity(dataItem);
-        getLegacyEntity().setAdapter(this);
     }
 
     public DataItem(NuDataItem dataItem) {
         super();
         setNuEntity(dataItem);
-        getNuEntity().setAdapter(this);
     }
 
     public static DataItem getDataItem(LegacyDataItem dataItem) {
@@ -97,7 +93,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getLabel();
         } else {
-            throw new UnsupportedOperationException();
+            return getItemService().getLabel(getNuEntity());
         }
     }
 
@@ -105,6 +101,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getJSONObject(detailed, showHistory);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -114,6 +111,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getJSONObject(detailed);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -122,6 +120,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getElement(document, detailed, showHistory);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -130,6 +129,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getElement(document, detailed);
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -139,7 +139,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getPath();
         } else {
-            throw new UnsupportedOperationException();
+            return getNuEntity().getPath();
         }
     }
 
@@ -197,6 +197,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getStartDate();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -206,6 +207,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getEndDate();
         } else {
+            // TODO
             throw new UnsupportedOperationException();
         }
     }
@@ -221,6 +223,7 @@ public class DataItem extends Item {
     }
 
     public void setLegacyEntity(LegacyDataItem legacyEntity) {
+        legacyEntity.setAdapter(this);
         this.legacyEntity = legacyEntity;
     }
 
@@ -230,10 +233,11 @@ public class DataItem extends Item {
     }
 
     public void setNuEntity(NuDataItem nuEntity) {
+        nuEntity.setAdapter(this);
         this.nuEntity = nuEntity;
     }
 
-    public IItemService getItemService() {
+    public IDataItemService getItemService() {
         return dataItemService;
     }
 }
