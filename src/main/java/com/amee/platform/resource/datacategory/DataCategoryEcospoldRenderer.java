@@ -16,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Map;
+import java.util.Properties;
 
 @Service
 @Scope("prototype")
@@ -38,7 +41,7 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
     public void start() {
         rootElem = new Element("ecoSpold", NS);
         rootElem.addNamespaceDeclaration(XSI_NS);
-        rootElem.setAttribute("schemaLocation", "http://www.EcoInvent.org/EcoSpold01 EcoSpold01Dataset.xsd", XSI_NS);
+        rootElem.setAttribute("schemaLocation", SCHEMA_LOCATION, XSI_NS);
     }
 
     public void ok() {
@@ -57,11 +60,20 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
         if (rootElem != null) {
             rootElem.addContent(datasetElem);
         }
-
-        // TODO: Add the dataset attributes from metadata
     }
 
     public void addBasic() {
+
+        // Add the dataset attributes from metadata
+        Properties attributes = new Properties();
+        try {
+            attributes.load(new ByteArrayInputStream(dataCategory.getEcoinventDatasetAttributes().getBytes()));
+            for (String name : attributes.stringPropertyNames()) {
+                datasetElem.setAttribute(name, attributes.getProperty(name));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
+        }
 
         // Add the metainformation element
         try {
