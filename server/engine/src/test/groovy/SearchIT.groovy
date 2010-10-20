@@ -15,7 +15,20 @@ class SearchIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals 6, response.data.results.size()
+    assertEquals 25, response.data.results.size()
+  }
+
+  @Test
+  void searchXml() {
+    client.contentType = XML
+    def response = client.get(path: '/3.0/search',
+            query: ['q': 'cooking'])
+    assertEquals 200, response.status
+    assertEquals 'application/xml', response.contentType
+    assertEquals 'OK', response.data.Status.text()
+
+    def allResults = response.data.Results.children()
+    assertEquals 25, allResults.size()
   }
 
   /**
@@ -35,18 +48,5 @@ class SearchIT extends BaseApiTest {
       assertTrue response.data instanceof net.sf.json.JSON;
       assertEquals 'INVALID', response.data.status;
     }
-  }
-
-  @Test
-  void searchXml() {
-    client.contentType = XML
-    def response = client.get(path: '/3.0/search',
-            query: ['q': 'cooking'])
-    assertEquals 200, response.status
-    assertEquals 'application/xml', response.contentType
-    assertEquals 'OK', response.data.Status.text()
-
-    def allResults = response.data.Results.children()
-    assertEquals 6, allResults.size()
   }
 }
