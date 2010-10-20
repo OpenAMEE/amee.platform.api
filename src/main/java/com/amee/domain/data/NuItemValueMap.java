@@ -8,6 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import javax.persistence.Transient;
 import java.util.*;
 
+/**
+ * A Map of {@link BaseItemValue} instances.
+ * <p/>
+ * The keys will be the {@link BaseItemValue} paths. The entries will be a Set of {@link BaseItemValue} instances. The Set will
+ * consist of a single entry for single-valued {@link BaseItemValue} histories.
+ */
+@SuppressWarnings("unchecked")
 public class NuItemValueMap extends HashMap {
 
     Log log = LogFactory.getLog(getClass());
@@ -77,11 +84,11 @@ public class NuItemValueMap extends HashMap {
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
                         // The first BaseItemValue is historical, but the second is not, so it needs to
                         // come after the second BaseItemValue.
-                        return 1;
+                        return -1;
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
                         // The second BaseItemValue is historical, but the first is not, so it needs to
                         // come after the first BaseItemValue.
-                        return -1;
+                        return 1;
                     } else {
                         // Both BaseItemValue are not historical. This should not happen but consider them equal.
                         log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
@@ -114,18 +121,23 @@ public class NuItemValueMap extends HashMap {
      * @param startDate
      * @return the discovered BaseItemValue, or null if not found
      */
-    private BaseItemValue find(Set<BaseItemValue> itemValues, Date startDate) {
-        return null;
-
-//        BaseItemValue selected = null;
-//        for (BaseItemValue itemValue : itemValues) {
-//            if (!itemValue.getStartDate().after(startDate)) {
-//                selected = itemValue;
-//                selected.setHistoryAvailable(itemValues.size() > 1);
-//                break;
-//            }
-//        }
-//        return selected;
+    private static BaseItemValue find(Set<BaseItemValue> itemValues, Date startDate) {
+        BaseItemValue selected = null;
+        for (BaseItemValue itemValue : itemValues) {
+            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
+                if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
+                    selected = itemValue;
+                    // TODO: Enable this.
+                    // selected.setHistoryAvailable(itemValues.size() > 1);
+                    // break;
+                    throw new UnsupportedOperationException();
+                }
+            } else {
+                // Non-historical values always come first.
+                selected = itemValue;
+            }
+        }
+        return selected;
     }
 
     public ItemValueMap getAdapter() {
@@ -135,10 +147,4 @@ public class NuItemValueMap extends HashMap {
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
     }
-
-    public Object fail() {
-        throw new UnsupportedOperationException();
-    }
-
-
 }

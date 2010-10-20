@@ -14,50 +14,50 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValueMap extends HashMap {
 
-    private LegacyItemValueMap legacyMap;
-    private NuItemValueMap nuMap;
+    private LegacyItemValueMap legacyItemValueMap;
+    private NuItemValueMap nuItemValueMap;
 
     @Transient
     private transient ItemValueMap adapter;
 
-    public ItemValueMap(LegacyItemValueMap legacyMap) {
+    public ItemValueMap(LegacyItemValueMap legacyItemValueMap) {
         super();
-        setLegacyMap(legacyMap);
+        setLegacyItemValueMap(legacyItemValueMap);
     }
 
-    public ItemValueMap(NuItemValueMap nuMap) {
+    public ItemValueMap(NuItemValueMap nuItemValueMap) {
         super();
-        setNuMap(nuMap);
+        setNuItemValueMap(nuItemValueMap);
     }
 
-    private void setLegacyMap(LegacyItemValueMap legacyMap) {
-        legacyMap.setAdapter(this);
-        this.legacyMap = legacyMap;
+    private void setLegacyItemValueMap(LegacyItemValueMap itemValueMap) {
+        itemValueMap.setAdapter(this);
+        this.legacyItemValueMap = itemValueMap;
     }
 
-    private void setNuMap(NuItemValueMap nuMap) {
-        nuMap.setAdapter(this);
-        this.nuMap = nuMap;
+    private void setNuItemValueMap(NuItemValueMap itemValueMap) {
+        itemValueMap.setAdapter(this);
+        this.nuItemValueMap = itemValueMap;
     }
 
-    public static ItemValueMap getItemValueMap(LegacyItemValueMap map) {
-        if (map != null) {
-            if (map.getAdapter() != null) {
-                return map.getAdapter();
+    public static ItemValueMap getItemValueMap(LegacyItemValueMap itemValueMap) {
+        if (itemValueMap != null) {
+            if (itemValueMap.getAdapter() != null) {
+                return itemValueMap.getAdapter();
             } else {
-                return new ItemValueMap(map);
+                return new ItemValueMap(itemValueMap);
             }
         } else {
             return null;
         }
     }
 
-    public static ItemValueMap getItemValueMap(NuItemValueMap map) {
-        if (map != null) {
-            if (map.getAdapter() != null) {
-                return map.getAdapter();
+    public static ItemValueMap getItemValueMap(NuItemValueMap itemValueMap) {
+        if (itemValueMap != null) {
+            if (itemValueMap.getAdapter() != null) {
+                return itemValueMap.getAdapter();
             } else {
-                return new ItemValueMap(map);
+                return new ItemValueMap(itemValueMap);
             }
         } else {
             return null;
@@ -65,9 +65,9 @@ public class ItemValueMap extends HashMap {
     }
 
     public boolean isLegacy() {
-        if (getLegacyMap() != null) {
+        if (getLegacyItemValueMap() != null) {
             return true;
-        } else if (getNuMap() != null) {
+        } else if (getNuItemValueMap() != null) {
             return false;
         } else {
             throw new IllegalStateException("Missing map.");
@@ -76,55 +76,49 @@ public class ItemValueMap extends HashMap {
 
     public ItemValue get(String path) {
         if (isLegacy()) {
-             return getLegacyMap().get(path).getAdapter();
+            return getLegacyItemValueMap().get(path).getAdapter();
         } else {
-            return getNuMap().get(path).getAdapter();
+            return getNuItemValueMap().get(path).getAdapter();
         }
     }
 
     public List<ItemValue> getAll(Date startDate) {
         if (isLegacy()) {
-            return legacyToAdapter(getLegacyMap().getAll(startDate));
+            return legacyToAdapter(getLegacyItemValueMap().getAll(startDate));
         } else {
-            return nuToAdapter(getNuMap().getAll(startDate));
+            return nuToAdapter(getNuItemValueMap().getAll(startDate));
         }
     }
 
     public List<ItemValue> getAll(String path) {
         if (isLegacy()) {
-            return legacyToAdapter(getLegacyMap().getAll(path));
+            return legacyToAdapter(getLegacyItemValueMap().getAll(path));
         } else {
-            return nuToAdapter(getNuMap().getAll(path));
+            return nuToAdapter(getNuItemValueMap().getAll(path));
         }
     }
 
     public ItemValue get(String path, Date startDate) {
         if (isLegacy()) {
-            return getLegacyMap().get(path, startDate).getAdapter();
+            return getLegacyItemValueMap().get(path, startDate).getAdapter();
         } else {
-            return getNuMap().get(path, startDate).getAdapter();
+            return getNuItemValueMap().get(path, startDate).getAdapter();
         }
     }
 
-    // TODO: Unsure how to deal with this
-    public void put(String path, LegacyItemValue itemValue) {
+    public void put(String path, ItemValue itemValue) {
         if (isLegacy()) {
-            getLegacyMap().put(path, itemValue);
+            getLegacyItemValueMap().put(path, itemValue.getLegacyEntity());
         } else {
-            throw new UnsupportedOperationException();
+            getNuItemValueMap().put(path, itemValue.getNuEntity());
         }
-    }
-
-    // TODO: Unsure how to deal with this
-    public int compare(LegacyItemValue iv1, LegacyItemValue iv2) {
-        return 0;
     }
 
     private List<ItemValue> legacyToAdapter(List<LegacyItemValue> legacyItemValues) {
         return (List<ItemValue>) CollectionUtils.collect(
                 legacyItemValues, new Transformer() {
                     public Object transform(Object legacyItemValue) {
-                        return ((LegacyItemValue)legacyItemValue).getAdapter();
+                        return ((LegacyItemValue) legacyItemValue).getAdapter();
                     }
                 });
     }
@@ -133,22 +127,22 @@ public class ItemValueMap extends HashMap {
         return (List<ItemValue>) CollectionUtils.collect(
                 baseItemValues, new Transformer() {
                     public Object transform(Object baseItemValue) {
-                        return ((BaseItemValue)baseItemValue).getAdapter();
+                        return ((BaseItemValue) baseItemValue).getAdapter();
                     }
                 });
-    }    
-
-    public LegacyItemValueMap getLegacyMap() {
-        return legacyMap;
     }
 
-    public NuItemValueMap getNuMap() {
-        return nuMap;
+    public LegacyItemValueMap getLegacyItemValueMap() {
+        return legacyItemValueMap;
+    }
+
+    public NuItemValueMap getNuItemValueMap() {
+        return nuItemValueMap;
     }
 
     public ItemValueMap getAdapter() {
         return adapter;
     }
 
-    
+
 }

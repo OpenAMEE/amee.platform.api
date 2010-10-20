@@ -91,32 +91,67 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public ItemValue getCopy() {
-        return ItemValue.getItemValue(getLegacyEntity().getCopy());
+        if (isLegacy()) {
+            return ItemValue.getItemValue(getLegacyEntity().getCopy());
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public String getUsableValue() {
-        return getLegacyEntity().getUsableValue();
+        if (isLegacy()) {
+            return getLegacyEntity().getUsableValue();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public boolean isUsableValue() {
-        return getLegacyEntity().isUsableValue();
+        if (isLegacy()) {
+            return getLegacyEntity().isUsableValue();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        return getLegacyEntity().getJSONObject(detailed);
+        if (isLegacy()) {
+            return getLegacyEntity().getJSONObject(detailed);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public JSONObject getJSONObject() throws JSONException {
-        return getLegacyEntity().getJSONObject();
+        if (isLegacy()) {
+            return getLegacyEntity().getJSONObject();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public JSONObject getIdentityJSONObject() throws JSONException {
-        return getLegacyEntity().getIdentityJSONObject();
+        if (isLegacy()) {
+            return getLegacyEntity().getIdentityJSONObject();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getElement(Document document) {
-        return getLegacyEntity().getElement(document);
+        if (isLegacy()) {
+            return getLegacyEntity().getElement(document);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Element getElement(Document document, boolean detailed) {
@@ -129,16 +164,31 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public Element getIdentityElement(Document document) {
-        return getLegacyEntity().getIdentityElement(document);
+        if (isLegacy()) {
+            return getLegacyEntity().getIdentityElement(document);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     public List<IAMEEEntityReference> getHierarchy() {
-        return getLegacyEntity().getHierarchy();
+        if (isLegacy()) {
+            return getLegacyEntity().getHierarchy();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public String getName() {
-        return getLegacyEntity().getName();
+        if (isLegacy()) {
+            return getLegacyEntity().getName();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
@@ -161,20 +211,37 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     @Override
     public String getDisplayPath() {
-        return getLegacyEntity().getDisplayPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getDisplayPath();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public String getFullPath() {
-        return getLegacyEntity().getFullPath();
+        if (isLegacy()) {
+            return getLegacyEntity().getFullPath();
+        } else {
+            return getNuEntity().getFullPath();
+        }
     }
 
     public ItemValueDefinition getItemValueDefinition() {
-        return getLegacyEntity().getItemValueDefinition();
+        if (isLegacy()) {
+            return getLegacyEntity().getItemValueDefinition();
+        } else {
+            return getNuEntity().getItemValueDefinition();
+        }
     }
 
     public void setItemValueDefinition(ItemValueDefinition itemValueDefinition) {
-        getLegacyEntity().setItemValueDefinition(itemValueDefinition);
+        if (isLegacy()) {
+            getLegacyEntity().setItemValueDefinition(itemValueDefinition);
+        } else {
+            getNuEntity().setItemValueDefinition(itemValueDefinition);
+        }
     }
 
     public Item getItem() {
@@ -195,11 +262,20 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public String getValue() {
-        return getLegacyEntity().getValue();
+        if (isLegacy()) {
+            return getLegacyEntity().getValue();
+        } else {
+            return getNuEntity().getValueAsString();
+        }
     }
 
     public void setValue(String value) {
-        getLegacyEntity().setValue(value);
+        if (isLegacy()) {
+            getLegacyEntity().setValue(value);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
@@ -208,100 +284,194 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public void setStartDate(Date startDate) {
-        getLegacyEntity().setStartDate(startDate);
+        if (isLegacy()) {
+            getLegacyEntity().setStartDate(startDate);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public boolean isDouble() {
-        return getLegacyEntity().isDouble();
+        if (isLegacy()) {
+            return getLegacyEntity().isDouble();
+        } else {
+            return getNuEntity().isDouble();
+        }
+    }
+
+    @Override
+    public AmountUnit getUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public AmountUnit getCanonicalUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getCanonicalUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public void setUnit(String unit) throws IllegalArgumentException {
+        if (isLegacy()) {
+            getLegacyEntity().setUnit(unit);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public AmountPerUnit getPerUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getPerUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public AmountPerUnit getCanonicalPerUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getCanonicalPerUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public void setPerUnit(String perUnit) throws IllegalArgumentException {
+        if (isLegacy()) {
+            getLegacyEntity().setPerUnit(perUnit);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public AmountCompoundUnit getCompoundUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getCompoundUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public AmountCompoundUnit getCanonicalCompoundUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().getCanonicalCompoundUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public boolean hasUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().hasUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public boolean hasPerUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().hasPerUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public boolean hasPerTimeUnit() {
+        if (isLegacy()) {
+            return getLegacyEntity().hasPerTimeUnit();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public boolean isNonZero() {
+        if (isLegacy()) {
+            return getLegacyEntity().isNonZero();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public String getLabel() {
+        if (isLegacy()) {
+            return getLegacyEntity().getLabel();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public boolean isTrash() {
+        return getAdaptedEntity().isTrash();
+    }
+
+    @Override
+    public boolean isConvertible() {
+        if (isLegacy()) {
+            return getLegacyEntity().isConvertible();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public void setBuilder(Builder builder) {
+        if (isLegacy()) {
+            getLegacyEntity().setBuilder(builder);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public boolean isHistoryAvailable() {
+        if (isLegacy()) {
+            return getLegacyEntity().isHistoryAvailable();
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public void setHistoryAvailable(boolean historyAvailable) {
+        if (isLegacy()) {
+            getLegacyEntity().setHistoryAvailable(historyAvailable);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public ObjectType getObjectType() {
         return ObjectType.IV;
-    }
-
-    @Override
-    public AmountUnit getUnit() {
-        return getLegacyEntity().getUnit();
-    }
-
-    @Override
-    public AmountUnit getCanonicalUnit() {
-        return getLegacyEntity().getCanonicalUnit();
-    }
-
-    public void setUnit(String unit) throws IllegalArgumentException {
-        getLegacyEntity().setUnit(unit);
-    }
-
-    @Override
-    public AmountPerUnit getPerUnit() {
-        return getLegacyEntity().getPerUnit();
-    }
-
-    @Override
-    public AmountPerUnit getCanonicalPerUnit() {
-        return getLegacyEntity().getCanonicalPerUnit();
-    }
-
-    public void setPerUnit(String perUnit) throws IllegalArgumentException {
-        getLegacyEntity().setPerUnit(perUnit);
-    }
-
-    @Override
-    public AmountCompoundUnit getCompoundUnit() {
-        return getLegacyEntity().getCompoundUnit();
-    }
-
-    @Override
-    public AmountCompoundUnit getCanonicalCompoundUnit() {
-        return getLegacyEntity().getCanonicalCompoundUnit();
-    }
-
-    @Override
-    public boolean hasUnit() {
-        return getLegacyEntity().hasUnit();
-    }
-
-    @Override
-    public boolean hasPerUnit() {
-        return getLegacyEntity().hasPerUnit();
-    }
-
-    public boolean hasPerTimeUnit() {
-        return getLegacyEntity().hasPerTimeUnit();
-    }
-
-    public boolean isNonZero() {
-        return getLegacyEntity().isNonZero();
-    }
-
-    @Override
-    public String getLabel() {
-        return getLegacyEntity().getLabel();
-    }
-
-    @Override
-    public boolean isTrash() {
-        return getLegacyEntity().isTrash();
-    }
-
-    @Override
-    public boolean isConvertible() {
-        return getLegacyEntity().isConvertible();
-    }
-
-    public void setBuilder(Builder builder) {
-        getLegacyEntity().setBuilder(builder);
-    }
-
-    public boolean isHistoryAvailable() {
-        return getLegacyEntity().isHistoryAvailable();
-    }
-
-    public void setHistoryAvailable(boolean historyAvailable) {
-        getLegacyEntity().setHistoryAvailable(historyAvailable);
     }
 
     public LegacyItemValue getLegacyEntity() {

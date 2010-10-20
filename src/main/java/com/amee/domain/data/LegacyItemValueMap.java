@@ -137,7 +137,7 @@ public class LegacyItemValueMap extends HashMap {
      * @param startDate
      * @return the discovered LegacyItemValue, or null if not found
      */
-    private LegacyItemValue find(Set<LegacyItemValue> itemValues, Date startDate) {
+    private static LegacyItemValue find(Set<LegacyItemValue> itemValues, Date startDate) {
         LegacyItemValue selected = null;
         for (LegacyItemValue itemValue : itemValues) {
             if (!itemValue.getStartDate().after(startDate)) {
