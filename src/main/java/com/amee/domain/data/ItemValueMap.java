@@ -11,12 +11,11 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValueMap extends HashMap {
 
-    private HashMap legacyMap;
-    private HashMap nuMap;
+    private LegacyItemValueMap legacyMap;
+    private NuItemValueMap nuMap;
 
     @Transient
     private transient ItemValueMap adapter;
-
 
     public ItemValueMap(LegacyItemValueMap legacyMap) {
         super();
@@ -72,8 +71,13 @@ public class ItemValueMap extends HashMap {
         }
     }
 
-    public LegacyItemValue get(String path) {
-        return null;
+    public ItemValue get(String path) {
+        if (isLegacy()) {
+            // return legacyMap.get(path); ???
+            return null;
+        } else {
+            return nuMap.get(path);
+        }
     }
 
     public List<LegacyItemValue> getAll(Date startDate) {
