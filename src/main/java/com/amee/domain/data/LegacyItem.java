@@ -67,7 +67,7 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
     private String name = "";
 
     @Transient
-    private ItemValueMap itemValuesMap;
+    private LegacyItemValueMap itemValuesMap;
 
     @Transient
     private Set<LegacyItemValue> activeItemValues;
@@ -245,9 +245,9 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
      *
      * @return {@link com.amee.domain.data.ItemValueMap}
      */
-    public ItemValueMap getItemValuesMap() {
+    public LegacyItemValueMap getItemValuesMap() {
         if (itemValuesMap == null) {
-            itemValuesMap = new ItemValueMap();
+            itemValuesMap = new LegacyItemValueMap();
             for (LegacyItemValue itemValue : getActiveItemValues()) {
                 itemValuesMap.put(itemValue.getDisplayPath(), itemValue);
             }
@@ -305,7 +305,7 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
      */
     @SuppressWarnings("unchecked")
     public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
-        ItemValueMap itemValueMap = getItemValuesMap();
+        LegacyItemValueMap itemValueMap = getItemValuesMap();
         for (Object path : itemValueMap.keySet()) {
             // Get all LegacyItemValues with this ItemValueDefinition path.
             List<LegacyItemValue> itemValues = getAllItemValues((String) path);

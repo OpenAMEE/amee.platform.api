@@ -15,5 +15,4 @@ public class NuItemValueMap extends HashMap {
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
     }
-
 }

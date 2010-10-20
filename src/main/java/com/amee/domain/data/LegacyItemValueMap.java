@@ -156,5 +156,4 @@ public class LegacyItemValueMap extends HashMap {
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
     }
-    
 }

@@ -1,6 +1,5 @@
 package com.amee.domain.data;
 
-import com.amee.domain.item.data.NuDataItem;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -39,7 +38,7 @@ public class ItemValueMap extends HashMap {
         this.nuMap = nuMap;
     }
 
-    public static ItemValueMap getDataItem(LegacyItemValueMap map) {
+    public static ItemValueMap getItemValueMap(LegacyItemValueMap map) {
         if (map != null) {
             if (map.getAdapter() != null) {
                 return map.getAdapter();
@@ -51,7 +50,7 @@ public class ItemValueMap extends HashMap {
         }
     }
 
-    public static ItemValueMap getDataItem(NuItemValueMap map) {
+    public static ItemValueMap getItemValueMap(NuItemValueMap map) {
         if (map != null) {
             if (map.getAdapter() != null) {
                 return map.getAdapter();
@@ -96,5 +95,4 @@ public class ItemValueMap extends HashMap {
     public int compare(LegacyItemValue iv1, LegacyItemValue iv2) {
         return 0;
     }
-
 }

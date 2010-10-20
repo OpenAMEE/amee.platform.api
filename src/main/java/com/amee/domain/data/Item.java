@@ -208,7 +208,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     @Deprecated
     public ItemValueMap getItemValuesMap() {
         if (isLegacy()) {
-            return getLegacyEntity().getItemValuesMap();
+            return ItemValueMap.getItemValueMap(getLegacyEntity().getItemValuesMap());
         } else {
             // TODO
             throw new UnsupportedOperationException();
