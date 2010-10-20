@@ -207,12 +207,12 @@
                         <VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>
 
                         <!-- MySQL -->
-                        <!--DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX-->
-                        <!--DB_URL>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL-->
-                        <!--DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER-->
-                        <!--DB_USERNAME>amee</DB_USERNAME-->
-                        <!--DB_PSWD>amee</DB_PSWD-->
-                        <!--VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY-->
+                        <!--<DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>-->
+                        <!--<DB_URL>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL>-->
+                        <!--<DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER>-->
+                        <!--<DB_USERNAME>amee</DB_USERNAME>-->
+                        <!--<DB_PSWD>amee</DB_PSWD>-->
+                        <!--<VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>-->
 
                         <!-- RabbitMQ -->
                         <MESSAGING_RUN_SLEEP>30000</MESSAGING_RUN_SLEEP>
