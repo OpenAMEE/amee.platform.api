@@ -8,9 +8,11 @@ class DataItemIT extends BaseApiTest {
 
   def dataItemUids = [
           '004CF30590A5',
-          '897513300787',
+          // '897513300787',
           '6C663D2B8681',
-          '9EFA0CE242D0']
+          '9EFA0CE242D0',
+          'A81FD238C501'
+  ]
 
   def oneGasItemValueValues = [
           '1',
