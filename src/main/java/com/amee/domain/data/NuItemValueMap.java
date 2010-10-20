@@ -1,6 +1,7 @@
 package com.amee.domain.data;
 
 import com.amee.domain.item.BaseItemValue;
+import com.amee.platform.science.ExternalHistoryValue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -62,6 +63,36 @@ public class NuItemValueMap extends HashMap {
             itemValue = find(series, startDate);
         }
         return itemValue;
+    }
+
+    public void put(String path, BaseItemValue itemValue) {
+        // Create TreeSet if it does not exist for this path.
+        if (!containsKey(path)) {
+            super.put(path, new TreeSet<BaseItemValue>(new Comparator<BaseItemValue>() {
+                public int compare(BaseItemValue iv1, BaseItemValue iv2) {
+                    if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass()) &&
+                            ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
+                        // Both BaseItemValue are part of a history, compare their startDates.
+                        return ((ExternalHistoryValue) iv2).getStartDate().compareTo(((ExternalHistoryValue) iv1).getStartDate());
+                    } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
+                        // The first BaseItemValue is historical, but the second is not, so it needs to
+                        // come after the second BaseItemValue.
+                        return 1;
+                    } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
+                        // The second BaseItemValue is historical, but the first is not, so it needs to
+                        // come after the first BaseItemValue.
+                        return -1;
+                    } else {
+                        // Both BaseItemValue are not historical. This should not happen but consider them equal.
+                        log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
+                        return 0;
+                    }
+                }
+            }));
+        }
+        // Add itemValue to the TreeSet for this path.
+        Set<BaseItemValue> itemValues = (Set<BaseItemValue>) super.get(path);
+        itemValues.add(itemValue);
     }
 
     /**
