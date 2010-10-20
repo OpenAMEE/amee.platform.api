@@ -26,6 +26,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItem;
+import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.DateTime;
@@ -40,6 +41,10 @@ import java.util.Date;
 @Table(name = "DATA_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NuDataItem extends BaseItem {
+
+    // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
+    // Copied from LegacyDataItem
+    public final static Date EPOCH = new Date(0);
 
     public final static int NAME_MAX_SIZE = 255;
     public final static int PATH_MAX_SIZE = 255;
@@ -114,4 +119,25 @@ public class NuDataItem extends BaseItem {
     public void setAdapter(DataItem adapter) {
         this.adapter = adapter;
     }
+
+    /**
+     * A DataItem always has the epoch as the startDate.
+     * Copied from LegacyDataItem
+     *
+     * @return EPOCH
+     */
+    public StartEndDate getStartDate() {
+        return new StartEndDate(EPOCH);
+    }
+
+    /**
+     * A DataItem never has an endDate.
+     * Copied from LegacyDataItem
+     *
+     * @return null
+     */
+    public StartEndDate getEndDate() {
+        return null;
+    }
+
 }

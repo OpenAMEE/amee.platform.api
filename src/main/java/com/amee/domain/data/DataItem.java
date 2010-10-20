@@ -101,8 +101,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getJSONObject(detailed, showHistory);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getItemService().getJSONObject(getNuEntity(), detailed, showHistory);
         }
     }
 
