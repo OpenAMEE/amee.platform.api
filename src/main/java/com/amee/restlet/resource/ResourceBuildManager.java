@@ -159,7 +159,7 @@ public class ResourceBuildManager extends ResourceManager {
                 }
             } else if ((result != null) && result.getName().equals("ecoSpold")) {
                 try {
-                    representation = new DomRepresentation(MediaType.valueOf("application/x.ecosold+xml"), DOM_OUTPUTTER.output(document));
+                    representation = new DomRepresentation(MediaType.valueOf("application/x.ecospold+xml"), DOM_OUTPUTTER.output(document));
                 } catch (JDOMException e) {
                     throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
                 }
