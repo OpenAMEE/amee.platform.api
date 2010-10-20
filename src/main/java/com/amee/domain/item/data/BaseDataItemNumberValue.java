@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 @MappedSuperclass
 public abstract class BaseDataItemNumberValue extends BaseDataItemValue implements ExternalNumberValue {
@@ -126,7 +128,11 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public String getValueAsString() {
-        return Double.toString(value);
+        NumberFormat f = NumberFormat.getInstance();
+        if (f instanceof DecimalFormat) {
+            ((DecimalFormat) f).applyPattern("0.#################");
+        }
+        return f.format(value);
     }
 
     public void setValue(Double value) {
