@@ -54,7 +54,7 @@ abstract class BaseApiTest {
 
         // Wait to allow the search index to be built (there must be a better way to do this?)
         println 'Waiting while the index is built...'
-        sleep(10000)
+        sleep(20000)
 
         // Ensure index reader is re-opened.
         luceneService = context.getBean("luceneService")
