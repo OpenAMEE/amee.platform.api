@@ -55,31 +55,25 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
         if (dataCategory.getEcoinventMetaInformation().isEmpty()) {
             throw new MediaTypeNotSupportedException();
         }
-
-        datasetElem = new Element("dataset", NS);
-        if (rootElem != null) {
-            rootElem.addContent(datasetElem);
-        }
     }
 
     public void addBasic() {
 
-        // Add the dataset attributes from metadata
-        Properties attributes = new Properties();
-        try {
-            attributes.load(new ByteArrayInputStream(dataCategory.getEcoinventDatasetAttributes().getBytes()));
-            for (String name : attributes.stringPropertyNames()) {
-                datasetElem.setAttribute(name, attributes.getProperty(name));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Caught IOException: " + e.getMessage(), e);
-        }
-
-        // Add the metainformation element
         try {
             SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(new StringReader(dataCategory.getEcoinventMetaInformation()));
-            datasetElem.addContent(doc.getRootElement().detach());
+
+            // Add the dataset element
+            Document doc = builder.build(new StringReader(dataCategory.getEcoinventDatasetAttributes()));
+            if (rootElem != null) {
+                rootElem.addContent(doc.getRootElement().detach());
+                datasetElem = rootElem.getChild("dataset", NS);
+            }
+
+            // Add the metainformation element
+            doc = builder.build(new StringReader(dataCategory.getEcoinventMetaInformation()));
+            if (datasetElem != null) {
+                datasetElem.addContent(doc.getRootElement().detach());
+            }
         } catch (JDOMException e) {
             throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
         } catch (IOException e) {
