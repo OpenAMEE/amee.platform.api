@@ -84,11 +84,11 @@ public class NuItemValueMap extends HashMap {
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
                         // The first BaseItemValue is historical, but the second is not, so it needs to
                         // come after the second BaseItemValue.
-                        return -1;
+                        return 1;
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
                         // The second BaseItemValue is historical, but the first is not, so it needs to
                         // come after the first BaseItemValue.
-                        return 1;
+                        return -1;
                     } else {
                         // Both BaseItemValue are not historical. This should not happen but consider them equal.
                         log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
