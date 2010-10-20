@@ -127,10 +127,8 @@ public class NuItemValueMap extends HashMap {
             if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
                 if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
                     selected = itemValue;
-                    // TODO: Enable this.
-                    // selected.setHistoryAvailable(itemValues.size() > 1);
-                    // break;
-                    throw new UnsupportedOperationException();
+                    selected.setHistoryAvailable(itemValues.size() > 1);
+                    break;
                 }
             } else {
                 // Non-historical values always come first.

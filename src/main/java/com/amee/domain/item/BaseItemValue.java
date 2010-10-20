@@ -20,11 +20,10 @@
 package com.amee.domain.item;
 
 import com.amee.domain.AMEEEntity;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
-import com.amee.platform.science.*;
+import com.amee.platform.science.ExternalGenericValue;
 
 import javax.persistence.*;
 
@@ -34,6 +33,9 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ITEM_VALUE_DEFINITION_ID")
     private ItemValueDefinition itemValueDefinition;
+
+    @Transient
+    private transient boolean historyAvailable;
 
     @Transient
     private transient String fullPath;
@@ -53,6 +55,14 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
         o.itemValueDefinition = itemValueDefinition;
+    }
+
+    public boolean isHistoryAvailable() {
+        return historyAvailable;
+    }
+
+    public void setHistoryAvailable(boolean historyAvailable) {
+        this.historyAvailable = historyAvailable;
     }
 
     /**
