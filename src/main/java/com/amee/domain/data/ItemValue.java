@@ -384,8 +384,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().hasUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
+                    ((ExternalNumberValue) getNuEntity()).hasUnit();
         }
     }
 
@@ -394,18 +394,13 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().hasPerUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
+                    ((ExternalNumberValue) getNuEntity()).hasPerUnit();
         }
     }
 
     public boolean hasPerTimeUnit() {
-        if (isLegacy()) {
-            return getLegacyEntity().hasPerTimeUnit();
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
+        return hasPerUnit() && getPerUnit().isTime();
     }
 
     public boolean isNonZero() {
@@ -422,8 +417,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getLabel();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getLabel();
         }
     }
 
@@ -455,8 +449,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().isHistoryAvailable();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().isHistoryAvailable();
         }
     }
 
@@ -464,8 +457,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setHistoryAvailable(historyAvailable);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setHistoryAvailable(historyAvailable);
         }
     }
 
