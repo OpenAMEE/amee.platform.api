@@ -19,6 +19,10 @@ public interface IItemService {
 
     public List<BaseItemValue> getAllItemValues(BaseItem item, String itemValuePath);
 
+    public Set<BaseItemValue> getActiveItemValues(BaseItem item);
+
+    public Set<BaseItemValue> getAllItemValues(BaseItem item);
+
     public BaseItemValue getItemValue(BaseItem item, String identifier, Date startDate);
 
     public BaseItemValue getItemValue(BaseItem item, String identifier);
