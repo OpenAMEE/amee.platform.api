@@ -3,6 +3,8 @@ package com.amee.domain;
 import com.amee.domain.item.data.NuDataItem;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Date;
 
@@ -19,5 +21,17 @@ public interface IDataItemService extends IItemService {
      * TODO: The following methods should live in a Renderer but are being
      * TODO: added here for convenience.
      */
-    public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed, boolean showHistory) throws JSONException;
+    public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed,
+                                    boolean showHistory) throws JSONException;
+    
+    public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed)
+            throws JSONException;
+
+    public Element getElement(NuDataItem dataItem, Document document,
+                                    boolean detailed, boolean showHistory);
+
+    public Element getElement(NuDataItem dataItem, Document document,
+                              boolean detailed);
+
+
 }
