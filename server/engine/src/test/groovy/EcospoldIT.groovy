@@ -49,4 +49,18 @@ class EcospoldIT extends BaseApiTest {
         assertEquals 'Should not have inputGroup element', '', response.data.dataset.flowData.exchange[15].inputGroup.text()
         assertEquals 'Should not have inputGroup attribute', '', response.data.dataset.flowData.exchange[15].@inputGroup.text()
     }
+
+    @Test
+    void getNonEcospoldCategory() {
+
+        try {
+            def response = client.get(path: '/3/categories/F27BF795BB04',
+                contentType: TEXT,
+                headers: [Accept: 'application/x.ecospold+xml'])
+
+            fail 'Expected 415'
+        } catch (ex) {
+            assertEquals 415, ex.response.status
+        }
+    }
 }
