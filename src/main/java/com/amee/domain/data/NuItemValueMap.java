@@ -73,7 +73,7 @@ public class NuItemValueMap extends HashMap {
                     if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass()) &&
                             ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
                         // Both BaseItemValue are part of a history, compare their startDates.
-                        return ((ExternalHistoryValue) iv2).getStartDate().compareTo(((ExternalHistoryValue) iv1).getStartDate());
+                        return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
                         // The first BaseItemValue is historical, but the second is not, so it needs to
                         // come after the second BaseItemValue.
@@ -102,7 +102,8 @@ public class NuItemValueMap extends HashMap {
      * @return the List of {@link BaseItemValue}. Will be empty is there exists no {@link BaseItemValue}s with this path.
      */
     public List<BaseItemValue> getAll(String path) {
-        return new ArrayList((TreeSet<BaseItemValue>) super.get(path));
+        Object o = super.get(path);
+        return o != null ? new ArrayList((TreeSet<BaseItemValue>)o) : new ArrayList();
     }
 
     /**
