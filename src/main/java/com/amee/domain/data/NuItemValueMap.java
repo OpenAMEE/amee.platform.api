@@ -22,5 +22,9 @@ public class NuItemValueMap extends HashMap {
         this.adapter = adapter;
     }
 
+    public Object fail() {
+        throw new UnsupportedOperationException();
+    }
+
 
 }

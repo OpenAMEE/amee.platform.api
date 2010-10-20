@@ -84,19 +84,35 @@ public class ItemValueMap extends HashMap {
     }
 
     public List<LegacyItemValue> getAll(Date startDate) {
-        return null;
+        if (isLegacy()) {
+            return legacyMap.getAll(startDate);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public List<LegacyItemValue> getAll(String path) {
-        return null;
+        if (isLegacy()) {
+            return legacyMap.getAll(path);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public LegacyItemValue get(String path, Date startDate) {
-        return null;
+        if (isLegacy()) {
+            return legacyMap.get(path, startDate);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public void put(String path, LegacyItemValue itemValue) {
-
+        if (isLegacy()) {
+            legacyMap.put(path, itemValue);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public int compare(LegacyItemValue iv1, LegacyItemValue iv2) {
