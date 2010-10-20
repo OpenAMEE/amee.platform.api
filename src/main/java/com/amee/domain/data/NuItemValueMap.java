@@ -8,6 +8,10 @@ public class NuItemValueMap extends HashMap {
     @Transient
     private transient ItemValueMap adapter;
 
+    public ItemValueMap getAdapter() {
+        return adapter;
+    }
+
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
     }

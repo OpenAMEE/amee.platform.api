@@ -149,6 +149,10 @@ public class LegacyItemValueMap extends HashMap {
         return selected;
     }
 
+    public ItemValueMap getAdapter() {
+        return adapter;
+    }
+
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
     }
