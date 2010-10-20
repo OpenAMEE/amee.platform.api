@@ -477,4 +477,3 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
 
     public abstract Item getAdapter();
 }
-

@@ -304,10 +304,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         getLegacyEntity().setHistoryAvailable(historyAvailable);
     }
 
-    public boolean isLegacy() {
-        return getLegacyEntity() != null;
-    }
-
     public LegacyItemValue getLegacyEntity() {
         return legacyEntity;
     }

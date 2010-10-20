@@ -35,105 +35,117 @@ public abstract class AMEEEntityAdapter extends BaseEntityAdapter implements IAM
 
     @Override
     public boolean equals(Object o) {
-        return getLegacyEntity().equals(o);
+        return getAdaptedEntity().equals(o);
     }
 
     @Override
     public int hashCode() {
-        return getLegacyEntity().hashCode();
+        return getAdaptedEntity().hashCode();
     }
 
     @Override
     public String toString() {
-        return getLegacyEntity().toString();
+        return getAdaptedEntity().toString();
     }
 
     protected void copyTo(AMEEEntity o) {
-        getLegacyEntity().copyTo(o);
+        getAdaptedEntity().copyTo(o);
     }
 
     public List<Permission> handleAuthorizationContext(AuthorizationContext authorizationContext) {
-        return getLegacyEntity().handleAuthorizationContext(authorizationContext);
+        return getAdaptedEntity().handleAuthorizationContext(authorizationContext);
     }
 
     @Override
     public Long getEntityId() {
-        return getLegacyEntity().getEntityId();
+        return getAdaptedEntity().getEntityId();
     }
 
     @Override
     public String getEntityUid() {
-        return getLegacyEntity().getEntityUid();
+        return getAdaptedEntity().getEntityUid();
     }
 
     public AMEEStatus getStatus() {
-        return getLegacyEntity().getStatus();
+        return getAdaptedEntity().getStatus();
     }
 
     public int getStatusCode() {
-        return getLegacyEntity().getStatusCode();
+        return getAdaptedEntity().getStatusCode();
     }
 
     public boolean isTrash() {
-        return getLegacyEntity().isTrash();
+        return getAdaptedEntity().isTrash();
     }
 
     public boolean isActive() {
-        return getLegacyEntity().isActive();
+        return getAdaptedEntity().isActive();
     }
 
     public boolean isDeprecated() {
-        return getLegacyEntity().isDeprecated();
+        return getAdaptedEntity().isDeprecated();
     }
 
     public void setStatus(AMEEStatus status) {
-        getLegacyEntity().setStatus(status);
+        getAdaptedEntity().setStatus(status);
     }
 
     public void setStatus(String name) {
-        getLegacyEntity().setStatus(name);
+        getAdaptedEntity().setStatus(name);
     }
 
     @Override
     public AccessSpecification getAccessSpecification() {
-        return getLegacyEntity().getAccessSpecification();
+        return getAdaptedEntity().getAccessSpecification();
     }
 
     @Override
     public void setAccessSpecification(AccessSpecification accessSpecification) {
-        getLegacyEntity().setAccessSpecification(accessSpecification);
+        getAdaptedEntity().setAccessSpecification(accessSpecification);
     }
 
     @Override
     public IAMEEEntity getEntity() {
-        return getLegacyEntity().getEntity();
+        return getAdaptedEntity().getEntity();
     }
 
     @Override
     public void setEntity(IAMEEEntity entity) {
-        getLegacyEntity().setEntity(entity);
+        getAdaptedEntity().setEntity(entity);
     }
 
     protected Metadata getMetadata(String key) {
-        return getLegacyEntity().getMetadata(key);
+        return getAdaptedEntity().getMetadata(key);
     }
 
     protected String getMetadataValue(String key) {
-        return getLegacyEntity().getMetadataValue(key);
+        return getAdaptedEntity().getMetadataValue(key);
     }
 
     protected Metadata getOrCreateMetadata(String key) {
-        return getLegacyEntity().getOrCreateMetadata(key);
+        return getAdaptedEntity().getOrCreateMetadata(key);
     }
 
     public void setMetadataService(IMetadataService metadataService) {
-        getLegacyEntity().setMetadataService(metadataService);
+        getAdaptedEntity().setMetadataService(metadataService);
     }
 
     public void setLocaleService(ILocaleService localeService) {
-        getLegacyEntity().setLocaleService(localeService);
+        getAdaptedEntity().setLocaleService(localeService);
+    }
+
+    @Override
+    public AMEEEntity getAdaptedEntity() {
+        if (isLegacy()) {
+            return getLegacyEntity();
+        } else {
+            return getNuEntity();
+        }
     }
 
     @Override
     public abstract AMEEEntity getLegacyEntity();
+
+    @Override
+    public abstract AMEEEntity getNuEntity();
 }

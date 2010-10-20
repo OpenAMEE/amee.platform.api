@@ -318,10 +318,6 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         }
     }
 
-    public boolean isLegacy() {
-        return getLegacyEntity() != null;
-    }
-
     public abstract LegacyItem getLegacyEntity();
 
     public abstract BaseItem getNuEntity();

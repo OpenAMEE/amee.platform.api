@@ -14,73 +14,93 @@ public abstract class BaseEntityAdapter implements DatedObject, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return getLegacyEntity().equals(o);
+        return getAdaptedEntity().equals(o);
     }
 
     @Override
     public int hashCode() {
-        return getLegacyEntity().hashCode();
+        return getAdaptedEntity().hashCode();
     }
 
     @Override
     public void onCreate() {
-        getLegacyEntity().onCreate();
+        getAdaptedEntity().onCreate();
     }
 
     @Override
     public void onModify() {
-        getLegacyEntity().onModify();
+        getAdaptedEntity().onModify();
     }
 
     @Override
     public Long getId() {
-        return getLegacyEntity().getId();
+        return getAdaptedEntity().getId();
     }
 
     @Override
     public void setId(Long id) {
-        getLegacyEntity().setId(id);
+        getAdaptedEntity().setId(id);
     }
 
     @Override
     public String getUid() {
-        return getLegacyEntity().getUid();
+        return getAdaptedEntity().getUid();
     }
 
     @Override
     public void setUid(String uid) {
-        getLegacyEntity().setUid(uid);
+        getAdaptedEntity().setUid(uid);
     }
 
     @Override
     public String getIdentityValue() {
-        return getLegacyEntity().getIdentityValue();
+        return getAdaptedEntity().getIdentityValue();
     }
 
     @Override
     public void setIdentityValue(String value) {
-        getLegacyEntity().setIdentityValue(value);
+        getAdaptedEntity().setIdentityValue(value);
     }
 
     @Override
     public Date getCreated() {
-        return getLegacyEntity().getCreated();
+        return getAdaptedEntity().getCreated();
     }
 
     @Override
     public void setCreated(Date created) {
-        getLegacyEntity().setCreated(created);
+        getAdaptedEntity().setCreated(created);
     }
 
     @Override
     public Date getModified() {
-        return getLegacyEntity().getModified();
+        return getAdaptedEntity().getModified();
     }
 
     @Override
     public void setModified(Date modified) {
-        getLegacyEntity().setModified(modified);
+        getAdaptedEntity().setModified(modified);
+    }
+
+    public boolean isLegacy() {
+        if (getLegacyEntity() != null) {
+            return true;
+        } else if (getNuEntity() != null) {
+            return false;
+        } else {
+            throw new IllegalStateException("Missing entity.");
+        }
+    }
+
+    public BaseEntity getAdaptedEntity() {
+        if (isLegacy()) {
+            return getLegacyEntity();
+        } else {
+            return getNuEntity();
+        }
     }
 
     public abstract BaseEntity getLegacyEntity();
+
+    public abstract BaseEntity getNuEntity();
 }
