@@ -109,8 +109,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getJSONObject(detailed);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getItemService().getJSONObject(getNuEntity(), detailed);
         }
     }
 
@@ -118,8 +117,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getElement(document, detailed, showHistory);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getItemService().getElement(getNuEntity(), document, detailed, showHistory); 
         }
     }
 
@@ -127,8 +125,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getElement(document, detailed);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getItemService().getElement(getNuEntity(), document, detailed);
         }
     }
 

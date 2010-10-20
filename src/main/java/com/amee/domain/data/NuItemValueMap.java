@@ -57,16 +57,6 @@ public class NuItemValueMap extends HashMap {
     }
 
     /**
-     * Get all instances of {@link BaseItemValue} with the passed path.
-     *
-     * @param path - the {@link BaseItemValue} path.
-     * @return the List of {@link BaseItemValue}. Will be empty is there exists no {@link BaseItemValue}s with this path.
-     */
-    public List<BaseItemValue> getAll(String path) {
-        return new ArrayList((TreeSet<BaseItemValue>) super.get(path));
-    }
-
-    /**
      * Get the active {@link BaseItemValue} at the passed start Date.
      *
      * @param path      - the {@link BaseItemValue} path.
@@ -90,15 +80,15 @@ public class NuItemValueMap extends HashMap {
                     if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass()) &&
                             ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
                         // Both BaseItemValue are part of a history, compare their startDates.
-                        return ((ExternalHistoryValue) iv2).getStartDate().compareTo(((ExternalHistoryValue) iv1).getStartDate());
+                        return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
                         // The first BaseItemValue is historical, but the second is not, so it needs to
                         // come after the second BaseItemValue.
-                        return -1;
+                        return 1;
                     } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
                         // The second BaseItemValue is historical, but the first is not, so it needs to
                         // come after the first BaseItemValue.
-                        return 1;
+                        return -1;
                     } else {
                         // Both BaseItemValue are not historical. This should not happen but consider them equal.
                         log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
@@ -110,6 +100,17 @@ public class NuItemValueMap extends HashMap {
         // Add itemValue to the TreeSet for this path.
         Set<BaseItemValue> itemValues = (Set<BaseItemValue>) super.get(path);
         itemValues.add(itemValue);
+    }
+
+    /**
+     * Get all instances of {@link BaseItemValue} with the passed path.
+     *
+     * @param path - the {@link BaseItemValue} path.
+     * @return the List of {@link BaseItemValue}. Will be empty is there exists no {@link BaseItemValue}s with this path.
+     */
+    public List<BaseItemValue> getAll(String path) {
+        Object o = super.get(path);
+        return o != null ? new ArrayList((TreeSet<BaseItemValue>)o) : new ArrayList();
     }
 
     /**
