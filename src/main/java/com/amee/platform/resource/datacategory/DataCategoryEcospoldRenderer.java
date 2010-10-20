@@ -103,8 +103,10 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
 
                 // The outputGroup and inputGroup values are displayed as child elements not attributes
                 // Only display the element if it is non-empty.
-                if ((name.equals("outputGroup") || name.equals("inputGroup")) && !itemValue.getValue().isEmpty()) {
-                    exchangeElem.addContent(new Element(name, NS).setText(itemValue.getValue()));
+                if (name.equals("outputGroup") || name.equals("inputGroup")) {
+                    if (!itemValue.getValue().isEmpty()) {
+                        exchangeElem.addContent(new Element(name, NS).setText(itemValue.getValue()));
+                    }
                 } else {
                     exchangeElem.setAttribute(name, itemValue.getValue());
                 }
