@@ -1,5 +1,6 @@
 package com.amee.domain.data;
 
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.NuDataItem;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -12,8 +13,8 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValueMap extends HashMap {
 
-    private HashMap legacyMap;
-    private HashMap nuMap;
+    private LegacyItemValueMap legacyMap;
+    private NuItemValueMap nuMap;
 
     @Transient
     private transient ItemValueMap adapter;
@@ -73,8 +74,13 @@ public class ItemValueMap extends HashMap {
         }
     }
 
-    public LegacyItemValue get(String path) {
-        return null;
+    public BaseItemValue get(String path) {
+        if (isLegacy()) {
+            // return legacyMap.get(path); ???
+            return null;
+        } else {
+            return nuMap.get(path);
+        }
     }
 
     public List<LegacyItemValue> getAll(Date startDate) {
