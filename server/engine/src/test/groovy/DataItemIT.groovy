@@ -1,6 +1,5 @@
 import org.junit.Test
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.XML
+import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
@@ -137,4 +136,32 @@ class DataItemIT extends BaseApiTest {
     assertTrue(twoGasItemValueValues == allValues.Value*.text());
     assertTrue(twoGasItemValuePaths == allValues.Path*.text());
   }
+
+  @Test
+  void updateDataItemJson() {
+    def responsePut = client.put(
+      path: '/3.1/categories/Cooking/items/897513300787',
+      body: [
+        'name': 'newName',
+        'wikiDoc': 'wd',
+        'path': 'np',
+         'provenance': 'prov'
+      ],
+      requestContentType: URLENC,
+      contentType: JSON);
+
+    assertEquals 201, responsePut.status;
+
+    def responseGet = client.get(
+      path: '/3.1/categories/Cooking/items/897513300787;full',
+      contentType: JSON);
+    assertEquals 200, responseGet.status;
+    println responseGet.data;
+
+    assertEquals 'newName', responseGet.data.item.name;
+    assertEquals 'wd', responseGet.data.item.wikiDoc;
+    assertEquals 'np', responseGet.data.item.path;
+    assertEquals 'prov', responseGet.data.item.provenance;
+  }
+
 }
