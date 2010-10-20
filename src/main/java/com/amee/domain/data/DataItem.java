@@ -20,7 +20,6 @@
 package com.amee.domain.data;
 
 import com.amee.domain.IDataItemService;
-import com.amee.domain.IItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.science.StartEndDate;
@@ -196,8 +195,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getStartDate();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return new StartEndDate(IDataItemService.EPOCH);
         }
     }
 
@@ -206,8 +204,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getEndDate();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return null;
         }
     }
 

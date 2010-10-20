@@ -26,7 +26,6 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItem;
-import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.DateTime;
@@ -119,25 +118,4 @@ public class NuDataItem extends BaseItem {
     public void setAdapter(DataItem adapter) {
         this.adapter = adapter;
     }
-
-    /**
-     * A DataItem always has the epoch as the startDate.
-     * Copied from LegacyDataItem
-     *
-     * @return EPOCH
-     */
-    public StartEndDate getStartDate() {
-        return new StartEndDate(EPOCH);
-    }
-
-    /**
-     * A DataItem never has an endDate.
-     * Copied from LegacyDataItem
-     *
-     * @return null
-     */
-    public StartEndDate getEndDate() {
-        return null;
-    }
-
 }
