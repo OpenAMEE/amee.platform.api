@@ -38,6 +38,8 @@ public class DataItem extends Item {
     public final static int WIKI_DOC_MAX_SIZE = LegacyDataItem.WIKI_DOC_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = LegacyDataItem.PROVENANCE_MAX_SIZE;
 
+    public final static boolean USE_NU = true;
+
     @Autowired
     private IDataItemService dataItemService;
 
@@ -46,12 +48,20 @@ public class DataItem extends Item {
 
     public DataItem() {
         super();
-        setLegacyEntity(new LegacyDataItem());
+        if (USE_NU) {
+            setNuEntity(new NuDataItem());
+        } else {
+            setLegacyEntity(new LegacyDataItem());
+        }
     }
 
     public DataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
         super();
-        setLegacyEntity(new LegacyDataItem(dataCategory, itemDefinition));
+        if (USE_NU) {
+            setNuEntity(new NuDataItem(dataCategory, itemDefinition));
+        } else {
+            setLegacyEntity(new LegacyDataItem(dataCategory, itemDefinition));
+        }
     }
 
     public DataItem(LegacyDataItem dataItem) {
@@ -117,7 +127,7 @@ public class DataItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getElement(document, detailed, showHistory);
         } else {
-            return getItemService().getElement(getNuEntity(), document, detailed, showHistory); 
+            return getItemService().getElement(getNuEntity(), document, detailed, showHistory);
         }
     }
 

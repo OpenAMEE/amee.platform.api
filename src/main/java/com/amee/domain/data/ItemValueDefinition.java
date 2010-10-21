@@ -406,6 +406,17 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     /**
+     * Does this represent an integer value.
+     *
+     * @return true if this value represents a integer value, otherwise false
+     *         <p/>
+     *         {@see ValueType.INTEGER}
+     */
+    public boolean isInteger() {
+        return getValueDefinition().getValueType().equals(ValueType.INTEGER);
+    }
+
+    /**
      * Does this represent a text value.
      *
      * @return true if this value represents a text value, otherwise false

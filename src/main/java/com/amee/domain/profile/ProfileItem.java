@@ -22,6 +22,8 @@ import java.util.Date;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ProfileItem extends Item {
 
+    public final static boolean USE_NU = true;
+
     @Autowired
     private IProfileItemService profileItemService;
 
@@ -30,17 +32,29 @@ public class ProfileItem extends Item {
 
     public ProfileItem() {
         super();
-        setLegacyEntity(new LegacyProfileItem());
+        if (USE_NU) {
+            setNuEntity(new NuProfileItem());
+        } else {
+            setLegacyEntity(new LegacyProfileItem());
+        }
     }
 
     public ProfileItem(Profile profile, DataItem dataItem) {
         super();
-        setLegacyEntity(new LegacyProfileItem(profile, dataItem.getLegacyEntity()));
+        if (USE_NU) {
+            setNuEntity(new NuProfileItem(profile, dataItem.getNuEntity()));
+        } else {
+            setLegacyEntity(new LegacyProfileItem(profile, dataItem.getLegacyEntity()));
+        }
     }
 
     public ProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
         super();
-        setLegacyEntity(new LegacyProfileItem(profile, dataCategory, dataItem.getLegacyEntity()));
+        if (USE_NU) {
+            setNuEntity(new NuProfileItem(profile, dataCategory, dataItem.getNuEntity()));
+        } else {
+            setLegacyEntity(new LegacyProfileItem(profile, dataCategory, dataItem.getLegacyEntity()));
+        }
     }
 
     public ProfileItem(LegacyProfileItem profileItem) {

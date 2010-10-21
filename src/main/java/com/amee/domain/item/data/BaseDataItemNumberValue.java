@@ -31,8 +31,17 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         super();
     }
 
-    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value) {
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
         super(itemValueDefinition, dataItem);
+    }
+
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value) {
+        this(itemValueDefinition, dataItem);
+        setValue(value);
+    }
+
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
+        this(itemValueDefinition, dataItem);
         setValue(value);
     }
 
@@ -141,15 +150,17 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     public void setValue(String value) {
         if (value != null) {
-            // TODO: PL-3351
             // Ensure numbers are a valid format (double).
-            if (getItemValueDefinition().isDouble() && !value.isEmpty()) {
+            if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger()) &&
+                    !value.isEmpty()) {
                 try {
                     this.value = Double.parseDouble(value);
                 } catch (NumberFormatException e) {
                     log.warn("setValue() - Invalid number format: " + value);
                     throw new IllegalArgumentException("Invalid number format: " + value);
                 }
+            } else {
+                throw new IllegalArgumentException("Cannot store number: " + value);
             }
         }
     }

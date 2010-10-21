@@ -1,6 +1,8 @@
 package com.amee.domain.data;
 
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ import static org.mockito.Mockito.*;
 public class ItemValueTest {
 
     private DataCategory mockDataCategory;
+    private ValueDefinition mockValueDefinition;
     private ItemDefinition mockItemDefinition;
     private DataItem dataItem;
     private ItemValueDefinition mockItemValueDefinition;
@@ -20,11 +23,13 @@ public class ItemValueTest {
     public void setUp() {
         mockDataCategory = mock(DataCategory.class);
         mockItemDefinition = mock(ItemDefinition.class);
-        dataItem = new DataItem(mockDataCategory, mockItemDefinition);
+        mockValueDefinition = mock(ValueDefinition.class);
         mockItemValueDefinition = mock(ItemValueDefinition.class);
-        itemValue = new ItemValue();
-        itemValue.setItem(dataItem);
-        itemValue.setItemValueDefinition(mockItemValueDefinition);
+        when(mockItemValueDefinition.getItemDefinition()).thenReturn(mockItemDefinition);
+        when(mockItemValueDefinition.getValueDefinition()).thenReturn(mockValueDefinition);
+        when(mockValueDefinition.getValueType()).thenReturn(ValueType.TEXT);
+        dataItem = new DataItem(mockDataCategory, mockItemDefinition);
+        itemValue = new ItemValue(mockItemValueDefinition, dataItem);
     }
 
     @Test

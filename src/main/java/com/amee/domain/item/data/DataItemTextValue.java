@@ -17,6 +17,10 @@ public class DataItemTextValue extends BaseDataItemTextValue {
         super();
     }
 
+    public DataItemTextValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+        super(itemValueDefinition, dataItem);
+    }
+
     public DataItemTextValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
         super(itemValueDefinition, dataItem, value);
     }

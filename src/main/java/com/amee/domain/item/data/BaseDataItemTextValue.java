@@ -19,6 +19,10 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
         super();
     }
 
+    public BaseDataItemTextValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+        super(itemValueDefinition, dataItem);
+    }
+
     public BaseDataItemTextValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
         super(itemValueDefinition, dataItem);
         setValue(value);

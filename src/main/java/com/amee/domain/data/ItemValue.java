@@ -19,11 +19,12 @@
  */
 package com.amee.domain.data;
 
-import com.amee.domain.AMEEEntityAdapter;
-import com.amee.domain.Builder;
-import com.amee.domain.IAMEEEntityReference;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.DataItemNumberValue;
+import com.amee.domain.item.data.DataItemTextValue;
+import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
 import org.json.JSONException;
@@ -39,19 +40,55 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
 
+    public final static boolean USE_NU = true;
+
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
 
     public ItemValue() {
         super();
-        setLegacyEntity(new LegacyItemValue());
-        getLegacyEntity().setAdapter(this);
+        if (USE_NU) {
+            throw new UnsupportedOperationException();
+        } else {
+            setLegacyEntity(new LegacyItemValue());
+            getLegacyEntity().setAdapter(this);
+        }
+    }
+
+    public ItemValue(ItemValueDefinition itemValueDefinition, Item item) {
+        super();
+        if (USE_NU) {
+            BaseItemValue itemValue;
+            // Data or Profile?
+            if (NuDataItem.class.isAssignableFrom(item.getNuEntity().getClass())) {
+                NuDataItem dataItem = (NuDataItem) item.getNuEntity();
+                // Create a nu style value.
+                if (itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.INTEGER) ||
+                        itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.DOUBLE)) {
+                    // TODO: Handle DIVH.
+                    // Item is a number.
+                    itemValue = new DataItemNumberValue(itemValueDefinition, dataItem);
+                } else {
+                    // TODO: Handle DIVH.
+                    // Item is text.
+                    itemValue = new DataItemTextValue(itemValueDefinition, dataItem);
+                }
+            } else if (NuProfileItem.class.isAssignableFrom(item.getNuEntity().getClass())) {
+                throw new UnsupportedOperationException();
+            } else {
+                throw new IllegalStateException("Item should be either a NuDataItem or NuProfileItem.");
+            }
+            setNuEntity(itemValue);
+            getNuEntity().setAdapter(this);
+        } else {
+            setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity()));
+            getLegacyEntity().setAdapter(this);
+        }
     }
 
     public ItemValue(ItemValueDefinition itemValueDefinition, Item item, String value) {
-        super();
-        setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity(), value));
-        getLegacyEntity().setAdapter(this);
+        this(itemValueDefinition, item);
+        setValue(value);
     }
 
     public ItemValue(LegacyItemValue itemValue) {

@@ -93,14 +93,18 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
         super();
     }
 
-    public LegacyItemValue(ItemValueDefinition itemValueDefinition, LegacyItem item, String value) {
+    public LegacyItemValue(ItemValueDefinition itemValueDefinition, LegacyItem item) {
         this();
         setItemValueDefinition(itemValueDefinition);
         setItem(item);
-        setValue(value);
         item.addItemValue(this);
         // Default startDate is that of the parent Item.
         this.startDate = item.getStartDate();
+    }
+
+    public LegacyItemValue(ItemValueDefinition itemValueDefinition, LegacyItem item, String value) {
+        this(itemValueDefinition, item);
+        setValue(value);
     }
 
     protected void copyTo(LegacyItemValue o) {
