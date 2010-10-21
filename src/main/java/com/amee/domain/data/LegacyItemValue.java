@@ -176,7 +176,7 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
         List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
         entities.add(this);
         entities.add(this.getItem());
-        DataCategory dc = this.item.getDataCategory();
+        DataCategory dc = this.getItem().getDataCategory();
         while (dc != null) {
             entities.add(dc);
             dc = dc.getDataCategory();

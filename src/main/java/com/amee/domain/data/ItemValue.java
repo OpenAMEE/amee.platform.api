@@ -131,8 +131,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return ItemValue.getItemValue(getLegacyEntity().getCopy());
         } else {
-            // TODO
             throw new UnsupportedOperationException();
+            // return ItemValue.getItemValue(getNuEntity().getCopy());
         }
     }
 
@@ -141,8 +141,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getUsableValue();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getUsableValue();
         }
     }
 
@@ -150,8 +149,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().isUsableValue();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().isUsableValue();
         }
     }
 
@@ -213,8 +211,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getHierarchy();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getHierarchy();
         }
     }
 
@@ -223,8 +220,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getName();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getName();
         }
     }
 
@@ -251,8 +247,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getDisplayPath();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getDisplayPath();
         }
     }
 
@@ -293,8 +288,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setItem(item.getLegacyEntity());
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setItem(item.getNuEntity());
         }
     }
 
@@ -310,8 +304,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setValue(value);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setValue(value);
         }
     }
 
@@ -343,8 +336,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -353,8 +349,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getCanonicalUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -372,8 +371,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getPerUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getPerUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -382,8 +384,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalPerUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getCanonicalPerUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -391,8 +396,12 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setPerUnit(perUnit);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                // ((ExternalNumberValue) getNuEntity()).setPerUnit(perUnit);
+                throw new UnsupportedOperationException();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -401,8 +410,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCompoundUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getCompoundUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -411,8 +423,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalCompoundUnit();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((ExternalNumberValue) getNuEntity()).getCanonicalCompoundUnit();
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -468,8 +483,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().isConvertible();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().isConvertible();
         }
     }
 

@@ -20,12 +20,17 @@
 package com.amee.domain.item;
 
 import com.amee.domain.AMEEEntity;
+import com.amee.domain.IAMEEEntityReference;
+import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @MappedSuperclass
 public abstract class BaseItemValue extends AMEEEntity implements Pathable, ExternalGenericValue {
@@ -57,6 +62,26 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
         o.itemValueDefinition = itemValueDefinition;
     }
 
+    /**
+     * Returns the hierarchy of objects including this object.
+     * <p/>
+     * Note: This only used in the O&B UI.
+     *
+     * @return list of entities in hierarchical order
+     */
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(this);
+        entities.add(this.getItem());
+        DataCategory dc = this.getItem().getDataCategory();
+        while (dc != null) {
+            entities.add(dc);
+            dc = dc.getDataCategory();
+        }
+        Collections.reverse(entities);
+        return entities;
+    }
+
     public boolean isHistoryAvailable() {
         return historyAvailable;
     }
@@ -85,12 +110,6 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
         }
         return fullPath;
     }
-
-    public abstract String getValueAsString();
-
-    public abstract boolean isUsableValue();
-
-    public abstract BaseItem getItem();
 
     @Override
     public String getName() {
@@ -124,6 +143,24 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     public void setItemValueDefinition(ItemValueDefinition itemValueDefinition) {
         this.itemValueDefinition = itemValueDefinition;
     }
+
+    public abstract BaseItem getItem();
+
+    public abstract void setItem(BaseItem item);
+
+    public abstract String getValueAsString();
+
+    public abstract boolean isUsableValue();
+
+    public String getUsableValue() {
+        if (!isUsableValue()) {
+            return null;
+        } else {
+            return getValueAsString();
+        }
+    }
+
+    public abstract void setValue(String value);
 
     public ItemValue getAdapter() {
         return adapter;

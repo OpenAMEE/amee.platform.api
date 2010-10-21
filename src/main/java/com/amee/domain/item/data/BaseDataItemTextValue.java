@@ -1,5 +1,6 @@
 package com.amee.domain.item.data;
 
+import com.amee.domain.LocaleHolder;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.science.ExternalTextValue;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +50,11 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
     }
 
     public String getValue() {
-        return value;
+        if (getItemValueDefinition().isText() && !LocaleHolder.isDefaultLocale()) {
+            return localeService.getLocaleNameValue(this, value);
+        } else {
+            return value;
+        }
     }
 
     @Override
@@ -68,6 +73,8 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
                 value = value.substring(0, VALUE_SIZE - 1);
             }
             this.value = value;
+        } else {
+            this.value = "";
         }
     }
 }

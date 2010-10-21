@@ -2,6 +2,7 @@ package com.amee.domain.item.data;
 
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.path.Pathable;
 
@@ -43,6 +44,14 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
     @Override
     public NuDataItem getItem() {
         return getDataItem();
+    }
+
+    public void setItem(BaseItem item) {
+        if (NuDataItem.class.isAssignableFrom(item.getClass())) {
+            this.dataItem = (NuDataItem) item;
+        } else {
+            throw new IllegalStateException("A NuDataItem instance was expected.");
+        }
     }
 
     public void setDataItem(NuDataItem dataItem) {
