@@ -7,6 +7,8 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
+import com.amee.service.locale.LocaleService;
+import com.amee.service.metadata.MetadataService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -37,6 +39,12 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private MetadataService metadataService;
+
+    @Autowired
+    private LocaleService localeService;
 
     public void start() {
         rootElem = new Element("ecoSpold", NS);
@@ -86,6 +94,10 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
             datasetElem.addContent(flowDataElem);
         }
 
+        // Pre-cache metadata and locales for the Data Items.
+        metadataService.loadMetadatasForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
+        localeService.loadLocaleNamesForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
+
         // For each data item, add each item value definition name and data item value
         for (DataItem dataItem : dataService.getDataItems(dataCategory)) {
 
@@ -113,6 +125,10 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
             }
             flowDataElem.addContent(exchangeElem);
         }
+
+        // Clear caches.
+        metadataService.clearMetadatas();
+        localeService.clearLocaleNames();
     }
 
     public void addPath() {
