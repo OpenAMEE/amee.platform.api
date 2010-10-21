@@ -4,11 +4,14 @@ import com.amee.domain.LocaleHolder;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.science.ExternalTextValue;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
+@Configurable(autowire = Autowire.BY_TYPE)
 public abstract class BaseDataItemTextValue extends BaseDataItemValue implements ExternalTextValue {
 
     public final static int VALUE_SIZE = 255;
