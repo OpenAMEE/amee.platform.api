@@ -5,7 +5,6 @@ import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.validation.ValidationException;
-import com.amee.domain.AMEEEntity;
 import com.amee.domain.IAMEEEntity;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
@@ -75,6 +74,7 @@ public class SearchBuilder implements ResourceBuilder {
                     renderer.newDataCategory(dataCategoryBuilder.getDataCategoryRenderer(requestWrapper));
                     break;
                 case DI:
+                case NDI:
                     dataItemBuilder.handle(requestWrapper, (DataItem) entity);
                     renderer.newDataItem(dataItemBuilder.getDataItemRenderer(requestWrapper));
                     break;
