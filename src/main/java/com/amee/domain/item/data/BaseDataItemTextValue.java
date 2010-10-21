@@ -34,6 +34,12 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
         o.value = value;
     }
 
+    public void checkItemValueDefinition() {
+        if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+            throw new IllegalStateException();
+        }
+    }
+
     @Override
     public boolean isDouble() {
         return false;

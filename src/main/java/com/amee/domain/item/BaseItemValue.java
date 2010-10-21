@@ -63,6 +63,11 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     }
 
     /**
+     * Check that the ItemValueDefinition matches the BaseItemValue instance.
+     */
+    public abstract void checkItemValueDefinition();
+
+    /**
      * Returns the hierarchy of objects including this object.
      * <p/>
      * Note: This only used in the O&B UI.
@@ -142,6 +147,7 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
 
     public void setItemValueDefinition(ItemValueDefinition itemValueDefinition) {
         this.itemValueDefinition = itemValueDefinition;
+        checkItemValueDefinition();
     }
 
     public abstract BaseItem getItem();

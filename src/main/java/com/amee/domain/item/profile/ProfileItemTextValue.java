@@ -35,6 +35,12 @@ public class ProfileItemTextValue extends BaseProfileItemValue implements Extern
         o.value = value;
     }
 
+    public void checkItemValueDefinition() {
+        if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+            throw new IllegalStateException();
+        }
+    }
+
     @Override
     public boolean isDouble() {
         return false;

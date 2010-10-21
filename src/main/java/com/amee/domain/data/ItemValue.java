@@ -21,6 +21,7 @@ package com.amee.domain.data;
 
 import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.DataItemNumberValue;
 import com.amee.domain.item.data.DataItemTextValue;
 import com.amee.domain.item.data.NuDataItem;
@@ -336,8 +337,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -349,8 +350,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getCanonicalUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getCanonicalUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -361,8 +362,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setUnit(unit);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                ((NumberValue) getNuEntity()).setUnit(unit);
+            } else {
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
@@ -371,8 +375,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getPerUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getPerUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getPerUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -384,8 +388,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalPerUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getCanonicalPerUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getCanonicalPerUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -396,9 +400,12 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setPerUnit(perUnit);
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                // ((ExternalNumberValue) getNuEntity()).setPerUnit(perUnit);
-                throw new UnsupportedOperationException();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                    ((NumberValue) getNuEntity()).setPerUnit(perUnit);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -410,8 +417,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCompoundUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getCompoundUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getCompoundUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -423,8 +430,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getCanonicalCompoundUnit();
         } else {
-            if (ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ((ExternalNumberValue) getNuEntity()).getCanonicalCompoundUnit();
+            if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((NumberValue) getNuEntity()).getCanonicalCompoundUnit();
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -436,8 +443,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().hasUnit();
         } else {
-            return ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
-                    ((ExternalNumberValue) getNuEntity()).hasUnit();
+            return NumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
+                    ((NumberValue) getNuEntity()).hasUnit();
         }
     }
 
@@ -446,8 +453,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().hasPerUnit();
         } else {
-            return ExternalNumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
-                    ((ExternalNumberValue) getNuEntity()).hasPerUnit();
+            return NumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
+                    ((NumberValue) getNuEntity()).hasPerUnit();
         }
     }
 

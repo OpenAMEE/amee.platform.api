@@ -2,10 +2,10 @@ package com.amee.domain.item.profile;
 
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.NumberValue;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import com.amee.platform.science.ExternalNumberValue;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -17,16 +17,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PROFILE_ITEM_NUMBER_VALUE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class ProfileItemNumberValue extends BaseProfileItemValue implements ExternalNumberValue {
+public class ProfileItemNumberValue extends BaseProfileItemValue implements NumberValue {
 
     public final static int UNIT_SIZE = 255;
     public final static int PER_UNIT_SIZE = 255;
 
     @Column(name = "UNIT", nullable = true, length = UNIT_SIZE)
-    private String unit;
+    private String unit = "";
 
     @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
-    private String perUnit;
+    private String perUnit = "";
 
     @Column(name = "VALUE", nullable = false)
     private Double value = 0.0;
@@ -45,6 +45,12 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Exte
         o.unit = unit;
         o.perUnit = perUnit;
         o.value = value;
+    }
+
+    public void checkItemValueDefinition() {
+        if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+            throw new IllegalStateException();
+        }
     }
 
     @Override
@@ -98,6 +104,9 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Exte
     }
 
     public void setUnit(String unit) throws IllegalArgumentException {
+        if (unit == null) {
+            unit = "";
+        }
         if (!getItemValueDefinition().isValidUnit(unit)) {
             throw new IllegalArgumentException("The unit argument is not valid: " + unit);
         }
@@ -120,6 +129,9 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Exte
     }
 
     public void setPerUnit(String perUnit) throws IllegalArgumentException {
+        if (perUnit == null) {
+            perUnit = "";
+        }
         if (!getItemValueDefinition().isValidPerUnit(perUnit)) {
             throw new IllegalArgumentException("The perUnit argument is not valid: " + perUnit);
         }
@@ -141,15 +153,18 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Exte
 
     public void setValue(String value) {
         if (value != null) {
-            // TODO: PL-3351
             // Ensure numbers are a valid format (double).
-            if (getItemValueDefinition().isDouble() && !value.isEmpty()) {
+            if (!value.isEmpty()) {
                 try {
                     this.value = Double.parseDouble(value);
                 } catch (NumberFormatException e) {
-                    log.warn("setValue() - Invalid number format: " + value);
+                    log.warn("setValue() Invalid number format: " + value);
                     throw new IllegalArgumentException("Invalid number format: " + value);
                 }
+            } else {
+                log.warn("setValue() Number was empty.");
+                this.value = 0.0d;
+                // TODO: Is it ok to set this to zero?
             }
         }
     }
