@@ -252,7 +252,11 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     public abstract StartEndDate getEndDate();
 
     public boolean supportsCalculation() {
-        return getLegacyEntity().supportsCalculation();
+        if (isLegacy()) {
+            return getLegacyEntity().supportsCalculation();
+        } else {
+            return getNuEntity().supportsCalculation();
+        }
     }
 
     public boolean isWithinLifeTime(Date date) {
@@ -268,8 +272,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().setEffectiveStartDate(effectiveStartDate);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setEffectiveStartDate(effectiveStartDate);
         }
     }
 
@@ -277,8 +280,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getEffectiveStartDate();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getEffectiveStartDate();
         }
     }
 
@@ -286,8 +288,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().setEffectiveEndDate(effectiveEndDate);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setEffectiveEndDate(effectiveEndDate);
         }
     }
 
@@ -295,8 +296,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().getEffectiveEndDate();
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return getNuEntity().getEffectiveEndDate();
         }
     }
 

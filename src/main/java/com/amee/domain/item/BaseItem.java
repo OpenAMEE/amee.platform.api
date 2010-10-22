@@ -54,7 +54,10 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     private NuItemValueMap itemValueMap;
 
     @Transient
-    private Set<BaseItemValue> activeItemValues;
+    private Date effectiveStartDate;
+
+    @Transient
+    private Date effectiveEndDate;
 
     public BaseItem() {
         super();
@@ -78,6 +81,8 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
         o.itemDefinition = itemDefinition;
         o.dataCategory = dataCategory;
         o.name = name;
+        o.effectiveStartDate = (effectiveStartDate != null) ? (Date) effectiveStartDate.clone() : null;
+        o.effectiveEndDate = (effectiveEndDate != null) ? (Date) effectiveEndDate.clone() : null;
     }
 
     /**
@@ -220,10 +225,45 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
         }
     }
 
+    /**
+     * Set the effective start date.
+     *
+     * @param effectiveStartDate
+     */
+    public void setEffectiveStartDate(Date effectiveStartDate) {
+        this.effectiveStartDate = effectiveStartDate;
+    }
+
+    /**
+     * Get the effective start date.
+     *
+     * @return the effective start date.
+     */
+    public Date getEffectiveStartDate() {
+        return effectiveStartDate;
+    }
+
+    /**
+     * Set the effective end date.
+     *
+     * @param effectiveEndDate
+     */
+    public void setEffectiveEndDate(Date effectiveEndDate) {
+        this.effectiveEndDate = effectiveEndDate;
+    }
+
+    /**
+     * Get the effective end date.
+     *
+     * @return the effective end date.
+     */
+    public Date getEffectiveEndDate() {
+        return effectiveEndDate;
+    }
+
     public static class UsableValuePredicate implements Predicate {
         public boolean evaluate(Object o) {
             return ((BaseItemValue) o).isUsableValue();
         }
     }
-
 }

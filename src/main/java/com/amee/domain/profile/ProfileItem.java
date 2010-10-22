@@ -194,12 +194,16 @@ public class ProfileItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getAmounts(recalculate);
         } else {
-            return getItemService().getAmounts(getNuEntity(), recalculate);
+            return getNuEntity().getAmounts(recalculate);
         }
     }
 
     public ReturnValues getAmounts() {
-        return getAmounts(false);
+        if (isLegacy()) {
+            return getLegacyEntity().getAmounts();
+        } else {
+            return getNuEntity().getAmounts();
+        }
     }
 
     @Deprecated
@@ -207,7 +211,7 @@ public class ProfileItem extends Item {
         if (isLegacy()) {
             return getLegacyEntity().getAmount();
         } else {
-            return getItemService().getAmount(getNuEntity());
+            return getNuEntity().getAmount();
         }
     }
 
@@ -215,8 +219,7 @@ public class ProfileItem extends Item {
         if (isLegacy()) {
             getLegacyEntity().setAmounts(amounts);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().setAmounts(amounts);
         }
     }
 

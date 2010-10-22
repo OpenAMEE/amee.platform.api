@@ -1,5 +1,6 @@
 package com.amee.domain.data;
 
+import com.amee.domain.IDataItemService;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.ExternalHistoryValue;
 import org.apache.commons.logging.Log;
@@ -110,7 +111,7 @@ public class NuItemValueMap extends HashMap {
      */
     public List<BaseItemValue> getAll(String path) {
         Object o = super.get(path);
-        return o != null ? new ArrayList((TreeSet<BaseItemValue>)o) : new ArrayList();
+        return o != null ? new ArrayList((TreeSet<BaseItemValue>) o) : new ArrayList();
     }
 
     /**
@@ -122,6 +123,11 @@ public class NuItemValueMap extends HashMap {
      * @return the discovered BaseItemValue, or null if not found
      */
     private static BaseItemValue find(Set<BaseItemValue> itemValues, Date startDate) {
+        // Default to the earliest possible date.
+        if (startDate == null) {
+            startDate = IDataItemService.EPOCH;
+        }
+        // Find active BaseItemValue.
         BaseItemValue selected = null;
         for (BaseItemValue itemValue : itemValues) {
             if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
