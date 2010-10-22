@@ -172,7 +172,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
 
     public abstract Item getAdapter();
 
-    // TODO
     public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
         NuItemValueMap itemValueMap = getItemValueMap();
         for (Object path : itemValueMap.keySet()) {
