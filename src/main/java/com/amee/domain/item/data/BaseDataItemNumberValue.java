@@ -120,7 +120,7 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public AmountPerUnit getPerUnit() {
-        if (perUnit != null) {
+        if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
                 // TODO: PL-3351
                 // return AmountPerUnit.valueOf(getDataItem().getDuration());

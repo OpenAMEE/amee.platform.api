@@ -52,7 +52,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     public void checkItemValueDefinition() {
-        if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+        if (!(getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
             throw new IllegalStateException();
         }
     }
@@ -119,7 +119,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public AmountPerUnit getPerUnit() {
-        if (perUnit != null) {
+        if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
                 // TODO: PL-3351
                 // return AmountPerUnit.valueOf(getDataItem().getDuration());
