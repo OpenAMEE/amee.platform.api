@@ -26,6 +26,8 @@ import com.amee.domain.item.data.DataItemNumberValue;
 import com.amee.domain.item.data.DataItemTextValue;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.domain.item.profile.NuProfileItem;
+import com.amee.domain.item.profile.ProfileItemNumberValue;
+import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
 import org.json.JSONException;
@@ -41,27 +43,23 @@ import java.util.List;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
 
-    public final static boolean USE_NU = true;
-
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
 
     public ItemValue() {
         super();
-        if (USE_NU) {
-            throw new UnsupportedOperationException();
-        } else {
-            setLegacyEntity(new LegacyItemValue());
-            getLegacyEntity().setAdapter(this);
-        }
     }
 
     public ItemValue(ItemValueDefinition itemValueDefinition, Item item) {
         super();
-        if (USE_NU) {
+        if (item.isLegacy()) {
+            setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity()));
+            getLegacyEntity().setAdapter(this);
+        } else {
             BaseItemValue itemValue;
             // Data or Profile?
             if (NuDataItem.class.isAssignableFrom(item.getNuEntity().getClass())) {
+                // Work with DataItems.
                 NuDataItem dataItem = (NuDataItem) item.getNuEntity();
                 // Create a nu style value.
                 if (itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.INTEGER) ||
@@ -75,15 +73,22 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
                     itemValue = new DataItemTextValue(itemValueDefinition, dataItem);
                 }
             } else if (NuProfileItem.class.isAssignableFrom(item.getNuEntity().getClass())) {
-                throw new UnsupportedOperationException();
+                // Work with ProfileItems.
+                NuProfileItem profileItem = (NuProfileItem) item.getNuEntity();
+                // Create a nu style value.
+                if (itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.INTEGER) ||
+                        itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.DOUBLE)) {
+                    // Item is a number.
+                    itemValue = new ProfileItemNumberValue(itemValueDefinition, profileItem);
+                } else {
+                    // Item is text.
+                    itemValue = new ProfileItemTextValue(itemValueDefinition, profileItem);
+                }
             } else {
                 throw new IllegalStateException("Item should be either a NuDataItem or NuProfileItem.");
             }
             setNuEntity(itemValue);
             getNuEntity().setAdapter(this);
-        } else {
-            setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity()));
-            getLegacyEntity().setAdapter(this);
         }
     }
 

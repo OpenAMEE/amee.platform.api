@@ -22,7 +22,7 @@ import java.util.Date;
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ProfileItem extends Item {
 
-    public final static boolean USE_NU = true;
+    public final static boolean USE_NU = false;
 
     @Autowired
     private IProfileItemService profileItemService;

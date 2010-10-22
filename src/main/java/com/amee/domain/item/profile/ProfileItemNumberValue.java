@@ -35,8 +35,12 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         super();
     }
 
-    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, Double value) {
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem) {
         super(itemValueDefinition, profileItem);
+    }
+
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, Double value) {
+        this(itemValueDefinition, profileItem);
         setValue(value);
     }
 
