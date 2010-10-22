@@ -1,6 +1,7 @@
 package com.amee.domain;
 
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.DataItem;
 import com.amee.domain.item.data.NuDataItem;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,8 @@ public interface IDataItemService extends IItemService {
     public NuDataItem getItemByUid(String uid);
 
     public String getLabel(NuDataItem dataItem);
+
+    public void remove(DataItem dataItem);
 
     /*
      * TODO: The following methods should live in a Renderer but are being

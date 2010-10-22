@@ -26,6 +26,7 @@ import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
+import com.amee.platform.science.ExternalValue;
 
 import javax.persistence.*;
 import java.util.ArrayList;

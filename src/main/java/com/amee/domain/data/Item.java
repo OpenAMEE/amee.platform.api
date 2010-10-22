@@ -235,8 +235,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             getLegacyEntity().appendInternalValues(values);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            getNuEntity().appendInternalValues(values);
         }
     }
 
