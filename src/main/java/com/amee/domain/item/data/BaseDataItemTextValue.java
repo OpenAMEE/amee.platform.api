@@ -14,7 +14,8 @@ import javax.persistence.MappedSuperclass;
 @Configurable(autowire = Autowire.BY_TYPE)
 public abstract class BaseDataItemTextValue extends BaseDataItemValue implements ExternalTextValue {
 
-    public final static int VALUE_SIZE = 255;
+    // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
+    public final static int VALUE_SIZE = 32767;
 
     @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
     private String value = "";
@@ -77,6 +78,7 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
     }
 
     public void setValue(String value) {
+        // Make sure value is not null and is not too long.
         if (value != null) {
             if (value.length() > VALUE_SIZE) {
                 value = value.substring(0, VALUE_SIZE - 1);

@@ -11,6 +11,7 @@ import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
+import org.joda.time.Duration;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -129,6 +130,20 @@ public class NuProfileItem extends BaseItem {
 
     public boolean isEnd() {
         return (endDate != null) && (startDate.compareTo(endDate) == 0);
+    }
+
+    /**
+     * Returns a Duration for the Item which is based on the startDate and endDate values. If there is no
+     * endDate then null is returned.
+     *
+     * @return the Duration or null
+     */
+    public Duration getDuration() {
+        if (getEndDate() != null) {
+            return new Duration(getStartDate().getTime(), getEndDate().getTime());
+        } else {
+            return null;
+        }
     }
 
     @Override
