@@ -2,6 +2,7 @@ package com.amee.domain;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
+import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.NuDataItem;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,8 @@ public interface IDataItemService extends IItemService {
     public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed, boolean showHistory) throws JSONException;
 
     public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed) throws JSONException;
+
+    public JSONObject getJSONObject(BaseDataItemValue itemValue, boolean detailed) throws JSONException;
 
     public Element getElement(NuDataItem dataItem, Document document, boolean detailed, boolean showHistory);
 

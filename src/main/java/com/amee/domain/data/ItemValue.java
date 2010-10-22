@@ -22,9 +22,11 @@ package com.amee.domain.data;
 import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
+import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItemNumberValue;
 import com.amee.domain.item.data.DataItemTextValue;
 import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.profile.BaseProfileItemValue;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.item.profile.ProfileItemNumberValue;
 import com.amee.domain.item.profile.ProfileItemTextValue;
@@ -536,8 +538,17 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public IItemService getItemService() {
-        // TODO: Switch for profile vs data.
-        return dataItemService;
+        if (isLegacy()) {
+            throw new IllegalStateException("IItemService implementations should not use the new services.");
+        } else {
+            if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return dataItemService;
+            } else if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return profileItemService;
+            } else {
+                throw new IllegalStateException("A BaseDataItemValue or BaseProfileItemValue was expected.");
+            }
+        }
     }
 
     public LegacyItemValue getLegacyEntity() {
