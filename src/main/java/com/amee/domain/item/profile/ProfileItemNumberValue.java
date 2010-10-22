@@ -13,6 +13,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 @Entity
 @Table(name = "PROFILE_ITEM_NUMBER_VALUE")
@@ -52,7 +54,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     public void checkItemValueDefinition() {
-        if ((getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+        if (!(getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
             throw new IllegalStateException();
         }
     }
@@ -119,11 +121,9 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public AmountPerUnit getPerUnit() {
-        if (perUnit != null) {
+        if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
-                // TODO: PL-3351
-                // return AmountPerUnit.valueOf(getDataItem().getDuration());
-                return null;
+                return AmountPerUnit.valueOf(getProfileItem().getDuration());
             } else {
                 return AmountPerUnit.valueOf(perUnit);
             }
@@ -148,7 +148,15 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public String getValueAsString() {
-        return Double.toString(value);
+        if (value != null) {
+            NumberFormat f = NumberFormat.getInstance();
+            if (f instanceof DecimalFormat) {
+                ((DecimalFormat) f).applyPattern("0.#################");
+            }
+            return f.format(value);
+        } else {
+            return "";
+        }
     }
 
     public void setValue(Double value) {
@@ -156,20 +164,17 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     public void setValue(String value) {
-        if (value != null) {
+        if (StringUtils.isNotBlank(value) && !value.equals("-")) {
             // Ensure numbers are a valid format (double).
-            if (!value.isEmpty()) {
-                try {
-                    this.value = Double.parseDouble(value);
-                } catch (NumberFormatException e) {
-                    log.warn("setValue() Invalid number format: " + value);
-                    throw new IllegalArgumentException("Invalid number format: " + value);
-                }
-            } else {
-                log.warn("setValue() Number was empty.");
-                this.value = 0.0d;
-                // TODO: Is it ok to set this to zero?
+            try {
+                this.value = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                log.warn("setValue() Invalid number format: " + value);
+                throw new IllegalArgumentException("Invalid number format: " + value);
             }
+        } else {
+            // Number is empty.
+            this.value = null;
         }
     }
 

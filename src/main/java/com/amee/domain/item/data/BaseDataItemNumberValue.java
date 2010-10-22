@@ -24,8 +24,8 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
     private String perUnit = "";
 
-    @Column(name = "VALUE", nullable = false)
-    private Double value = 0.0;
+    @Column(name = "VALUE", nullable = true)
+    private Double value = null;
 
     public BaseDataItemNumberValue() {
         super();
@@ -120,17 +120,7 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public AmountPerUnit getPerUnit() {
-        if (perUnit != null) {
-            if (perUnit.equals("none")) {
-                // TODO: PL-3351
-                // return AmountPerUnit.valueOf(getDataItem().getDuration());
-                return null;
-            } else {
-                return AmountPerUnit.valueOf(perUnit);
-            }
-        } else {
-            return getItemValueDefinition().getPerUnit();
-        }
+        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : getItemValueDefinition().getPerUnit();
     }
 
     public void setPerUnit(String perUnit) throws IllegalArgumentException {
@@ -149,11 +139,15 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public String getValueAsString() {
-        NumberFormat f = NumberFormat.getInstance();
-        if (f instanceof DecimalFormat) {
-            ((DecimalFormat) f).applyPattern("0.#################");
+        if (value != null) {
+            NumberFormat f = NumberFormat.getInstance();
+            if (f instanceof DecimalFormat) {
+                ((DecimalFormat) f).applyPattern("0.#################");
+            }
+            return f.format(value);
+        } else {
+            return "";
         }
-        return f.format(value);
     }
 
     public void setValue(Double value) {
@@ -161,20 +155,17 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     }
 
     public void setValue(String value) {
-        if (value != null) {
+        if (StringUtils.isNotBlank(value) && !value.equals("-")) {
             // Ensure numbers are a valid format (double).
-            if (!value.isEmpty()) {
-                try {
-                    this.value = Double.parseDouble(value);
-                } catch (NumberFormatException e) {
-                    log.warn("setValue() Invalid number format: " + value);
-                    throw new IllegalArgumentException("Invalid number format: " + value);
-                }
-            } else {
-                log.warn("setValue() Number was empty.");
-                this.value = 0.0d;
-                // TODO: Is it ok to set this to zero? 
+            try {
+                this.value = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                log.warn("setValue() Invalid number format: " + value);
+                throw new IllegalArgumentException("Invalid number format: " + value);
             }
+        } else {
+            // Number is empty.
+            this.value = null;
         }
     }
 }

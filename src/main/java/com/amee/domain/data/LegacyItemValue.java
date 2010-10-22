@@ -246,14 +246,13 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
     }
 
     public void setValue(String value) {
-
+        // Make sure value is not null and is not too long.
         if (value == null) {
             value = "";
         }
         if (value.length() > VALUE_SIZE) {
             value = value.substring(0, VALUE_SIZE - 1);
         }
-
         // Ensure numerics are a valid format.
         if (getItemValueDefinition().isDouble() && !value.isEmpty()) {
             try {
