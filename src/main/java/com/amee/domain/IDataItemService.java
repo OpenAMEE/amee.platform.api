@@ -27,6 +27,8 @@ public interface IDataItemService extends IItemService {
 
     public void remove(DataItem dataItem);
 
+    // Representations.
+
     /*
      * TODO: The following methods should live in a Renderer but are being
      * TODO: added here for convenience.

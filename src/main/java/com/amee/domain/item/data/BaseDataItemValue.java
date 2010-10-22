@@ -5,8 +5,6 @@ import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.path.Pathable;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.persistence.*;
 
@@ -58,9 +56,5 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
 
     public void setDataItem(NuDataItem dataItem) {
         this.dataItem = dataItem;
-    }
-
-    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        return getDataItem().getAdapter().getItemService().getJSONObject(dataItem, detailed);
     }
 }

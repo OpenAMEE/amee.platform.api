@@ -33,6 +33,7 @@ import com.amee.platform.science.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,6 +43,12 @@ import java.util.List;
 
 @Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
+
+    @Autowired
+    private IDataItemService dataItemService;
+
+    @Autowired
+    private IProfileItemService profileItemService;
 
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
@@ -163,7 +170,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return getLegacyEntity().getJSONObject(detailed);
         } else {
-            return getNuEntity().getJSONObject(detailed);
+            return getItemService().getJSONObject(getNuEntity(), detailed);
         }
     }
 
@@ -526,6 +533,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public ObjectType getObjectType() {
         return ObjectType.IV;
+    }
+
+    public IItemService getItemService() {
+        // TODO: Switch for profile vs data.
+        return dataItemService;
     }
 
     public LegacyItemValue getLegacyEntity() {

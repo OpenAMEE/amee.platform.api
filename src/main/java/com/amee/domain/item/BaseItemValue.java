@@ -26,9 +26,6 @@ import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
-import com.amee.platform.science.ExternalValue;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -177,11 +174,5 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
 
     public void setAdapter(ItemValue adapter) {
         this.adapter = adapter;
-    }
-
-    public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
-
-    public JSONObject getJSONObject() throws JSONException {
-        return getJSONObject(true);
     }
 }
