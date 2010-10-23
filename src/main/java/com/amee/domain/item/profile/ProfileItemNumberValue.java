@@ -30,7 +30,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
     private String perUnit = "";
 
-    @Column(name = "VALUE", nullable = false)
+    @Column(name = "VALUE", nullable = true)
     private Double value = 0.0;
 
     public ProfileItemNumberValue() {
