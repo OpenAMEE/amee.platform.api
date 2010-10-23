@@ -38,6 +38,11 @@ public class ItemValueDefinitionBuilder implements Builder {
         this.itemValueDefinition = itemValueDefinition;
     }
 
+    @Override
+    public JSONObject getJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
+    }
+
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("uid", itemValueDefinition.getUid());
@@ -77,6 +82,11 @@ public class ItemValueDefinitionBuilder implements Builder {
         }
 
         return obj;
+    }
+
+    @Override
+    public Element getElement(Document document) {
+        throw new UnsupportedOperationException();
     }
 
     public Element getElement(Document document, boolean detailed) {
@@ -119,5 +129,15 @@ public class ItemValueDefinitionBuilder implements Builder {
         }
 
         return element;
+    }
+
+    @Override
+    public JSONObject getIdentityJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Element getIdentityElement(Document document) {
+        throw new UnsupportedOperationException();
     }
 }

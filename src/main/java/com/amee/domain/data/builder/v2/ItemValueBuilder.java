@@ -21,13 +21,9 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
+import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.Item;
 import com.amee.domain.data.ItemValue;
-import com.amee.domain.data.LegacyItemValue;
-import com.amee.domain.data.LegacyItemValueToItemValueTransformer;
-import com.amee.domain.profile.ProfileItem;
-import com.amee.domain.profile.builder.v2.ProfileItemBuilder;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,13 +33,19 @@ import org.w3c.dom.Element;
 public class ItemValueBuilder implements Builder {
 
     private ItemValue itemValue;
+    private ItemBuilder itemBuilder;
 
     public ItemValueBuilder(ItemValue itemValue) {
         this.itemValue = itemValue;
     }
 
-    public ItemValueBuilder(LegacyItemValue itemValue) {
-        this.itemValue = (ItemValue) LegacyItemValueToItemValueTransformer.getInstance().transform(itemValue);
+    public ItemValueBuilder(ItemValue itemValue, ItemBuilder itemBuilder) {
+        this(itemValue);
+        this.itemBuilder = itemBuilder;
+    }
+
+    public JSONObject getJSONObject() throws JSONException {
+        return getJSONObject(true);
     }
 
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
@@ -62,14 +64,13 @@ public class ItemValueBuilder implements Builder {
         if (detailed) {
             obj.put("created", itemValue.getCreated());
             obj.put("modified", itemValue.getModified());
-            Item item = itemValue.getItem();
-            if (item instanceof ProfileItem) {
-                ProfileItem pi = ((ProfileItem) item);
-                pi.setBuilder(new ProfileItemBuilder(pi));
-            }
-            obj.put("item", item.getJSONObject(true));
+            obj.put("item", itemBuilder.getJSONObject(true));
         }
         return obj;
+    }
+
+    public Element getElement(Document document) {
+        return getElement(document, true);
     }
 
     public Element getElement(Document document, boolean detailed) {
@@ -86,8 +87,19 @@ public class ItemValueBuilder implements Builder {
         if (detailed) {
             element.setAttribute("Created", itemValue.getCreated().toString());
             element.setAttribute("Modified", itemValue.getModified().toString());
-            element.appendChild(itemValue.getItem().getIdentityElement(document));
+            element.appendChild(itemBuilder.getIdentityElement(document));
         }
         return element;
+    }
+
+    public JSONObject getIdentityJSONObject() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("uid", itemValue.getUid());
+        obj.put("path", itemValue.getPath());
+        return obj;
+    }
+
+    public Element getIdentityElement(Document document) {
+        return XMLUtils.getIdentityElement(document, "ItemValue", itemValue);
     }
 }

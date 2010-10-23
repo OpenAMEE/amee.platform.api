@@ -19,29 +19,18 @@
  */
 package com.amee.domain.data;
 
-import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
-import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.builder.v2.ItemValueBuilder;
-import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.persistence.*;
-import java.util.Date;
-
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import java.util.Date;
 
 @Entity
 @DiscriminatorValue("DI")
@@ -90,90 +79,86 @@ public class LegacyDataItem extends LegacyItem {
         return label;
     }
 
-    private void buildElement(Document document, Element element, boolean detailed, boolean showHistory) {
-        element.setAttribute("uid", getUid());
-        element.appendChild(XMLUtils.getElement(document, "Name", getDisplayName()));
-        Element itemValuesElem = document.createElement("ItemValues");
-        if (showHistory) {
-            buildElementItemValuesWithHistory(document, itemValuesElem);
-        } else {
-            buildElementItemValues(document, itemValuesElem);
-        }
-        element.appendChild(itemValuesElem);
-        if (detailed) {
-            element.setAttribute("created", getCreated().toString());
-            element.setAttribute("modified", getModified().toString());
-            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
-            element.appendChild(getItemDefinition().getIdentityElement(document));
-            element.appendChild(getDataCategory().getIdentityElement(document));
-        }
-    }
+//    private void buildElement(Document document, Element element, boolean detailed, boolean showHistory) {
+//        element.setAttribute("uid", getUid());
+//        element.appendChild(XMLUtils.getElement(document, "Name", getDisplayName()));
+//        Element itemValuesElem = document.createElement("ItemValues");
+//        if (showHistory) {
+//            buildElementItemValuesWithHistory(document, itemValuesElem);
+//        } else {
+//            buildElementItemValues(document, itemValuesElem);
+//        }
+//        element.appendChild(itemValuesElem);
+//        if (detailed) {
+//            element.setAttribute("created", getCreated().toString());
+//            element.setAttribute("modified", getModified().toString());
+//            element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
+//            element.appendChild(getItemDefinition().getIdentityElement(document));
+//            element.appendChild(getDataCategory().getIdentityElement(document));
+//        }
+//    }
+//
+//    private void buildElementItemValues(Document document, Element itemValuesElem) {
+//        for (LegacyItemValue itemValue : getItemValues()) {
+//            itemValuesElem.appendChild(new ItemValueBuilder(itemValue).getElement(document, false));
+//        }
+//    }
+//
+//    private void buildElementItemValuesWithHistory(Document document, Element itemValuesElem) {
+//        for (Object o1 : getItemValuesMap().keySet()) {
+//            String path = (String) o1;
+//            Element itemValueSeries = document.createElement("ItemValueSeries");
+//            itemValueSeries.setAttribute("path", path);
+//            for (Object o2 : getAllItemValues(path)) {
+//                LegacyItemValue itemValue = (LegacyItemValue) o2;
+//                itemValueSeries.appendChild(new ItemValueBuilder(itemValue).getElement(document, false));
+//            }
+//            itemValuesElem.appendChild(itemValueSeries);
+//        }
+//    }
+//
+//    public Element getIdentityElement(Document document) {
+//        return XMLUtils.getIdentityElement(document, "DataItem", this);
+//    }
+//
+//    private void buildJSON(JSONObject obj, boolean detailed, boolean showHistory) throws JSONException {
+//        obj.put("uid", getUid());
+//        obj.put("name", getDisplayName());
+//        JSONArray itemValues = new JSONArray();
+//        if (showHistory) {
+//            buildJSONItemValuesWithHistory(itemValues);
+//        } else {
+//            buildJSONItemValues(itemValues);
+//        }
+//        obj.put("itemValues", itemValues);
+//        if (detailed) {
+//            obj.put("created", getCreated());
+//            obj.put("modified", getModified());
+//            obj.put("environment", Environment.ENVIRONMENT.getJSONObject());
+//            obj.put("itemDefinition", getItemDefinition().getJSONObject());
+//            obj.put("dataCategory", getDataCategory().getIdentityJSONObject());
+//        }
+//    }
 
-    private void buildElementItemValues(Document document, Element itemValuesElem) {
-        for (LegacyItemValue itemValue : getItemValues()) {
-            itemValue.setBuilder(new ItemValueBuilder(itemValue));
-            itemValuesElem.appendChild(itemValue.getElement(document, false));
-        }
-    }
-
-    private void buildElementItemValuesWithHistory(Document document, Element itemValuesElem) {
-        for (Object o1 : getItemValuesMap().keySet()) {
-            String path = (String) o1;
-            Element itemValueSeries = document.createElement("ItemValueSeries");
-            itemValueSeries.setAttribute("path", path);
-            for (Object o2 : getAllItemValues(path)) {
-                LegacyItemValue itemValue = (LegacyItemValue) o2;
-                itemValue.setBuilder(new ItemValueBuilder(itemValue));
-                itemValueSeries.appendChild(itemValue.getElement(document, false));
-            }
-            itemValuesElem.appendChild(itemValueSeries);
-        }
-    }
-
-    public Element getIdentityElement(Document document) {
-        return XMLUtils.getIdentityElement(document, "DataItem", this);
-    }
-
-    private void buildJSON(JSONObject obj, boolean detailed, boolean showHistory) throws JSONException {
-        obj.put("uid", getUid());
-        obj.put("name", getDisplayName());
-        JSONArray itemValues = new JSONArray();
-        if (showHistory) {
-            buildJSONItemValuesWithHistory(itemValues);
-        } else {
-            buildJSONItemValues(itemValues);
-        }
-        obj.put("itemValues", itemValues);
-        if (detailed) {
-            obj.put("created", getCreated());
-            obj.put("modified", getModified());
-            obj.put("environment", Environment.ENVIRONMENT.getJSONObject());
-            obj.put("itemDefinition", getItemDefinition().getJSONObject());
-            obj.put("dataCategory", getDataCategory().getIdentityJSONObject());
-        }
-    }
-
-    private void buildJSONItemValues(JSONArray itemValues) throws JSONException {
-        for (LegacyItemValue itemValue : getItemValues()) {
-            itemValue.setBuilder(new ItemValueBuilder(itemValue));
-            itemValues.put(itemValue.getJSONObject(false));
-        }
-    }
-
-    private void buildJSONItemValuesWithHistory(JSONArray itemValues) throws JSONException {
-        for (Object o1 : getItemValuesMap().keySet()) {
-            String path = (String) o1;
-            JSONObject values = new JSONObject();
-            JSONArray valueSet = new JSONArray();
-            for (Object o2 : getAllItemValues(path)) {
-                LegacyItemValue itemValue = (LegacyItemValue) o2;
-                itemValue.setBuilder(new ItemValueBuilder(itemValue));
-                valueSet.put(itemValue.getJSONObject(false));
-            }
-            values.put(path, valueSet);
-            itemValues.put(values);
-        }
-    }
+//    private void buildJSONItemValues(JSONArray itemValues) throws JSONException {
+//        for (LegacyItemValue itemValue : getItemValues()) {
+//            itemValues.put(new ItemValueBuilder(itemValue).getJSONObject(false));
+//        }
+//    }
+//
+//    private void buildJSONItemValuesWithHistory(JSONArray itemValues) throws JSONException {
+//        for (Object o1 : getItemValuesMap().keySet()) {
+//            String path = (String) o1;
+//            JSONObject values = new JSONObject();
+//            JSONArray valueSet = new JSONArray();
+//            for (Object o2 : getAllItemValues(path)) {
+//                LegacyItemValue itemValue = (LegacyItemValue) o2;
+//                valueSet.put(new ItemValueBuilder(itemValue).getJSONObject(false));
+//            }
+//            values.put(path, valueSet);
+//            itemValues.put(values);
+//        }
+//    }
 
     /**
      * Get the JSON representation of this DataItem.
@@ -183,21 +168,21 @@ public class LegacyDataItem extends LegacyItem {
      * @return the JSON representation.
      * @throws JSONException
      */
-    public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
-        JSONObject obj = new JSONObject();
-        buildJSON(obj, detailed, showHistory);
-        obj.put("path", getPath());
-        obj.put("label", getLabel());
-        obj.put("startDate", StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString());
-        obj.put("endDate",
-                (getEndDate() != null) ? StartEndDate.getLocalStartEndDate(getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
-        return obj;
-    }
+//    public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
+//        JSONObject obj = new JSONObject();
+//        buildJSON(obj, detailed, showHistory);
+//        obj.put("path", getPath());
+//        obj.put("label", getLabel());
+//        obj.put("startDate", StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString());
+//        obj.put("endDate",
+//                (getEndDate() != null) ? StartEndDate.getLocalStartEndDate(getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
+//        return obj;
+//    }
 
-    @Override
-    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        return getJSONObject(detailed, false);
-    }
+//    @Override
+//    public JSONObject getJSONObject(boolean detailed) throws JSONException {
+//        return getJSONObject(detailed, false);
+//    }
 
     /**
      * Get the DOM representation of this DataItem.
@@ -206,22 +191,21 @@ public class LegacyDataItem extends LegacyItem {
      * @param showHistory - true if the representation should include any historical sequences of {@link com.amee.domain.data.LegacyItemValue)s.
      * @return the DOM representation.
      */
-    public Element getElement(Document document, boolean detailed, boolean showHistory) {
-        Element dataItemElement = document.createElement("DataItem");
-        buildElement(document, dataItemElement, detailed, showHistory);
-        dataItemElement.appendChild(XMLUtils.getElement(document, "Path", getDisplayPath()));
-        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", getLabel()));
-        dataItemElement.appendChild(XMLUtils.getElement(document, "StartDate",
-                StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
-        dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate",
-                (getEndDate() != null) ? StartEndDate.getLocalStartEndDate(getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
-        return dataItemElement;
-    }
-
-    public Element getElement(Document document, boolean detailed) {
-        return getElement(document, detailed, false);
-    }
-
+//    public Element getElement(Document document, boolean detailed, boolean showHistory) {
+//        Element dataItemElement = document.createElement("DataItem");
+//        buildElement(document, dataItemElement, detailed, showHistory);
+//        dataItemElement.appendChild(XMLUtils.getElement(document, "Path", getDisplayPath()));
+//        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", getLabel()));
+//        dataItemElement.appendChild(XMLUtils.getElement(document, "StartDate",
+//                StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
+//        dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate",
+//                (getEndDate() != null) ? StartEndDate.getLocalStartEndDate(getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
+//        return dataItemElement;
+//    }
+//
+//    public Element getElement(Document document, boolean detailed) {
+//        return getElement(document, detailed, false);
+//    }
     public String getPath() {
         return path;
     }

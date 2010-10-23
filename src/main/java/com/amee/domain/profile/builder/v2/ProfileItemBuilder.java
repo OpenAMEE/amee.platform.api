@@ -20,10 +20,11 @@
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.Builder;
+import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemValue;
+import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.profile.ProfileItem;
@@ -34,10 +35,9 @@ import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.util.List;
 import java.util.Map;
 
-public class ProfileItemBuilder implements Builder {
+public class ProfileItemBuilder implements ItemBuilder {
 
     private ProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
@@ -60,8 +60,7 @@ public class ProfileItemBuilder implements Builder {
         JSONArray itemValues = new JSONArray();
         // Find all matching active ItemValues at the item startDate
         for (ItemValue itemValue : item.getItemValues()) {
-            itemValue.setBuilder(new ItemValueBuilder(itemValue));
-            itemValues.put(itemValue.getJSONObject(false));
+            itemValues.put(new ItemValueBuilder(itemValue, this).getJSONObject(false));
         }
         obj.put("itemValues", itemValues);
         if (detailed) {
@@ -80,8 +79,7 @@ public class ProfileItemBuilder implements Builder {
         Element itemValuesElem = document.createElement("ItemValues");
         // Find all matching active ItemValues at the item startDate
         for (ItemValue itemValue : item.getItemValues()) {
-            itemValue.setBuilder(new ItemValueBuilder(itemValue));
-            itemValuesElem.appendChild(itemValue.getElement(document, false));
+            itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this).getElement(document, false));
         }
         element.appendChild(itemValuesElem);
         if (detailed) {
@@ -89,6 +87,11 @@ public class ProfileItemBuilder implements Builder {
             element.appendChild(item.getItemDefinition().getIdentityElement(document));
             element.appendChild(item.getDataCategory().getIdentityElement(document));
         }
+    }
+
+    @Override
+    public JSONObject getJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
     }
 
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
@@ -145,17 +148,29 @@ public class ProfileItemBuilder implements Builder {
         // Convert to user's time zone
         obj.put("startDate", StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
         obj.put("endDate", (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
-        obj.put("dataItem", item.getDataItem().getIdentityJSONObject());
+        obj.put("dataItem", new DataItemBuilder(item.getDataItem()).getIdentityJSONObject());
 
         // DataItem
         DataItem bDataItem = item.getDataItem();
-        JSONObject dataItemObj = bDataItem.getIdentityJSONObject();
+        JSONObject dataItemObj = new DataItemBuilder(bDataItem).getIdentityJSONObject();
         dataItemObj.put("Label", bDataItem.getLabel());
         obj.put("dataItem", dataItemObj);
 
         if (detailed) {
             obj.put("profile", item.getProfile().getIdentityJSONObject());
         }
+        return obj;
+    }
+
+    @Override
+    public Element getElement(Document document) {
+        throw new UnsupportedOperationException();
+    }
+
+    public JSONObject getIdentityJSONObject() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("uid", item.getUid());
+        obj.put("path", item.getPath());
         return obj;
     }
 
@@ -198,7 +213,7 @@ public class ProfileItemBuilder implements Builder {
 
         // DataItem
         DataItem bDataItem = item.getDataItem();
-        Element dataItemElement = bDataItem.getIdentityElement(document);
+        Element dataItemElement = new DataItemBuilder(bDataItem).getIdentityElement(document);
         dataItemElement.appendChild(XMLUtils.getElement(document, "Label", bDataItem.getLabel()));
 
         element.appendChild(dataItemElement);
@@ -209,4 +224,7 @@ public class ProfileItemBuilder implements Builder {
         return element;
     }
 
+    public Element getIdentityElement(Document document) {
+        return XMLUtils.getIdentityElement(document, "ItemValue", item);
+    }
 }

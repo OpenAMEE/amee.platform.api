@@ -2,6 +2,7 @@ package com.amee.domain.data.builder.v1;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
+import com.amee.domain.ItemBuilder;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import org.json.JSONException;
@@ -32,10 +33,21 @@ public class ItemValueBuilder implements Builder {
 
     private ItemValue itemValue;
     private Builder itemValueDefinitionRenderer;
+    private ItemBuilder itemBuilder;
 
     public ItemValueBuilder(ItemValue itemValue) {
         this.itemValue = itemValue;
         this.itemValueDefinitionRenderer = new ItemValueDefinitionBuilder(itemValue.getItemValueDefinition());
+    }
+
+    public ItemValueBuilder(ItemValue itemValue, ItemBuilder itemBuilder) {
+        this(itemValue);
+        this.itemBuilder = itemBuilder;
+    }
+
+    @Override
+    public JSONObject getJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
     }
 
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
@@ -50,9 +62,13 @@ public class ItemValueBuilder implements Builder {
         if (detailed) {
             obj.put("created", itemValue.getCreated());
             obj.put("modified", itemValue.getModified());
-            obj.put("item", itemValue.getItem().getIdentityJSONObject());
+            obj.put("item", itemBuilder.getIdentityJSONObject());
         }
         return obj;
+    }
+
+    public Element getElement(Document document) {
+        return getElement(document, true);
     }
 
     public Element getElement(Document document, boolean detailed) {
@@ -67,9 +83,19 @@ public class ItemValueBuilder implements Builder {
         if (detailed) {
             element.setAttribute("Created", itemValue.getCreated().toString());
             element.setAttribute("Modified", itemValue.getModified().toString());
-            element.appendChild(itemValue.getItem().getIdentityElement(document));
+            element.appendChild(itemBuilder.getIdentityElement(document));
         }
         return element;
     }
 
+    public JSONObject getIdentityJSONObject() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("uid", itemValue.getUid());
+        obj.put("path", itemValue.getPath());
+        return obj;
+    }
+
+    public Element getIdentityElement(Document document) {
+        return XMLUtils.getIdentityElement(document, "ItemValue", itemValue);
+    }
 }

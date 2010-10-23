@@ -19,7 +19,6 @@
  */
 package com.amee.domain.data;
 
-import com.amee.base.utils.XMLUtils;
 import com.amee.domain.*;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
@@ -27,12 +26,8 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.annotation.Resource;
 import javax.persistence.*;
@@ -78,9 +73,6 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
     private Date startDate = new Date();
 
     @Transient
-    private Builder builder;
-
-    @Transient
     private boolean historyAvailable = false;
 
     @Transient
@@ -116,7 +108,6 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
         o.unit = unit;
         o.perUnit = perUnit;
         o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
-        o.builder = builder;
         o.historyAvailable = historyAvailable;
         o.fullPath = fullPath;
     }
@@ -138,32 +129,28 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
         return !StringUtils.isBlank(getValue());
     }
 
-    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        return builder.getJSONObject(detailed);
-    }
+//    public JSONObject getJSONObject() throws JSONException {
+//        return getJSONObject(true);
+//    }
 
-    public JSONObject getJSONObject() throws JSONException {
-        return getJSONObject(true);
-    }
+//    public JSONObject getIdentityJSONObject() throws JSONException {
+//        JSONObject obj = new JSONObject();
+//        obj.put("uid", getUid());
+//        obj.put("path", getPath());
+//        return obj;
+//    }
 
-    public JSONObject getIdentityJSONObject() throws JSONException {
-        JSONObject obj = new JSONObject();
-        obj.put("uid", getUid());
-        obj.put("path", getPath());
-        return obj;
-    }
+//    public Element getElement(Document document) {
+//        return getElement(document, true);
+//    }
+//
+//    public Element getElement(Document document, boolean detailed) {
+//        return builder.getElement(document, detailed);
+//    }
 
-    public Element getElement(Document document) {
-        return getElement(document, true);
-    }
-
-    public Element getElement(Document document, boolean detailed) {
-        return builder.getElement(document, detailed);
-    }
-
-    public Element getIdentityElement(Document document) {
-        return XMLUtils.getIdentityElement(document, "ItemValue", this);
-    }
+//    public Element getIdentityElement(Document document) {
+//        return XMLUtils.getIdentityElement(document, "ItemValue", this);
+//    }
 
     /**
      * Returns the hierarchy of objects including this object.
@@ -365,10 +352,6 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
      */
     public boolean isConvertible() {
         return true;
-    }
-
-    public void setBuilder(Builder builder) {
-        this.builder = builder;
     }
 
     public boolean isHistoryAvailable() {

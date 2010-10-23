@@ -23,13 +23,9 @@ import com.amee.domain.IDataItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.science.StartEndDate;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 @Configurable(autowire = Autowire.BY_TYPE)
 public class DataItem extends Item {
@@ -106,38 +102,38 @@ public class DataItem extends Item {
         }
     }
 
-    public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getJSONObject(detailed, showHistory);
-        } else {
-            return getItemService().getJSONObject(getNuEntity(), detailed, showHistory);
-        }
-    }
-
-    @Override
-    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getJSONObject(detailed);
-        } else {
-            return getItemService().getJSONObject(getNuEntity(), detailed);
-        }
-    }
-
-    public Element getElement(Document document, boolean detailed, boolean showHistory) {
-        if (isLegacy()) {
-            return getLegacyEntity().getElement(document, detailed, showHistory);
-        } else {
-            return getItemService().getElement(getNuEntity(), document, detailed, showHistory);
-        }
-    }
-
-    public Element getElement(Document document, boolean detailed) {
-        if (isLegacy()) {
-            return getLegacyEntity().getElement(document, detailed);
-        } else {
-            return getItemService().getElement(getNuEntity(), document, detailed);
-        }
-    }
+//    public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getJSONObject(detailed, showHistory);
+//        } else {
+//            return getItemService().getJSONObject(getNuEntity(), detailed, showHistory);
+//        }
+//    }
+//
+//    @Override
+//    public JSONObject getJSONObject(boolean detailed) throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getJSONObject(detailed);
+//        } else {
+//            return getItemService().getJSONObject(getNuEntity(), detailed);
+//        }
+//    }
+//
+//    public Element getElement(Document document, boolean detailed, boolean showHistory) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getElement(document, detailed, showHistory);
+//        } else {
+//            return getItemService().getElement(getNuEntity(), document, detailed, showHistory);
+//        }
+//    }
+//
+//    public Element getElement(Document document, boolean detailed) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getElement(document, detailed);
+//        } else {
+//            return getItemService().getElement(getNuEntity(), document, detailed);
+//        }
+//    }
 
     @Override
     public String getPath() {

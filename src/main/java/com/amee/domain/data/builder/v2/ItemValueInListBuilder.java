@@ -38,6 +38,11 @@ public class ItemValueInListBuilder implements Builder {
         this.itemValue = itemValue;
     }
 
+    @Override
+    public JSONObject getJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
+    }
+
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         // Meta.
@@ -54,6 +59,11 @@ public class ItemValueInListBuilder implements Builder {
         // Related entities.
         obj.put("itemValueDefinition", getItemValueDefinitionJSONObject(itemValue.getItemValueDefinition()));
         return obj;
+    }
+
+    @Override
+    public Element getElement(Document document) {
+        throw new UnsupportedOperationException();
     }
 
     protected JSONObject getItemValueDefinitionJSONObject(ItemValueDefinition itemValueDefinition) throws JSONException {
@@ -85,5 +95,15 @@ public class ItemValueInListBuilder implements Builder {
         Element element = document.createElement("ItemValueDefinition");
         element.appendChild(itemValueDefinition.getValueDefinition().getElement(document));
         return element;
+    }
+
+    @Override
+    public JSONObject getIdentityJSONObject() throws JSONException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Element getIdentityElement(Document document) {
+        throw new UnsupportedOperationException();
     }
 }

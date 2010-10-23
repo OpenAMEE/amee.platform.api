@@ -32,10 +32,6 @@ import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.Duration;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.*;
 
@@ -83,23 +79,23 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         }
     }
 
-    public JSONObject getIdentityJSONObject() throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getIdentityJSONObject();
-        } else {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
-
-    public Element getIdentityElement(Document document) {
-        if (isLegacy()) {
-            return getLegacyEntity().getIdentityElement(document);
-        } else {
-            throw new UnsupportedOperationException();
-        }
-    }
+//    public JSONObject getIdentityJSONObject() throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getIdentityJSONObject();
+//        } else {
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
+//
+//    public Element getIdentityElement(Document document) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getIdentityElement(document);
+//        } else {
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
     public List<IAMEEEntityReference> getHierarchy() {
         if (isLegacy()) {

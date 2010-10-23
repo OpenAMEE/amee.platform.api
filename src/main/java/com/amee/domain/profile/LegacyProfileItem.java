@@ -2,7 +2,6 @@ package com.amee.domain.profile;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.Builder;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.LegacyDataItem;
@@ -11,8 +10,6 @@ import com.amee.domain.data.LegacyItemValue;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Index;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -64,9 +61,6 @@ public class LegacyProfileItem extends LegacyItem {
     private ReturnValues amounts = new ReturnValues();
 
     @Transient
-    private Builder builder;
-
-    @Transient
     @Resource
     private CO2CalculationService calculationService;
 
@@ -89,10 +83,6 @@ public class LegacyProfileItem extends LegacyItem {
         setDataItem(dataItem);
     }
 
-    public void setBuilder(Builder builder) {
-        this.builder = builder;
-    }
-
     public LegacyProfileItem getCopy() {
         log.debug("getCopy()");
         LegacyProfileItem profileItem = new LegacyProfileItem();
@@ -112,7 +102,6 @@ public class LegacyProfileItem extends LegacyItem {
         o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
         o.endDate = (endDate != null) ? (Date) endDate.clone() : null;
         o.amounts = amounts;
-        o.builder = builder;
         o.calculationService = calculationService;
     }
 
@@ -211,14 +200,14 @@ public class LegacyProfileItem extends LegacyItem {
         this.amounts = amounts;
     }
 
-    @Override
-    public JSONObject getJSONObject(boolean b) throws JSONException {
-        return builder.getJSONObject(b);
-    }
-
-    public Element getElement(Document document, boolean b) {
-        return builder.getElement(document, b);
-    }
+//    @Override
+//    public JSONObject getJSONObject(boolean b) throws JSONException {
+//        return builder.getJSONObject(b);
+//    }
+//
+//    public Element getElement(Document document, boolean b) {
+//        return builder.getElement(document, b);
+//    }
 
     public boolean hasNonZeroPerTimeValues() {
         for (LegacyItemValue iv : getItemValues()) {

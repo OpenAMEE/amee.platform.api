@@ -26,8 +26,16 @@ import org.w3c.dom.Element;
  */
 public interface Builder {
 
-    JSONObject getJSONObject(boolean detailed) throws JSONException;
+    public JSONObject getJSONObject() throws JSONException;
 
-    Element getElement(Document document, boolean detailed);
+    public JSONObject getJSONObject(boolean detailed) throws JSONException;
+
+    public Element getElement(Document document);
+
+    public Element getElement(Document document, boolean detailed);
+
+    public JSONObject getIdentityJSONObject() throws JSONException;
+
+    public Element getIdentityElement(Document document);
 
 }

@@ -1,6 +1,5 @@
 package com.amee.domain.profile;
 
-import com.amee.domain.Builder;
 import com.amee.domain.IProfileItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -9,13 +8,9 @@ import com.amee.domain.data.Item;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.Date;
 
@@ -91,14 +86,14 @@ public class ProfileItem extends Item {
         }
     }
 
-    public void setBuilder(Builder builder) {
-        if (isLegacy()) {
-            getLegacyEntity().setBuilder(builder);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
+//    public void setBuilder(Builder builder) {
+//        if (isLegacy()) {
+//            getLegacyEntity().setBuilder(builder);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
     public ProfileItem getCopy() {
         if (isLegacy()) {
@@ -223,24 +218,24 @@ public class ProfileItem extends Item {
         }
     }
 
-    @Override
-    public JSONObject getJSONObject(boolean b) throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getJSONObject(b);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public Element getElement(Document document, boolean b) {
-        if (isLegacy()) {
-            return getLegacyEntity().getElement(document, b);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
+//    @Override
+//    public JSONObject getJSONObject(boolean b) throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getJSONObject(b);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public Element getElement(Document document, boolean b) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getElement(document, b);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
     public boolean hasNonZeroPerTimeValues() {
         if (isLegacy()) {

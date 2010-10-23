@@ -32,13 +32,9 @@ import com.amee.domain.item.profile.ProfileItemNumberValue;
 import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.util.Date;
 import java.util.List;
@@ -168,58 +164,58 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         }
     }
 
-    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getJSONObject(detailed);
-        } else {
-            return getItemService().getJSONObject(getNuEntity(), detailed);
-        }
-    }
-
-    public JSONObject getJSONObject() throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getJSONObject();
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public JSONObject getIdentityJSONObject() throws JSONException {
-        if (isLegacy()) {
-            return getLegacyEntity().getIdentityJSONObject();
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public Element getElement(Document document) {
-        if (isLegacy()) {
-            return getLegacyEntity().getElement(document);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public Element getElement(Document document, boolean detailed) {
-        if (isLegacy()) {
-            return getLegacyEntity().getElement(document, detailed);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    public Element getIdentityElement(Document document) {
-        if (isLegacy()) {
-            return getLegacyEntity().getIdentityElement(document);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
+//    public JSONObject getJSONObject(boolean detailed) throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getJSONObject(detailed);
+//        } else {
+//            return getItemService().getJSONObject(getNuEntity(), detailed);
+//        }
+//    }
+//
+//    public JSONObject getJSONObject() throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getJSONObject();
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public JSONObject getIdentityJSONObject() throws JSONException {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getIdentityJSONObject();
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public Element getElement(Document document) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getElement(document);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public Element getElement(Document document, boolean detailed) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getElement(document, detailed);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
+//
+//    public Element getIdentityElement(Document document) {
+//        if (isLegacy()) {
+//            return getLegacyEntity().getIdentityElement(document);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
     public List<IAMEEEntityReference> getHierarchy() {
         if (isLegacy()) {
@@ -353,7 +349,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getItemValueDefinition().getUnit();
             }
         }
     }
@@ -366,7 +362,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getItemValueDefinition().getUnit();
             }
         }
     }
@@ -391,7 +387,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getPerUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getItemValueDefinition().getPerUnit();
             }
         }
     }
@@ -404,7 +400,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalPerUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getItemValueDefinition().getPerUnit();
             }
         }
     }
@@ -433,7 +429,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCompoundUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getUnit().with(getPerUnit());
             }
         }
     }
@@ -446,7 +442,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalCompoundUnit();
             } else {
-                throw new UnsupportedOperationException();
+                return getItemValueDefinition().getCanonicalCompoundUnit();
             }
         }
     }
@@ -507,14 +503,14 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         }
     }
 
-    public void setBuilder(Builder builder) {
-        if (isLegacy()) {
-            getLegacyEntity().setBuilder(builder);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
+//    public void setBuilder(Builder builder) {
+//        if (isLegacy()) {
+//            getLegacyEntity().setBuilder(builder);
+//        } else {
+//            // TODO
+//            throw new UnsupportedOperationException();
+//        }
+//    }
 
     public boolean isHistoryAvailable() {
         if (isLegacy()) {
