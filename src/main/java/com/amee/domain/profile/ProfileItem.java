@@ -86,15 +86,6 @@ public class ProfileItem extends Item {
         }
     }
 
-//    public void setBuilder(Builder builder) {
-//        if (isLegacy()) {
-//            getLegacyEntity().setBuilder(builder);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-
     public ProfileItem getCopy() {
         if (isLegacy()) {
             return ProfileItem.getProfileItem(getLegacyEntity().getCopy());
@@ -217,25 +208,6 @@ public class ProfileItem extends Item {
             getNuEntity().setAmounts(amounts);
         }
     }
-
-//    @Override
-//    public JSONObject getJSONObject(boolean b) throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getJSONObject(b);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
-//    public Element getElement(Document document, boolean b) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getElement(document, b);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
 
     public boolean hasNonZeroPerTimeValues() {
         if (isLegacy()) {

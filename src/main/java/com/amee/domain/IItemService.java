@@ -28,10 +28,4 @@ public interface IItemService {
     public BaseItemValue getItemValue(BaseItem item, String identifier);
 
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
-
-    // Representations.
-
-//    public JSONObject getJSONObject(BaseItem item, boolean detailed) throws JSONException;
-//
-//    public JSONObject getJSONObject(BaseItemValue itemValue, boolean detailed) throws JSONException;
 }

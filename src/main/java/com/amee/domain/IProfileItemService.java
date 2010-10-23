@@ -12,10 +12,4 @@ public interface IProfileItemService extends IItemService {
     public boolean isSingleFlight(NuProfileItem profileItem);
 
     public void persist(NuProfileItem profileItem);
-
-    // Representations.
-
-//    public JSONObject getJSONObject(NuProfileItem dataItem, boolean detailed) throws JSONException;
-//
-//    public JSONObject getJSONObject(BaseProfileItemValue itemValue, boolean detailed) throws JSONException;
 }

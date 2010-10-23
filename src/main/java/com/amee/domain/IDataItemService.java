@@ -22,20 +22,4 @@ public interface IDataItemService extends IItemService {
     public String getLabel(NuDataItem dataItem);
 
     public void remove(DataItem dataItem);
-
-    // Representations.
-
-    /*
-     * TODO: The following methods should live in a Renderer but are being
-     * TODO: added here for convenience.
-     */
-//    public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed, boolean showHistory) throws JSONException;
-//
-//    public JSONObject getJSONObject(NuDataItem dataItem, boolean detailed) throws JSONException;
-//
-//    public JSONObject getJSONObject(BaseDataItemValue itemValue, boolean detailed) throws JSONException;
-//
-//    public Element getElement(NuDataItem dataItem, Document document, boolean detailed, boolean showHistory);
-//
-//    public Element getElement(NuDataItem dataItem, Document document, boolean detailed);
 }

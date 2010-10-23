@@ -164,59 +164,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         }
     }
 
-//    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getJSONObject(detailed);
-//        } else {
-//            return getItemService().getJSONObject(getNuEntity(), detailed);
-//        }
-//    }
-//
-//    public JSONObject getJSONObject() throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getJSONObject();
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
-//    public JSONObject getIdentityJSONObject() throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getIdentityJSONObject();
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
-//    public Element getElement(Document document) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getElement(document);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
-//    public Element getElement(Document document, boolean detailed) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getElement(document, detailed);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-//
-//    public Element getIdentityElement(Document document) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getIdentityElement(document);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
-
     public List<IAMEEEntityReference> getHierarchy() {
         if (isLegacy()) {
             return getLegacyEntity().getHierarchy();
@@ -320,7 +267,21 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     @Override
     public StartEndDate getStartDate() {
-        return getLegacyEntity().getStartDate();
+        if (isLegacy()) {
+            return getLegacyEntity().getStartDate();
+        } else {
+            if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                return ((BaseProfileItemValue) getNuEntity()).getProfileItem().getStartDate();
+            } else if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                if (ExternalHistoryValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                    return ((ExternalHistoryValue) getNuEntity()).getStartDate();
+                } else {
+                    return new StartEndDate(IDataItemService.EPOCH);
+                }
+            } else {
+                throw new IllegalStateException("A BaseProfileItemValue or BaseDataItemValue instance was expected.");
+            }
+        }
     }
 
     public void setStartDate(Date startDate) {
@@ -502,15 +463,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             return getNuEntity().isConvertible();
         }
     }
-
-//    public void setBuilder(Builder builder) {
-//        if (isLegacy()) {
-//            getLegacyEntity().setBuilder(builder);
-//        } else {
-//            // TODO
-//            throw new UnsupportedOperationException();
-//        }
-//    }
 
     public boolean isHistoryAvailable() {
         if (isLegacy()) {

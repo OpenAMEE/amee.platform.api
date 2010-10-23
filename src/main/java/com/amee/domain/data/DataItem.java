@@ -102,39 +102,6 @@ public class DataItem extends Item {
         }
     }
 
-//    public JSONObject getJSONObject(boolean detailed, boolean showHistory) throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getJSONObject(detailed, showHistory);
-//        } else {
-//            return getItemService().getJSONObject(getNuEntity(), detailed, showHistory);
-//        }
-//    }
-//
-//    @Override
-//    public JSONObject getJSONObject(boolean detailed) throws JSONException {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getJSONObject(detailed);
-//        } else {
-//            return getItemService().getJSONObject(getNuEntity(), detailed);
-//        }
-//    }
-//
-//    public Element getElement(Document document, boolean detailed, boolean showHistory) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getElement(document, detailed, showHistory);
-//        } else {
-//            return getItemService().getElement(getNuEntity(), document, detailed, showHistory);
-//        }
-//    }
-//
-//    public Element getElement(Document document, boolean detailed) {
-//        if (isLegacy()) {
-//            return getLegacyEntity().getElement(document, detailed);
-//        } else {
-//            return getItemService().getElement(getNuEntity(), document, detailed);
-//        }
-//    }
-
     @Override
     public String getPath() {
         if (isLegacy()) {
