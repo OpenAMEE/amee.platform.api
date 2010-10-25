@@ -8,11 +8,11 @@ import java.util.Random;
  */
 public class UidGen implements Serializable {
 
-    // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to FFFFFFFFFFFF).
-    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 16);
+    // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to ZZZZZZZZZZZZ).
+    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 36);
 
-    // An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to FFFFFFFFFFFFFF).
-    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 16);
+    // An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to ZZZZZZZZZZZZZZZZ).
+    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 36);
 
     private final static Random RANDOM = new Random();
 
