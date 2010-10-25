@@ -130,7 +130,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals 8, response.data.categories.size()
+    assertEquals 14, response.data.categories.size()
   }
 
   @Test
@@ -143,7 +143,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text()
 
     def allCategories = response.data.Categories.Category
-    assertEquals 8, allCategories.size()
+    assertEquals 14, allCategories.size()
   }
 
   @Test
