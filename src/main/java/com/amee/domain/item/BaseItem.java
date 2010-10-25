@@ -21,15 +21,16 @@ package com.amee.domain.item;
 
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.IAMEEEntityReference;
-import com.amee.domain.data.*;
+import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.Item;
+import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.Pathable;
-import com.amee.platform.science.ExternalValue;
-import com.amee.platform.science.InternalValue;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @MappedSuperclass
 public abstract class BaseItem extends AMEEEntity implements Pathable {
@@ -49,9 +50,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
 
     @Transient
     private transient String fullPath;
-
-    @Transient
-    private NuItemValueMap itemValueMap;
 
     @Transient
     private Date effectiveStartDate;
@@ -177,54 +175,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
 
     public abstract Item getAdapter();
 
-    public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
-        NuItemValueMap itemValueMap = getItemValueMap();
-        for (Object path : itemValueMap.keySet()) {
-
-            // Get all BaseItemValues with this ItemValueDefinition path.
-            List<BaseItemValue> itemValues = getAdapter().getItemService().getAllItemValues(this, (String) path);
-            if (itemValues.size() > 1 || itemValues.get(0).getItemValueDefinition().isForceTimeSeries()) {
-                appendTimeSeriesItemValue(values, itemValues);
-            } else if (itemValues.size() == 1) {
-                appendSingleValuedItemValue(values, itemValues.get(0));
-            }
-        }
-    }
-
-    public NuItemValueMap getItemValueMap() {
-        if (itemValueMap == null) {
-            itemValueMap = new NuItemValueMap();
-            for (BaseItemValue itemValue : getActiveItemValues()) {
-                itemValueMap.put(itemValue.getDisplayPath(), itemValue);
-            }
-        }
-        return itemValueMap;
-    }
-
-    private Set<BaseItemValue> getActiveItemValues() {
-        return Collections.unmodifiableSet(getAdapter().getItemService().getActiveItemValues(this));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void appendTimeSeriesItemValue(Map<ItemValueDefinition, InternalValue> values, List<BaseItemValue> itemValues) {
-        ItemValueDefinition ivd = itemValues.get(0).getItemValueDefinition();
-
-        // Add all LegacyItemValues with usable values
-        List<ExternalValue> usableSet = (List<ExternalValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
-
-        if (!usableSet.isEmpty()) {
-            values.put(ivd, new InternalValue(usableSet, getAdapter().getEffectiveStartDate(), getAdapter().getEffectiveEndDate()));
-            log.debug("appendTimeSeriesItemValue() - added timeseries value " + ivd.getPath());
-        }
-    }
-
-    private void appendSingleValuedItemValue(Map<ItemValueDefinition, InternalValue> values, BaseItemValue itemValue) {
-        if (itemValue.isUsableValue()) {
-            values.put(itemValue.getItemValueDefinition(), new InternalValue(itemValue.getValueAsString()));
-            log.debug("appendSingleValuedItemValue() - added single value " + itemValue.getPath());
-        }
-    }
-
     /**
      * Set the effective start date.
      *
@@ -259,11 +209,5 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
      */
     public Date getEffectiveEndDate() {
         return effectiveEndDate;
-    }
-
-    public static class UsableValuePredicate implements Predicate {
-        public boolean evaluate(Object o) {
-            return ((BaseItemValue) o).isUsableValue();
-        }
     }
 }

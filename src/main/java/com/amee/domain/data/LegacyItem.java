@@ -319,7 +319,7 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
         ItemValueDefinition ivd = itemValues.get(0).getItemValueDefinition();
 
         // Add all LegacyItemValues with usable values
-        List<ExternalValue> usableSet = (List<ExternalValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
+        List<ExternalValue> usableSet = (List<ExternalValue>) CollectionUtils.select(itemValues, new LegacyUsableValuePredicate());
 
         if (!usableSet.isEmpty()) {
             values.put(ivd, new InternalValue(usableSet, getEffectiveStartDate(), getEffectiveEndDate()));

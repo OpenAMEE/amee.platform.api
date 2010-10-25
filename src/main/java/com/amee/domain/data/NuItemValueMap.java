@@ -91,7 +91,7 @@ public class NuItemValueMap extends HashMap {
                         // come after the first BaseItemValue.
                         return -1;
                     } else {
-                        // Both BaseItemValue are not historical. This should not happen but consider them equal.
+                        // Both BaseItemValues are not historical. This should not happen but consider them equal.
                         log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
                         return 0;
                     }

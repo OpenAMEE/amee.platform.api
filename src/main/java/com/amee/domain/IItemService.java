@@ -3,11 +3,10 @@ package com.amee.domain;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface IItemService {
 
@@ -28,4 +27,8 @@ public interface IItemService {
     public BaseItemValue getItemValue(BaseItem item, String identifier);
 
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
+
+    public void appendInternalValues(BaseItem item, Map<ItemValueDefinition, InternalValue> values);
+
+    public void loadItemValuesForItems(Collection<BaseItem> items);
 }
