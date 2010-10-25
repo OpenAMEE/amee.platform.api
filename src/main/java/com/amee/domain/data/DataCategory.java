@@ -294,8 +294,17 @@ public class DataCategory extends AMEEEntity implements Pathable {
         return getMetadataValue("ecoinventMetaInformation");
     }
 
-    public void setEcoinventMetaInformation(String authority) {
-        getOrCreateMetadata("ecoinventMetaInformation").setValue(authority);
+    public void setEcoinventMetaInformation(String metaInformation) {
+        getOrCreateMetadata("ecoinventMetaInformation").setValue(metaInformation);
+        onModify();
+    }
+
+    public String getEcoinventDatasetAttributes() {
+        return getMetadataValue("ecoinventDatasetAttributes");
+    }
+
+    public void setEcoinventDatasetAttributes(String attribtues) {
+        getOrCreateMetadata("ecoinventDatasetAttributes").setValue(attribtues);
         onModify();
     }
 
