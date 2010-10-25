@@ -9,10 +9,10 @@ import java.util.Random;
 public class UidGen implements Serializable {
 
     // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to ZZZZZZZZZZZZ).
-    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 36);
+    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 16);
 
     // An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to ZZZZZZZZZZZZZZZZ).
-    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 36);
+    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 16);
 
     private final static Random RANDOM = new Random();
 
@@ -55,9 +55,13 @@ public class UidGen implements Serializable {
 
     private void addUidPart(StringBuffer uid) {
         StringBuffer part = new StringBuffer();
-        part.append(Integer.toHexString(RANDOM.nextInt(range)));
+        part.append(Integer.toString(RANDOM.nextInt(range), this.radix));
         while (part.length() < partSize) {
             part.insert(0, '0'); // left pad with 0's
+        }
+        if (part.length() > partSize) {
+            throw new RuntimeException(
+                    "Actual part size (" + part.length() + ") is different to specified part size (" + partSize + ").");
         }
         uid.append(part);
     }
