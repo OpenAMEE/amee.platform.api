@@ -147,6 +147,11 @@ public class NuProfileItem extends BaseItem {
         return (endDate != null) && (startDate.compareTo(endDate) == 0);
     }
 
+    public boolean isWithinLifeTime(Date date) {
+        return (date.equals(getStartDate()) || date.after(getStartDate())) &&
+                (getEndDate() == null || date.before(getEndDate()));
+    }
+
     /**
      * Get the GHG {@link com.amee.platform.science.ReturnValues ReturnValues} for this ProfileItem.
      * <p/>

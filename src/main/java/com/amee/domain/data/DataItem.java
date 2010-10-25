@@ -180,7 +180,11 @@ public class DataItem extends Item {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.DI;
+        if (isLegacy()) {
+            return ObjectType.DI;
+        } else {
+            return ObjectType.NDI;
+        }
     }
 
     @Override

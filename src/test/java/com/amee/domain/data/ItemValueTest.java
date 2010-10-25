@@ -29,7 +29,7 @@ public class ItemValueTest {
         when(mockItemValueDefinition.getValueDefinition()).thenReturn(mockValueDefinition);
         when(mockValueDefinition.getValueType()).thenReturn(ValueType.TEXT);
         dataItem = new DataItem(mockDataCategory, mockItemDefinition);
-        itemValue = new ItemValue(mockItemValueDefinition, dataItem);
+        itemValue = new ItemValue(mockItemValueDefinition, dataItem, false);
     }
 
     @Test

@@ -236,7 +236,11 @@ public class ProfileItem extends Item {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.PI;
+        if (isLegacy()) {
+            return ObjectType.PI;
+        } else {
+            return ObjectType.NPI;
+        }
     }
 
     @Override
