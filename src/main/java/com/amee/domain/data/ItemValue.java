@@ -21,11 +21,9 @@ package com.amee.domain.data;
 
 import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
-import com.amee.domain.item.data.BaseDataItemValue;
-import com.amee.domain.item.data.DataItemNumberValue;
-import com.amee.domain.item.data.DataItemTextValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.*;
 import com.amee.domain.item.profile.BaseProfileItemValue;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.item.profile.ProfileItemNumberValue;
@@ -55,7 +53,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         super();
     }
 
-    public ItemValue(ItemValueDefinition itemValueDefinition, Item item) {
+    public ItemValue(ItemValueDefinition itemValueDefinition, Item item, boolean isHistory) {
         super();
         if (item.isLegacy()) {
             setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity()));
@@ -69,13 +67,19 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
                 // Create a nu style value.
                 if (itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.INTEGER) ||
                         itemValueDefinition.getValueDefinition().getValueType().equals(ValueType.DOUBLE)) {
-                    // TODO: Handle DIVH.
                     // Item is a number.
-                    itemValue = new DataItemNumberValue(itemValueDefinition, dataItem);
+                    if (isHistory) {
+                        itemValue = new DataItemNumberValueHistory(itemValueDefinition, dataItem);
+                    } else {
+                        itemValue = new DataItemNumberValue(itemValueDefinition, dataItem);
+                    }
                 } else {
-                    // TODO: Handle DIVH.
                     // Item is text.
-                    itemValue = new DataItemTextValue(itemValueDefinition, dataItem);
+                    if (isHistory) {
+                        itemValue = new DataItemTextValueHistory(itemValueDefinition, dataItem);
+                    } else {
+                        itemValue = new DataItemTextValue(itemValueDefinition, dataItem);
+                    }
                 }
             } else if (NuProfileItem.class.isAssignableFrom(item.getNuEntity().getClass())) {
                 // Work with ProfileItems.
@@ -98,9 +102,15 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public ItemValue(ItemValueDefinition itemValueDefinition, Item item, String value) {
-        this(itemValueDefinition, item);
+        this(itemValueDefinition, item, false);
         setValue(value);
     }
+
+    public ItemValue(ItemValueDefinition itemValueDefinition, Item item, String value, boolean isHistory) {
+        this(itemValueDefinition, item, isHistory);
+        setValue(value);
+    }
+
 
     public ItemValue(LegacyItemValue itemValue) {
         super();
@@ -288,8 +298,13 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             getLegacyEntity().setStartDate(startDate);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                if (HistoryValue.class.isAssignableFrom(getNuEntity().getClass())) {
+                    ((HistoryValue) getNuEntity()).setStartDate(startDate);
+                }
+            } else {
+                throw new IllegalStateException("A BaseDataItemValue instance was expected.");
+            }
         }
     }
 

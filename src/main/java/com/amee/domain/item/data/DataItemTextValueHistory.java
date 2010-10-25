@@ -2,6 +2,7 @@ package com.amee.domain.item.data;
 
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.HistoryValue;
 import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
@@ -16,7 +17,7 @@ import java.util.Date;
 @Entity
 @Table(name = "DATA_ITEM_TEXT_VALUE_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class DataItemTextValueHistory extends BaseDataItemTextValue implements ExternalHistoryValue {
+public class DataItemTextValueHistory extends BaseDataItemTextValue implements HistoryValue {
 
     @Column(name = "START_DATE")
     @Index(name = "START_DATE_IND")
@@ -24,6 +25,10 @@ public class DataItemTextValueHistory extends BaseDataItemTextValue implements E
 
     public DataItemTextValueHistory() {
         super();
+    }
+
+    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+        super(itemValueDefinition, dataItem);
     }
 
     public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
