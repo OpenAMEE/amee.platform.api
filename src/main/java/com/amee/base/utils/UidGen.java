@@ -9,10 +9,10 @@ import java.util.Random;
 public class UidGen implements Serializable {
 
     // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to ZZZZZZZZZZZZ).
-    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 16);
+    public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 36);
 
     // An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to ZZZZZZZZZZZZZZZZ).
-    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 16);
+    public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 36);
 
     private final static Random RANDOM = new Random();
 
@@ -36,7 +36,7 @@ public class UidGen implements Serializable {
     }
 
     /**
-     * Generates a 'unique' uid containing hex values.
+     * Generates a 'unique' uid containing values.
      * <p/>
      * Example: 2DF512B4F183
      *
@@ -46,7 +46,7 @@ public class UidGen implements Serializable {
         StringBuffer uid = new StringBuffer();
         for (int i = 0; i < parts; i++) {
             addUidPart(uid);
-            if (i != parts) {
+            if (i != parts - 1) {
                 uid.append(separator);
             }
         }
