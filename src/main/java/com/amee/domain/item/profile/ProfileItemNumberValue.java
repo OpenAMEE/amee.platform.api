@@ -71,7 +71,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public boolean isUsableValue() {
-        return true;
+        return value != null;
     }
 
     @Override

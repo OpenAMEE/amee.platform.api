@@ -119,10 +119,11 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
     }
 
     public String getUsableValue() {
-        if (!isUsableValue())
+        if (!isUsableValue()) {
             return null;
-
-        return getValue();
+        } else {
+            return getValue();
+        }
     }
 
     public boolean isUsableValue() {

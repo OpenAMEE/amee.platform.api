@@ -70,7 +70,7 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public boolean isUsableValue() {
-        return true;
+        return value != null;
     }
 
     @Override

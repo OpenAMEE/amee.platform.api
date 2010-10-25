@@ -145,7 +145,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
     }
 
     public boolean isUsableValue() {
-        return getValue() != null && !getValue().isEmpty();
+        return !StringUtils.isBlank(getValue());
     }
 
     public boolean isChoicesAvailable() {
