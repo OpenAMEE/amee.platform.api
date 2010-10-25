@@ -106,6 +106,21 @@ class CategoryIT extends BaseApiTest {
   }
 
   @Test
+  void getCategoriesWithTagsExcludedJson() {
+    client.contentType = JSON
+    def response = client.get(path: '/3.0/categories', query: ['excTags': 'ecoinvent'])
+    assertEquals 200, response.status
+    assertEquals 'application/json', response.contentType
+    assertTrue response.data instanceof net.sf.json.JSON
+    assertEquals 'OK', response.data.status
+    assertFalse response.data.resultsTruncated
+    assertEquals categoryUidsExcEcoInv.size(), response.data.categories.size()
+    assert categoryUidsExcEcoInv == response.data.categories.collect {it.uid}
+    assert categoryNamesExcEcoInv == response.data.categories.collect {it.name}
+    assert categoryWikiNamesExcEcoInv == response.data.categories.collect {it.wikiName}
+  }
+
+  @Test
   void getCategoriesXml() {
     client.contentType = XML
     def response = client.get(path: '/3.0/categories')
