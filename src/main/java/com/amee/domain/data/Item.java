@@ -241,8 +241,17 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return getLegacyEntity().isWithinLifeTime(date);
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+
+            // Data or Profile?
+            if (NuDataItem.class.isAssignableFrom(getNuEntity().getClass())) {
+                // Data items don't have start dates
+                return true;
+            } else if (NuProfileItem.class.isAssignableFrom(getNuEntity().getClass())) {
+                NuProfileItem profileItem = (NuProfileItem) getNuEntity();
+                return profileItem.isWithinLifeTime(date);
+            } else {
+                throw new IllegalStateException("Item should be either a NuDataItem or NuProfileItem.");
+            }
         }
     }
 
