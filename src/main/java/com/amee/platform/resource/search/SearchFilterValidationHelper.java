@@ -37,6 +37,7 @@ public class SearchFilterValidationHelper extends ValidationHelper {
         boosts.put("tags", 10.0f);
         dataBinder.registerCustomEditor(Query.class, "q", new MultiFieldQueryParserEditor(fields, boosts));
         dataBinder.registerCustomEditor(Query.class, "tags", new QueryParserEditor("tags"));
+        dataBinder.registerCustomEditor(Query.class, "excTags", new QueryParserEditor("excTags"));
         dataBinder.registerCustomEditor(Set.class, "types", new ObjectTypesEditor());
     }
 
@@ -59,11 +60,12 @@ public class SearchFilterValidationHelper extends ValidationHelper {
     public String[] getAllowedFields() {
         if (allowedFields == null) {
             allowedFields = new HashSet<String>();
+            allowedFields.add("excTags");
             allowedFields.add("q");
+            allowedFields.add("resultLimit");
+            allowedFields.add("resultStart");
             allowedFields.add("tags");
             allowedFields.add("types");
-            allowedFields.add("resultStart");
-            allowedFields.add("resultLimit");
         }
         return allowedFields.toArray(new String[]{});
     }
