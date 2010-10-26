@@ -188,8 +188,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return ItemValueMap.getItemValueMap(getLegacyEntity().getItemValuesMap());
         } else {
-            // TODO
-            throw new UnsupportedOperationException();
+            return ItemValueMap.getItemValueMap(getNuEntity().getItemValuesMap());
         }
     }
 
