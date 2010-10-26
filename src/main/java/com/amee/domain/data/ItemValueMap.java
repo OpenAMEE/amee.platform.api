@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Transient;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Configurable(autowire = Autowire.BY_TYPE)
-public class ItemValueMap extends HashMap {
+public class ItemValueMap {
 
     private LegacyItemValueMap legacyItemValueMap;
     private NuItemValueMap nuItemValueMap;
@@ -140,6 +140,14 @@ public class ItemValueMap extends HashMap {
 
     public NuItemValueMap getNuItemValueMap() {
         return nuItemValueMap;
+    }
+
+    public Set keySet() {
+        if (isLegacy()) {
+            return getLegacyItemValueMap().keySet();
+        } else {
+            return getNuItemValueMap().keySet();
+        }
     }
 
     public ItemValueMap getAdapter() {
