@@ -20,7 +20,7 @@ public interface IDataItemService extends IItemService {
 
     public NuDataItem getItemByUid(String uid);
 
-    public DataItem getDataItemByPath(DataCategory parent, String path);
+    public NuDataItem getDataItemByPath(DataCategory parent, String path);
 
     public String getLabel(NuDataItem dataItem);
 
