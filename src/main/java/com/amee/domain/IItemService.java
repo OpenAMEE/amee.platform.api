@@ -28,7 +28,5 @@ public interface IItemService {
 
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
-    public void appendInternalValues(BaseItem item, Map<ItemValueDefinition, InternalValue> values);
-
     public void loadItemValuesForItems(Collection<BaseItem> items);
 }

@@ -106,11 +106,13 @@ public class ItemValueMap extends HashMap {
         }
     }
 
-    public void put(String path, ItemValue itemValue) {
+    public ItemValue put(String path, ItemValue itemValue) {
         if (isLegacy()) {
             getLegacyItemValueMap().put(path, itemValue.getLegacyEntity());
+            return itemValue;
         } else {
             getNuItemValueMap().put(path, itemValue.getNuEntity());
+            return itemValue;
         }
     }
 

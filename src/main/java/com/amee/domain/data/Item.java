@@ -188,7 +188,9 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return ItemValueMap.getItemValueMap(getLegacyEntity().getItemValuesMap());
         } else {
-            return ItemValueMap.getItemValueMap(getNuEntity().getItemValuesMap());
+            NuItemValueMap nuItemValueMap = getNuEntity().getItemValuesMap();
+            ItemValueMap itemValueMap = ItemValueMap.getItemValueMap(nuItemValueMap);
+            return itemValueMap;
         }
     }
 
@@ -205,14 +207,6 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
             return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier));
         } else {
             return ItemValue.getItemValue(getItemService().getItemValue(getNuEntity(), identifier));
-        }
-    }
-
-    public void appendInternalValues(Map<ItemValueDefinition, InternalValue> values) {
-        if (isLegacy()) {
-            getLegacyEntity().appendInternalValues(values);
-        } else {
-            getItemService().appendInternalValues(getNuEntity(), values);
         }
     }
 
