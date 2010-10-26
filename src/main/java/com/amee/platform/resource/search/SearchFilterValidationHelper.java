@@ -60,11 +60,11 @@ public class SearchFilterValidationHelper extends ValidationHelper {
     public String[] getAllowedFields() {
         if (allowedFields == null) {
             allowedFields = new HashSet<String>();
-            allowedFields.add("excTags");
             allowedFields.add("q");
             allowedFields.add("resultLimit");
             allowedFields.add("resultStart");
             allowedFields.add("tags");
+            allowedFields.add("excTags");
             allowedFields.add("types");
         }
         return allowedFields.toArray(new String[]{});
