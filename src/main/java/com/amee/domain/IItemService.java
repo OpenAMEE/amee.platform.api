@@ -34,4 +34,8 @@ public interface IItemService {
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
     public void loadItemValuesForItems(Collection<BaseItem> items);
+
+    public void addItemValue(BaseItemValue itemValue);
+
+    public void clearItemValues();
 }

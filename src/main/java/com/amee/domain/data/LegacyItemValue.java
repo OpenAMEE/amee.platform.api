@@ -130,29 +130,6 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
         return !StringUtils.isBlank(getValue());
     }
 
-//    public JSONObject getJSONObject() throws JSONException {
-//        return getJSONObject(true);
-//    }
-
-//    public JSONObject getIdentityJSONObject() throws JSONException {
-//        JSONObject obj = new JSONObject();
-//        obj.put("uid", getUid());
-//        obj.put("path", getPath());
-//        return obj;
-//    }
-
-//    public Element getElement(Document document) {
-//        return getElement(document, true);
-//    }
-//
-//    public Element getElement(Document document, boolean detailed) {
-//        return builder.getElement(document, detailed);
-//    }
-
-//    public Element getIdentityElement(Document document) {
-//        return XMLUtils.getIdentityElement(document, "ItemValue", this);
-//    }
-
     /**
      * Returns the hierarchy of objects including this object.
      * <p/>
