@@ -29,11 +29,13 @@ import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.path.Pathable;
 import com.amee.domain.profile.LegacyProfileItem;
 import com.amee.domain.profile.ProfileItem;
-import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.Duration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
@@ -188,9 +190,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
         if (isLegacy()) {
             return ItemValueMap.getItemValueMap(getLegacyEntity().getItemValuesMap());
         } else {
-            NuItemValueMap nuItemValueMap = getNuEntity().getItemValuesMap();
-            ItemValueMap itemValueMap = ItemValueMap.getItemValueMap(nuItemValueMap);
-            return itemValueMap;
+            return ItemValueMap.getItemValueMap(getItemService().getItemValuesMap(getNuEntity()));
         }
     }
 

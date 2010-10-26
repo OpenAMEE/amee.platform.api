@@ -24,7 +24,6 @@ import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.Item;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.NuItemValueMap;
 import com.amee.domain.path.Pathable;
 
 import javax.persistence.*;
@@ -57,9 +56,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
 
     @Transient
     private Date effectiveEndDate;
-
-    @Transient
-    private NuItemValueMap itemValuesMap;
 
     public BaseItem() {
         super();
@@ -214,15 +210,4 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     public Date getEffectiveEndDate() {
         return effectiveEndDate;
     }
-
-    public NuItemValueMap getItemValuesMap() {
-        if (itemValuesMap == null) {
-            itemValuesMap = new NuItemValueMap();
-            for (BaseItemValue itemValue : getAdapter().getItemService().getActiveItemValues(this)) {
-                itemValuesMap.put(itemValue.getDisplayPath(), itemValue);
-            }
-        }
-        return itemValuesMap;
-    }
-
 }

@@ -1,12 +1,15 @@
 package com.amee.domain;
 
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.data.NuItemValueMap;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.StartEndDate;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public interface IItemService {
 
@@ -25,6 +28,8 @@ public interface IItemService {
     public BaseItemValue getItemValue(BaseItem item, String identifier, Date startDate);
 
     public BaseItemValue getItemValue(BaseItem item, String identifier);
+
+    public NuItemValueMap getItemValuesMap(BaseItem item);
 
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
