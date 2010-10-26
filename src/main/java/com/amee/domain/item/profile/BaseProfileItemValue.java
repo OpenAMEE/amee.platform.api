@@ -27,9 +27,10 @@ public abstract class BaseProfileItemValue extends BaseItemValue implements Path
         setProfileItem(profileItem);
     }
 
-    protected void copyTo(BaseProfileItemValue o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.profileItem = profileItem;
+        BaseProfileItemValue v = (BaseProfileItemValue) o;
+        v.profileItem = profileItem;
     }
 
     @Override

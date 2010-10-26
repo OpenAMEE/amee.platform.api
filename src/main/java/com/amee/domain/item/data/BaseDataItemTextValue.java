@@ -2,6 +2,7 @@ package com.amee.domain.item.data;
 
 import com.amee.domain.LocaleHolder;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.ExternalTextValue;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -33,9 +34,10 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
         setValue(value);
     }
 
-    protected void copyTo(BaseDataItemTextValue o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.value = value;
+        BaseDataItemTextValue v = (BaseDataItemTextValue) o;
+        v.value = value;
     }
 
     public void checkItemValueDefinition() {

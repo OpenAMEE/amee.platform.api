@@ -2,8 +2,8 @@ package com.amee.domain.item.data;
 
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.HistoryValue;
-import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -40,9 +40,10 @@ public class DataItemNumberValueHistory extends BaseDataItemNumberValue implemen
         setStartDate(startDate);
     }
 
-    protected void copyTo(DataItemNumberValueHistory o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.startDate = startDate;
+        DataItemNumberValueHistory v = (DataItemNumberValueHistory) o;
+        v.startDate = startDate;
     }
 
     @Override
