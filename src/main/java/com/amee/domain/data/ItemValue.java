@@ -111,7 +111,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         setValue(value);
     }
 
-
     public ItemValue(LegacyItemValue itemValue) {
         super();
         setLegacyEntity(itemValue);

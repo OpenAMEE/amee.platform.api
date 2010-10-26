@@ -21,5 +21,7 @@ public interface IDataItemService extends IItemService {
 
     public String getLabel(NuDataItem dataItem);
 
+    public void persist(NuDataItem dataItem);
+
     public void remove(DataItem dataItem);
 }

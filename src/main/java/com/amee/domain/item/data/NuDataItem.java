@@ -41,10 +41,6 @@ import java.util.Date;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class NuDataItem extends BaseItem {
 
-    // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
-    // Copied from LegacyDataItem
-    public final static Date EPOCH = new Date(0);
-
     public final static int NAME_MAX_SIZE = 255;
     public final static int PATH_MAX_SIZE = 255;
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
