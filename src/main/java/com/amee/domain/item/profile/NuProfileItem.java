@@ -246,7 +246,7 @@ public class NuProfileItem extends BaseItem {
      */
     public Date getEffectiveEndDate() {
         if (super.getEffectiveEndDate() != null) {
-            return getEffectiveEndDate();
+            return super.getEffectiveEndDate();
         } else {
             return getEndDate();
         }
