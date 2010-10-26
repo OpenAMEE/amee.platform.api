@@ -2,6 +2,7 @@ package com.amee.domain.item.profile;
 
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
@@ -46,11 +47,12 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         setValue(value);
     }
 
-    protected void copyTo(ProfileItemNumberValue o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.unit = unit;
-        o.perUnit = perUnit;
-        o.value = value;
+        ProfileItemNumberValue v = (ProfileItemNumberValue) o;
+        v.unit = unit;
+        v.perUnit = perUnit;
+        v.value = value;
     }
 
     public void checkItemValueDefinition() {

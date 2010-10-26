@@ -2,6 +2,7 @@ package com.amee.domain.item.data;
 
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.HistoryValue;
 import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
@@ -40,9 +41,10 @@ public class DataItemTextValueHistory extends BaseDataItemTextValue implements H
         setStartDate(startDate);
     }
 
-    protected void copyTo(DataItemTextValueHistory o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.startDate = startDate;
+        DataItemTextValueHistory v = (DataItemTextValueHistory) o;
+        v.startDate = startDate;
     }
 
     @Override

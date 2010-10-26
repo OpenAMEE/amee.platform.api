@@ -27,9 +27,10 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
         setDataItem(dataItem);
     }
 
-    protected void copyTo(BaseDataItemValue o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.dataItem = dataItem;
+        BaseDataItemValue v = (BaseDataItemValue) o;
+        v.dataItem = dataItem;
     }
 
     @Override

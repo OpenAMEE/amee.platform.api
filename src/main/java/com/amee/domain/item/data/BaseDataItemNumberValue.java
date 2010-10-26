@@ -1,6 +1,7 @@
 package com.amee.domain.item.data;
 
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
@@ -45,11 +46,12 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         setValue(value);
     }
 
-    protected void copyTo(BaseDataItemNumberValue o) {
+    protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        o.unit = unit;
-        o.perUnit = perUnit;
-        o.value = value;
+        BaseDataItemNumberValue v = (BaseDataItemNumberValue) o;
+        v.unit = unit;
+        v.perUnit = perUnit;
+        v.value = value;
     }
 
     public void checkItemValueDefinition() {
