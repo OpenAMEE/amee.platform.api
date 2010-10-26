@@ -58,9 +58,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     @Transient
     private Date effectiveEndDate;
 
-    @Transient
-    private NuItemValueMap itemValuesMap;
-
     public BaseItem() {
         super();
     }
@@ -216,11 +213,9 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     }
 
     public NuItemValueMap getItemValuesMap() {
-        if (itemValuesMap == null) {
-            itemValuesMap = new NuItemValueMap();
-            for (BaseItemValue itemValue : getAdapter().getItemService().getActiveItemValues(this)) {
-                itemValuesMap.put(itemValue.getDisplayPath(), itemValue);
-            }
+        NuItemValueMap itemValuesMap = new NuItemValueMap();
+        for (BaseItemValue itemValue : getAdapter().getItemService().getActiveItemValues(this)) {
+            itemValuesMap.put(itemValue.getDisplayPath(), itemValue);
         }
         return itemValuesMap;
     }
