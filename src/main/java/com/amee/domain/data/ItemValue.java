@@ -349,7 +349,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 ((NumberValue) getNuEntity()).setUnit(unit);
             } else {
-                throw new UnsupportedOperationException();
+                throw new IllegalStateException("A NumberValue was expected.");
             }
         }
     }
@@ -385,13 +385,9 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             getLegacyEntity().setPerUnit(perUnit);
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                    ((NumberValue) getNuEntity()).setPerUnit(perUnit);
-                } else {
-                    throw new UnsupportedOperationException();
-                }
+                ((NumberValue) getNuEntity()).setPerUnit(perUnit);
             } else {
-                throw new UnsupportedOperationException();
+                throw new IllegalStateException("A NumberValue was expected.");
             }
         }
     }

@@ -2,6 +2,7 @@ package com.amee.domain;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.NuDataItem;
 
 import java.util.Date;
@@ -19,9 +20,13 @@ public interface IDataItemService extends IItemService {
 
     public NuDataItem getItemByUid(String uid);
 
+    public DataItem getDataItemByPath(DataCategory parent, String path);
+
     public String getLabel(NuDataItem dataItem);
 
     public void persist(NuDataItem dataItem);
+
+    public void persist(BaseItemValue itemValue);
 
     public void remove(DataItem dataItem);
 }
