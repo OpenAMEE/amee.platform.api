@@ -26,6 +26,7 @@ import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -139,6 +140,12 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     @Override
     public String getLabel() {
         return getItemValueDefinition().getLabel();
+    }
+    
+    public boolean isNonZero() {
+        return getItemValueDefinition().isDouble() &&
+                !StringUtils.isBlank(getValueAsString()) &&
+                Double.parseDouble(getValueAsString()) != 0.0;
     }
 
     public ItemValueDefinition getItemValueDefinition() {
