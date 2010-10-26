@@ -151,8 +151,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (isLegacy()) {
             return ItemValue.getItemValue(getLegacyEntity().getCopy());
         } else {
-            throw new UnsupportedOperationException();
-            // return ItemValue.getItemValue(getNuEntity().getCopy());
+            return ItemValue.getItemValue(getNuEntity().getCopy());
         }
     }
 

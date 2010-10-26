@@ -24,6 +24,7 @@ import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +62,16 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
         o.itemValueDefinition = itemValueDefinition;
+    }
+
+    public BaseItemValue getCopy() {
+        try {
+            BaseItemValue clone = getClass().newInstance();
+            copyTo(clone);
+            return clone;
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -182,4 +193,5 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     public void setAdapter(ItemValue adapter) {
         this.adapter = adapter;
     }
+
 }
