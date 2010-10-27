@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,9 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
+
+    @Transient
+    private transient Object valueOveride;
 
     public ItemValue() {
         super();
@@ -258,6 +262,10 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public String getValue() {
+        if (valueOveride != null) {
+            return valueOveride.toString();
+        }
+        
         if (isLegacy()) {
             return getLegacyEntity().getValue();
         } else {
@@ -522,5 +530,13 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setNuEntity(BaseItemValue nuEntity) {
         this.nuEntity = nuEntity;
+    }
+
+    public Object getValueOveride() {
+        return valueOveride;
+    }
+
+    public void setValueOveride(Object valueOveride) {
+        this.valueOveride = valueOveride;
     }
 }
