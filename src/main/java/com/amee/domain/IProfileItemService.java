@@ -4,6 +4,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.profile.Profile;
+import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.StartEndDate;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ public interface IProfileItemService extends IItemService {
 
     public List<NuProfileItem> getProfileItems(Profile profile, DataCategory dataCategory, StartEndDate startDate, StartEndDate endDate);
 
-    public boolean equivalentProfileItemExists(NuProfileItem profileItem);
+    public boolean equivalentProfileItemExists(ProfileItem profileItem);
 
     public Collection<Long> getProfileDataCategoryIds(Profile profile);
 
