@@ -1,6 +1,5 @@
 package com.amee.domain.item.profile;
 
-import com.amee.domain.LocaleHolder;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
@@ -8,8 +7,6 @@ import com.amee.platform.science.ExternalTextValue;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +15,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PROFILE_ITEM_TEXT_VALUE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ProfileItemTextValue extends BaseProfileItemValue implements ExternalTextValue {
 
     // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
@@ -43,7 +39,7 @@ public class ProfileItemTextValue extends BaseProfileItemValue implements Extern
 
     protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
-        ((ProfileItemTextValue)o).value = value;
+        ((ProfileItemTextValue) o).value = value;
     }
 
     public void checkItemValueDefinition() {
@@ -68,11 +64,7 @@ public class ProfileItemTextValue extends BaseProfileItemValue implements Extern
     }
 
     public String getValue() {
-        if (getItemValueDefinition().isText() && !LocaleHolder.isDefaultLocale()) {
-            return localeService.getLocaleNameValue(this, value);
-        } else {
-            return value;
-        }
+        return value;
     }
 
     @Override
