@@ -50,8 +50,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
 
+    /**
+     * This value can be used to override the persisted value.
+     */
     @Transient
-    private transient Object valueOveride;
+    private transient Object valueOverride;
 
     public ItemValue() {
         super();
@@ -262,8 +265,8 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     }
 
     public String getValue() {
-        if (valueOveride != null) {
-            return valueOveride.toString();
+        if (valueOverride != null) {
+            return valueOverride.toString();
         }
         
         if (isLegacy()) {
@@ -532,11 +535,11 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         this.nuEntity = nuEntity;
     }
 
-    public Object getValueOveride() {
-        return valueOveride;
+    public Object getValueOverride() {
+        return valueOverride;
     }
 
-    public void setValueOveride(Object valueOveride) {
-        this.valueOveride = valueOveride;
+    public void setValueOverride(Object valueOverride) {
+        this.valueOverride = valueOverride;
     }
 }
