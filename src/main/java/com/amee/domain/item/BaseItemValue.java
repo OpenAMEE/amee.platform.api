@@ -193,5 +193,4 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     public void setAdapter(ItemValue adapter) {
         this.adapter = adapter;
     }
-
 }

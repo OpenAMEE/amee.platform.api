@@ -76,9 +76,19 @@ public class ItemValueMap {
 
     public ItemValue get(String path) {
         if (isLegacy()) {
-            return getLegacyItemValueMap().get(path).getAdapter();
+            LegacyItemValue liv = getLegacyItemValueMap().get(path);
+            if (liv != null) {
+                return ItemValue.getItemValue(liv);
+            } else {
+                return null;
+            }
         } else {
-            return getNuItemValueMap().get(path).getAdapter();
+            BaseItemValue biv = getNuItemValueMap().get(path);
+            if (biv != null) {
+                return ItemValue.getItemValue(biv);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -100,9 +110,19 @@ public class ItemValueMap {
 
     public ItemValue get(String path, Date startDate) {
         if (isLegacy()) {
-            return getLegacyItemValueMap().get(path, startDate).getAdapter();
+            LegacyItemValue liv = getLegacyItemValueMap().get(path, startDate);
+            if (liv != null) {
+                return ItemValue.getItemValue(liv);
+            } else {
+                return null;
+            }
         } else {
-            return getNuItemValueMap().get(path, startDate).getAdapter();
+            BaseItemValue biv = getNuItemValueMap().get(path, startDate);
+            if (biv != null) {
+                return ItemValue.getItemValue(biv);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -153,6 +173,4 @@ public class ItemValueMap {
     public ItemValueMap getAdapter() {
         return adapter;
     }
-
-
 }
