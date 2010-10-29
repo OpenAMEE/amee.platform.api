@@ -8,6 +8,7 @@ class DataItemIT extends BaseApiTest {
   def dataItemUids = [
           '004CF30590A5',
           '897513300787',
+          'ZZ7513300787',
           '6C663D2B8681',
           '9EFA0CE242D0',
           'A81FD238C501'
@@ -41,29 +42,27 @@ class DataItemIT extends BaseApiTest {
   void getDataItemsJson() {
     client.contentType = JSON
     def response = client.get(path: '/3.1/categories/Cooking/items;full',
-            query: ['resultLimit': '5'])
+            query: ['resultLimit': '6'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertTrue response.data.resultsTruncated
-
     assertEquals dataItemUids.size(), response.data.items.size()
-    def responseIds = response.data.items.collect{ it.uid }.sort()
-    assert dataItemUids == responseIds 
+    def responseUids = response.data.items.collect{ it.uid }.sort()
+    assert dataItemUids == responseUids
   }
 
   @Test
   void getDataItemsXml() {
     client.contentType = XML
     def response = client.get(path: '/3.1/categories/Cooking/items;full',
-            query: ['resultLimit': '5'])
+            query: ['resultLimit': '6'])
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     assertEquals 'true', response.data.Items.@truncated.text()
     def allDataItems = response.data.Items.Item
-
     assertEquals dataItemUids.size(), allDataItems.size()
     assert dataItemUids == allDataItems.@uid*.text().sort()
   }

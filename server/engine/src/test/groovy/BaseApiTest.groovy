@@ -1,3 +1,4 @@
+import com.amee.platform.search.SearchIndexer
 import groovyx.net.http.RESTClient
 import org.junit.AfterClass
 import org.junit.Before
@@ -45,28 +46,40 @@ abstract class BaseApiTest {
   @BeforeClass
   static void start() {
 
+    // Augment String with a random method.
     addRandomStringMethodToString();
 
-    // Spring application context
+    // Spring application context.
     // TODO: Use spring annotation to load this?
     context = new ClassPathXmlApplicationContext("classpath*:applicationContext*.xml")
+
+    // Clear the SearchIndexer DataCategory count (paranoid).
+    SearchIndexer.resetCount();
 
     // Configure Restlet server (ajp, http, etc).
     // TODO: Try and do this in Spring XML config.
     def server = context.getBean("platformServer")
     def transactionController = context.getBean("transactionController")
-    server.context.attributes.transactionController = transactionController // used in TransactionServerConverter
+    server.context.attributes.transactionController = transactionController // Used in TransactionServerConverter.
 
     // TODO: Start this before all integration tests. exec-maven-plugin?
-    // Start the restlet container
+    // Start the restlet container.
     container = context.getBean("platformContainer")
 
+    // We're off!
     println "Starting container..."
     container.start()
 
-        // Wait to allow the search index to be built (there must be a better way to do this?)
-        println 'Waiting while the index is built...'
-        sleep(20000)
+    // Wait to allow the search index to be built.
+    // NOTE: The count figure below needs to be updated when more DataCategories are added to import.sql.
+    // NOTE: Remember to exclude trashed and implicitly trashed categories in the count.
+    println 'Waiting while the index is built...'
+    int count = 0;
+    while (SearchIndexer.getCount() < 22) {
+      sleep(1000)
+      count++;
+      println 'Waited ' + count + ' second(s) whilst the index is being built...'
+    }
 
     // Ensure index reader is re-opened.
     luceneService = context.getBean("luceneService")
@@ -77,9 +90,10 @@ abstract class BaseApiTest {
   static void stop() {
     try {
       println "Stopping container..."
+      luceneService.closeEverything();
       container.stop()
     } catch (e) {
-      // Do nothing
+      // Do nothing.
     }
   }
 

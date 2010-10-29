@@ -152,20 +152,6 @@
                             <excludeScope>provided</excludeScope>
                         </configuration>
                     </execution>
-                    <!-- This happens in ant copy-amee-libs now -->
-                    <!-- Copy all dependencies to local runtime directory, ready for local execution. -->
-                    <!--execution>
-                        <id>copy-dependencies-other-local</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeScope>runtime</includeScope>
-                            <excludeScope>provided</excludeScope>
-                            <outputDirectory>${amee.current.lib}</outputDirectory>
-                        </configuration>
-                    </execution-->
                 </executions>
             </plugin>
 
@@ -249,12 +235,12 @@
                         <!--amee.hibernateDialect>org.hibernate.dialect.MySQLInnoDBDialect</amee.hibernateDialect-->
 
                         <!-- Set this to create to automatically create schema. Required for hsqldb:mem. -->
-                        <hibernate.hbm2ddl.auto>create</hibernate.hbm2ddl.auto>
+                        <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
 
                         <log4j.configuration>test-log4j.xml</log4j.configuration>
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
-                        <amee.logLevel>DEBUG</amee.logLevel>
+                        <amee.logLevel>INFO</amee.logLevel>
                         <amee.defaultLogLevel>WARN</amee.defaultLogLevel>
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>

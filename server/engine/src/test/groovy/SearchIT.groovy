@@ -9,7 +9,7 @@ class SearchIT extends BaseApiTest {
   @Test
   void searchJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.0/search',
+    def response = client.get(path: '/3.1/search',
             query: ['q': 'chemicals', 'excTags': 'ecoinvent'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
@@ -21,12 +21,11 @@ class SearchIT extends BaseApiTest {
   @Test
   void searchXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.0/search',
+    def response = client.get(path: '/3.1/search',
             query: ['q': 'chemicals'])
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
-
     def allResults = response.data.Results.children()
     assertEquals 15, allResults.size()
   }
@@ -38,7 +37,7 @@ class SearchIT extends BaseApiTest {
   void searchWithInvalidQueryJson() {
     try {
       client.contentType = JSON
-      client.get(path: '/3.0/search',
+      client.get(path: '/3.1/search',
               query: ['q': 'cooking\\'])
       fail 'Response status code should have been 400.';
     } catch (HttpResponseException e) {
@@ -48,5 +47,20 @@ class SearchIT extends BaseApiTest {
       assertTrue response.data instanceof net.sf.json.JSON;
       assertEquals 'INVALID', response.data.status;
     }
+  }
+
+  /**
+   * See: https://jira.amee.com/browse/PL-6589
+   */
+  @Test
+  void searchForDataItemsWithSameIDJson() {
+    client.contentType = JSON
+    def response = client.get(path: '/3.1/search',
+            query: ['q': 'GasTest', 'types': 'DI'])
+    assertEquals 200, response.status
+    assertEquals 'application/json', response.contentType
+    assertTrue response.data instanceof net.sf.json.JSON
+    assertEquals 'OK', response.data.status
+    assertEquals 2, response.data.results.size()
   }
 }
