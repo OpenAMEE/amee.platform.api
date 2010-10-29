@@ -7,6 +7,7 @@ import com.amee.domain.item.data.NuDataItem;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IDataItemService extends IItemService {
@@ -17,6 +18,8 @@ public interface IDataItemService extends IItemService {
     public List<NuDataItem> getDataItems(DataCategory dataCategory);
 
     public List<NuDataItem> getDataItems(Set<Long> dataItemIds);
+
+    public Map<String, NuDataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
 
     public NuDataItem getItemByUid(String uid);
 
