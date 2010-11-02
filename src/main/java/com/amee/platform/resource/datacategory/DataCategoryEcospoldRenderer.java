@@ -9,6 +9,7 @@ import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
 import com.amee.service.locale.LocaleService;
 import com.amee.service.metadata.MetadataService;
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -18,11 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Map;
-import java.util.Properties;
 
 @Service
 @Scope("prototype")
@@ -60,7 +58,8 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
         this.dataCategory = dataCategory;
 
         // Only display ecoinvent data in ecospold format.
-        if (dataCategory.getEcoinventMetaInformation().isEmpty()) {
+        if (dataCategory.getEcoinventMetaInformation().isEmpty() ||
+                dataCategory.getEcoinventDatasetAttributes().isEmpty()) {
             throw new MediaTypeNotSupportedException();
         }
     }
@@ -68,20 +67,29 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
     public void addBasic() {
 
         try {
+
             SAXBuilder builder = new SAXBuilder();
+            Document doc;
 
             // Add the dataset element
-            Document doc = builder.build(new StringReader(dataCategory.getEcoinventDatasetAttributes()));
-            if (rootElem != null) {
+            String ecoinventDatasetAttributes = dataCategory.getEcoinventDatasetAttributes();
+            if (!StringUtils.isBlank(ecoinventDatasetAttributes)) {
+                doc = builder.build(new StringReader(ecoinventDatasetAttributes));
                 rootElem.addContent(doc.getRootElement().detach());
                 datasetElem = rootElem.getChild("dataset", NS);
+            } else {
+                throw new IllegalStateException("The dataset Element could not be created.");
             }
 
             // Add the metainformation element
-            doc = builder.build(new StringReader(dataCategory.getEcoinventMetaInformation()));
-            if (datasetElem != null) {
+            String ecoinventMetaInformation = dataCategory.getEcoinventMetaInformation();
+            if (!StringUtils.isBlank(ecoinventMetaInformation)) {
+                doc = builder.build(new StringReader(ecoinventMetaInformation));
                 datasetElem.addContent(doc.getRootElement().detach());
+            } else {
+                throw new IllegalStateException("The dataset Element could not be populated.");
             }
+
         } catch (JDOMException e) {
             throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
         } catch (IOException e) {
