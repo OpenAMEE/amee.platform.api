@@ -32,8 +32,8 @@ public class RestletEngine extends Engine {
         // Configure Restlet server (ajp, http, etc).
         // TODO: Try and do this in Spring XML config.  
         Server ajpServer = ((Server) getSpringContext().getBean("platformServer"));
-        ajpServer.getContext().getAttributes()
-                .put("transactionController", getTransactionController()); // used in TransactionServerConverter
+        ajpServer.getContext().getAttributes().put("transactionController", getTransactionController());
+        ajpServer.getContext().getAttributes().put("springContext", getSpringContext());
 
         // Configure Restlet logging to log on a single line.
         LogService logService = container.getLogService();
