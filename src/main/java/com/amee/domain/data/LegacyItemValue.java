@@ -26,10 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.Resource;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,17 +36,12 @@ import java.util.List;
 @Entity
 @Table(name = "ITEM_VALUE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalValue {
 
     // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
     public final static int VALUE_SIZE = 32767;
     public final static int UNIT_SIZE = 255;
     public final static int PER_UNIT_SIZE = 255;
-
-    @Transient
-    @Resource
-    private ILocaleService localeService;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ITEM_VALUE_DEFINITION_ID")
@@ -101,7 +93,6 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
 
     protected void copyTo(LegacyItemValue o) {
         super.copyTo(o);
-        o.localeService = localeService;
         o.itemValueDefinition = itemValueDefinition;
         o.item = item;
         o.value = value;
@@ -204,7 +195,7 @@ public class LegacyItemValue extends AMEEEntity implements Pathable, ExternalVal
 
     public String getValue() {
         if (getItemValueDefinition().isText() && !LocaleHolder.isDefaultLocale()) {
-            return localeService.getLocaleNameValue(this, value);
+            return getLocaleService().getLocaleNameValue(this, value);
         } else {
             return value;
         }

@@ -21,12 +21,12 @@
  */
 package com.amee.domain;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.auth.AccessSpecification;
 import com.amee.domain.auth.AuthorizationContext;
 import com.amee.domain.auth.Permission;
 import com.amee.persist.BaseEntity;
 
-import javax.annotation.Resource;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -40,14 +40,6 @@ import java.util.Map;
  */
 @MappedSuperclass
 public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
-
-    @Transient
-    @Resource
-    protected IMetadataService metadataService;
-
-    @Transient
-    @Resource
-    protected ILocaleService localeService;
 
     /**
      * Represents the state of the entity.
@@ -265,7 +257,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
             metadatas = new HashMap<String, Metadata>();
         }
         if (!metadatas.containsKey(key)) {
-            metadatas.put(key, metadataService.getMetadataForEntity(this, key));
+            metadatas.put(key, getMetadataService().getMetadataForEntity(this, key));
         }
         return metadatas.get(key);
     }
@@ -283,17 +275,19 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
         Metadata metadata = getMetadata(key);
         if (metadata == null) {
             metadata = new Metadata(this, key);
-            metadataService.persist(metadata);
+            getMetadataService().persist(metadata);
             metadatas.put(key, metadata);
         }
         return metadata;
     }
 
-    public void setMetadataService(IMetadataService metadataService) {
-        this.metadataService = metadataService;
+    @Transient
+    protected IMetadataService getMetadataService() {
+        return (IMetadataService) ThreadBeanHolder.get("metadataService");
     }
 
-    public void setLocaleService(ILocaleService localeService) {
-        this.localeService = localeService;
+    @Transient
+    protected ILocaleService getLocaleService() {
+        return (ILocaleService) ThreadBeanHolder.get("localeService");
     }
 }

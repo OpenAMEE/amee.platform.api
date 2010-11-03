@@ -30,8 +30,6 @@ import org.apache.commons.collections.Predicate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.Duration;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.*;
 import java.util.*;
@@ -41,7 +39,6 @@ import java.util.*;
 @Table(name = "ITEM")
 @DiscriminatorColumn(name = "TYPE", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public abstract class LegacyItem extends AMEEEntity implements Pathable {
 
     public final static int NAME_MAX_SIZE = 255;
@@ -114,14 +111,6 @@ public abstract class LegacyItem extends AMEEEntity implements Pathable {
         }
         return itemValueDefinitions;
     }
-
-//    public JSONObject getIdentityJSONObject() throws JSONException {
-//        return XMLUtils.getIdentityJSONObject(this);
-//    }
-
-//    public abstract JSONObject getJSONObject(boolean detailed) throws JSONException;
-//
-//    public abstract Element getIdentityElement(Document document);
 
     public List<IAMEEEntityReference> getHierarchy() {
         List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();

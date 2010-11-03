@@ -126,14 +126,6 @@ public abstract class AMEEEntityAdapter extends BaseEntityAdapter implements IAM
         return getAdaptedEntity().getOrCreateMetadata(key);
     }
 
-    public void setMetadataService(IMetadataService metadataService) {
-        getAdaptedEntity().setMetadataService(metadataService);
-    }
-
-    public void setLocaleService(ILocaleService localeService) {
-        getAdaptedEntity().setLocaleService(localeService);
-    }
-
     @Override
     public AMEEEntity getAdaptedEntity() {
         if (isLegacy()) {

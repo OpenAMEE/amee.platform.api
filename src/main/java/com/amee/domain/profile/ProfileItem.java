@@ -1,5 +1,6 @@
 package com.amee.domain.profile;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IProfileItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -8,19 +9,12 @@ import com.amee.domain.data.Item;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
 
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ProfileItem extends Item {
 
     public final static boolean USE_NU = true;
-
-    @Autowired
-    private IProfileItemService profileItemService;
 
     private LegacyProfileItem legacyEntity;
     private NuProfileItem nuEntity;
@@ -264,6 +258,6 @@ public class ProfileItem extends Item {
     }
 
     public IProfileItemService getItemService() {
-        return profileItemService;
+        return (IProfileItemService) ThreadBeanHolder.get("profileItemService");
     }
 }

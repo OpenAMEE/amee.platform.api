@@ -28,8 +28,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +39,6 @@ import java.util.List;
 @Entity
 @Table(name = "DATA_CATEGORY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class DataCategory extends AMEEEntity implements Pathable {
 
     public final static int NAME_MIN_SIZE = 2;
@@ -224,7 +221,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
     }
 
     public String getName() {
-        return localeService.getLocaleNameValue(this, name);
+        return getLocaleService().getLocaleNameValue(this, name);
     }
 
     public void setName(String name) {

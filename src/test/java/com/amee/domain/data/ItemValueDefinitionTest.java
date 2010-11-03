@@ -1,5 +1,6 @@
 package com.amee.domain.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.IMetadataService;
 import org.junit.Before;
@@ -22,7 +23,9 @@ public class ItemValueDefinitionTest {
 
     @Before
     public void setUp() {
+        ThreadBeanHolder.clear();
         mockMetadataService = mock(IMetadataService.class);
+        ThreadBeanHolder.set("metadataService", mockMetadataService);
         itemValueDef = new ItemValueDefinition();
         mockItemDef = mock(ItemDefinition.class);
         itemValueDef.setItemDefinition(mockItemDef);
@@ -55,7 +58,6 @@ public class ItemValueDefinitionTest {
     @Test
     public void canUseUsagesInConfiguration() {
         ItemValueDefinition itemValueDefinition = new ItemValueDefinition();
-        itemValueDefinition.setMetadataService(mockMetadataService);
         assertTrue("ItemValueDefinition should contain 0 ItemValueUsages. ",
                 itemValueDefinition.getItemValueUsages().isEmpty());
         itemValueDefinition.setConfiguration(MOCK_CONFIGURATION_WITH_USAGES);

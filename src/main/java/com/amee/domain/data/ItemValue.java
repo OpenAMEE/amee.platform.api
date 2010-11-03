@@ -19,6 +19,7 @@
  */
 package com.amee.domain.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.HistoryValue;
@@ -30,22 +31,12 @@ import com.amee.domain.item.profile.ProfileItemNumberValue;
 import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.*;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
-
-    @Autowired
-    private IDataItemService dataItemService;
-
-    @Autowired
-    private IProfileItemService profileItemService;
 
     private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
@@ -268,7 +259,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         if (valueOverride != null) {
             return valueOverride.toString();
         }
-        
+
         if (isLegacy()) {
             return getLegacyEntity().getValue();
         } else {
@@ -509,9 +500,9 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             throw new IllegalStateException("IItemService implementations should not use the new services.");
         } else {
             if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return dataItemService;
+                return (IItemService) ThreadBeanHolder.get("dataItemService");
             } else if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return profileItemService;
+                return (IItemService) ThreadBeanHolder.get("profileItemService");
             } else {
                 throw new IllegalStateException("A BaseDataItemValue or BaseProfileItemValue was expected.");
             }

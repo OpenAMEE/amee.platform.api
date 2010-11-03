@@ -1,5 +1,6 @@
 package com.amee.domain.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IMetadataService;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +25,14 @@ public class ItemDefinitionTest {
 
     @Before
     public void setUp() {
+        ThreadBeanHolder.clear();
         mockMetadataService = mock(IMetadataService.class);
+        ThreadBeanHolder.set("metadataService", mockMetadataService);
     }
 
     @Test
     public void canUseUsagesFromString() {
         ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setMetadataService(mockMetadataService);
         itemDefinition.setUsages(MOCK_USAGES_STRING);
         assertTrue("ItemDefinition should contain 3 usages. ",
                 itemDefinition.getUsages().size() == 3);
@@ -46,7 +48,6 @@ public class ItemDefinitionTest {
     @Test
     public void canUseUsagesFromList() {
         ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setMetadataService(mockMetadataService);
         itemDefinition.setUsages(MOCK_USAGES_LIST);
         assertTrue("ItemDefinition should contain 3 usages. ",
                 itemDefinition.getUsages().size() == 3);
@@ -62,7 +63,6 @@ public class ItemDefinitionTest {
     @Test
     public void canHandleEmptyUsages() {
         ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setMetadataService(mockMetadataService);
         assertTrue("ItemDefinition should contain 0 usages. ",
                 itemDefinition.getUsages().isEmpty());
         itemDefinition.setUsages(new ArrayList<String>());

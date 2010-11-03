@@ -10,15 +10,12 @@ import com.amee.platform.science.AmountUnit;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "RETURN_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ReturnValueDefinition extends AMEEEntity {
 
     // TODO: Never allow nulls for the values. Encapsulate as with other entities. Provide default values. Protect for NPEs.

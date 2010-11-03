@@ -1,5 +1,6 @@
 package com.amee.domain.profile;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
@@ -13,7 +14,6 @@ import org.hibernate.annotations.Index;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Resource;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -61,10 +61,6 @@ public class LegacyProfileItem extends LegacyItem {
     private ReturnValues amounts = new ReturnValues();
 
     @Transient
-    @Resource
-    private CO2CalculationService calculationService;
-
-    @Transient
     private transient ProfileItem adapter;
 
     public LegacyProfileItem() {
@@ -102,7 +98,6 @@ public class LegacyProfileItem extends LegacyItem {
         o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
         o.endDate = (endDate != null) ? (Date) endDate.clone() : null;
         o.amounts = amounts;
-        o.calculationService = calculationService;
     }
 
     public Element getIdentityElement(Document document) {
@@ -167,7 +162,7 @@ public class LegacyProfileItem extends LegacyItem {
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
-            calculationService.calculate(ProfileItem.getProfileItem(this));
+            getCalculationService().calculate(ProfileItem.getProfileItem(this));
         }
         return amounts;
     }
@@ -200,15 +195,6 @@ public class LegacyProfileItem extends LegacyItem {
         this.amounts = amounts;
     }
 
-//    @Override
-//    public JSONObject getJSONObject(boolean b) throws JSONException {
-//        return builder.getJSONObject(b);
-//    }
-//
-//    public Element getElement(Document document, boolean b) {
-//        return builder.getElement(document, b);
-//    }
-
     public boolean hasNonZeroPerTimeValues() {
         for (LegacyItemValue iv : getItemValues()) {
             if (iv.hasPerTimeUnit() && iv.isNonZero()) {
@@ -240,6 +226,10 @@ public class LegacyProfileItem extends LegacyItem {
         return ObjectType.PI;
     }
 
+    @Transient
+    protected CO2CalculationService getCalculationService() {
+        return (CO2CalculationService) ThreadBeanHolder.get("calculationService");
+    }
 
     public ProfileItem getAdapter() {
         return adapter;

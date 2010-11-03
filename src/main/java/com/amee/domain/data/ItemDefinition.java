@@ -20,7 +20,10 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.*;
+import com.amee.domain.AMEEEntity;
+import com.amee.domain.APIVersion;
+import com.amee.domain.Metadata;
+import com.amee.domain.ObjectType;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.sheet.Choice;
@@ -29,19 +32,15 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.annotation.Resource;
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Table(name = "ITEM_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ItemDefinition extends AMEEEntity {
 
     public final static int NAME_MIN_SIZE = 3;
@@ -50,10 +49,6 @@ public class ItemDefinition extends AMEEEntity {
     public final static int DRILL_DOWN_MAX_SIZE = 255;
     public final static int USAGES_MIN_SIZE = 0;
     public final static int USAGES_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
-
-    @Transient
-    @Resource
-    private ILocaleService localeService;
 
     @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
@@ -177,7 +172,7 @@ public class ItemDefinition extends AMEEEntity {
     }
 
     public String getName() {
-        return localeService.getLocaleNameValue(this, name);
+        return getLocaleService().getLocaleNameValue(this, name);
     }
 
     public void setName(String name) {

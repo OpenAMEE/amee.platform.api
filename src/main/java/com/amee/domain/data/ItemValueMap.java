@@ -3,15 +3,12 @@ package com.amee.domain.data;
 import com.amee.domain.item.BaseItemValue;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@Configurable(autowire = Autowire.BY_TYPE)
 public class ItemValueMap {
 
     private LegacyItemValueMap legacyItemValueMap;

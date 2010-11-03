@@ -5,14 +5,11 @@ import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.ExternalTextValue;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-@Configurable(autowire = Autowire.BY_TYPE)
 public abstract class BaseDataItemTextValue extends BaseDataItemValue implements ExternalTextValue {
 
     // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
@@ -63,7 +60,7 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
 
     public String getValue() {
         if (getItemValueDefinition().isText() && !LocaleHolder.isDefaultLocale()) {
-            return localeService.getLocaleNameValue(this, value);
+            return getLocaleService().getLocaleNameValue(this, value);
         } else {
             return value;
         }

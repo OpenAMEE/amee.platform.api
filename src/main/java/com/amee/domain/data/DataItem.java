@@ -19,15 +19,12 @@
  */
 package com.amee.domain.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IDataItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.science.StartEndDate;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
-@Configurable(autowire = Autowire.BY_TYPE)
 public class DataItem extends Item {
 
     public final static int PATH_MAX_SIZE = LegacyDataItem.PATH_MAX_SIZE;
@@ -35,9 +32,6 @@ public class DataItem extends Item {
     public final static int PROVENANCE_MAX_SIZE = LegacyDataItem.PROVENANCE_MAX_SIZE;
 
     public final static boolean USE_NU = true;
-
-    @Autowired
-    private IDataItemService dataItemService;
 
     private LegacyDataItem legacyEntity;
     private NuDataItem nuEntity;
@@ -208,6 +202,6 @@ public class DataItem extends Item {
     }
 
     public IDataItemService getItemService() {
-        return dataItemService;
+        return (IDataItemService) ThreadBeanHolder.get("dataItemService");
     }
 }

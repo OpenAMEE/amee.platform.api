@@ -1,5 +1,6 @@
 package com.amee.domain.item.profile;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -14,17 +15,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 import org.joda.time.Duration;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.annotation.Resource;
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "PROFILE_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Configurable(autowire = Autowire.BY_TYPE)
 public class NuProfileItem extends BaseItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -45,10 +42,6 @@ public class NuProfileItem extends BaseItem {
 
     @Transient
     private ReturnValues amounts = new ReturnValues();
-
-    @Transient
-    @Resource
-    private CO2CalculationService calculationService;
 
     @Transient
     private transient ProfileItem adapter;
@@ -83,7 +76,6 @@ public class NuProfileItem extends BaseItem {
         o.startDate = (startDate != null) ? (Date) startDate.clone() : null;
         o.endDate = (endDate != null) ? (Date) endDate.clone() : null;
         o.amounts = amounts;
-        o.calculationService = calculationService;
     }
 
     @Override
@@ -163,7 +155,7 @@ public class NuProfileItem extends BaseItem {
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
-            calculationService.calculate(ProfileItem.getProfileItem(this));
+            getCalculationService().calculate(ProfileItem.getProfileItem(this));
         }
         return amounts;
     }
@@ -269,6 +261,11 @@ public class NuProfileItem extends BaseItem {
     @Override
     public ObjectType getObjectType() {
         return ObjectType.NPI;
+    }
+
+    @Transient
+    protected CO2CalculationService getCalculationService() {
+        return (CO2CalculationService) ThreadBeanHolder.get("calculationService");
     }
 
     public ProfileItem getAdapter() {
