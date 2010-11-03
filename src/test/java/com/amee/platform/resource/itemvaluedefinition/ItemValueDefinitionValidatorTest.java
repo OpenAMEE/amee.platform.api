@@ -1,5 +1,6 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.service.locale.LocaleService;
@@ -20,16 +21,17 @@ public class ItemValueDefinitionValidatorTest {
 
     @Before
     public void setUp() {
+        ThreadBeanHolder.clear();
         mockMetadataService = mock(IMetadataService.class);
+        ThreadBeanHolder.set("metadataService", mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
+        ThreadBeanHolder.set("localeService", mockLocaleService);
     }
 
     @Test
     public void testValid() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition good = new ItemValueDefinition();
-        good.setMetadataService(mockMetadataService);
-        good.setLocaleService(mockLocaleService);
 
         when(mockLocaleService.getLocaleNameValue(good, "name"))
                 .thenReturn("name");
@@ -48,8 +50,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testNameGreaterThanMax() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         String nameGreaterThanMax = RandomStringUtils.random(ItemValueDefinition.NAME_MAX_SIZE + 1);
 
@@ -68,8 +68,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testNameLessThanMin() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         String nameLessThanMin = RandomStringUtils.random(ItemValueDefinition.NAME_MIN_SIZE - 1);
 
@@ -88,8 +86,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testPathGreaterThanMax() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -107,8 +103,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testPathLessThanMin() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -126,8 +120,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testPathBadChars() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -145,8 +137,6 @@ public class ItemValueDefinitionValidatorTest {
     public void testWikiDocGreaterThanMax() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         ItemValueDefinition bad = new ItemValueDefinition();
-        bad.setMetadataService(mockMetadataService);
-        bad.setLocaleService(mockLocaleService);
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -159,5 +149,4 @@ public class ItemValueDefinitionValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
-
 }

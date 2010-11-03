@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 @Service
 @Scope("prototype")
@@ -106,8 +107,14 @@ public class DataCategoryEcospoldRenderer implements DataCategoryRenderer {
         metadataService.loadMetadatasForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
         localeService.loadLocaleNamesForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
 
+        // Fetch DataItems.
+        List<DataItem> dataItems = dataService.getDataItems(dataCategory, false);
+
+        // Pre-cache X for Data Items.
+        metadataService.loadMetadatasForDataItems(dataItems);
+
         // For each data item, add each item value definition name and data item value
-        for (DataItem dataItem : dataService.getDataItems(dataCategory)) {
+        for (DataItem dataItem : dataItems) {
 
             Element exchangeElem = new Element("exchange", NS);
 
