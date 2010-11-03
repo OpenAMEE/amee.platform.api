@@ -60,7 +60,8 @@ abstract class BaseApiTest {
     // TODO: Try and do this in Spring XML config.
     def server = context.getBean("platformServer")
     def transactionController = context.getBean("transactionController")
-    server.context.attributes.transactionController = transactionController // Used in TransactionServerConverter.
+    server.context.attributes.transactionController = transactionController
+    server.context.attributes.springContext = context;
 
     // TODO: Start this before all integration tests. exec-maven-plugin?
     // Start the restlet container.

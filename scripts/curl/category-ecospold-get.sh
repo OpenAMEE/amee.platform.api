@@ -2,7 +2,7 @@
 
 . curl.conf
 
-uri="3.1/categories/Ecoinvent_agricultural_means_of_production_mineral_fertiliser_diammonium_phosphate_at_regional_storehouse_RER_kg"
+uri="3.1/categories/Ecoinvent_agricultural_means_of_production_pesticides_diuron_at_regional_storehouse_LCI_CH_kg"
 
 curl -H "Accept: application/x.ecospold+xml"  \
  -b .cookies  \
