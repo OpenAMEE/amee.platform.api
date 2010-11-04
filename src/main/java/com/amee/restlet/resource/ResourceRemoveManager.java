@@ -65,6 +65,8 @@ public class ResourceRemoveManager extends ResourceManager {
                         getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     } else if (status.equals("NOT_AUTHENTICATED")) {
                         getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                    } else if (status.equals("NOT_AUTHORIZED")) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                     } else {
                         getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     }
@@ -73,7 +75,7 @@ public class ResourceRemoveManager extends ResourceManager {
                 }
             } else {
                 log.warn("remove() Response media type is not supported.");
-                    getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
             }
         } else {
             throw new UnsupportedOperationException("A ResourceRemover is not available.");

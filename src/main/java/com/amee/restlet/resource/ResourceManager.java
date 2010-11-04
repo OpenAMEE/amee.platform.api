@@ -33,6 +33,10 @@ public class ResourceManager {
         return isStatus(result, "NOT_AUTHENTICATED");
     }
 
+    protected boolean isNotAuthorized(JSONObject result) {
+        return isStatus(result, "NOT_AUTHORIZED");
+    }
+
     protected boolean isInvalid(JSONObject result) {
         return isStatus(result, "INVALID");
     }
