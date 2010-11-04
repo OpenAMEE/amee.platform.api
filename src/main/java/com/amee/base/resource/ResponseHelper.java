@@ -19,14 +19,6 @@ public abstract class ResponseHelper {
         }
     }
 
-    public static Object getNotFound(RequestWrapper requestWrapper) {
-        if (requestWrapper.getAcceptedMediaTypes().contains("application/json")) {
-            return getStatusJSONObject("NOT_FOUND");
-        } else {
-            return getStatusDocument("NOT_FOUND");
-        }
-    }
-
     public static JSONObject getStatusJSONObject(String status) {
         return getStatusJSONObject(status, null);
     }
