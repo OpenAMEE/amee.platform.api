@@ -17,7 +17,7 @@
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <hibernate-core.version>3.5.1-Final</hibernate-core.version>
-        <hsqldb.version>1.8.0.10</hsqldb.version>
+        <hsqldb.version>2.0.0</hsqldb.version>
         <junit.version>4.7</junit.version>
         <slf4j.version>1.5.11</slf4j.version>
         <spring.version>3.0.2.RELEASE</spring.version>
@@ -217,7 +217,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
             <scope>test</scope>
