@@ -1,0 +1,100 @@
+package com.amee.platform.resource.search.v_3_0;
+
+import com.amee.base.domain.ResultsWrapper;
+import com.amee.base.domain.Since;
+import com.amee.base.resource.RendererBeanFinder;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ValidationHelperBeanFinder;
+import com.amee.base.validation.ValidationException;
+import com.amee.domain.IAMEEEntity;
+import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.DataItem;
+import com.amee.platform.resource.datacategory.v_3_0.DataCategoryBuilder_3_0_0;
+import com.amee.platform.resource.dataitem.v_3_0.DataItemBuilder_3_0_0;
+import com.amee.platform.resource.search.*;
+import com.amee.platform.search.SearchFilter;
+import com.amee.platform.search.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Scope("prototype")
+@Since("3.0.0")
+public class SearchBuilder_3_0_0 implements SearchResource.Builder {
+
+    @Autowired
+    private SearchService searchService;
+
+    @Autowired
+    private DataCategoryBuilder_3_0_0 dataCategoryBuilder;
+
+    @Autowired
+    private DataItemBuilder_3_0_0 dataItemBuilder;
+
+    @Autowired
+    private RendererBeanFinder rendererBeanFinder;
+
+    @Autowired
+    private ValidationHelperBeanFinder validationHelperBeanFinder;
+
+    private SearchResource.Renderer searchRenderer;
+
+    @Transactional(readOnly = true)
+    public Object handle(RequestWrapper requestWrapper) {
+        SearchFilter filter = new SearchFilter();
+        filter.setLoadDataItemValues(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("values"));
+        filter.setLoadMetadatas(
+                requestWrapper.getMatrixParameters().containsKey("full") ||
+                        requestWrapper.getMatrixParameters().containsKey("authority") ||
+                        requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
+                        requestWrapper.getMatrixParameters().containsKey("provenance"));
+        SearchResource.SearchFilterValidationHelper validationHelper = getValidationHelper(requestWrapper);
+        validationHelper.setSearchFilter(filter);
+        if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+            handle(requestWrapper, filter);
+            SearchResource.Renderer renderer = getRenderer(requestWrapper);
+            renderer.ok();
+            return renderer.getObject();
+        } else {
+            throw new ValidationException(validationHelper.getValidationResult());
+        }
+    }
+
+    protected void handle(
+            RequestWrapper requestWrapper,
+            SearchFilter filter) {
+        SearchResource.Renderer renderer = getRenderer(requestWrapper);
+        renderer.start();
+        ResultsWrapper<IAMEEEntity> resultsWrapper = searchService.getEntities(filter);
+        renderer.setTruncated(resultsWrapper.isTruncated());
+        for (IAMEEEntity entity : resultsWrapper.getResults()) {
+            switch (entity.getObjectType()) {
+                case DC:
+                    dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
+                    renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
+                    break;
+                case DI:
+                case NDI:
+                    dataItemBuilder.handle(requestWrapper, (DataItem) entity);
+                    renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
+                    break;
+            }
+        }
+    }
+
+    public SearchResource.Renderer getRenderer(RequestWrapper requestWrapper) {
+        if (searchRenderer == null) {
+            searchRenderer = (SearchResource.Renderer) rendererBeanFinder.getRenderer(SearchResource.Renderer.class, requestWrapper);
+        }
+        return searchRenderer;
+    }
+
+    private SearchResource.SearchFilterValidationHelper getValidationHelper(RequestWrapper requestWrapper) {
+        return (SearchResource.SearchFilterValidationHelper)
+                validationHelperBeanFinder.getValidationHelper(SearchResource.SearchFilterValidationHelper.class, requestWrapper);
+    }
+}
