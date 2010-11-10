@@ -33,10 +33,9 @@
         <commons-lang.version>2.5</commons-lang.version>
         <commons-logging.version>1.1.1</commons-logging.version>
         <groovy.version>1.7.3</groovy.version>
-        <!--<h2.version>1.2.140</h2.version>-->
         <hibernate-core.version>3.5.1-Final</hibernate-core.version>
         <hibernate-memcached.version>1.2.2</hibernate-memcached.version>
-        <hsqldb.version>1.8.0.10</hsqldb.version>
+        <hsqldb.version>2.0.0</hsqldb.version>
         <http-builder.version>0.5.0</http-builder.version>
         <jetty-servlet-api.version>2.5-20081211</jetty-servlet-api.version>
         <jetty.version>6.1.15</jetty.version>
@@ -471,14 +470,8 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-            <scope>test</scope>
-        </dependency-->
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
             <scope>test</scope>
