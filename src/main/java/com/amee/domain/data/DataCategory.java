@@ -39,7 +39,7 @@ import java.util.List;
 @Entity
 @Table(name = "DATA_CATEGORY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class DataCategory extends AMEEEntity implements Pathable {
+public class DataCategory extends AMEEEntity implements IDataCategoryReference, Pathable {
 
     public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
@@ -170,10 +170,12 @@ public class DataCategory extends AMEEEntity implements Pathable {
         return entities;
     }
 
+    @Override
     public String getDisplayPath() {
         return getPath();
     }
 
+    @Override
     public String getDisplayName() {
         if (getName().length() > 0) {
             return getName();
@@ -187,6 +189,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
      *
      * @return the full path
      */
+    @Override
     public String getFullPath() {
         // Need to build the fullPath?
         if (fullPath == null) {
@@ -200,6 +203,11 @@ public class DataCategory extends AMEEEntity implements Pathable {
             }
         }
         return fullPath;
+    }
+
+    @Override
+    public boolean isItemDefinitionPresent() {
+        return getItemDefinition() != null;
     }
 
     public DataCategory getDataCategory() {
@@ -220,6 +228,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
         this.itemDefinition = itemDefinition;
     }
 
+    @Override
     public String getName() {
         return getLocaleService().getLocaleNameValue(this, name);
     }
@@ -231,6 +240,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
         this.name = name;
     }
 
+    @Override
     public String getPath() {
         return path;
     }
@@ -242,6 +252,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
         this.path = path;
     }
 
+    @Override
     public String getWikiName() {
         return wikiName;
     }
@@ -310,6 +321,7 @@ public class DataCategory extends AMEEEntity implements Pathable {
         this.status = status;
     }
 
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.DC;
     }
