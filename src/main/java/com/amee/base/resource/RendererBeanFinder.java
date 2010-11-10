@@ -13,16 +13,16 @@ public class RendererBeanFinder {
     @Autowired
     private VersionBeanFinder versionBeanFinder;
 
-    public Renderer getRenderer(final Class clazz, final RequestWrapper requestWrapper) {
+    public ResourceRenderer getRenderer(final Class clazz, final RequestWrapper requestWrapper) {
         return getRenderer(clazz.getName(), requestWrapper);
     }
 
-    public Renderer getRenderer(final String className, final RequestWrapper requestWrapper) {
+    public ResourceRenderer getRenderer(final String className, final RequestWrapper requestWrapper) {
         // Get the Renderer with the supplied class name.
-        Renderer renderer = (Renderer) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion(), new VersionBeanFinder.VersionBeanMatcher() {
+        ResourceRenderer renderer = (ResourceRenderer) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion(), new VersionBeanFinder.VersionBeanMatcher() {
             @Override
             public boolean matches(Object bean) {
-                Renderer renderer = (Renderer) bean;
+                ResourceRenderer renderer = (ResourceRenderer) bean;
                 return requestWrapper.getAcceptedMediaTypes().contains(renderer.getMediaType());
             }
         });

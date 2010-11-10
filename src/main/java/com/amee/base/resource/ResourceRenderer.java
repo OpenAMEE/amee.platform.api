@@ -1,6 +1,6 @@
 package com.amee.base.resource;
 
-public interface Renderer {
+public interface ResourceRenderer {
 
     public void start();
 
