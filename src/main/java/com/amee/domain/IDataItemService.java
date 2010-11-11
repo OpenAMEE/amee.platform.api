@@ -15,7 +15,7 @@ public interface IDataItemService extends IItemService {
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);
 
-    public List<NuDataItem> getDataItems(DataCategory dataCategory);
+    public List<NuDataItem> getDataItems(IDataCategoryReference dataCategory);
 
     public List<NuDataItem> getDataItems(Set<Long> dataItemIds);
 
