@@ -93,6 +93,7 @@ abstract class BaseApiTest {
       println "Stopping container..."
       luceneService.closeEverything();
       container.stop()
+      context.close();
     } catch (e) {
       // Do nothing.
     }
