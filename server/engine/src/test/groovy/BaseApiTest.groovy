@@ -12,6 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext
  */
 abstract class BaseApiTest {
 
+  static def config
   static def context
   static def container
   static def luceneService
@@ -25,14 +26,15 @@ abstract class BaseApiTest {
     addRandomStringMethodToString();
 
     // Spring application context.
-    // TODO: Use spring annotation to load this?
     context = new ClassPathXmlApplicationContext("classpath*:applicationContext*.xml")
+
+    // Load config.
+    config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL());
 
     // Clear the SearchIndexer DataCategory count (paranoid).
     SearchIndexer.resetCount();
 
     // Configure Restlet server (ajp, http, etc).
-    // TODO: Try and do this in Spring XML config.
     def server = context.getBean("platformServer")
     def transactionController = context.getBean("transactionController")
     server.context.attributes.transactionController = transactionController
@@ -56,8 +58,6 @@ abstract class BaseApiTest {
       count++;
       println 'Waited ' + count + ' second(s) whilst the index is being built...'
     }
-    // Wait another 2 seconds just in case.
-    sleep(2000)
 
     // Ensure index reader is re-opened.
     luceneService = context.getBean("luceneService")
@@ -78,11 +78,18 @@ abstract class BaseApiTest {
 
   @Before
   void setUp() {
-
     // Get the HTTP client
-    def config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL())
-    client = new RESTClient("http://${config.api.host}:${config.api.port}")
-    client.auth.basic config.api.user, config.api.password
+    client = new RESTClient("http://${config.api.host}:${config.api.port}");
+    // Set standard user as default.
+    setStandardUser();
+  }
+
+  void setStandardUser() {
+    client.auth.basic config.api.standard.user, config.api.standard.password;
+  }
+
+  void setAdminUser() {
+    client.auth.basic config.api.admin.user, config.api.admin.password;
   }
 
   // Add a random character generator to the String class.

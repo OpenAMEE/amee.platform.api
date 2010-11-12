@@ -167,8 +167,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
-                <value>username</value>
-                <value>password</value>
+                <value>activeUserUid</value>
                 <value>categoryIdentifier</value>
                 <value>itemIdentifier</value>
             </set>
