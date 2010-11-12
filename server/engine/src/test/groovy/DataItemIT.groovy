@@ -1,3 +1,4 @@
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.assertEquals
@@ -160,5 +161,19 @@ class DataItemIT extends BaseApiTest {
     assertEquals 'wd', responseGet.data.item.wikiDoc;
     assertEquals 'np', responseGet.data.item.path;
     assertEquals 'prov', responseGet.data.item.provenance;
+  }
+
+  @Test
+  void updateDataItemUnauthorizedJson() {
+    try {
+      client.put(
+              path: '/3.1/categories/Cooking/items/897513300787',
+              body: ['name': 'newName'],
+              requestContentType: URLENC,
+              contentType: JSON);
+    } catch (HttpResponseException e) {
+      def response = e.response;
+      assertEquals 401, response.status;
+    }
   }
 }
