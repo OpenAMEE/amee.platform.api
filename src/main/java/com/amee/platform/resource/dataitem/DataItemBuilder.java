@@ -6,6 +6,7 @@ import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.service.auth.AuthenticationService;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +22,9 @@ public class DataItemBuilder implements ResourceBuilder {
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
     private RendererBeanFinder rendererBeanFinder;
@@ -41,6 +45,9 @@ public class DataItemBuilder implements ResourceBuilder {
                     // Get DataItem.
                     DataItem dataItem = dataService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForBuild(
+                                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
                         // Handle the DataItem.
                         this.handle(requestWrapper, dataItem);
                         DataItemRenderer renderer = getDataItemRenderer(requestWrapper);

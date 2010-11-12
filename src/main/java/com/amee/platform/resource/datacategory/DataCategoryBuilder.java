@@ -43,8 +43,6 @@ public class DataCategoryBuilder implements ResourceBuilder {
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Set the User.
-        resourceAuthorizationService.setUserByUid(requestWrapper.getAttributes().get("activeUserUid"));
         // Get the DataCategory identifier.
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
@@ -56,19 +54,13 @@ public class DataCategoryBuilder implements ResourceBuilder {
                 dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier, filter.getStatus());
                 if (dataCategory != null) {
                     // Authorized?
-                    resourceAuthorizationService.setResource(dataCategory);
-                    if (resourceAuthorizationService.isAuthorizedForGet()) {
-                        // Handle the DataCategory.
-                        handleDataCategory(requestWrapper);
-                        DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
-                        renderer.ok();
-                        return renderer.getObject();
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.debug("handle() Deny reasons: " + resourceAuthorizationService.getAuthorizationContext().getDenyReasonsString());
-                        }
-                        throw new NotAuthorizedException(resourceAuthorizationService.getAuthorizationContext().getDenyReasonsString());
-                    }
+                    resourceAuthorizationService.ensureAuthorizedForBuild(
+                            requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+                    // Handle the DataCategory.
+                    handleDataCategory(requestWrapper);
+                    DataCategoryRenderer renderer = getDataCategoryRenderer(requestWrapper);
+                    renderer.ok();
+                    return renderer.getObject();
                 } else {
                     throw new NotFoundException();
                 }
