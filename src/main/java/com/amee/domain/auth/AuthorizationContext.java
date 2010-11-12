@@ -27,10 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * AuthorizationContext encapsulates the 'context' for an authorization request. The context
@@ -67,6 +64,10 @@ public class AuthorizationContext implements Serializable {
      * Indicates if a User that is a super-user is one of the principals.
      */
     private boolean superUser = false;
+
+    private Set<String> allowReasons = new HashSet<String>();
+
+    private Set<String> denyReasons = new HashSet<String>();
 
     /**
      * Default constructor.
@@ -205,9 +206,9 @@ public class AuthorizationContext implements Serializable {
     }
 
     /**
-     * Returns true if one of the priniples was a super-user.
+     * Returns true if one of the principals was a super-user.
      *
-     * @return true if one of the priniples was a super-user
+     * @return true if one of the principals was a super-user
      */
     public boolean isSuperUser() {
         return superUser;
@@ -220,5 +221,60 @@ public class AuthorizationContext implements Serializable {
      */
     public void setSuperUser(Boolean superUser) {
         this.superUser = superUser;
+    }
+
+    /**
+     * A list of reasons for why a principal was allowed access.
+     *
+     * @return list of allow reasons
+     */
+    public Collection<String> getAllowReasons() {
+        return allowReasons;
+    }
+
+    /**
+     * Add an allow reason.
+     *
+     * @param reason for allow
+     */
+    public void addAllowReason(String reason) {
+        allowReasons.add(reason);
+    }
+
+    /**
+     * A list of reasons for why a principal was denied access.
+     *
+     * @return list of deny reasons
+     */
+    public Collection<String> getDenyReasons() {
+        return denyReasons;
+    }
+
+    /**
+     * Get the deny reasons as a CSV String.
+     *
+     * @return deny reasons as a CSV String
+     */
+    public String getDenyReasonsString() {
+        StringBuilder sb = new StringBuilder();
+        // Collate reasons into a CSV string.
+        for (String s : denyReasons) {
+            sb.append(s);
+            sb.append(", ");
+        }
+        // Remove last two chars if needed.
+        if (sb.length() > 0) {
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Add a deny reason.
+     *
+     * @param reason for deny
+     */
+    public void addDenyReason(String reason) {
+        denyReasons.add(reason);
     }
 }

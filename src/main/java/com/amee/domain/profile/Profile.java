@@ -22,6 +22,7 @@ package com.amee.domain.profile;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.auth.AuthorizationContext;
 import com.amee.domain.auth.Permission;
@@ -128,8 +129,8 @@ public class Profile extends AMEEEntity implements Pathable {
     }
 
     @Override
-    public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || user.isTrash();
+    public List<IAMEEEntityReference> getHierarchy() {
+        throw new UnsupportedOperationException("Profile does not support getHierarchy().");
     }
 
     public User getUser() {
@@ -183,6 +184,11 @@ public class Profile extends AMEEEntity implements Pathable {
 
     public String getFullPath() {
         return getDisplayPath();
+    }
+
+    @Override
+    public boolean isTrash() {
+        return status.equals(AMEEStatus.TRASH) || user.isTrash();
     }
 
     public ObjectType getObjectType() {
