@@ -244,7 +244,7 @@
                         <amee.defaultLogLevel>WARN</amee.defaultLogLevel>
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
-                        <amee.saltFile>${basedir}/src/test/resources/crypto/amee.key</amee.saltFile>
+                        <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
                         <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider
                         </org.joda.time.DateTimeZone.Provider>
                         <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>

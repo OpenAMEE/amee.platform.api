@@ -18,31 +18,6 @@ abstract class BaseApiTest {
 
   def client
 
-  // See import.sql
-  def categoryUids = ['CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA', '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A',
-          '99B121BB416C', '066196F049DD', 'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B',
-          '25C9445D11E6', 'FD093356A2F9', '23B9564ED6AA', '77D7394D46E5', '00383F6EA807', '4304B67B1D19']
-
-  def categoryUidsExcEcoInv = ['CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA', '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A',
-          '99B121BB416C', '066196F049DD', 'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B']
-
-  def categoryNames = ['Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-          'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
-          'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant',
-          'chlorine, gaseous, diaphragm cell, at plant']
-
-  def categoryNamesExcEcoInv = ['Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-          'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste']
-
-  def categoryWikiNames = ['Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-          'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-          'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics',
-          'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant',
-          'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg']
-
-  def categoryWikiNamesExcEcoInv = ['Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-          'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste']
-
   @BeforeClass
   static void start() {
 
@@ -76,11 +51,13 @@ abstract class BaseApiTest {
     // NOTE: Remember to exclude trashed and implicitly trashed categories in the count.
     println 'Waiting while the index is built...'
     int count = 0;
-    while (SearchIndexer.getCount() < 22) {
+    while (SearchIndexer.getCount() < CategoryIT.categoryUids.size()) {
       sleep(1000)
       count++;
       println 'Waited ' + count + ' second(s) whilst the index is being built...'
     }
+    // Wait another 2 seconds just in case.
+    sleep(2000)
 
     // Ensure index reader is re-opened.
     luceneService = context.getBean("luceneService")
