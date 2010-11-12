@@ -49,6 +49,7 @@ public class ValidationException extends ResourceException {
         }
     }
 
+    @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
         if (validationResults.size() == 1) {

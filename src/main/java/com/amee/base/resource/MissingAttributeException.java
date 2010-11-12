@@ -26,6 +26,7 @@ public class MissingAttributeException extends ResourceException {
         }
     }
 
+    @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
         rootElem.addContent(new Element("Status").setText("ERROR"));
