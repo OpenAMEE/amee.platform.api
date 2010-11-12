@@ -88,6 +88,7 @@ class CategoryIT extends BaseApiTest {
 
   @Test
   void getTrashedCategoryByWikiNameJson() {
+    setRootUser();
     client.contentType = JSON
     def response = client.get(path: '/3.1/categories/Kitchen_generic;audit',
             query: ['status': 'trash'])
@@ -103,6 +104,7 @@ class CategoryIT extends BaseApiTest {
 
   @Test
   void getTrashedCategoryByUidJson() {
+    setRootUser();
     client.contentType = JSON
     def response = client.get(path: '/3.1/categories/3C03A03B5F1A;audit',
             query: ['status': 'trash'])
@@ -118,6 +120,7 @@ class CategoryIT extends BaseApiTest {
 
   @Test
   void getInferredTrashedCategoryByUidJson() {
+    setRootUser();
     client.contentType = JSON
     def response = client.get(path: '/3.1/categories/3C03A03B5F4A;audit',
             query: ['status': 'trash'])

@@ -92,6 +92,10 @@ abstract class BaseApiTest {
     client.auth.basic config.api.admin.user, config.api.admin.password;
   }
 
+  void setRootUser() {
+    client.auth.basic config.api.root.user, config.api.root.password;
+  }
+
   // Add a random character generator to the String class.
 
   static void addRandomStringMethodToString() {
