@@ -1,8 +1,7 @@
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
 
 class DataItemIT extends BaseApiTest {
 
@@ -171,6 +170,7 @@ class DataItemIT extends BaseApiTest {
               body: ['name': 'newName'],
               requestContentType: URLENC,
               contentType: JSON);
+      fail 'Expected 401'
     } catch (HttpResponseException e) {
       def response = e.response;
       assertEquals 401, response.status;

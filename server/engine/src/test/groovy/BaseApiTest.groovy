@@ -96,6 +96,10 @@ abstract class BaseApiTest {
     client.auth.basic config.api.root.user, config.api.root.password;
   }
 
+  void setEcoinventUser() {
+    client.auth.basic config.api.ecoinvent.user, config.api.ecoinvent.password;
+  }
+
   // Add a random character generator to the String class.
 
   static void addRandomStringMethodToString() {
