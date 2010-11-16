@@ -59,10 +59,6 @@ public class ResourceBuildManager extends ResourceManager {
         if ((builder != null) && (mediaTypes.contains(variant.getMediaType()))) {
             // Get the Representation from the ResourceBuilder.
             representation = getRepresentation(builder);
-            // If we have a Representation, force the MediaType (useful for application/x.ecospold+xml).
-            if (representation != null) {
-                representation.setMediaType(variant.getMediaType());
-            }
         }
         return representation;
     }
