@@ -4,6 +4,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
+import com.amee.restlet.MediaTypeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -31,11 +32,11 @@ public class ResourceBuildManager extends ResourceManager {
     private ResourceBuilder builder;
     private Set<MediaType> mediaTypes = new HashSet<MediaType>() {
         {
+            // Support XML & JSON MediaTypes.
             add(MediaType.APPLICATION_XML);
             add(MediaType.APPLICATION_JSON);
-
-            MediaType.register("application/x.ecospold+xml", "Ecospold document");
-            add(MediaType.valueOf("application/x.ecospold+xml"));
+            // Support custom MediaType for EcoSpold.
+            add(MediaTypeUtils.APPLICATION_ECOSPOLD_XML);
         }
     };
 
@@ -46,10 +47,22 @@ public class ResourceBuildManager extends ResourceManager {
         }
     }
 
+    /**
+     * Get the Representation for the Variant MediaType requested. Returns null if Variant is not supported.
+     *
+     * @param variant encapsulating MediaType requested
+     * @return Representation for the requested Variant
+     */
     public Representation getRepresentation(Variant variant) {
         Representation representation = null;
+        // We can only supply a Representation if there is ResourceBuilder and the MediaType is supported.
         if ((builder != null) && (mediaTypes.contains(variant.getMediaType()))) {
+            // Get the Representation from the ResourceBuilder.
             representation = getRepresentation(builder);
+            // If we have a Representation, force the MediaType (useful for application/x.ecospold+xml).
+            if (representation != null) {
+                representation.setMediaType(variant.getMediaType());
+            }
         }
         return representation;
     }

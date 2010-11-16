@@ -5,6 +5,7 @@ import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
 import com.amee.base.resource.ValidationResult;
+import com.amee.restlet.MediaTypeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,17 +22,9 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
-import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
+import org.restlet.resource.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GenericResource extends Resource {
 
@@ -89,9 +82,9 @@ public class GenericResource extends Resource {
 
     protected Representation getValidationResultRepresentation(MediaType mediaType) {
         Representation representation = null;
-        if (mediaType.equals(MediaType.APPLICATION_XML)) {
+        if (MediaTypeUtils.isXML(mediaType)) {
             representation = getValidationResultDomRepresentation();
-        } else if (mediaType.equals(MediaType.APPLICATION_JSON)) {
+        } else if (MediaTypeUtils.isJSON(mediaType)) {
             representation = getValidationResultJsonRepresentation();
         }
         return representation;

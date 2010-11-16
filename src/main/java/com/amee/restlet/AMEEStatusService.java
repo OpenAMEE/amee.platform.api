@@ -5,11 +5,7 @@ import org.apache.xerces.dom.DocumentImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Application;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
+import org.restlet.data.*;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
@@ -55,9 +51,9 @@ public class AMEEStatusService extends StatusService {
 
     private Representation getApiRepresentation(Status status, Request request) {
         Representation representation = null;
-        if (MediaTypeUtils.doesClientAccept(MediaType.APPLICATION_JSON, request)) {
+        if (MediaTypeUtils.doesClientAcceptJSON(request)) {
             representation = getJsonRepresentation(status);
-        } else if (MediaTypeUtils.doesClientAccept(MediaType.APPLICATION_XML, request)) {
+        } else if (MediaTypeUtils.doesClientAcceptXML(request)) {
             representation = getDomRepresentation(status);
         }
         if (representation == null) {
