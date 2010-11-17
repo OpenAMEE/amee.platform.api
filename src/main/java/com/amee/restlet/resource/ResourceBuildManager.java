@@ -117,7 +117,7 @@ public class ResourceBuildManager extends ResourceManager {
                     } else if (isNotAuthenticated(result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                     } else if (isNotAuthorized(result)) {
-                        getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                        getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
                     } else if (isTimedOut(result)) {
                         getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                     } else if (isMediaTypeNotSupported(result)) {
@@ -158,7 +158,7 @@ public class ResourceBuildManager extends ResourceManager {
                         } else if (status.equals("NOT_AUTHENTICATED")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                         } else if (status.equals("NOT_AUTHORIZED")) {
-                            getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                            getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
                         } else if (status.equals("TIMED_OUT")) {
                             getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                         } else if (status.equals("MEDIA_TYPE_NOT_SUPPORTED")) {
