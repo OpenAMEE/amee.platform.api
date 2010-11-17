@@ -44,10 +44,10 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-    <!-- Search index flush: Fire every 5 minutes. -->
+    <!-- Search index flush: Fire at 2 AM every day. -->
     <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="searchIndexFlushJobDetail"/>
-        <property name="cronExpression" value="0 0/5 * * * ?"/>
+        <property name="cronExpression" value="0 0 2 * * ?"/>
     </bean>
 
     <!-- Search index Searcher check: Job definition. -->

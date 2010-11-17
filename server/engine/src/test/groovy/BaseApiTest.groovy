@@ -12,36 +12,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext
  */
 abstract class BaseApiTest {
 
+  static def config
   static def context
   static def container
   static def luceneService
 
   def client
-
-  // See import.sql
-  def categoryUids = ['CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA', '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A',
-          '99B121BB416C', '066196F049DD', 'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B',
-          '25C9445D11E6', 'FD093356A2F9', '23B9564ED6AA', '77D7394D46E5', '00383F6EA807', '4304B67B1D19']
-
-  def categoryUidsExcEcoInv = ['CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA', '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A',
-          '99B121BB416C', '066196F049DD', 'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B']
-
-  def categoryNames = ['Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-          'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
-          'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant',
-          'chlorine, gaseous, diaphragm cell, at plant']
-
-  def categoryNamesExcEcoInv = ['Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-          'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste']
-
-  def categoryWikiNames = ['Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-          'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-          'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics',
-          'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant',
-          'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg']
-
-  def categoryWikiNamesExcEcoInv = ['Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-          'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste']
 
   @BeforeClass
   static void start() {
@@ -50,14 +26,15 @@ abstract class BaseApiTest {
     addRandomStringMethodToString();
 
     // Spring application context.
-    // TODO: Use spring annotation to load this?
     context = new ClassPathXmlApplicationContext("classpath*:applicationContext*.xml")
+
+    // Load config.
+    config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL());
 
     // Clear the SearchIndexer DataCategory count (paranoid).
     SearchIndexer.resetCount();
 
     // Configure Restlet server (ajp, http, etc).
-    // TODO: Try and do this in Spring XML config.
     def server = context.getBean("platformServer")
     def transactionController = context.getBean("transactionController")
     server.context.attributes.transactionController = transactionController
@@ -76,7 +53,7 @@ abstract class BaseApiTest {
     // NOTE: Remember to exclude trashed and implicitly trashed categories in the count.
     println 'Waiting while the index is built...'
     int count = 0;
-    while (SearchIndexer.getCount() < 22) {
+    while (SearchIndexer.getCount() < CategoryIT.categoryUids.size()) {
       sleep(1000)
       count++;
       println 'Waited ' + count + ' second(s) whilst the index is being built...'
@@ -93,6 +70,7 @@ abstract class BaseApiTest {
       println "Stopping container..."
       luceneService.closeEverything();
       container.stop()
+      context.close();
     } catch (e) {
       // Do nothing.
     }
@@ -100,11 +78,26 @@ abstract class BaseApiTest {
 
   @Before
   void setUp() {
-
     // Get the HTTP client
-    def config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL())
-    client = new RESTClient("http://${config.api.host}:${config.api.port}")
-    client.auth.basic config.api.user, config.api.password
+    client = new RESTClient("http://${config.api.host}:${config.api.port}");
+    // Set standard user as default.
+    setStandardUser();
+  }
+
+  void setStandardUser() {
+    client.auth.basic config.api.standard.user, config.api.standard.password;
+  }
+
+  void setAdminUser() {
+    client.auth.basic config.api.admin.user, config.api.admin.password;
+  }
+
+  void setRootUser() {
+    client.auth.basic config.api.root.user, config.api.root.password;
+  }
+
+  void setEcoinventUser() {
+    client.auth.basic config.api.ecoinvent.user, config.api.ecoinvent.password;
   }
 
   // Add a random character generator to the String class.

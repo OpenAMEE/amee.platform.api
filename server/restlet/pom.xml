@@ -34,6 +34,11 @@
         </dependency>
         <dependency>
             <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-domain</artifactId>
+            <version>${amee-platform-domain.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
             <artifactId>amee-platform-service</artifactId>
             <version>${amee-platform-service.version}</version>
         </dependency>

@@ -24,6 +24,7 @@
                         <property name="next">
                             <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
                                 <constructor-arg index="0" ref="platformApplication"/>
+                                <constructor-arg index="1" ref="authenticationService"/>
                                 <property name="next" ref="versionsRouter"/>
                             </bean>
                         </property>
@@ -122,6 +123,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>categoryIdentifier</value>
             </set>
         </property>
@@ -172,8 +174,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
-                <value>username</value>
-                <value>password</value>
+                <value>activeUserUid</value>
                 <value>categoryIdentifier</value>
                 <value>itemIdentifier</value>
             </set>

@@ -1,6 +1,8 @@
 package com.amee.platform.restlet;
 
+import com.amee.domain.auth.User;
 import com.amee.restlet.BaseGuard;
+import com.amee.service.auth.AuthenticationService;
 import org.restlet.Application;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Request;
@@ -12,18 +14,25 @@ import org.restlet.data.Request;
  */
 public class CollectCredentialsGuard extends BaseGuard {
 
-    public CollectCredentialsGuard(Application application) {
+    private AuthenticationService authenticationService;
+
+    public CollectCredentialsGuard(Application application, AuthenticationService authenticationService) {
         super(application, ChallengeScheme.HTTP_BASIC, "AMEE Platform API");
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public boolean checkSecret(Request request, String identifier, char[] secret) {
-//        request.getAttributes().put("username", identifier);
-//        request.getAttributes().put("password", new String(secret));
-//        return true;
-        return ((identifier != null) &&
-                (secret != null) &&
-                "platform".equalsIgnoreCase(identifier) &&
-                "OoKtNjw13b".equals(new String(secret)));
+        User sampleUser = new User();
+        sampleUser.setUsername(identifier);
+        sampleUser.setPasswordInClear(new String(secret));
+        User activeUser = authenticationService.authenticate(sampleUser);
+        if (activeUser != null) {
+            request.getAttributes().put("activeUser", activeUser);
+            request.getAttributes().put("activeUserUid", activeUser.getUid());
+            return true;
+        } else {
+            return false;
+        }
     }
 }

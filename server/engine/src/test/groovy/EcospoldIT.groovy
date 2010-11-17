@@ -1,5 +1,5 @@
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
-import static groovyx.net.http.ContentType.TEXT
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.fail
@@ -9,7 +9,9 @@ class EcospoldIT extends BaseApiTest {
   @Test
   void getEcospoldCategory() {
 
-    // We parse the reponse as XML but request x.ecospold+xml
+    setEcoinventUser();
+
+    // We parse the response as XML but request x.ecospold+xml
     def response = client.get(path: '/3/categories/4304B67B1D19',
             contentType: XML,
             headers: [Accept: 'application/x.ecospold+xml'])
@@ -52,15 +54,27 @@ class EcospoldIT extends BaseApiTest {
 
   @Test
   void getNonEcospoldCategory() {
-
     try {
-      def response = client.get(path: '/3/categories/F27BF795BB04',
-              contentType: TEXT,
+      client.get(path: '/3/categories/F27BF795BB04',
+              contentType: XML,
               headers: [Accept: 'application/x.ecospold+xml'])
-
       fail 'Expected 415'
-    } catch (ex) {
-      assertEquals 415, ex.response.status
+    } catch (HttpResponseException e) {
+      def response = e.response;
+      assertEquals 415, response.status
+    }
+  }
+
+  @Test
+  void getEcospoldCategoryNotAuthorized() {
+    try {
+      client.get(path: '/3/categories/4304B67B1D19',
+              contentType: XML,
+              headers: [Accept: 'application/x.ecospold+xml'])
+      fail 'Expected 403'
+    } catch (HttpResponseException e) {
+      def response = e.response;
+      assertEquals 403, response.status;
     }
   }
 }

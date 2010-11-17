@@ -1,11 +1,11 @@
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
 
 class DataItemIT extends BaseApiTest {
 
-  def dataItemUids = [
+  static def dataItemUids = [
           '004CF30590A5',
           '897513300787',
           'ZZ7513300787',
@@ -14,25 +14,25 @@ class DataItemIT extends BaseApiTest {
           'A81FD238C501'
   ].sort()
 
-  def oneGasItemValueValues = [
+  static def oneGasItemValueValues = [
           '1',
           '188',
           'BRE/MTP/dgen/defra 2007',
           'Gas']
 
-  def oneGasItemValuePaths = [
+  static def oneGasItemValuePaths = [
           'numberOfPeople',
           'kgCO2PerYear',
           'source',
           'fuel']
 
-  def twoGasItemValueValues = [
+  static def twoGasItemValueValues = [
           '2',
           '205',
           'BRE/MTP/dgen/defra 2007',
           'Gas']
 
-  def twoGasItemValuePaths = [
+  static def twoGasItemValuePaths = [
           'numberOfPeople',
           'kgCO2PerYear',
           'source',
@@ -49,7 +49,7 @@ class DataItemIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertTrue response.data.resultsTruncated
     assertEquals dataItemUids.size(), response.data.items.size()
-    def responseUids = response.data.items.collect{ it.uid }.sort()
+    def responseUids = response.data.items.collect { it.uid }.sort()
     assert dataItemUids == responseUids
   }
 
@@ -141,29 +141,39 @@ class DataItemIT extends BaseApiTest {
 
   @Test
   void updateDataItemJson() {
+    setAdminUser();
     def responsePut = client.put(
-      path: '/3.1/categories/Cooking/items/897513300787',
-      body: [
-        'name': 'newName',
-        'wikiDoc': 'wd',
-        'path': 'np',
-         'provenance': 'prov'
-      ],
-      requestContentType: URLENC,
-      contentType: JSON);
-
+            path: '/3.1/categories/Cooking/items/897513300787',
+            body: ['name': 'newName',
+                    'wikiDoc': 'wd',
+                    'path': 'np',
+                    'provenance': 'prov'],
+            requestContentType: URLENC,
+            contentType: JSON);
     assertEquals 201, responsePut.status;
-
     def responseGet = client.get(
-      path: '/3.1/categories/Cooking/items/897513300787;full',
-      contentType: JSON);
+            path: '/3.1/categories/Cooking/items/897513300787;full',
+            contentType: JSON);
     assertEquals 200, responseGet.status;
     println responseGet.data;
-
     assertEquals 'newName', responseGet.data.item.name;
     assertEquals 'wd', responseGet.data.item.wikiDoc;
     assertEquals 'np', responseGet.data.item.path;
     assertEquals 'prov', responseGet.data.item.provenance;
   }
 
+  @Test
+  void updateDataItemUnauthorizedJson() {
+    try {
+      client.put(
+              path: '/3.1/categories/Cooking/items/897513300787',
+              body: ['name': 'newName'],
+              requestContentType: URLENC,
+              contentType: JSON);
+      fail 'Expected 403'
+    } catch (HttpResponseException e) {
+      def response = e.response;
+      assertEquals 403, response.status;
+    }
+  }
 }
