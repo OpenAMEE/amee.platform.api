@@ -170,10 +170,10 @@ class DataItemIT extends BaseApiTest {
               body: ['name': 'newName'],
               requestContentType: URLENC,
               contentType: JSON);
-      fail 'Expected 401'
+      fail 'Expected 403'
     } catch (HttpResponseException e) {
       def response = e.response;
-      assertEquals 401, response.status;
+      assertEquals 403, response.status;
     }
   }
 }

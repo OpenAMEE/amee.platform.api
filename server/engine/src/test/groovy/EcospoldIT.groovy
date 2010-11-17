@@ -71,10 +71,10 @@ class EcospoldIT extends BaseApiTest {
       client.get(path: '/3/categories/4304B67B1D19',
               contentType: XML,
               headers: [Accept: 'application/x.ecospold+xml'])
-      fail 'Expected 401'
+      fail 'Expected 403'
     } catch (HttpResponseException e) {
       def response = e.response;
-      assertEquals 401, response.status;
+      assertEquals 403, response.status;
     }
   }
 }
