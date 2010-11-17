@@ -9,6 +9,10 @@ public abstract class ResourceException extends RuntimeException {
         super();
     }
 
+    public ResourceException(String message) {
+        super(message);
+    }
+
     public Object getResponse(RequestWrapper requestWrapper) {
         if (requestWrapper.getAcceptedMediaTypes().contains("application/json")) {
             return getJSONObject();

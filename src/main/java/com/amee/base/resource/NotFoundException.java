@@ -22,6 +22,7 @@ public class NotFoundException extends ResourceException {
         }
     }
 
+    @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
         rootElem.addContent(new Element("Status").setText("NOT_FOUND"));
