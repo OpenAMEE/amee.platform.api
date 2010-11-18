@@ -5,7 +5,6 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
-import com.amee.service.auth.AuthenticationService;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 public class DataItemBuilder implements ResourceBuilder {
-
-    @Autowired
-    private AuthenticationService authenticationService;
 
     @Autowired
     private DataService dataService;

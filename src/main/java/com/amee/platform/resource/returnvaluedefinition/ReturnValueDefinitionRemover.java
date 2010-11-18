@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.*;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +18,9 @@ public class ReturnValueDefinitionRemover implements ResourceRemover {
     @Autowired
     private DefinitionService definitionService;
 
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
+
     public Object handle(RequestWrapper requestWrapper) {
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
         if (itemDefinitionIdentifier != null) {
@@ -26,6 +30,10 @@ public class ReturnValueDefinitionRemover implements ResourceRemover {
                 if (returnValueDefinitionIdentifier != null) {
                     ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForRemove(
+                                requestWrapper.getAttributes().get("activeUserUid"), returnValueDefinition);
+                        // Handle ReturnValueDefinition removal.
                         definitionService.remove(returnValueDefinition);
                         definitionService.invalidate(returnValueDefinition.getItemDefinition());
                         return ResponseHelper.getOK(requestWrapper);
