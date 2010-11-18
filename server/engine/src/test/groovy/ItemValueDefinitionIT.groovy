@@ -90,6 +90,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void updateItemValueDefinitionJson() {
+    setAdminUser();
     // 1) Do the update.
     def responsePut = client.put(
             path: '/3.1/definitions/11D3548466F2/values/64BC7A490F41',
@@ -114,6 +115,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void updateInvalidItemValueDefinition() {
+    setAdminUser();
     updateItemValueDefinitionFieldJson('name', 'empty', '');
     updateItemValueDefinitionFieldJson('name', 'short', 'a');
     updateItemValueDefinitionFieldJson('name', 'long', String.randomString(256));

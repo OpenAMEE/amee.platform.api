@@ -104,6 +104,11 @@
         <property name="allowDelete" value="false"/>
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="categories"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
         <property name="builder">
             <bean class="com.amee.platform.resource.datacategory.DataCategoriesBuilder"/>
         </property>
@@ -147,6 +152,7 @@
         <property name="lastSegment" value="items"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>categoryIdentifier</value>
             </set>
         </property>
@@ -242,6 +248,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>itemDefinitionIdentifier</value>
             </set>
         </property>
@@ -271,6 +278,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>itemDefinitionIdentifier</value>
             </set>
         </property>
@@ -287,6 +295,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>itemDefinitionIdentifier</value>
                 <value>itemValueDefinitionIdentifier</value>
             </set>
@@ -323,6 +332,7 @@
         <property name="allowPost" value="true"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>itemDefinitionIdentifier</value>
             </set>
         </property>
@@ -349,6 +359,7 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>itemDefinitionIdentifier</value>
                 <value>returnValueDefinitionIdentifier</value>
             </set>
@@ -400,6 +411,11 @@
         <property name="allowDelete" value="false"/>
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="search"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
         <property name="builder">
             <bean class="com.amee.platform.resource.search.SearchBuilder"/>
         </property>
@@ -431,6 +447,7 @@
         <property name="lastSegment" value="tags"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>categoryIdentifier</value>
             </set>
         </property>
