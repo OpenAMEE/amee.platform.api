@@ -19,13 +19,12 @@
  */
 package com.amee.domain.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.APIVersion;
-import com.amee.domain.Metadata;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.environment.Environment;
+import com.amee.domain.path.Pathable;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.InternalValue;
 import org.hibernate.annotations.Cache;
@@ -41,7 +40,7 @@ import java.util.*;
 @Entity
 @Table(name = "ITEM_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class ItemDefinition extends AMEEEntity {
+public class ItemDefinition extends AMEEEntity implements Pathable {
 
     public final static int NAME_MIN_SIZE = 3;
     public final static int NAME_MAX_SIZE = 255;
@@ -171,8 +170,28 @@ public class ItemDefinition extends AMEEEntity {
         return XMLUtils.getIdentityElement(document, this);
     }
 
+    @Override
+    public String getPath() {
+        return getUid();
+    }
+
     public String getName() {
         return getLocaleService().getLocaleNameValue(this, name);
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public String getDisplayPath() {
+        return getPath();
+    }
+
+    @Override
+    public String getFullPath() {
+        return getPath();
     }
 
     public void setName(String name) {
@@ -237,6 +256,14 @@ public class ItemDefinition extends AMEEEntity {
 
     public ObjectType getObjectType() {
         return ObjectType.ID;
+    }
+
+    @Override
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(getDataService().getRootDataCategory());
+        entities.add(this);
+        return entities;
     }
 
     /**
@@ -339,5 +366,9 @@ public class ItemDefinition extends AMEEEntity {
             sb.deleteCharAt(sb.lastIndexOf(","));
             setUsages(sb.toString());
         }
+    }
+
+    public IDataService getDataService() {
+        return (IDataService) ThreadBeanHolder.get("dataService");
     }
 }

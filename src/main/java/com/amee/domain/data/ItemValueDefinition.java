@@ -22,6 +22,7 @@ package com.amee.domain.data;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.*;
 import com.amee.domain.data.builder.v2.ItemValueDefinitionBuilder;
+import com.amee.domain.path.Pathable;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.*;
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +43,7 @@ import java.util.Set;
 @Entity
 @Table(name = "ITEM_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
+public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pathable {
 
     public final static int NAME_MIN_SIZE = 2;
     public final static int NAME_MAX_SIZE = 255;
@@ -197,6 +198,21 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         return getLocaleService().getLocaleNameValue(this, name);
     }
 
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public String getDisplayPath() {
+        return getPath();
+    }
+
+    @Override
+    public String getFullPath() {
+        return getItemDefinition().getFullPath() + "/" + getPath();
+    }
+
     public void setName(String name) {
         if (name == null) {
             name = "";
@@ -204,6 +220,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         this.name = name;
     }
 
+    @Override
     public String getPath() {
         return path;
     }
@@ -219,6 +236,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         return value;
     }
 
+    @Override
     public String getUsableValue() {
         return getValue();
     }
@@ -291,22 +309,27 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         this.unit = unit;
     }
 
+    @Override
     public AmountUnit getUnit() {
         return hasUnit() ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
+    @Override
     public AmountUnit getCanonicalUnit() {
         return getUnit();
     }
 
+    @Override
     public AmountPerUnit getPerUnit() {
         return hasPerUnit() ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
+    @Override
     public AmountPerUnit getCanonicalPerUnit() {
         return getPerUnit();
     }
 
+    @Override
     public boolean hasUnit() {
         return StringUtils.isNotBlank(unit) && !unit.equals("any");
     }
@@ -315,6 +338,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         return StringUtils.isNotBlank(unit) && unit.equals("any");
     }
 
+    @Override
     public boolean hasPerUnit() {
         return StringUtils.isNotBlank(perUnit) && !perUnit.equals("any");
     }
@@ -331,10 +355,12 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         return isAnyPerUnit() || getPerUnit().isCompatibleWith(perUnit);
     }
 
+    @Override
     public AmountCompoundUnit getCompoundUnit() {
         return getUnit().with(getPerUnit());
     }
 
+    @Override
     public AmountCompoundUnit getCanonicalCompoundUnit() {
         if (aliasedTo != null) {
             return aliasedTo.getCompoundUnit();
@@ -398,6 +424,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
      *         <p/>
      *         {@see ValueType.DOUBLE}
      */
+    @Override
     public boolean isDouble() {
         return getValueDefinition().getValueType().equals(ValueType.DOUBLE);
     }
@@ -568,6 +595,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
         onModify();
     }
 
+    @Override
     public String getLabel() {
         return getItemDefinition().getName() + "/" + getPath();
     }
@@ -577,6 +605,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
      *
      * @return null, always
      */
+    @Override
     public StartEndDate getStartDate() {
         return null;
     }
@@ -586,11 +615,20 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue {
      *
      * @return false, always
      */
+    @Override
     public boolean isConvertible() {
         return false;
     }
 
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.IVD;
+    }
+
+    @Override
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = getItemDefinition().getHierarchy();
+        entities.add(this);
+        return entities;
     }
 }

@@ -1,9 +1,7 @@
 package com.amee.domain.data;
 
-import com.amee.domain.AMEEEntity;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.ObjectType;
-import com.amee.domain.ValueDefinition;
+import com.amee.domain.*;
+import com.amee.domain.path.Pathable;
 import com.amee.platform.science.AmountCompoundUnit;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
@@ -12,11 +10,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "RETURN_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class ReturnValueDefinition extends AMEEEntity {
+public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
     // TODO: Never allow nulls for the values. Encapsulate as with other entities. Provide default values. Protect for NPEs.
     // TODO: Are the unit size constants required?
@@ -106,8 +105,41 @@ public class ReturnValueDefinition extends AMEEEntity {
         this.valueDefinition = valueDefinition;
     }
 
+    @Override
+    public String getPath() {
+        return getUid();
+    }
+
+    @Override
+    public String getName() {
+        return getUid();
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public String getDisplayPath() {
+        return getPath();
+    }
+
+    @Override
+    public String getFullPath() {
+        return getItemDefinition().getFullPath() + "/" + getPath();
+    }
+
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.RVD;
+    }
+
+    @Override
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = getItemDefinition().getHierarchy();
+        entities.add(this);
+        return entities;
     }
 
     @Override
