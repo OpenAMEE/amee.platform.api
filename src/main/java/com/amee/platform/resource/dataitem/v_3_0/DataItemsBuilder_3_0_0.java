@@ -14,6 +14,7 @@ import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.platform.search.DataItemsFilter;
 import com.amee.platform.search.DataItemsFilterValidationHelper;
 import com.amee.platform.search.SearchService;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +33,9 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
     private SearchService searchService;
 
     @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
+
+    @Autowired
     private DataItemsFilterValidationHelper validationHelper;
 
     @Autowired
@@ -47,6 +51,9 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
             // Get DataCategory.
             DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if ((dataCategory != null) && (dataCategory.getItemDefinition() != null)) {
+                // Authorized?
+                resourceAuthorizationService.ensureAuthorizedForBuild(
+                        requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
                 // Create filter and do search.
                 DataItemsFilter filter = new DataItemsFilter(dataCategory.getItemDefinition());
                 filter.setLoadDataItemValues(

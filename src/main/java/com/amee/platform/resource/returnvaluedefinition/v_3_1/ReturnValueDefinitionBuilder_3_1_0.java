@@ -8,6 +8,7 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,9 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
 
     @Autowired
     private DefinitionService definitionService;
+
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
@@ -45,6 +49,9 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
                     ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(
                             itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForBuild(
+                                requestWrapper.getAttributes().get("activeUserUid"), returnValueDefinition);
                         // Handle the ReturnValueDefinition.
                         handle(requestWrapper, returnValueDefinition);
                         ReturnValueDefinitionResource.Renderer renderer = getRenderer(requestWrapper);

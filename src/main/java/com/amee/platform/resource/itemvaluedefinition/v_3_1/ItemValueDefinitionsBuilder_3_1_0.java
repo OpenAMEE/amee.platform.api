@@ -9,6 +9,7 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +25,9 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
     private DefinitionService definitionService;
 
     @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
+
+    @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
     private ItemValueDefinitionsResource.Renderer itemValueDefinitionsRenderer;
@@ -36,7 +40,10 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
             // Get ItemDefinition.
             ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
             if (itemDefinition != null) {
-                // Handle the ItemDefinition.
+                // Authorized?
+                resourceAuthorizationService.ensureAuthorizedForBuild(
+                        requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
+                // Handle the ItemDefinition & ItemValueDefinitions.
                 handle(requestWrapper, itemDefinition);
                 ItemValueDefinitionsResource.Renderer renderer = getRenderer(requestWrapper);
                 renderer.ok();

@@ -6,6 +6,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,9 @@ public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
     @Autowired
     protected DefinitionService definitionService;
 
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
+
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Get ItemDefinition identifier.
@@ -23,6 +27,10 @@ public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
             // Get ItemDefinition.
             ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
             if (itemDefinition != null) {
+                // Authorized?
+                resourceAuthorizationService.ensureAuthorizedForModify(
+                        requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
+                // Handle the ItemDefinition.
                 return handle(requestWrapper, itemDefinition);
             } else {
                 throw new NotFoundException();
