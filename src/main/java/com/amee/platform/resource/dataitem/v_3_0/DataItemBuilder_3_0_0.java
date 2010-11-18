@@ -1,13 +1,17 @@
 package com.amee.platform.resource.dataitem.v_3_0;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.MissingAttributeException;
+import com.amee.base.resource.NotFoundException;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValue;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.AuthenticationService;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -26,9 +30,12 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
     private DataService dataService;
 
     @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceAuthorizationService resourceAuthorizationService;
 
-    private DataItemResource.Renderer dataItemRenderer;
+    @Autowired
+    private ResourceBeanFinder resourceBeanFinder;
+
+    private DataItemResource.Renderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
@@ -44,6 +51,9 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
                     // Get DataItem.
                     DataItem dataItem = dataService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForBuild(
+                                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
                         // Handle the DataItem.
                         this.handle(requestWrapper, dataItem);
                         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
@@ -63,9 +73,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
         }
     }
 
-    public void handle(
-            RequestWrapper requestWrapper,
-            DataItem dataItem) {
+    public void handle(RequestWrapper requestWrapper, DataItem dataItem) {
 
         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -120,9 +128,9 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
     }
 
     public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper) {
-        if (dataItemRenderer == null) {
-            dataItemRenderer = (DataItemResource.Renderer) rendererBeanFinder.getRenderer(DataItemResource.Renderer.class, requestWrapper);
+        if (renderer == null) {
+            renderer = (DataItemResource.Renderer) resourceBeanFinder.getRenderer(DataItemResource.Renderer.class, requestWrapper);
         }
-        return dataItemRenderer;
+        return renderer;
     }
 }

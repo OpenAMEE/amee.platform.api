@@ -4,12 +4,12 @@ import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.validation.ValidationException;
-import com.amee.domain.IAMEEEntity;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
+import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.platform.search.DataItemsFilter;
 import com.amee.platform.search.DataItemsFilterValidationHelper;
@@ -32,13 +32,10 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
     private SearchService searchService;
 
     @Autowired
-    private DataItemBuilder_3_0_0 dataItemBuilder;
-
-    @Autowired
     private DataItemsFilterValidationHelper validationHelper;
 
     @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private DataItemsResource.Renderer dataItemsRenderer;
 
@@ -83,19 +80,25 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
         // Setup Renderer.
         DataItemsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
-        // Add Data Items to Renderer.
-        ResultsWrapper<IAMEEEntity> resultsWrapper = searchService.getDataItems(dataCategory, filter);
+        // Add Data Items to Renderer and build.
+        ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
-        for (IAMEEEntity entity : resultsWrapper.getResults()) {
-            dataItemBuilder.handle(requestWrapper, (DataItem) entity);
+        DataItemResource.Builder dataItemBuilder = getDataItemBuilder(requestWrapper);
+        for (DataItem dataItem : resultsWrapper.getResults()) {
+            dataItemBuilder.handle(requestWrapper, dataItem);
             renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
         }
     }
 
     public DataItemsResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (dataItemsRenderer == null) {
-            dataItemsRenderer = (DataItemsResource.Renderer) rendererBeanFinder.getRenderer(DataItemsResource.Renderer.class, requestWrapper);
+            dataItemsRenderer = (DataItemsResource.Renderer) resourceBeanFinder.getRenderer(DataItemsResource.Renderer.class, requestWrapper);
         }
         return dataItemsRenderer;
     }
-}    
+
+    private DataItemResource.Builder getDataItemBuilder(RequestWrapper requestWrapper) {
+        return (DataItemResource.Builder)
+                resourceBeanFinder.getBuilder(DataItemResource.Builder.class, requestWrapper);
+    }
+}

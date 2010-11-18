@@ -3,8 +3,8 @@ package com.amee.platform.resource.datacategory.v_3_0;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
@@ -12,6 +12,7 @@ import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.EntityFilter;
 import com.amee.platform.resource.EntityFilterValidationHelper;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,15 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
     private TagService tagService;
 
     @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
+
+    @Autowired
     private EntityFilterValidationHelper validationHelper;
 
     @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
-    private DataCategoryResource.Renderer dataCategoryRenderer;
+    private DataCategoryResource.Renderer renderer;
 
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
@@ -48,9 +52,11 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
             validationHelper.setEntityFilter(filter);
             if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
                 // Get DataCategory (filter by status).
-                DataCategory dataCategory =
-                        dataService.getDataCategoryByIdentifier(dataCategoryIdentifier, filter.getStatus());
+                DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier, filter.getStatus());
                 if (dataCategory != null) {
+                    // Authorized?
+                    resourceAuthorizationService.ensureAuthorizedForBuild(
+                            requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
                     // Handle the DataCategory.
                     this.handle(requestWrapper, dataCategory);
                     DataCategoryResource.Renderer renderer = getRenderer(requestWrapper);
@@ -67,9 +73,7 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
         }
     }
 
-    public void handle(
-            RequestWrapper requestWrapper,
-            DataCategory dataCategory) {
+    public void handle(RequestWrapper requestWrapper, DataCategory dataCategory) {
 
         DataCategoryResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -120,9 +124,9 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
     }
 
     public DataCategoryResource.Renderer getRenderer(RequestWrapper requestWrapper) {
-        if (dataCategoryRenderer == null) {
-            dataCategoryRenderer = (DataCategoryResource.Renderer) rendererBeanFinder.getRenderer(DataCategoryResource.Renderer.class, requestWrapper);
+        if (renderer == null) {
+            renderer = (DataCategoryResource.Renderer) resourceBeanFinder.getRenderer(DataCategoryResource.Renderer.class, requestWrapper);
         }
-        return dataCategoryRenderer;
+        return renderer;
     }
 }

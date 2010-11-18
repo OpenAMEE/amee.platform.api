@@ -9,10 +9,10 @@ import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-@Service("tagsJSONRenderer_3_0_0")
+@Service
 @Scope("prototype")
 @Since("3.0.0")
-public class TagsJSONRenderer implements TagsResource.TagsRenderer {
+public class TagsJSONRenderer_3_0_0 implements TagsResource.Renderer {
 
     private JSONObject rootObj;
     private JSONArray tagsArr;

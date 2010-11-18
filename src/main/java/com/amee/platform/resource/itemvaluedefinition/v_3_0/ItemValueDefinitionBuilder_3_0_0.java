@@ -1,7 +1,10 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_0;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.MissingAttributeException;
+import com.amee.base.resource.NotFoundException;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
@@ -20,7 +23,7 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
     private DefinitionService definitionService;
 
     @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private ItemValueDefinitionResource.Renderer itemValueDefinitionRenderer;
 
@@ -58,9 +61,7 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
         }
     }
 
-    public void handle(
-            RequestWrapper requestWrapper,
-            ItemValueDefinition itemValueDefinition) {
+    public void handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition) {
 
         ItemValueDefinitionResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -124,7 +125,7 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
 
     public ItemValueDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (itemValueDefinitionRenderer == null) {
-            itemValueDefinitionRenderer = (ItemValueDefinitionResource.Renderer) rendererBeanFinder.getRenderer(ItemValueDefinitionResource.Renderer.class, requestWrapper);
+            itemValueDefinitionRenderer = (ItemValueDefinitionResource.Renderer) resourceBeanFinder.getRenderer(ItemValueDefinitionResource.Renderer.class, requestWrapper);
         }
         return itemValueDefinitionRenderer;
     }

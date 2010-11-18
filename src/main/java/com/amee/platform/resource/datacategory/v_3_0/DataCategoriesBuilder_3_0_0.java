@@ -2,11 +2,12 @@ package com.amee.platform.resource.datacategory.v_3_0;
 
 import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
-import com.amee.base.resource.RendererBeanFinder;
 import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.DataCategoriesResource;
+import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.platform.search.DataCategoriesFilter;
 import com.amee.platform.search.DataCategoriesFilterValidationHelper;
 import com.amee.platform.search.SearchService;
@@ -27,10 +28,7 @@ public class DataCategoriesBuilder_3_0_0 implements DataCategoriesResource.Build
     private DataCategoriesFilterValidationHelper validationHelper;
 
     @Autowired
-    private DataCategoryBuilder_3_0_0 dataCategoryBuilder;
-
-    @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private DataCategoriesResource.Renderer dataCategoriesRenderer;
 
@@ -62,9 +60,10 @@ public class DataCategoriesBuilder_3_0_0 implements DataCategoriesResource.Build
         // Setup Renderer.
         DataCategoriesResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
-        // Add Data Categories to Renderer.
+        // Add Data Categories to Renderer and build.
         ResultsWrapper<DataCategory> resultsWrapper = searchService.getDataCategories(filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
+        DataCategoryResource.Builder dataCategoryBuilder = getDataCategoryBuilder(requestWrapper);
         for (DataCategory dataCategory : resultsWrapper.getResults()) {
             dataCategoryBuilder.handle(requestWrapper, dataCategory);
             renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
@@ -73,8 +72,13 @@ public class DataCategoriesBuilder_3_0_0 implements DataCategoriesResource.Build
 
     public DataCategoriesResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (dataCategoriesRenderer == null) {
-            dataCategoriesRenderer = (DataCategoriesResource.Renderer) rendererBeanFinder.getRenderer(DataCategoriesResource.Renderer.class, requestWrapper);
+            dataCategoriesRenderer = (DataCategoriesResource.Renderer) resourceBeanFinder.getRenderer(DataCategoriesResource.Renderer.class, requestWrapper);
         }
         return dataCategoriesRenderer;
+    }
+
+    private DataCategoryResource.Builder getDataCategoryBuilder(RequestWrapper requestWrapper) {
+        return (DataCategoryResource.Builder)
+                resourceBeanFinder.getBuilder(DataCategoryResource.Builder.class, requestWrapper);
     }
 }

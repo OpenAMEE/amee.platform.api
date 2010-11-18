@@ -1,9 +1,13 @@
 package com.amee.platform.resource.returnvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.MissingAttributeException;
+import com.amee.base.resource.NotFoundException;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
+import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsResource;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +24,7 @@ public class ReturnValueDefinitionsBuilder_3_1_0 implements ReturnValueDefinitio
     private DefinitionService definitionService;
 
     @Autowired
-    private ReturnValueDefinitionBuilder_3_1_0 returnValueDefinitionBuilder;
-
-    @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private ReturnValueDefinitionsResource.Renderer returnValueDefinitionsRenderer;
 
@@ -55,6 +56,7 @@ public class ReturnValueDefinitionsBuilder_3_1_0 implements ReturnValueDefinitio
         renderer.start();
 
         // Add ReturnValueDefinition.
+        ReturnValueDefinitionResource.Builder returnValueDefinitionBuilder = getReturnValueDefinitionBuilder(requestWrapper);
         for (ReturnValueDefinition returnValueDefinition : itemDefinition.getActiveReturnValueDefinitions()) {
             returnValueDefinitionBuilder.handle(requestWrapper, returnValueDefinition);
             renderer.newReturnValueDefinition(returnValueDefinitionBuilder.getRenderer(requestWrapper));
@@ -63,8 +65,13 @@ public class ReturnValueDefinitionsBuilder_3_1_0 implements ReturnValueDefinitio
 
     public ReturnValueDefinitionsResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (returnValueDefinitionsRenderer == null) {
-            returnValueDefinitionsRenderer = (ReturnValueDefinitionsResource.Renderer) rendererBeanFinder.getRenderer(ReturnValueDefinitionsResource.Renderer.class, requestWrapper);
+            returnValueDefinitionsRenderer = (ReturnValueDefinitionsResource.Renderer) resourceBeanFinder.getRenderer(ReturnValueDefinitionsResource.Renderer.class, requestWrapper);
         }
         return returnValueDefinitionsRenderer;
+    }
+
+    private ReturnValueDefinitionResource.Builder getReturnValueDefinitionBuilder(RequestWrapper requestWrapper) {
+        return (ReturnValueDefinitionResource.Builder)
+                resourceBeanFinder.getBuilder(ReturnValueDefinitionResource.Builder.class, requestWrapper);
     }
 }

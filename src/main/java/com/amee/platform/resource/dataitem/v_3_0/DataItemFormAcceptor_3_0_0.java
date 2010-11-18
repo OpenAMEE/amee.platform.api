@@ -10,6 +10,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemValidationHelper;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -23,6 +24,9 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
     private DataItemValidationHelper validationHelper;
@@ -41,6 +45,10 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
                     // Get DataItem.
                     DataItem dataItem = dataService.getDataItemByUid(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForModify(
+                                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+                        // Handle the DataItem update (entity updated via validation binding).
                         validationHelper.setDataItem(dataItem);
                         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
                             return ResponseHelper.getOK(requestWrapper);

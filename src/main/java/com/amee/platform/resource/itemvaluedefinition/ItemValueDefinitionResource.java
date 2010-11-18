@@ -1,7 +1,8 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
-import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
@@ -11,6 +12,10 @@ import org.joda.time.format.ISODateTimeFormat;
 public interface ItemValueDefinitionResource {
 
     interface Builder extends ResourceBuilder {
+
+        public void handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition);
+
+        public ItemValueDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
     interface Renderer extends ResourceRenderer {

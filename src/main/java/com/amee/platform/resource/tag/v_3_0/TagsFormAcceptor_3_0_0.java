@@ -2,7 +2,6 @@ package com.amee.platform.resource.tag.v_3_0;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntityReference;
@@ -10,6 +9,7 @@ import com.amee.domain.tag.EntityTag;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagResourceService;
 import com.amee.platform.resource.tag.TagValidationHelper;
+import com.amee.platform.resource.tag.TagsResource;
 import com.amee.service.tag.TagService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,10 +18,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("tagsFormAcceptor_3_0_0")
+@Service
 @Scope("prototype")
 @Since("3.0.0")
-public class TagsFormAcceptor implements ResourceAcceptor {
+public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
 
     private final Log log = LogFactory.getLog(getClass());
 
@@ -41,7 +41,7 @@ public class TagsFormAcceptor implements ResourceAcceptor {
         validationHelper.setTag(tag);
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
             // Swap tag with existing tag if it exists.
-            Tag existingTag = tagService.getTag(tag.getTag());
+            Tag existingTag = tagService.getTagByTag(tag.getTag());
             if (existingTag == null) {
                 // Save new Tag.
                 log.debug("handle() Use new Tag.");

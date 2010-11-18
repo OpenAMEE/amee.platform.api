@@ -1,7 +1,10 @@
 package com.amee.platform.resource.returnvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.MissingAttributeException;
+import com.amee.base.resource.NotFoundException;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
@@ -23,7 +26,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
     private DefinitionService definitionService;
 
     @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private ReturnValueDefinitionResource.Renderer returnValueDefinitionRenderer;
 
@@ -61,9 +64,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         }
     }
 
-    protected void handle(
-            RequestWrapper requestWrapper,
-            ReturnValueDefinition returnValueDefinition) {
+    public void handle(RequestWrapper requestWrapper, ReturnValueDefinition returnValueDefinition) {
 
         ReturnValueDefinitionResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -99,7 +100,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
 
     public ReturnValueDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (returnValueDefinitionRenderer == null) {
-            returnValueDefinitionRenderer = (ReturnValueDefinitionResource.Renderer) rendererBeanFinder.getRenderer(ReturnValueDefinitionResource.Renderer.class, requestWrapper);
+            returnValueDefinitionRenderer = (ReturnValueDefinitionResource.Renderer) resourceBeanFinder.getRenderer(ReturnValueDefinitionResource.Renderer.class, requestWrapper);
         }
         return returnValueDefinitionRenderer;
     }

@@ -8,10 +8,10 @@ import org.jdom.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-@Service("tagsDOMRenderer_3_0_0")
+@Service
 @Scope("prototype")
 @Since("3.0.0")
-public class TagsDOMRenderer implements TagsResource.TagsRenderer {
+public class TagsDOMRenderer_3_0_0 implements TagsResource.Renderer {
 
     private Element rootElem;
     private Element tagsElem;

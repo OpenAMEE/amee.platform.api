@@ -21,9 +21,9 @@ public class TagResourceService {
     /**
      * Get the entity that Tags should belong to.
      * <p/>
-     * This base implementation returns null.
+     * TODO: This is currently only works with Data Categories.
      *
-     * @param requestWrapper
+     * @param requestWrapper the active RequestWrapper
      * @return IAMEEEntityReference entity reference
      */
     public IAMEEEntityReference getEntity(RequestWrapper requestWrapper) {

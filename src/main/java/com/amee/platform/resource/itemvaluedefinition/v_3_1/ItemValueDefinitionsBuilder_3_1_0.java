@@ -1,11 +1,14 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.MissingAttributeException;
+import com.amee.base.resource.NotFoundException;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
-import com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionBuilder_3_0_0;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,10 +24,7 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
     private DefinitionService definitionService;
 
     @Autowired
-    private ItemValueDefinitionBuilder_3_0_0 itemValueDefinitionBuilder;
-
-    @Autowired
-    private RendererBeanFinder rendererBeanFinder;
+    private ResourceBeanFinder resourceBeanFinder;
 
     private ItemValueDefinitionsResource.Renderer itemValueDefinitionsRenderer;
 
@@ -56,6 +56,7 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
         renderer.start();
 
         // Add ItemValueDefinition.
+        ItemValueDefinitionResource.Builder itemValueDefinitionBuilder = getItemValueDefinitionBuilder(requestWrapper);
         for (ItemValueDefinition itemValueDefinition : itemDefinition.getActiveItemValueDefinitions()) {
             itemValueDefinitionBuilder.handle(requestWrapper, itemValueDefinition);
             renderer.newItemValueDefinition(itemValueDefinitionBuilder.getRenderer(requestWrapper));
@@ -64,8 +65,13 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
 
     public ItemValueDefinitionsResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (itemValueDefinitionsRenderer == null) {
-            itemValueDefinitionsRenderer = (ItemValueDefinitionsResource.Renderer) rendererBeanFinder.getRenderer(ItemValueDefinitionsResource.Renderer.class, requestWrapper);
+            itemValueDefinitionsRenderer = (ItemValueDefinitionsResource.Renderer) resourceBeanFinder.getRenderer(ItemValueDefinitionsResource.Renderer.class, requestWrapper);
         }
         return itemValueDefinitionsRenderer;
+    }
+
+    private ItemValueDefinitionResource.Builder getItemValueDefinitionBuilder(RequestWrapper requestWrapper) {
+        return (ItemValueDefinitionResource.Builder)
+                resourceBeanFinder.getBuilder(ItemValueDefinitionResource.Builder.class, requestWrapper);
     }
 }
