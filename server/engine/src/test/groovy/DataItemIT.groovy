@@ -70,7 +70,7 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemOneGasJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/Cooking/items/004CF30590A5;full');
+    def response = client.get(path: '/3.2/categories/Cooking/items/004CF30590A5;full');
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
@@ -88,7 +88,7 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemOneGasXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.1/categories/Cooking/items/004CF30590A5;full');
+    def response = client.get(path: '/3.2/categories/Cooking/items/004CF30590A5;full');
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
@@ -106,7 +106,7 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemTwoGasJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/categories/Cooking/items/897513300787;full');
+    def response = client.get(path: '/3.2/categories/Cooking/items/897513300787;full');
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
@@ -124,7 +124,7 @@ class DataItemIT extends BaseApiTest {
   @Test
   void getDataItemTwoGasXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.1/categories/Cooking/items/897513300787;full');
+    def response = client.get(path: '/3.2/categories/Cooking/items/897513300787;full');
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();

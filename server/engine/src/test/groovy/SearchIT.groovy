@@ -9,7 +9,7 @@ class SearchIT extends BaseApiTest {
   @Test
   void searchJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/search',
+    def response = client.get(path: '/3.2/search',
             query: ['q': 'chemicals', 'excTags': 'ecoinvent'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
@@ -21,7 +21,7 @@ class SearchIT extends BaseApiTest {
   @Test
   void searchXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.1/search',
+    def response = client.get(path: '/3.2/search',
             query: ['q': 'chemicals'])
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
@@ -37,7 +37,7 @@ class SearchIT extends BaseApiTest {
   void searchWithInvalidQueryJson() {
     try {
       client.contentType = JSON
-      client.get(path: '/3.1/search',
+      client.get(path: '/3.2/search',
               query: ['q': 'cooking\\'])
       fail 'Response status code should have been 400.';
     } catch (HttpResponseException e) {
@@ -55,7 +55,7 @@ class SearchIT extends BaseApiTest {
   @Test
   void searchForDataItemsWithSameIDJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.1/search',
+    def response = client.get(path: '/3.2/search',
             query: ['q': 'GasTest', 'types': 'DI'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType

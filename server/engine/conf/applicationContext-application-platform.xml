@@ -106,7 +106,8 @@
         <property name="lastSegment" value="categories"/>
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
-                <property name="target" value="com.amee.platform.resource.datacategory.DataCategoriesResource.DataCategoriesBuilder"/>
+                <property name="target"
+                          value="com.amee.platform.resource.datacategory.DataCategoriesResource$Builder"/>
             </bean>
         </property>
         <!--<property name="acceptors">-->
@@ -129,15 +130,16 @@
         </property>
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
-                <property name="target" value="com.amee.platform.resource.datacategory.DataCategoryResource.DataCategoryBuilder"/>
+                <property name="target"
+                          value="com.amee.platform.resource.datacategory.DataCategoryResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.base.resource.LocalResourceBuilder">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.datacategory.DataCategoryResource.DataCategoryFormAcceptor"/>
+                                  value="com.amee.platform.resource.datacategory.DataCategoryResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -158,7 +160,10 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.resource.dataitem.v_3_0.DataItemsBuilder_3_0_0"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.dataitem.DataItemsResource$Builder"/>
+            </bean>
         </property>
         <!--<property name="acceptors">-->
         <!--<map>-->
@@ -180,12 +185,18 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.resource.dataitem.v_3_0.DataItemBuilder_3_0_0"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.dataitem.DataItemResource$Builder"/>
+            </bean>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.dataitem.v_3_0.DataItemFormAcceptor_3_0_0"/>
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.dataitem.DataItemResource$FormAcceptor"/>
+                    </bean>
                 </entry>
             </map>
         </property>
@@ -255,7 +266,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.itemdefinition.v_3_1.ItemDefinitionBuilder_3_1_0"/>
+                          value="com.amee.platform.resource.itemdefinition.ItemDefinitionResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -263,7 +274,7 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.itemdefinition.v_3_1.ItemDefinitionFormAcceptor_3_1_0"/>
+                                  value="com.amee.platform.resource.itemdefinition.ItemDefinitionResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -284,7 +295,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.itemvaluedefinition.v_3_1.ItemValueDefinitionsBuilder_3_1_0"/>
+                          value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource$Builder"/>
             </bean>
         </property>
     </bean>
@@ -301,7 +312,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionBuilder_3_0_0"/>
+                          value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -309,13 +320,13 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionFormAcceptor_3_0_0"/>
+                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource$FormAcceptor"/>
                     </bean>
                 </entry>
                 <entry key="application/xml">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource.ItemValueDefinitionDOMAcceptor"/>
+                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource$DOMAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -336,7 +347,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionsBuilder_3_1_0"/>
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -344,7 +355,7 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionsFormAcceptor_3_1_0"/>
+                                  value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionsResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -363,7 +374,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionBuilder_3_1_0"/>
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -371,7 +382,7 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionFormAcceptor_3_1_0"/>
+                                  value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -379,7 +390,7 @@
         <property name="remover">
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
-                          value="com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionRemover_3_1_0"/>
+                          value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource$Remover"/>
             </bean>
         </property>
     </bean>
@@ -408,7 +419,10 @@
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="search"/>
         <property name="builder">
-            <bean class="com.amee.platform.resource.search.v_3_0.SearchBuilder_3_0_0"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.search.SearchResource$Builder"/>
+            </bean>
         </property>
     </bean>
 
@@ -448,12 +462,18 @@
             </set>
         </property>
         <property name="builder">
-            <bean class="com.amee.platform.resource.tag.v_3_0.TagsBuilder"/>
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.tag.TagsResource$Builder"/>
+            </bean>
         </property>
         <property name="acceptors">
             <map>
                 <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.platform.resource.tag.v_3_0.TagsFormAcceptor"/>
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.tag.TagsResource$FormAcceptor"/>
+                    </bean>
                 </entry>
             </map>
         </property>
@@ -472,10 +492,9 @@
         <property name="remover">
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
-                          value="com.amee.platform.resource.tag.TagResource.TagRemover"/>
+                          value="com.amee.platform.resource.tag.TagResource$Remover"/>
             </bean>
         </property>
     </bean>
-
 
 </beans>
