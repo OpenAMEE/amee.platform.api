@@ -10,7 +10,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void createReturnValueDefinition() {
-
+    setAdminUser();
     // Create a new RVD.
     def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -36,7 +36,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void removeReturnValueDefinitionJson() {
-
+    setAdminUser();
     // Create a new RVD.
     def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -47,11 +47,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertTrue responsePost.headers['Location'] != null;
     assertTrue responsePost.headers['Location'].value != null;
     def location = responsePost.headers['Location'].value;
-
     // Then delete it
     def responseDelete = client.delete(path: location);
     assertEquals 200, responseDelete.status;
-
     // We should get a 404 here
     try {
       client.get(path: location);
@@ -130,6 +128,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void updateReturnValueDefinitionJson() {
+    setAdminUser();
     // 1) Do the update.
     def responsePut = client.put(
             path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
@@ -154,6 +153,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void updateInvalidReturnValueDefinition() {
+    setAdminUser();
     updateReturnValueDefinitionFieldJson('type', 'empty', '');
     updateReturnValueDefinitionFieldJson('type', 'long', String.randomString(256));
     updateReturnValueDefinitionFieldJson('unit', 'typeMismatch', 'not_a_unit');
