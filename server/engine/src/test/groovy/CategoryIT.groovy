@@ -172,7 +172,6 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     assertEquals 'false', response.data.Categories.@truncated.text()
-
     def allCategories = response.data.Categories.Category
     assertEquals categoryUids.size(), allCategories.size()
     assert categoryUids.sort() == allCategories.@uid*.text().sort()
@@ -200,7 +199,6 @@ class CategoryIT extends BaseApiTest {
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
-
     def allCategories = response.data.Categories.Category
     assertEquals 14, allCategories.size()
   }
@@ -250,7 +248,6 @@ class CategoryIT extends BaseApiTest {
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
-
     def allCategories = response.data.Categories.Category
     assertEquals 7, allCategories.size()
   }

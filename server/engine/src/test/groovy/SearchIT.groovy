@@ -10,24 +10,24 @@ class SearchIT extends BaseApiTest {
   void searchJson() {
     client.contentType = JSON
     def response = client.get(path: '/3.1/search',
-            query: ['q': 'chemicals', 'excTags': 'ecoinvent'])
+            query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals 11, response.data.results.size()
+    assertEquals 1, response.data.results.size()
   }
 
   @Test
   void searchXml() {
     client.contentType = XML
     def response = client.get(path: '/3.1/search',
-            query: ['q': 'chemicals'])
+            query: ['q': 'water', 'types': 'DC'])
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     def allResults = response.data.Results.children()
-    assertEquals 15, allResults.size()
+    assertEquals 2, allResults.size()
   }
 
   /**
