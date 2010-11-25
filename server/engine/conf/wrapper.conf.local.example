@@ -63,6 +63,7 @@ set.CLEAR_INDEX=false
 set.CHECK_DATA_CATEGORIES=false
 set.INDEX_DATA_CATEGORIES=false
 set.INDEX_DATA_ITEMS=false
+set.INDEX_DATA_CATEGORY_PATH_PREFIX=/
 
 # The master server where all updates to the Lucene index happen. There can be only one.
 set.MASTER_INDEX=true
