@@ -19,6 +19,7 @@ import java.util.List;
  * such as plus, subtract and multiply along with the crucial integrate method.
  */
 public class DataSeries {
+
     private final Log log = LogFactory.getLog("science");
     private List<DataPoint> dataPoints = new ArrayList<DataPoint>();
 
@@ -330,7 +331,10 @@ public class DataSeries {
 
         double integral = 0.0;
         Amount seriesTimeInMillis = getSeriesTimeInMillis();
-        System.out.println("Integrating, time range:" + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length, " + dataPoints.size());
+
+        if (log.isDebugEnabled()) {
+            log.debug("integrate() Integrating, time range:" + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length, " + dataPoints.size());
+        }
 
         if (seriesTimeInMillis == null) {
             integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
@@ -355,9 +359,11 @@ public class DataSeries {
 
                 // Add weighted average value.
                 double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.getValue();
-                System.out.println(
-                        "Diagnostics from integrate()" + weightedAverage + "," + current.getValue() + "," + i + "," + dataPoints.size() +
-                                "," + segmentInMillis / (seriesTimeInMillis.getValue()));
+                if (log.isDebugEnabled()) {
+                    log.debug("integrate() " +
+                            "Diagnostics from integrate()" + weightedAverage + "," + current.getValue() + "," + i + "," + dataPoints.size() +
+                            "," + segmentInMillis / (seriesTimeInMillis.getValue()));
+                }
                 if (start.isAfter(end)) continue;
                 integral = integral + weightedAverage;
             }
