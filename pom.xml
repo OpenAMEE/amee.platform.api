@@ -1,20 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
     <name>amee-platform-resource</name>
     <groupId>com.amee.platform</groupId>
     <artifactId>amee-platform-resource</artifactId>
-    <version>1.0.13-SNAPSHOT</version>
+    <version>1.0.15-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
     <properties>
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <amee-base.version>1.0.5-SNAPSHOT</amee-base.version>
-        <amee-platform-service.version>1.0.13-SNAPSHOT</amee-platform-service.version>
+        <amee-base.version>1.0.5</amee-base.version>
+        <amee-platform-service.version>1.0.14</amee-platform-service.version>
         <!-- External Versions. -->
         <junit.version>4.7</junit.version>
         <org-json.version>2.0</org-json.version>
