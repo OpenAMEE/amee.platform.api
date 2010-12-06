@@ -168,7 +168,7 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      * @return the created timestamp
      */
     public Date getCreated() {
-        return created;
+        return new Date(created.getTime());
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      * @param created timestamp to set
      */
     public void setCreated(Date created) {
-        this.created = created;
+        this.created = new Date(created.getTime());
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      * @return modified timestamp to set
      */
     public Date getModified() {
-        return modified;
+        return new Date(modified.getTime());
     }
 
     /**
@@ -195,6 +195,6 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      * @param modified timestamp to set
      */
     public void setModified(Date modified) {
-        this.modified = modified;
+        this.modified = new Date(modified.getTime());
     }
 }
