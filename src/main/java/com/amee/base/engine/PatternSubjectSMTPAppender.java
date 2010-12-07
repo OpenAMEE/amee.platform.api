@@ -1,10 +1,12 @@
 package com.amee.base.engine;
 
 import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.net.SMTPAppender;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -19,6 +21,10 @@ import java.util.Date;
  * This is based on code from here: http://lajosd.blogspot.com/2009/09/log4j-smtpappender-exception-info-in.html
  */
 public class PatternSubjectSMTPAppender extends SMTPAppender {
+
+    public PatternSubjectSMTPAppender() {
+        super(new EmailEvaluator());
+    }
 
     @Override
     protected void sendBuffer() {
@@ -73,4 +79,11 @@ public class PatternSubjectSMTPAppender extends SMTPAppender {
             LogLog.error("sendBuffer() Caught UnsupportedEncodingException: " + e.getMessage(), e);
         }
     }
+
+    public static class EmailEvaluator implements TriggeringEventEvaluator {
+        public boolean isTriggeringEvent(LoggingEvent event) {
+            return event.getLevel().isGreaterOrEqual(Level.ERROR) && System.getProperty("amee.maillog").equals("true");
+      }
+    }
 }
+
