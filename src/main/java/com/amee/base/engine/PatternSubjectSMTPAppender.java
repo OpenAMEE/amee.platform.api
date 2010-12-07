@@ -82,7 +82,7 @@ public class PatternSubjectSMTPAppender extends SMTPAppender {
 
     public static class EmailEvaluator implements TriggeringEventEvaluator {
         public boolean isTriggeringEvent(LoggingEvent event) {
-            return event.getLevel().isGreaterOrEqual(Level.ERROR) && System.getProperty("amee.maillog").equals("true");
+            return event.getLevel().isGreaterOrEqual(Level.ERROR) && "true".equals(System.getProperty("amee.maillog"));
       }
     }
 }
