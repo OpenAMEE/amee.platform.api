@@ -1,11 +1,11 @@
 package com.amee.platform.resource.returnvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ReturnValueDefinitionJSONRenderer_3_1_0 implements ReturnValueDefin
 
     @Override
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     @Override
@@ -36,54 +36,46 @@ public class ReturnValueDefinitionJSONRenderer_3_1_0 implements ReturnValueDefin
         this.returnValueDefinition = returnValueDefinition;
         returnValueDefinitionObj = new JSONObject();
         if (rootObj != null) {
-            put(rootObj, "returnValueDefinition", returnValueDefinitionObj);
+            ResponseHelper.put(rootObj, "returnValueDefinition", returnValueDefinitionObj);
         }
     }
 
     @Override
     public void addBasic() {
-        put(returnValueDefinitionObj, "uid", returnValueDefinition.getUid());
+        ResponseHelper.put(returnValueDefinitionObj, "uid", returnValueDefinition.getUid());
     }
 
     @Override
     public void addType() {
-        put(returnValueDefinitionObj, "type", returnValueDefinition.getType());
+        ResponseHelper.put(returnValueDefinitionObj, "type", returnValueDefinition.getType());
     }
 
     @Override
     public void addItemDefinition(ItemDefinition itemDefinition) {
         JSONObject itemDefinitionObj = new JSONObject();
-        put(itemDefinitionObj, "uid", itemDefinition.getUid());
-        put(itemDefinitionObj, "name", itemDefinition.getName());
-        put(returnValueDefinitionObj, "itemDefinition", itemDefinitionObj);
+        ResponseHelper.put(itemDefinitionObj, "uid", itemDefinition.getUid());
+        ResponseHelper.put(itemDefinitionObj, "name", itemDefinition.getName());
+        ResponseHelper.put(returnValueDefinitionObj, "itemDefinition", itemDefinitionObj);
     }
 
     @Override
     public void addValueDefinition(ValueDefinition valueDefinition) {
         JSONObject itemDefinitionObj = new JSONObject();
-        put(itemDefinitionObj, "uid", valueDefinition.getUid());
-        put(itemDefinitionObj, "name", valueDefinition.getName());
-        put(itemDefinitionObj, "valueType", valueDefinition.getValueType().getName());
-        put(returnValueDefinitionObj, "valueDefinition", itemDefinitionObj);
+        ResponseHelper.put(itemDefinitionObj, "uid", valueDefinition.getUid());
+        ResponseHelper.put(itemDefinitionObj, "name", valueDefinition.getName());
+        ResponseHelper.put(itemDefinitionObj, "valueType", valueDefinition.getValueType().getName());
+        ResponseHelper.put(returnValueDefinitionObj, "valueDefinition", itemDefinitionObj);
     }
 
     @Override
     public void addUnits() {
-        put(returnValueDefinitionObj, "unit", returnValueDefinition.getUnit().toString());
-        put(returnValueDefinitionObj, "perUnit", returnValueDefinition.getPerUnit().toString());
+        ResponseHelper.put(returnValueDefinitionObj, "unit", returnValueDefinition.getUnit().toString());
+        ResponseHelper.put(returnValueDefinitionObj, "perUnit", returnValueDefinition.getPerUnit().toString());
     }
 
     @Override
     public void addFlags() {
-        put(returnValueDefinitionObj, "default", Boolean.toString(returnValueDefinition.isDefaultType()));
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-        }
+        ResponseHelper.put(returnValueDefinitionObj, "default", Boolean.toString(returnValueDefinition.isDefaultType()));
     }
 
     public String getMediaType() {

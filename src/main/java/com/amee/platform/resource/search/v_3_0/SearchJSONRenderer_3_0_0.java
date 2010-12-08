@@ -1,6 +1,7 @@
 package com.amee.platform.resource.search.v_3_0;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.search.SearchResource;
@@ -21,11 +22,11 @@ public class SearchJSONRenderer_3_0_0 implements SearchResource.Renderer {
     public void start() {
         rootObj = new JSONObject();
         resultsArr = new JSONArray();
-        put(rootObj, "results", resultsArr);
+        ResponseHelper.put(rootObj, "results", resultsArr);
     }
 
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     @Override
@@ -47,15 +48,7 @@ public class SearchJSONRenderer_3_0_0 implements SearchResource.Renderer {
     }
 
     public void setTruncated(boolean truncated) {
-        put(rootObj, "resultsTruncated", truncated);
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-        }
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
     }
 
     public String getMediaType() {

@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
 import org.json.JSONArray;
@@ -20,24 +21,16 @@ public class ItemValueDefinitionsJSONRenderer_3_1_0 implements ItemValueDefiniti
     public void start() {
         rootObj = new JSONObject();
         itemValueDefinitionsArr = new JSONArray();
-        put(rootObj, "itemValueDefinitions", itemValueDefinitionsArr);
+        ResponseHelper.put(rootObj, "itemValueDefinitions", itemValueDefinitionsArr);
     }
 
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     public void newItemValueDefinition(ItemValueDefinitionResource.Renderer renderer) {
         try {
             itemValueDefinitionsArr.put(((JSONObject) renderer.getObject()).getJSONObject("itemValueDefinition"));
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-        }
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }

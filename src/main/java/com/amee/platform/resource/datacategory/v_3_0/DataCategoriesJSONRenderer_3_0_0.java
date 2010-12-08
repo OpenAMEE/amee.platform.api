@@ -1,6 +1,7 @@
 package com.amee.platform.resource.datacategory.v_3_0;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.platform.resource.datacategory.DataCategoriesResource;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import org.json.JSONArray;
@@ -20,11 +21,11 @@ public class DataCategoriesJSONRenderer_3_0_0 implements DataCategoriesResource.
     public void start() {
         rootObj = new JSONObject();
         categoriesArr = new JSONArray();
-        put(rootObj, "categories", categoriesArr);
+        ResponseHelper.put(rootObj, "categories", categoriesArr);
     }
 
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     public void newDataCategory(DataCategoryResource.Renderer renderer) {
@@ -36,15 +37,7 @@ public class DataCategoriesJSONRenderer_3_0_0 implements DataCategoriesResource.
     }
 
     public void setTruncated(boolean truncated) {
-        put(rootObj, "resultsTruncated", truncated);
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-        }
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
     }
 
     public String getMediaType() {

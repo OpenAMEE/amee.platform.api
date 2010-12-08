@@ -1,6 +1,7 @@
 package com.amee.platform.resource.dataitem.v_3_0;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemsResource;
 import org.json.JSONArray;
@@ -20,11 +21,11 @@ public class DataItemsJSONRenderer_3_0_0 implements DataItemsResource.Renderer {
     public void start() {
         rootObj = new JSONObject();
         itemsArr = new JSONArray();
-        put(rootObj, "items", itemsArr);
+        ResponseHelper.put(rootObj, "items", itemsArr);
     }
 
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     public void newDataItem(DataItemResource.Renderer renderer) {
@@ -36,15 +37,7 @@ public class DataItemsJSONRenderer_3_0_0 implements DataItemsResource.Renderer {
     }
 
     public void setTruncated(boolean truncated) {
-        put(rootObj, "resultsTruncated", truncated);
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
-        }
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
     }
 
     public String getMediaType() {

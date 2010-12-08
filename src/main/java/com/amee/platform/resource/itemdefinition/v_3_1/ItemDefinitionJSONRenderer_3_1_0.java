@@ -1,11 +1,11 @@
 package com.amee.platform.resource.itemdefinition.v_3_1;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueUsage;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ItemDefinitionJSONRenderer_3_1_0 implements ItemDefinitionResource.
 
     @Override
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
     @Override
@@ -36,50 +36,42 @@ public class ItemDefinitionJSONRenderer_3_1_0 implements ItemDefinitionResource.
         this.itemDefinition = itemDefinition;
         itemDefinitionObj = new JSONObject();
         if (rootObj != null) {
-            put(rootObj, "itemDefinition", itemDefinitionObj);
+            ResponseHelper.put(rootObj, "itemDefinition", itemDefinitionObj);
         }
     }
 
     @Override
     public void addBasic() {
-        put(itemDefinitionObj, "uid", itemDefinition.getUid());
+        ResponseHelper.put(itemDefinitionObj, "uid", itemDefinition.getUid());
     }
 
     @Override
     public void addAudit() {
-        put(itemDefinitionObj, "status", itemDefinition.getStatus().getName());
-        put(itemDefinitionObj, "created", DATE_FORMAT.print(itemDefinition.getCreated().getTime()));
-        put(itemDefinitionObj, "modified", DATE_FORMAT.print(itemDefinition.getModified().getTime()));
+        ResponseHelper.put(itemDefinitionObj, "status", itemDefinition.getStatus().getName());
+        ResponseHelper.put(itemDefinitionObj, "created", DATE_FORMAT.print(itemDefinition.getCreated().getTime()));
+        ResponseHelper.put(itemDefinitionObj, "modified", DATE_FORMAT.print(itemDefinition.getModified().getTime()));
     }
 
     @Override
     public void addName() {
-        put(itemDefinitionObj, "name", itemDefinition.getName());
+        ResponseHelper.put(itemDefinitionObj, "name", itemDefinition.getName());
     }
 
     @Override
     public void addDrillDown() {
-        put(itemDefinitionObj, "drillDown", itemDefinition.getDrillDown());
+        ResponseHelper.put(itemDefinitionObj, "drillDown", itemDefinition.getDrillDown());
     }
 
     @Override
     public void addUsages() {
         Set<ItemValueUsage> allItemValueUsages = itemDefinition.getAllItemValueUsages();
         JSONArray itemValueUsagesArr = new JSONArray();
-        put(itemDefinitionObj, "usages", itemValueUsagesArr);
+        ResponseHelper.put(itemDefinitionObj, "usages", itemValueUsagesArr);
         for (ItemValueUsage itemValueUsage : itemDefinition.getItemValueUsages()) {
             JSONObject itemValueUsageObj = new JSONObject();
-            put(itemValueUsageObj, "name", itemValueUsage.getName());
-            put(itemValueUsageObj, "present", Boolean.toString(allItemValueUsages.contains(itemValueUsage)));
+            ResponseHelper.put(itemValueUsageObj, "name", itemValueUsage.getName());
+            ResponseHelper.put(itemValueUsageObj, "present", Boolean.toString(allItemValueUsages.contains(itemValueUsage)));
             itemValueUsagesArr.put(itemValueUsageObj);
-        }
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
     }
 
