@@ -36,6 +36,14 @@ public abstract class ResponseHelper {
         }
     }
 
+    public static JSONObject put(JSONObject o, String key, Object value) {
+        try {
+            return o.put(key, value);
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+    }
+
     public static Document getStatusDocument(String status) {
         return getStatusDocument(status, null);
     }
