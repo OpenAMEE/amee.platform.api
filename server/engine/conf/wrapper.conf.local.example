@@ -69,6 +69,7 @@ set.INDEX_DATA_CATEGORY_PATH_PREFIX=/
 
 # The master server where all updates to the Lucene index happen. There can be only one.
 set.MASTER_INDEX=true
+set.SNAPSHOT_ENABLED=true
 
 # The license.
 wrapper.license.type=NODE
