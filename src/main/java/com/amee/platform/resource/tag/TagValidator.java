@@ -26,10 +26,12 @@ public class TagValidator implements Validator {
         tagSpec.setFormat(TAG_PATTERN_STRING);
     }
 
+    @Override
     public boolean supports(Class clazz) {
         return Tag.class.isAssignableFrom(clazz);
     }
 
+    @Override
     public void validate(Object o, Errors e) {
         tagSpec.validate(o, e);
     }

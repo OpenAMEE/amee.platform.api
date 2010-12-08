@@ -1,10 +1,10 @@
 package com.amee.platform.resource.tag.v_3_0;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.tag.Tag;
-import com.amee.platform.resource.tag.TagsResource;
+import com.amee.platform.resource.tag.v_3_2.TagsJSONRenderer_3_2_0;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -12,41 +12,18 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 @Since("3.0.0")
-public class TagsJSONRenderer_3_0_0 implements TagsResource.Renderer {
+public class TagsJSONRenderer_3_0_0 extends TagsJSONRenderer_3_2_0 {
 
     private JSONObject rootObj;
     private JSONArray tagsArr;
 
-    public void start() {
-        rootObj = new JSONObject();
-        tagsArr = new JSONArray();
-        put(rootObj, "tags", tagsArr);
-    }
-
+    @Override
     public void newTag(Tag tag) {
         JSONObject tagObj = new JSONObject();
-        put(tagObj, "tag", tag.getTag());
-        put(tagObj, "count", tag.getCount());
-        tagsArr.put(tagObj);
-    }
-
-    public void ok() {
-        put(rootObj, "status", "OK");
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        ResponseHelper.put(tagObj, "tag", tag.getTag());
+        if (tag.hasCount()) {
+            ResponseHelper.put(tagObj, "count", tag.getCount());
         }
-    }
-
-    public String getMediaType() {
-        return "application/json";
-    }
-
-    public JSONObject getObject() {
-        return rootObj;
+        tagsArr.put(tagObj);
     }
 }

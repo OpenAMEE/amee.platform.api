@@ -26,6 +26,7 @@ public class TagBuilder_3_2_0 implements TagResource.Builder {
 
     private TagResource.Renderer renderer;
 
+    @Override
     @Transactional(readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Tag identifier.
@@ -47,7 +48,8 @@ public class TagBuilder_3_2_0 implements TagResource.Builder {
         }
     }
 
-    protected void handle(RequestWrapper requestWrapper, Tag tag) {
+    @Override
+    public void handle(RequestWrapper requestWrapper, Tag tag) {
 
         TagResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -57,6 +59,7 @@ public class TagBuilder_3_2_0 implements TagResource.Builder {
         renderer.addBasic();
     }
 
+    @Override
     public TagResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (renderer == null) {
             renderer = (TagResource.Renderer) resourceBeanFinder.getRenderer(TagResource.Renderer.class, requestWrapper);

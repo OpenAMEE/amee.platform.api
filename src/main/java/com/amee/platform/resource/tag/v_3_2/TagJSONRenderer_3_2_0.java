@@ -1,9 +1,9 @@
 package com.amee.platform.resource.tag.v_3_2;
 
 import com.amee.base.domain.Since;
+import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagResource;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -17,39 +17,40 @@ public class TagJSONRenderer_3_2_0 implements TagResource.Renderer {
     private JSONObject rootObj;
     private JSONObject tagObj;
 
+    @Override
     public void start() {
         rootObj = new JSONObject();
     }
 
+    @Override
     public void ok() {
-        put(rootObj, "status", "OK");
+        ResponseHelper.put(rootObj, "status", "OK");
     }
 
+    @Override
     public void newTag(Tag tag) {
         this.tag = tag;
         tagObj = new JSONObject();
         if (rootObj != null) {
-            put(rootObj, "tag", tagObj);
+            ResponseHelper.put(rootObj, "tag", tagObj);
         }
     }
 
+    @Override
     public void addBasic() {
-        put(tagObj, "uid", tag.getUid());
-        put(tagObj, "name", tag.getTag());
-    }
-
-    protected JSONObject put(JSONObject o, String key, Object value) {
-        try {
-            return o.put(key, value);
-        } catch (JSONException e) {
-            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        ResponseHelper.put(tagObj, "uid", tag.getUid());
+        ResponseHelper.put(tagObj, "tag", tag.getTag());
+        if (tag.hasCount()) {
+            ResponseHelper.put(tagObj, "count", tag.getCount());
         }
     }
 
+    @Override
     public String getMediaType() {
         return "application/json";
     }
 
+    @Override
     public JSONObject getObject() {
         return rootObj;
     }
