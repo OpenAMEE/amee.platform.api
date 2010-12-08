@@ -1,24 +1,23 @@
 package com.amee.domain.tag;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEEntity;
+import com.amee.domain.IAMEEEntityReference;
+import com.amee.domain.IDataService;
 import com.amee.domain.ObjectType;
+import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "TAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Tag extends AMEEEntity {
+public class Tag extends AMEEEntity implements Pathable {
 
     public final static int TAG_MIN_SIZE = 2;
     public final static int TAG_MAX_SIZE = 255;
@@ -33,7 +32,7 @@ public class Tag extends AMEEEntity {
     private String tag = "";
 
     @Transient
-    private long count = 0;
+    private Long count = null;
 
     public Tag() {
         super();
@@ -44,8 +43,41 @@ public class Tag extends AMEEEntity {
         setTag(tag);
     }
 
+    @Override
+    public String getPath() {
+        return getUid();
+    }
+
+    @Override
+    public String getName() {
+        return getTag();
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public String getDisplayPath() {
+        return getPath();
+    }
+
+    @Override
+    public String getFullPath() {
+        return getPath();
+    }
+
     public ObjectType getObjectType() {
         return ObjectType.TA;
+    }
+
+    @Override
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(getDataService().getRootDataCategory());
+        entities.add(this);
+        return entities;
     }
 
     public String getTag() {
@@ -59,11 +91,19 @@ public class Tag extends AMEEEntity {
         this.tag = tag;
     }
 
-    public long getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public boolean hasCount() {
+        return count != null;
+    }
+
+    public void setCount(Long count) {
         this.count = count;
+    }
+
+    public IDataService getDataService() {
+        return (IDataService) ThreadBeanHolder.get("dataService");
     }
 }
