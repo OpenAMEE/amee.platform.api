@@ -503,8 +503,15 @@
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
+                <value>activeUserUid</value>
                 <value>tagIdentifier</value>
             </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.tag.TagResource$Builder"/>
+            </bean>
         </property>
         <property name="remover">
             <bean class="com.amee.base.resource.LocalResourceRemover">
