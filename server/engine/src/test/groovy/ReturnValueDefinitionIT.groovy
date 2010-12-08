@@ -53,7 +53,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     // We should get a 404 here
     try {
       client.get(path: location);
-      fail 'Should have thrown exception';
+      fail 'Should have thrown an exception';
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
     }
