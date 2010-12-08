@@ -1,8 +1,7 @@
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.XML
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.*
 
 class TagIT extends BaseApiTest {
 
@@ -58,5 +57,68 @@ class TagIT extends BaseApiTest {
     assertEquals tagUids.size(), allTags.size()
     assertEquals tagUids.sort(), allTags.@uid*.text().sort();
     assertEquals tagNames.sort(), allTags.Tag*.text().sort();
+  }
+
+  @Test
+  void getTagByTagJson() {
+    getTagByPathJson('ecoinvent');
+  }
+
+  @Test
+  void getTagByUidJson() {
+    getTagByPathJson('EA3E8C70DBFE');
+  }
+
+  void getTagByPathJson(path) {
+    client.contentType = JSON
+    def response = client.get(path: '/3.2/tags/' + path);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    assertEquals 'EA3E8C70DBFE', response.data.tag.uid;
+    assertEquals 'ecoinvent', response.data.tag.tag;
+  }
+
+  @Test
+  void getTagByTagXml() {
+    getTagByPathXml('ecoinvent');
+  }
+
+  @Test
+  void getTagByUidXml() {
+    getTagByPathXml('EA3E8C70DBFE');
+  }
+
+  void getTagByPathXml(path) {
+    client.contentType = XML
+    def response = client.get(path: '/3.2/tags/' + path);
+    assertEquals 200, response.status;
+    assertEquals 'application/xml', response.contentType;
+    assertEquals 'OK', response.data.Status.text();
+    assertEquals 'EA3E8C70DBFE', response.data.Tag.@uid.text();
+    assertEquals 'ecoinvent', response.data.Tag.Tag.text();
+  }
+
+  @Test
+  void removeTagJson() {
+    setAdminUser();
+    // Create a new tag.
+    def responsePost = client.post(
+            path: "/3.2/tags",
+            body: [tag: 'tag_to_be_deleted'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status;
+    // Then delete it
+    def responseDelete = client.delete(path: '/3.2/tags/tag_to_be_deleted');
+    assertEquals 200, responseDelete.status;
+    // We should get a 404 here
+    try {
+      client.get(path: '/3.2/tags/tag_to_be_deleted');
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
   }
 }
