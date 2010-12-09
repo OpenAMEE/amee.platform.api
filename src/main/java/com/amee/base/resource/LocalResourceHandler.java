@@ -81,7 +81,7 @@ public class LocalResourceHandler implements ResourceHandler {
             if ((e.getCause() != null) && ResourceException.class.isAssignableFrom(e.getCause().getClass())) {
                 throw (ResourceException) e.getCause();
             } else {
-                log.error("handleWithTimeout() Caught unexpected ExecutionException: " + e.getMessage());
+                log.error("handleWithTimeout() Caught unexpected ExecutionException: " + e.getMessage(), e);
                 throw new RuntimeException("Caught ExecutionException whilst handling: " + e.getMessage(), e);
             }
         } finally {

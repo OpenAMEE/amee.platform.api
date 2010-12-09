@@ -172,7 +172,7 @@ public class Engine implements WrapperListener, Serializable {
             onShutdown();
             log.debug("...Engine stopped.");
         } catch (Exception e) {
-            log.error("Caught Exception: " + e);
+            log.error("Caught Exception: " + e, e);
         }
         return exitCode;
     }

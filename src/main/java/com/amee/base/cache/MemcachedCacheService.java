@@ -18,7 +18,7 @@ public class MemcachedCacheService implements CacheService {
         try {
             client = new MemcachedClient(new InetSocketAddress("localhost", 11211));
         } catch (IOException e) {
-            log.error("CacheService() Caught IOException: " + e.getMessage());
+            log.error("CacheService() Caught IOException: " + e.getMessage(), e);
             throw new RuntimeException("CacheService() Caught IOException: " + e.getMessage());
         }
     }
