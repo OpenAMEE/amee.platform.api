@@ -244,7 +244,7 @@ public class User extends AMEEEntity implements Comparable {
         try {
             setPassword(InternalCrypto.getAsMD5AndBase64(password));
         } catch (CryptoException e) {
-            log.error("Caught CryptoException: " + e.getMessage());
+            log.error("Caught CryptoException: " + e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }
