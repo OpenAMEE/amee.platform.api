@@ -62,7 +62,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     @Test
     void getReturnValueDefinitionJson() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
@@ -78,12 +78,15 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid;
         assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name;
         assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
+        assertEquals '2010-08-17T14:13:41Z', response.data.returnValueDefinition.created;
+        assertEquals '2010-08-17T14:13:41Z', response.data.returnValueDefinition.modified;
+        assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
     }
 
     @Test
     void getReturnValueDefinitionXml() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
@@ -98,6 +101,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text();
         assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text();
         assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
+        assertEquals '2010-08-17T14:13:41Z', response.data.ReturnValueDefinition.@created.text();
+        assertEquals '2010-08-17T14:13:41Z', response.data.ReturnValueDefinition.@modified.text();
+        assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
     }
 
     @Test
