@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.2.0")
 public class ReturnValueDefinitionBuilder_3_2_0 implements ReturnValueDefinitionResource.Builder {
 
-    // TODO: Include ValueDefinition.
-
     @Autowired
     private DefinitionService definitionService;
 
