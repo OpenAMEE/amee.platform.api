@@ -17,14 +17,9 @@ import java.util.List;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
-    // TODO: Never allow nulls for the values. Encapsulate as with other entities. Provide default values. Protect for NPEs.
-    // TODO: Are the unit size constants required?
-
     public static final int TYPE_MIN_SIZE = 1;
     public static final int TYPE_MAX_SIZE = 255;
-    public static final int UNIT_MIN_SIZE = 1;
     public static final int UNIT_MAX_SIZE = 255;
-    public static final int PER_UNIT_MIN_SIZE = 1;
     public static final int PER_UNIT_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -36,16 +31,16 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
     private ValueDefinition valueDefinition;
 
     @Column(name = "TYPE")
-    private String type;
+    private String type = "";
 
     @Column(name = "UNIT")
-    private String unit;
+    private String unit = "";
 
     @Column(name = "PER_UNIT")
-    private String perUnit;
+    private String perUnit = "";
 
     @Column(name = "DEFAULT_TYPE")
-    private boolean defaultType;
+    private boolean defaultType = false;
 
     public ReturnValueDefinition() {
         super();
