@@ -30,13 +30,13 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
     @JoinColumn(name = "VALUE_DEFINITION_ID")
     private ValueDefinition valueDefinition;
 
-    @Column(name = "TYPE")
+    @Column(name = "TYPE", length = TYPE_MAX_SIZE, nullable = false)
     private String type = "";
 
-    @Column(name = "UNIT")
+    @Column(name = "UNIT", length = UNIT_MAX_SIZE, nullable = false)
     private String unit = "";
 
-    @Column(name = "PER_UNIT")
+    @Column(name = "PER_UNIT", length = PER_UNIT_MAX_SIZE, nullable = false)
     private String perUnit = "";
 
     @Column(name = "DEFAULT_TYPE")
