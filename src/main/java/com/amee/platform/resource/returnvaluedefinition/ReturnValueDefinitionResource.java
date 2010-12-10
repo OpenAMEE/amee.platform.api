@@ -37,6 +37,8 @@ public interface ReturnValueDefinitionResource {
 
         public void addFlags();
 
+        public void addAudit();
+
         public Object getObject();
     }
 

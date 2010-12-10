@@ -1,4 +1,4 @@
-package com.amee.platform.resource.returnvaluedefinition.v_3_1;
+package com.amee.platform.resource.returnvaluedefinition.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ReturnValueDefinitionJSONRenderer_3_1_0 implements ReturnValueDefinitionResource.Renderer {
+@Since("3.2.0")
+public class ReturnValueDefinitionJSONRenderer_3_2_0 implements ReturnValueDefinitionResource.Renderer {
 
     private ReturnValueDefinition returnValueDefinition;
     private JSONObject rootObj;
@@ -78,7 +78,9 @@ public class ReturnValueDefinitionJSONRenderer_3_1_0 implements ReturnValueDefin
 
     @Override
     public void addAudit() {
-        // Not implemented in this version.
+        ResponseHelper.put(returnValueDefinitionObj, "status", returnValueDefinition.getStatus().getName());
+        ResponseHelper.put(returnValueDefinitionObj, "created", DATE_FORMAT.print(returnValueDefinition.getCreated().getTime()));
+        ResponseHelper.put(returnValueDefinitionObj, "modified", DATE_FORMAT.print(returnValueDefinition.getModified().getTime()));
     }
 
     public String getMediaType() {
