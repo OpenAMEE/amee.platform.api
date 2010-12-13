@@ -51,7 +51,9 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
             if (existingTag == null) {
                 // Save new Tag.
                 log.debug("handle() Use new Tag.");
-                // TODO: ensureAuthorizedForCreate?
+                // Authorized?
+                resourceAuthorizationService.ensureAuthorizedForAccept(
+                        requestWrapper.getAttributes().get("activeUserUid"));
                 // Don't allow more than 1000 tags.
                 // NOTE: See https://jira.amee.com/browse/PL-1761
                 // Note: See https://jira.amee.com/browse/PL-1947
