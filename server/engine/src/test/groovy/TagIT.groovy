@@ -184,8 +184,8 @@ class TagIT extends BaseApiTest {
 
   @Test
   void getTagsForCategoryJson() {
-    def uids = ['932FD23CD3A2', 'D75DB884855F', '3A38136735C6', '000FD23CD3A2', '000FD23CD3A2'];
-    def names = ['actonco', 'electrical', 'domestic', 'inc_tag_1', 'inc_tag_1'];
+    def uids = ['932FD23CD3A2', 'D75DB884855F', '3A38136735C6', '000FD23CD3A2'];
+    def names = ['actonco2', 'electrical', 'domestic', 'inc_tag_1'];
     client.contentType = JSON
     def response = client.get(path: '/3.2/categories/Appliances/tags')
     assertEquals 200, response.status
