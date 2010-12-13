@@ -61,6 +61,7 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
             // Deal with an entity if present.
             IAMEEEntityReference entity = tagResourceService.getEntity(requestWrapper);
             if (entity != null) {
+                // TODO: Intention is to support entities other than DataCategory at some point.
                 if (DataCategory.class.isAssignableFrom(entity.getClass())) {
                     DataCategory dataCategory = (DataCategory) entity;
                     // Authorized?

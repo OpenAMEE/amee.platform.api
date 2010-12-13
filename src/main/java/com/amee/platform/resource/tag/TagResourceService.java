@@ -1,5 +1,6 @@
 package com.amee.platform.resource.tag;
 
+import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.domain.IAMEEEntityReference;
@@ -36,6 +37,8 @@ public class TagResourceService {
                 } else {
                     throw new NotFoundException();
                 }
+            } else {
+                throw new MissingAttributeException("No value for the categoryIdentifier attribute.");
             }
         }
         return null;

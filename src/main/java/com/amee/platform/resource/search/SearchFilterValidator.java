@@ -19,10 +19,12 @@ public class SearchFilterValidator implements Validator {
         qSpec.setName("q");
     }
 
+    @Override
     public boolean supports(Class clazz) {
         return SearchFilter.class.isAssignableFrom(clazz);
     }
 
+    @Override
     public void validate(Object o, Errors e) {
         qSpec.validate(o, e);
     }

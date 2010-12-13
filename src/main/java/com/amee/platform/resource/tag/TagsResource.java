@@ -1,22 +1,22 @@
 package com.amee.platform.resource.tag;
 
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceAcceptor;
-import com.amee.base.resource.ResourceBuilder;
-import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.*;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.tag.Tag;
+import com.amee.service.tag.TagsFilter;
+
+import java.util.Map;
 
 public interface TagsResource {
 
-    interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity);
 
         public TagsResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public void newTag(TagResource.Renderer renderer);
 
@@ -26,6 +26,17 @@ public interface TagsResource {
         public Object getObject();
     }
 
-    interface FormAcceptor extends ResourceAcceptor {
+    public static interface FormAcceptor extends ResourceAcceptor {
+    }
+
+    public static interface TagsFilterValidationHelper {
+
+        public TagsFilter getTagsFilter();
+
+        public void setTagsFilter(TagsFilter tagsFilter);
+
+        public boolean isValid(Map<String, String> queryParameters);
+
+        public ValidationResult getValidationResult();
     }
 }

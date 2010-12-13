@@ -3,12 +3,14 @@ package com.amee.platform.resource.tag.v_3_2;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagResource;
 import com.amee.platform.resource.tag.TagResourceService;
 import com.amee.platform.resource.tag.TagsResource;
 import com.amee.service.tag.TagService;
+import com.amee.service.tag.TagsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -41,12 +43,19 @@ public class TagsBuilder_3_2_0 implements TagsResource.Builder {
 
     @Override
     public void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity) {
-        TagsResource.Renderer renderer = getRenderer(requestWrapper);
-        renderer.start();
-        TagResource.Builder builder = getTagBuilder(requestWrapper);
-        for (Tag tag : tagService.getTags(entity)) {
-            builder.handle(requestWrapper, tag);
-            renderer.newTag(builder.getRenderer(requestWrapper));
+        TagsFilter filter = new TagsFilter();
+        TagsResource.TagsFilterValidationHelper validationHelper = getValidationHelper(requestWrapper);
+        validationHelper.setTagsFilter(filter);
+        if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+            TagsResource.Renderer renderer = getRenderer(requestWrapper);
+            renderer.start();
+            TagResource.Builder builder = getTagBuilder(requestWrapper);
+            for (Tag tag : tagService.getTags(entity, filter.getIncTags(), filter.getExcTags())) {
+                builder.handle(requestWrapper, tag);
+                renderer.newTag(builder.getRenderer(requestWrapper));
+            }
+        } else {
+            throw new ValidationException(validationHelper.getValidationResult());
         }
     }
 
@@ -61,5 +70,10 @@ public class TagsBuilder_3_2_0 implements TagsResource.Builder {
     private TagResource.Builder getTagBuilder(RequestWrapper requestWrapper) {
         return (TagResource.Builder)
                 resourceBeanFinder.getBuilder(TagResource.Builder.class, requestWrapper);
+    }
+
+    private TagsResource.TagsFilterValidationHelper getValidationHelper(RequestWrapper requestWrapper) {
+        return (TagsResource.TagsFilterValidationHelper)
+                resourceBeanFinder.getValidationHelper(TagsResource.TagsFilterValidationHelper.class, requestWrapper);
     }
 }
