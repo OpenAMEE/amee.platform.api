@@ -37,7 +37,7 @@ class TagIT extends BaseApiTest {
           'inc_tag_1',
           'inc_tag_2'];
 
-  def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 4, 6, 4, 2];
+  def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 6, 4, 2];
 
   def incTagUids = [
           '932FD23CD3A2',
@@ -57,7 +57,7 @@ class TagIT extends BaseApiTest {
           'inc_tag_1',
           'inc_tag_2']
 
-  def incTagCounts = [1, 1, 1, 3, 1, 4, 2]
+  def incTagCounts = [1, 1, 1, 3, 1, 3, 2]
 
   def excTagUids = [
           'D75DB884855F',
