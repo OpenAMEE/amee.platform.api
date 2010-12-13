@@ -183,6 +183,21 @@ class TagIT extends BaseApiTest {
   }
 
   @Test
+  void getTagsForCategoryJson() {
+    def uids = ['932FD23CD3A2', 'D75DB884855F', '3A38136735C6', '000FD23CD3A2', '000FD23CD3A2'];
+    def names = ['actonco', 'electrical', 'domestic', 'inc_tag_1', 'inc_tag_1'];
+    client.contentType = JSON
+    def response = client.get(path: '/3.2/categories/Appliances/tags')
+    assertEquals 200, response.status
+    assertEquals 'application/json', response.contentType
+    assertTrue response.data instanceof net.sf.json.JSON
+    assertEquals 'OK', response.data.status
+    assertEquals uids.size(), response.data.tags.size()
+    assertEquals uids.sort(), response.data.tags.collect {it.uid}.sort();
+    assertEquals names.sort(), response.data.tags.collect {it.tag}.sort();
+  }
+
+  @Test
   void createAndRemoveTagJson() {
     setAdminUser();
     client.contentType = JSON;
