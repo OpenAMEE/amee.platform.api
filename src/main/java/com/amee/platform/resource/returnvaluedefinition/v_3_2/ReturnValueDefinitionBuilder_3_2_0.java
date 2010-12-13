@@ -1,4 +1,4 @@
-package com.amee.platform.resource.returnvaluedefinition.v_3_1;
+package com.amee.platform.resource.returnvaluedefinition.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MissingAttributeException;
@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinitionResource.Builder {
+@Since("3.2.0")
+public class ReturnValueDefinitionBuilder_3_2_0 implements ReturnValueDefinitionResource.Builder {
 
     @Autowired
     private DefinitionService definitionService;
@@ -79,6 +79,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         boolean type = requestWrapper.getMatrixParameters().containsKey("type");
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
         boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
+        boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
 
         // New ReturnValueDefinition & basic.
         renderer.newReturnValueDefinition(returnValueDefinition);
@@ -99,6 +100,9 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         }
         if (flags || full) {
             renderer.addFlags();
+        }
+        if (audit || full) {
+            renderer.addAudit();
         }
     }
 

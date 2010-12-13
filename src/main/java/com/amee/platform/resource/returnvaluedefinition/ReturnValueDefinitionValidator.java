@@ -39,6 +39,7 @@ public class ReturnValueDefinitionValidator extends BaseValidator {
         add(new ValidationSpecification()
                 .setName("unit")
                 .setAllowEmpty(true)
+                .setMaxSize(ReturnValueDefinition.UNIT_MAX_SIZE)
         );
     }
 
@@ -46,6 +47,7 @@ public class ReturnValueDefinitionValidator extends BaseValidator {
         add(new ValidationSpecification()
                 .setName("perUnit")
                 .setAllowEmpty(true)
+                .setMaxSize(ReturnValueDefinition.PER_UNIT_MAX_SIZE)
         );
     }
 }

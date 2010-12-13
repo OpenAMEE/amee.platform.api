@@ -1,4 +1,4 @@
-package com.amee.platform.resource.returnvaluedefinition.v_3_1;
+package com.amee.platform.resource.returnvaluedefinition.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ReturnValueDefinitionDOMRenderer_3_1_0 implements ReturnValueDefinitionResource.Renderer {
+@Since("3.2.0")
+public class ReturnValueDefinitionDOMRenderer_3_2_0 implements ReturnValueDefinitionResource.Renderer {
 
     private ReturnValueDefinition returnValueDefinition;
     private Element rootElem;
@@ -78,7 +78,9 @@ public class ReturnValueDefinitionDOMRenderer_3_1_0 implements ReturnValueDefini
 
     @Override
     public void addAudit() {
-        // Not implemented in this version.
+        returnValueDefinitionElem.setAttribute("status", returnValueDefinition.getStatus().getName());
+        returnValueDefinitionElem.setAttribute("created", DATE_FORMAT.print(returnValueDefinition.getCreated().getTime()));
+        returnValueDefinitionElem.setAttribute("modified", DATE_FORMAT.print(returnValueDefinition.getModified().getTime()));
     }
 
     public String getMediaType() {
