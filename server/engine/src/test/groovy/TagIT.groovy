@@ -146,41 +146,41 @@ class TagIT extends BaseApiTest {
     getTagByPathJson('ecoinvent');
   }
 
-  @Test
-  void getTagByUidJson() {
-    getTagByPathJson('EA3E8C70DBFE');
-  }
+    @Test
+    void getTagByUidJson() {
+        getTagByPathJson('EA3E8C70DBFE');
+    }
 
-  void getTagByPathJson(path) {
-    client.contentType = JSON
-    def response = client.get(path: '/3.2/tags/' + path);
-    assertEquals 200, response.status;
-    assertEquals 'application/json', response.contentType;
-    assertTrue response.data instanceof net.sf.json.JSON;
-    assertEquals 'OK', response.data.status;
-    assertEquals 'EA3E8C70DBFE', response.data.tag.uid;
-    assertEquals 'ecoinvent', response.data.tag.tag;
-  }
+    void getTagByPathJson(path) {
+        client.contentType = JSON
+        def response = client.get(path: '/3.2/tags/' + path);
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals 'EA3E8C70DBFE', response.data.tag.uid;
+        assertEquals 'ecoinvent', response.data.tag.tag;
+    }
 
-  @Test
-  void getTagByTagXml() {
-    getTagByPathXml('ecoinvent');
-  }
+    @Test
+    void getTagByTagXml() {
+        getTagByPathXml('ecoinvent');
+    }
 
-  @Test
-  void getTagByUidXml() {
-    getTagByPathXml('EA3E8C70DBFE');
-  }
+    @Test
+    void getTagByUidXml() {
+        getTagByPathXml('EA3E8C70DBFE');
+    }
 
-  void getTagByPathXml(path) {
-    client.contentType = XML
-    def response = client.get(path: '/3.2/tags/' + path);
-    assertEquals 200, response.status;
-    assertEquals 'application/xml', response.contentType;
-    assertEquals 'OK', response.data.Status.text();
-    assertEquals 'EA3E8C70DBFE', response.data.Tag.@uid.text();
-    assertEquals 'ecoinvent', response.data.Tag.Tag.text();
-  }
+    void getTagByPathXml(path) {
+        client.contentType = XML
+        def response = client.get(path: '/3.2/tags/' + path);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        assertEquals 'EA3E8C70DBFE', response.data.Tag.@uid.text();
+        assertEquals 'ecoinvent', response.data.Tag.Tag.text();
+    }
 
   @Test
   void removeTagJson() {
