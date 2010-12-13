@@ -1,5 +1,6 @@
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
 class TagIT extends BaseApiTest {
