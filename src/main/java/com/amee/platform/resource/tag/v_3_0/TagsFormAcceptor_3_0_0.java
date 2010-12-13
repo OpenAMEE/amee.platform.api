@@ -49,9 +49,16 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
             // Swap tag with existing tag if it exists.
             Tag existingTag = tagService.getTagByTag(tag.getTag());
             if (existingTag == null) {
-                // TODO: ensureAuthorizedForCreate?
                 // Save new Tag.
                 log.debug("handle() Use new Tag.");
+                // TODO: ensureAuthorizedForCreate?
+                // Don't allow more than 1000 tags.
+                // NOTE: See https://jira.amee.com/browse/PL-1761
+                // Note: See https://jira.amee.com/browse/PL-1947
+                if (tagService.getTagCount() >= 1000) {
+                    throw new IllegalStateException("Only 1000 tags are allowed.");
+                }
+                // Save Tag.
                 tagService.persist(tag);
             } else {
                 // Use existing tag.
