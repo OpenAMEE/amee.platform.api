@@ -89,12 +89,7 @@
                         <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
-                <entry key="/{categoryIdentifier}/tags">
-                    <bean class="com.amee.restlet.version.VersionFinder">
-                        <lookup-method name="createResource" bean="tagsResource"/>
-                        <property name="since" value="3.0.0"/>
-                    </bean>
-                </entry>
+                <entry key="/{categoryIdentifier}/tags" value-ref="tagsRouter"/>
             </map>
         </property>
     </bean>
@@ -505,6 +500,7 @@
             <set>
                 <value>activeUserUid</value>
                 <value>tagIdentifier</value>
+                <value>categoryIdentifier</value>
             </set>
         </property>
         <property name="builder">
