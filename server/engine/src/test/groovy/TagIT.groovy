@@ -183,7 +183,7 @@ class TagIT extends BaseApiTest {
   }
 
   @Test
-  void removeTagJson() {
+  void createAndRemoveTagJson() {
     setAdminUser();
     client.contentType = JSON;
     // Create a new Tag.
@@ -206,7 +206,7 @@ class TagIT extends BaseApiTest {
   }
 
   @Test
-  void removeEntityTagJson() {
+  void createAndRemoveEntityTagJson() {
     setAdminUser();
     client.contentType = JSON;
     // Create a new Tag & EntityTag on a DataCategory.
