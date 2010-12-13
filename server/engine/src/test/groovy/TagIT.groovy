@@ -243,4 +243,25 @@ class TagIT extends BaseApiTest {
       assertEquals 404, e.response.status;
     }
   }
+
+  @Test
+  void updateTagJson() {
+    setAdminUser();
+    // 1) Do the update.
+    def responsePut = client.put(
+            path: '/3.2/tags/002FD23CD3A2',
+            body: ['tag': 'tag_updated'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePut.status;
+    // 2) Check values have been updated.
+    def responseGet = client.get(
+            path: '/3.2/tags/002FD23CD3A2',
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 'application/json', responseGet.contentType;
+    assertTrue responseGet.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', responseGet.data.status;
+    assertEquals 'tag_updated', responseGet.data.tag.tag;
+  }
 }
