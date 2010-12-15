@@ -35,16 +35,16 @@ namespace :install do
 
   end
   
+  desc "Prepare the deployment repo"
   task :prepare do
-    # Switch the the correct branch and update from origin
-    @pwd = Dir.pwd
+    
+    # Switch to the correct branch and update deploy repo from origin
     Dir.chdir(package_dir)
     `git checkout master`
     `git fetch`
     
     # Remove the previous install artifacts
     FileUtils.rm_r Dir.glob("#{package_dir}/*")
-    
   end
   
   desc "Build the deployment package"  
@@ -67,7 +67,6 @@ namespace :install do
     FileUtils.cp_r Dir.glob("#{src_dir}/server/*/target/dependency/*.jar"), "#{package_dir}/lib"  
     FileUtils.cp_r Dir.glob("#{src_dir}/server/*/target/*.jar"), "#{package_dir}/lib"  
     FileUtils.cp_r "#{src_dir}/server/engine/lib/wrapper","#{package_dir}/lib"  
-
   end
 
   desc "Send the deployment package to Git repository"
@@ -79,11 +78,12 @@ namespace :install do
   
   desc "Tag the src and deployment repositories"
   task :tag do
-    
     unless @tag_name
       puts "You must specify a tag for this release using TAG=name"
       exit
     end
+    
+    `git pull`
     
     # Write out the tag to file for packaging with the deployment repo.
     system("echo #{@tag_name} > VERSION.txt")
@@ -93,12 +93,12 @@ namespace :install do
         
     # Tag the deployment repository
     `git tag -f -a "#{@tag_name}" -m "#{@tag_name}"`
-    `git push --tag -v`
-    Dir.chdir(@pwd)
+    `git push --tags -v`
     
     # Tag the src repository
+    Dir.chdir(src_dir)
     `git tag -f -a "#{@tag_name}" -m "#{@tag_name}"`
-    `git push --tag -v`
+    `git push --tags -v`
   end
   
 end

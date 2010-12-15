@@ -41,10 +41,10 @@ set.AUTO_START_SCHEDULER=true
 set.HOST_NAME=platform-api-local.amee.com
 
 # PROTOCOL
-set.PROTOCOL=ajp
+set.PROTOCOL=http
 
 # PORT
-set.PORT=8040
+set.PORT=8081
 
 # Memory sizing
 wrapper.java.initmemory=256
