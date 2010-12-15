@@ -279,4 +279,40 @@ class TagIT extends BaseApiTest {
     assertEquals 'OK', responseGet.data.status;
     assertEquals 'tag_updated', responseGet.data.tag.tag;
   }
+
+
+  @Test
+  void updateInvalidTagJson() {
+    setAdminUser();
+    updateTagFieldJson('tag', 'empty', '');
+    updateTagFieldJson('tag', 'short', 'a');
+    updateTagFieldJson('tag', 'long', String.randomString(256));
+    updateTagFieldJson('tag', 'format', 'n o t v a l i d');
+    updateTagFieldJson('tag', 'duplicate', 'electricity');
+  }
+
+  void updateTagFieldJson(field, code, value) {
+    try {
+      // Create form body.
+      def body = [:];
+      body[field] = value;
+      // Update Tag.
+      client.put(
+              path: '/3.2/tags/computer',
+              body: body,
+              requestContentType: URLENC,
+              contentType: JSON);
+      fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+    } catch (HttpResponseException e) {
+      // Handle error response containing a ValidationResult.
+      def response = e.response;
+      assertEquals 400, response.status;
+      assertEquals 'application/json', response.contentType;
+      assertTrue response.data instanceof net.sf.json.JSON;
+      assertEquals 'INVALID', response.data.status;
+      assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
+      assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+    }
+  }
 }
