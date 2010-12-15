@@ -158,6 +158,40 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     }
 
     @Test
+    void defaultType() {
+        setAdminUser()
+
+        // Get the current default type
+        def responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'true', responseGet.data.returnValueDefinition['default']
+
+        // Add a new return value definition with default type true
+        def responsePost = client.post(
+            path: "/3.2/definitions/11D3548466F2/returnvalues",
+            body: [type: 'new', unit: 'kg', perUnit: 'day', valueDefinition: '45433E48B39F', defaultType: true],
+            requestContentType: URLENC,
+            contentType: JSON);
+        assertEquals 201, responsePost.status
+
+        def location = responsePost.headers['Location'].value
+
+        // Add new RVD to local state.
+        returnValueDefinitionUids[2] = location.split('/')[5]
+        returnValueDefinitionTypes[2] = 'new'
+
+        // Check the new one is default.
+        responseGet = client.get(path: location + ';full', contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'true', responseGet.data.returnValueDefinition['default']
+
+        // Check the old one is no longer default
+        responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'false', responseGet.data.returnValueDefinition['default']
+    }
+
+    @Test
     void updateInvalidReturnValueDefinition() {
         setAdminUser();
         updateReturnValueDefinitionFieldJson('type', 'empty', '');
