@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class ValidationSpecification implements Serializable {
 
     public interface CustomValidation {
-        public int validate(Object o, Errors e);
+        public int validate(Object object, Object value, Errors errors);
     }
 
     public final static int STOP = 0;
@@ -94,7 +94,7 @@ public class ValidationSpecification implements Serializable {
         }
         // Handle CustomValidation.
         if ((result != STOP) && (customValidation != null)) {
-            result = customValidation.validate(object, e);
+            result = customValidation.validate(object, value, e);
         }
         return result;
     }
