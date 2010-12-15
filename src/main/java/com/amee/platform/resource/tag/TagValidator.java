@@ -1,29 +1,27 @@
 package com.amee.platform.resource.tag;
 
+import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.tag.Tag;
+import com.amee.service.tag.TagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 @Service
 @Scope("prototype")
-public class TagValidator implements Validator {
+public class TagValidator extends BaseValidator {
 
     // Alpha numerics & underscore.
     private final static String TAG_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
-    private ValidationSpecification tagSpec;
+    @Autowired
+    private TagService tagService;
 
     public TagValidator() {
         super();
-        // tag
-        tagSpec = new ValidationSpecification();
-        tagSpec.setName("tag");
-        tagSpec.setMinSize(Tag.TAG_MIN_SIZE);
-        tagSpec.setMaxSize(Tag.TAG_MAX_SIZE);
-        tagSpec.setFormat(TAG_PATTERN_STRING);
+        addTag();
     }
 
     @Override
@@ -31,8 +29,36 @@ public class TagValidator implements Validator {
         return Tag.class.isAssignableFrom(clazz);
     }
 
-    @Override
-    public void validate(Object o, Errors e) {
-        tagSpec.validate(o, e);
+    private void addTag() {
+        add(new ValidationSpecification()
+                .setName("tag")
+                .setMinSize(Tag.TAG_MIN_SIZE)
+                .setMaxSize(Tag.TAG_MAX_SIZE)
+                .setFormat(TAG_PATTERN_STRING)
+                .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object o, Errors e) {
+                                // Ensure Tag is unique.
+                                Tag thisTag = (Tag) o;
+                                if (thisTag != null) {
+                                    Tag otherTag = tagService.getTagByTag(thisTag.getTag());
+                                    if ((otherTag != null) && !otherTag.equals(thisTag)) {
+                                        e.rejectValue("tag", "duplicate");
+                                    }
+                                }
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        })
+        );
+    }
+
+    /**
+     * Setter used by unit tests.
+     *
+     * @param tagService a TagService (probably mocked)
+     */
+    protected void setTagService(TagService tagService) {
+        this.tagService = tagService;
     }
 }

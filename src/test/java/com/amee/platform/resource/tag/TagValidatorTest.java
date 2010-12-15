@@ -1,19 +1,34 @@
 package com.amee.platform.resource.tag;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.tag.Tag;
-import com.amee.platform.resource.tag.TagValidator;
+import com.amee.service.tag.TagService;
 import org.apache.commons.lang.RandomStringUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class TagValidatorTest {
 
+    private TagService mockTagService;
+
+    @Before
+    public void setUp() {
+        ThreadBeanHolder.clear();
+        mockTagService = mock(TagService.class);
+        ThreadBeanHolder.set("tagService", mockTagService);
+    }
+
     @Test
     public void testValid() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag good = new Tag();
         BindException errorsGood = new BindException(good, "good");
 
@@ -25,7 +40,10 @@ public class TagValidatorTest {
 
     @Test
     public void testTagMinLength() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag good = new Tag();
         BindException errorsGood = new BindException(good, "good");
 
@@ -37,7 +55,10 @@ public class TagValidatorTest {
 
     @Test
     public void testTagMaxLength() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag good = new Tag();
         BindException errorsGood = new BindException(good, "good");
 
@@ -49,7 +70,10 @@ public class TagValidatorTest {
 
     @Test
     public void testTagLessThanMinLength() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag bad = new Tag();
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -61,7 +85,10 @@ public class TagValidatorTest {
 
     @Test
     public void testTagGreaterThanMaxLength() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag bad = new Tag();
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -73,7 +100,10 @@ public class TagValidatorTest {
 
     @Test
     public void testTagBadChars() {
+
         TagValidator validator = new TagValidator();
+        validator.setTagService(mockTagService);
+
         Tag bad = new Tag();
         BindException errorsBad = new BindException(bad, "bad");
 

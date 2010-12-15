@@ -21,6 +21,7 @@ public class ItemValueDefinitionValidator extends BaseValidator {
         addWikiDoc();
     }
 
+    @Override
     public boolean supports(Class clazz) {
         return ItemValueDefinition.class.isAssignableFrom(clazz);
     }

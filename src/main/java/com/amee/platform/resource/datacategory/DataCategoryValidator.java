@@ -2,8 +2,6 @@ package com.amee.platform.resource.datacategory;
 
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.data.DataCategory;
-import com.amee.service.data.DataService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -16,9 +14,6 @@ public class DataCategoryValidator implements Validator {
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_\\-]*$";
     private final static String WIKI_NAME_PATTERN_STRING = PATH_PATTERN_STRING;
-
-    @Autowired
-    private DataService dataService;
 
     private ValidationSpecification nameSpec;
     private ValidationSpecification pathSpec;
