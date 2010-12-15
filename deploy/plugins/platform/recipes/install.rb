@@ -41,7 +41,7 @@ namespace :install do
     # Switch to the correct branch and update deploy repo from origin
     Dir.chdir(package_dir)
     `git checkout master`
-    `git fetch`
+    `git fetch --tags`
     
     # Remove the previous install artifacts
     FileUtils.rm_r Dir.glob("#{package_dir}/*")
