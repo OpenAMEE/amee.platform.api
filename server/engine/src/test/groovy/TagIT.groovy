@@ -86,7 +86,8 @@ class TagIT extends BaseApiTest {
   @Test
   void getAllTagsJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.2/tags')
+    def response = client.get(
+            path: '/3.2/tags')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
@@ -100,7 +101,8 @@ class TagIT extends BaseApiTest {
   @Test
   void getAllTagsXml() {
     client.contentType = XML
-    def response = client.get(path: '/3.2/tags')
+    def response = client.get(
+            path: '/3.2/tags')
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
@@ -114,7 +116,8 @@ class TagIT extends BaseApiTest {
   @Test
   void getAllIncTagsJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.2/tags',
+    def response = client.get(
+            path: '/3.2/tags',
             query: ['incTags': 'inc_tag_1,inc_tag_2'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
@@ -129,7 +132,8 @@ class TagIT extends BaseApiTest {
   @Test
   void getAllExcTagsJson() {
     client.contentType = JSON
-    def response = client.get(path: '/3.2/tags',
+    def response = client.get(
+            path: '/3.2/tags',
             query: ['excTags': 'inc_tag_1'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
@@ -139,6 +143,40 @@ class TagIT extends BaseApiTest {
     assertEquals excTagUids.sort(), response.data.tags.collect {it.uid}.sort();
     assertEquals excTagNames.sort(), response.data.tags.collect {it.tag}.sort();
     assertEquals excTagCounts.sort(), response.data.tags.collect {it.count}.sort();
+  }
+
+  @Test
+  void getInvalidTagsJson() {
+    setAdminUser();
+    getInvalidTagsFieldJson('incTags', 'short', 'foo,a,bar');
+    getInvalidTagsFieldJson('incTags', 'long', String.randomString(256));
+    getInvalidTagsFieldJson('incTags', 'format', 'foo,n o t v a l i d');
+    getInvalidTagsFieldJson('excTags', 'short', 'a,bar');
+    getInvalidTagsFieldJson('excTags', 'long', String.randomString(256) + ',wee');
+    getInvalidTagsFieldJson('excTags', 'format', 'moo,n o t v a l i d,boo');
+  }
+
+  void getInvalidTagsFieldJson(field, code, value) {
+    try {
+      // Create query.
+      def query = [:];
+      query[field] = value;
+      // Request Tags.
+      client.contentType = JSON
+      client.get(
+              path: '/3.2/tags',
+              query: query);
+      fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+    } catch (HttpResponseException e) {
+      // Handle error response containing a ValidationResult.
+      def response = e.response;
+      assertEquals 400, response.status;
+      assertEquals 'application/json', response.contentType;
+      assertTrue response.data instanceof net.sf.json.JSON;
+      assertEquals 'INVALID', response.data.status;
+      assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+      assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+    }
   }
 
   @Test
@@ -153,7 +191,8 @@ class TagIT extends BaseApiTest {
 
   void getTagByPathJson(path) {
     client.contentType = JSON
-    def response = client.get(path: '/3.2/tags/' + path);
+    def response = client.get(
+            path: '/3.2/tags/' + path);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
@@ -174,7 +213,8 @@ class TagIT extends BaseApiTest {
 
   void getTagByPathXml(path) {
     client.contentType = XML
-    def response = client.get(path: '/3.2/tags/' + path);
+    def response = client.get(
+            path: '/3.2/tags/' + path);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
@@ -187,7 +227,8 @@ class TagIT extends BaseApiTest {
     def uids = ['932FD23CD3A2', 'D75DB884855F', '3A38136735C6', '000FD23CD3A2'];
     def names = ['actonco2', 'electrical', 'domestic', 'inc_tag_1'];
     client.contentType = JSON
-    def response = client.get(path: '/3.2/categories/Appliances/tags')
+    def response = client.get(
+            path: '/3.2/categories/Appliances/tags')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
@@ -279,7 +320,6 @@ class TagIT extends BaseApiTest {
     assertEquals 'OK', responseGet.data.status;
     assertEquals 'tag_updated', responseGet.data.tag.tag;
   }
-
 
   @Test
   void updateInvalidTagJson() {
