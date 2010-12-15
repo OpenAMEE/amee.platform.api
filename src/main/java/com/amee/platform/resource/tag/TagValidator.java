@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 public class TagValidator extends BaseValidator {
 
     // Alpha numerics & underscore.
-    private final static String TAG_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
+    public final static String TAG_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
     @Autowired
     private TagService tagService;
@@ -38,13 +38,13 @@ public class TagValidator extends BaseValidator {
                 .setCustomValidation(
                         new ValidationSpecification.CustomValidation() {
                             @Override
-                            public int validate(Object o, Errors e) {
+                            public int validate(Object object, Object value, Errors errors) {
                                 // Ensure Tag is unique.
-                                Tag thisTag = (Tag) o;
+                                Tag thisTag = (Tag) object;
                                 if (thisTag != null) {
                                     Tag otherTag = tagService.getTagByTag(thisTag.getTag());
                                     if ((otherTag != null) && !otherTag.equals(thisTag)) {
-                                        e.rejectValue("tag", "duplicate");
+                                        errors.rejectValue("tag", "duplicate");
                                     }
                                 }
                                 return ValidationSpecification.CONTINUE;

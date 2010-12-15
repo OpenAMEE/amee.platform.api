@@ -63,7 +63,7 @@ public class TagBuilder_3_2_0 implements TagResource.Builder {
                             resourceAuthorizationService.ensureAuthorizedForBuild(
                                     requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
                             // Handle the EntityTag.
-                            // TODO: Any difference for EntityTags over and above Tags?
+                            // TODO: Any representation difference required for EntityTags over and above Tags?
                             handle(requestWrapper, tag);
                             TagResource.Renderer renderer = getRenderer(requestWrapper);
                             renderer.ok();

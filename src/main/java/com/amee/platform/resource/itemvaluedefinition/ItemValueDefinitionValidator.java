@@ -41,22 +41,22 @@ public class ItemValueDefinitionValidator extends BaseValidator {
                 .setMaxSize(ItemValueDefinition.PATH_MAX_SIZE)
                 .setFormat(PATH_PATTERN_STRING)
                 .setCustomValidation(
-                new ValidationSpecification.CustomValidation() {
-                    @Override
-                    public int validate(Object o, Errors e) {
-                        // Ensure ItemValueDefinition path is unique amongst peers.
-                        ItemValueDefinition itemValueDefinition = (ItemValueDefinition) o;
-                        if (itemValueDefinition.getItemDefinition() != null) {
-                            for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
-                                if (!itemValueDefinition.equals(ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
-                                    e.rejectValue("path", "duplicate");
-                                    break;
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                // Ensure ItemValueDefinition path is unique amongst peers.
+                                ItemValueDefinition itemValueDefinition = (ItemValueDefinition) object;
+                                if (itemValueDefinition.getItemDefinition() != null) {
+                                    for (ItemValueDefinition ivd : itemValueDefinition.getItemDefinition().getItemValueDefinitions()) {
+                                        if (!itemValueDefinition.equals(ivd) && itemValueDefinition.getPath().equalsIgnoreCase(ivd.getPath())) {
+                                            errors.rejectValue("path", "duplicate");
+                                            break;
+                                        }
+                                    }
                                 }
+                                return ValidationSpecification.CONTINUE;
                             }
-                        }
-                        return ValidationSpecification.CONTINUE;
-                    }
-                })
+                        })
         );
     }
 
