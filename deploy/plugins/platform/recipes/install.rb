@@ -41,7 +41,7 @@ namespace :install do
     # Switch to the correct branch and update deploy repo from origin
     Dir.chdir(package_dir)
     `git checkout master`
-    `git fetch --tags`
+    `git fetch`
     
     # Remove the previous install artifacts
     FileUtils.rm_r Dir.glob("#{package_dir}/*")
@@ -82,9 +82,7 @@ namespace :install do
       puts "You must specify a tag for this release using TAG=name"
       exit
     end
-    
-    `git pull`
-    
+        
     # Write out the tag to file for packaging with the deployment repo.
     system("echo #{@tag_name} > VERSION.txt")
     `git add VERSION.txt`
