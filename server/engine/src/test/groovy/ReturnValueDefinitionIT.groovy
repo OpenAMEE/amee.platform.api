@@ -166,6 +166,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertEquals 200, responseGet.status
         assertEquals 'true', responseGet.data.returnValueDefinition['default']
 
+        // 1. Handle POST
         // Add a new return value definition with default type true
         def responsePost = client.post(
             path: "/3.2/definitions/11D3548466F2/returnvalues",
@@ -189,6 +190,24 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'false', responseGet.data.returnValueDefinition['default']
+
+        // 2. Handle PUT
+        // Update the old one to be the default again
+        def responsePut = client.put(
+            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C',
+            body: [type: 'co2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F', defaultType: true],
+            requestContentType: URLENC,
+            contentType: JSON)
+        assertEquals 201, responsePut.status
+
+        // Check it is now default
+        responseGet = client.get(path: location + ';full', contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'false', responseGet.data.returnValueDefinition['default']
+
+        responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'true', responseGet.data.returnValueDefinition['default']
     }
 
     @Test
