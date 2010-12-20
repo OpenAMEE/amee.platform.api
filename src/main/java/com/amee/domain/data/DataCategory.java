@@ -158,6 +158,7 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
      *
      * @return list of entities in hierarchical order
      */
+    @Override
     public List<IAMEEEntityReference> getHierarchy() {
         List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
         entities.add(this);
