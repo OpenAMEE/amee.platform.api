@@ -5,21 +5,24 @@ import java.util.Map;
 
 public abstract class ThreadBeanHolder {
 
-    private static final ThreadLocal<Map<String, Object>> BEAN_HOLDER = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Map<Class<?>, Object>> BEAN_HOLDER = new ThreadLocal<Map<Class<?>, Object>>();
 
-    public static Object get(String name) {
+    public static <T> T get(Class<T> type) {
         if (BEAN_HOLDER.get() != null) {
-            return BEAN_HOLDER.get().get(name);
+            return type.cast(BEAN_HOLDER.get().get(type));
         } else {
             return null;
         }
     }
 
-    public static void set(String name, Object obj) {
-        if (BEAN_HOLDER.get() == null) {
-            BEAN_HOLDER.set(new HashMap<String, Object>());
+    public static <T> void set(Class<T> type, T obj) {
+        if (type == null) {
+            throw new NullPointerException("Type is null");
         }
-        BEAN_HOLDER.get().put(name, obj);
+        if (BEAN_HOLDER.get() == null) {
+            BEAN_HOLDER.set(new HashMap<Class<?>, Object>());
+        }
+        BEAN_HOLDER.get().put(type, obj);
     }
 
     public static void clear() {
