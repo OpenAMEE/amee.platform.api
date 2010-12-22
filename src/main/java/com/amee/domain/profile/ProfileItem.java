@@ -258,6 +258,6 @@ public class ProfileItem extends Item {
     }
 
     public IProfileItemService getItemService() {
-        return (IProfileItemService) ThreadBeanHolder.get("profileItemService");
+        return ThreadBeanHolder.get(IProfileItemService.class);
     }
 }

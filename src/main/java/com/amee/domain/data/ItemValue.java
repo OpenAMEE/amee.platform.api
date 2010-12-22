@@ -500,9 +500,9 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
             throw new IllegalStateException("IItemService implementations should not use the new services.");
         } else {
             if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return (IItemService) ThreadBeanHolder.get("dataItemService");
+                return ThreadBeanHolder.get(IDataItemService.class);
             } else if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return (IItemService) ThreadBeanHolder.get("profileItemService");
+                return ThreadBeanHolder.get(IProfileItemService.class);
             } else {
                 throw new IllegalStateException("A BaseDataItemValue or BaseProfileItemValue was expected.");
             }

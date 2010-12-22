@@ -16,7 +16,7 @@ public class TimeZoneHolder extends ThreadBeanHolder {
      * @return - the TimeZone of the current request thread.
      */
     public static TimeZone getTimeZone() {
-        User currentUser = (User) get("activeUser");
+        User currentUser = get(User.class);
         return currentUser.getTimeZone();
     }
 }

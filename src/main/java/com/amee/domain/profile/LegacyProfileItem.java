@@ -228,7 +228,7 @@ public class LegacyProfileItem extends LegacyItem {
 
     @Transient
     protected CO2CalculationService getCalculationService() {
-        return (CO2CalculationService) ThreadBeanHolder.get("calculationService");
+        return ThreadBeanHolder.get(CO2CalculationService.class);
     }
 
     public ProfileItem getAdapter() {

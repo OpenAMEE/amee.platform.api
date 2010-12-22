@@ -25,7 +25,7 @@ public class ItemValueDefinitionTest {
     public void setUp() {
         ThreadBeanHolder.clear();
         mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set("metadataService", mockMetadataService);
+        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
         itemValueDef = new ItemValueDefinition();
         mockItemDef = mock(ItemDefinition.class);
         itemValueDef.setItemDefinition(mockItemDef);

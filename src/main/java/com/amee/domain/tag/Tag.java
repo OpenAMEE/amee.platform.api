@@ -104,6 +104,6 @@ public class Tag extends AMEEEntity implements Pathable {
     }
 
     public IDataService getDataService() {
-        return (IDataService) ThreadBeanHolder.get("dataService");
+        return ThreadBeanHolder.get(IDataService.class);
     }
 }

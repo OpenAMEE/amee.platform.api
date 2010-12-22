@@ -202,6 +202,6 @@ public class DataItem extends Item {
     }
 
     public IDataItemService getItemService() {
-        return (IDataItemService) ThreadBeanHolder.get("dataItemService");
+        return ThreadBeanHolder.get(IDataItemService.class);
     }
 }
