@@ -254,8 +254,9 @@
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                     </systemPropertyVariables>
-                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
-                    </argLine>
+                    <!-- Commented out as part of: https://jira.amee.com/browse/PL-9456 -->
+                    <!--<argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar-->
+                    <!--</argLine>-->
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
                         <element>${basedir}/conf</element>
