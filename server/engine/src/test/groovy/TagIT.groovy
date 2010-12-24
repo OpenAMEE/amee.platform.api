@@ -285,6 +285,26 @@ class TagIT extends BaseApiTest {
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
     }
+    // Create another EntityTag on another DataCategory.
+    responsePost = client.post(
+            path: '/3.2/categories/Entertainment_generic/tags',
+            body: [tag: 'entity_tag_to_be_deleted'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status;
+    // The EntityTag should exist.
+    responseGet = client.get(path: '/3.2/categories/Entertainment_generic/entity_tag_to_be_deleted');
+    assertEquals 200, responseGet.status;
+    // Then delete the EntityTag.
+    responseDelete = client.delete(path: '/3.2/categories/Entertainment_generic/tags/entity_tag_to_be_deleted');
+    assertEquals 200, responseDelete.status;
+    // We should get a 404 here for the EntityTag.
+    try {
+      client.get(path: '/3.2/categories/Entertainment_generic/tags/entity_tag_to_be_deleted');
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
     // The Tag should still exist.
     responseGet = client.get(path: '/3.2/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseGet.status;
