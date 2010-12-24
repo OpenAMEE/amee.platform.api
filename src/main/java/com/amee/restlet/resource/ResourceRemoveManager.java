@@ -1,6 +1,7 @@
 package com.amee.restlet.resource;
 
 import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ResourceRemover;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,49 +36,56 @@ public class ResourceRemoveManager extends ResourceManager {
 
     public void remove() {
         if (remover != null) {
-            Object result = remover.handle(
-                    new RequestWrapper(
-                            getResource().getSupportedVersion(),
-                            getAcceptedMediaTypes(),
-                            getAttributes()));
-
-            if (JSONObject.class.isAssignableFrom(result.getClass())) {
-
-                // Deal with JSON
-                if (isOk((JSONObject) result)) {
-                    getResponse().setStatus(Status.SUCCESS_OK);
-                } else if (isNotFound((JSONObject) result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                } else if (isNotAuthenticated((JSONObject) result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
-                } else if (isNotAuthorized((JSONObject) result)) {
-                    getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
-                } else {
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
-                }
-            } else if (Document.class.isAssignableFrom(result.getClass())) {
-
-                // Deal with DOM
-                Element elm = ((Document) result).getRootElement();
-                if (elm.getChild("Status") != null) {
-                    String status = elm.getChild("Status").getValue();
-                    if (status.equals("OK")) {
+            Object result;
+            RequestWrapper requestWrapper = new RequestWrapper(
+                    getResource().getSupportedVersion(),
+                    getAcceptedMediaTypes(),
+                    getAttributes());
+            try {
+                result = remover.handle(requestWrapper);
+            } catch (ResourceException e) {
+                result = e.getResponse(requestWrapper);
+            }
+            if (result != null) {
+                if (JSONObject.class.isAssignableFrom(result.getClass())) {
+                    // Deal with JSON
+                    if (isOk((JSONObject) result)) {
                         getResponse().setStatus(Status.SUCCESS_OK);
-                    } else if (status.equals("NOT_FOUND")) {
+                    } else if (isNotFound((JSONObject) result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                    } else if (status.equals("NOT_AUTHENTICATED")) {
+                    } else if (isNotAuthenticated((JSONObject) result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
-                    } else if (status.equals("NOT_AUTHORIZED")) {
+                    } else if (isNotAuthorized((JSONObject) result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
                     } else {
                         getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     }
+                } else if (Document.class.isAssignableFrom(result.getClass())) {
+                    // Deal with DOM
+                    Element elm = ((Document) result).getRootElement();
+                    if (elm.getChild("Status") != null) {
+                        String status = elm.getChild("Status").getValue();
+                        if (status.equals("OK")) {
+                            getResponse().setStatus(Status.SUCCESS_OK);
+                        } else if (status.equals("NOT_FOUND")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                        } else if (status.equals("NOT_AUTHENTICATED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                        } else if (status.equals("NOT_AUTHORIZED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                        } else {
+                            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                        }
+                    } else {
+                        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    }
                 } else {
-                    getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    log.warn("remove() Response media type is not supported.");
+                    getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
                 }
             } else {
-                log.warn("remove() Response media type is not supported.");
-                getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                log.error("getRepresentation() Result was null.");
+                getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }
         } else {
             throw new UnsupportedOperationException("A ResourceRemover is not available.");
