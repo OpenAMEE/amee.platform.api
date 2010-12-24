@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
@@ -127,7 +128,8 @@
                             <value>${basedir}/src/test/resources/crypto/amee.salt</value>
                         </property>
                     </systemProperties>
-                    <argLine>-javaagent:${basedir}/target/dependency/spring-instrument-${spring.version}.jar</argLine>
+                    <!-- Commented out as part of: https://jira.amee.com/browse/PL-9456 -->
+                    <!--<argLine>-javaagent:${basedir}/target/dependency/spring-instrument-${spring.version}.jar</argLine>-->
                     <additionalClasspathElements>
                         <element>${basedir}/src/test/resources</element>
                     </additionalClasspathElements>
