@@ -42,13 +42,14 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
     @Override
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
-        // Create new Tag.
-        Tag tag = new Tag();
-        validationHelper.setTag(tag);
-        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
-            // Swap tag with existing tag if it exists.
-            Tag existingTag = tagService.getTagByTag(tag.getTag());
-            if (existingTag == null) {
+        Tag tag;
+        // Get existing tag if it exists.
+        Tag existingTag = tagService.getTagByTag(requestWrapper.getFormParameters().get("tag"));
+        if (existingTag == null) {
+            // Create new Tag.
+            tag = new Tag();
+            validationHelper.setTag(tag);
+            if (validationHelper.isValid(requestWrapper.getFormParameters())) {
                 // Save new Tag.
                 log.debug("handle() Use new Tag.");
                 // Authorized?
@@ -63,39 +64,39 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
                 // Save Tag.
                 tagService.persist(tag);
             } else {
-                // Use existing tag.
-                log.debug("handle() Use existing Tag.");
-                tag = existingTag;
+                throw new ValidationException(validationHelper.getValidationResult());
             }
-            // Deal with an entity if present.
-            IAMEEEntityReference entity = tagResourceService.getEntity(requestWrapper);
-            if (entity != null) {
-                // TODO: Intention is to support entities other than DataCategory at some point.
-                if (DataCategory.class.isAssignableFrom(entity.getClass())) {
-                    DataCategory dataCategory = (DataCategory) entity;
-                    // Authorized?
-                    resourceAuthorizationService.ensureAuthorizedForModify(
-                            requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
-                    // Find existing EntityTag.
-                    EntityTag entityTag = tagService.getEntityTag(dataCategory, tag.getTag());
-                    if (entityTag == null) {
-                        // Create and save EntityTag.
-                        log.debug("handle() Use new EntityTag.");
-                        entityTag = new EntityTag(dataCategory, tag);
-                        tagService.persist(entityTag);
-                    } else {
-                        log.debug("handle() EntityTag already exists.");
-                    }
+        } else {
+            // Use existing tag.
+            log.debug("handle() Use existing Tag.");
+            tag = existingTag;
+        }
+        // Deal with an entity if present.
+        IAMEEEntityReference entity = tagResourceService.getEntity(requestWrapper);
+        if (entity != null) {
+            // TODO: Intention is to support entities other than DataCategory at some point.
+            if (DataCategory.class.isAssignableFrom(entity.getClass())) {
+                DataCategory dataCategory = (DataCategory) entity;
+                // Authorized?
+                resourceAuthorizationService.ensureAuthorizedForModify(
+                        requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+                // Find existing EntityTag.
+                EntityTag entityTag = tagService.getEntityTag(dataCategory, tag.getTag());
+                if (entityTag == null) {
+                    // Create and save EntityTag.
+                    log.debug("handle() Use new EntityTag.");
+                    entityTag = new EntityTag(dataCategory, tag);
+                    tagService.persist(entityTag);
                 } else {
-                    throw new IllegalStateException("Tags are currently only supported against DataCategories.");
+                    log.debug("handle() EntityTag already exists.");
                 }
             } else {
-                log.debug("handle() No entity.");
+                throw new IllegalStateException("Tags are currently only supported against DataCategories.");
             }
-            // Woo!
-            return ResponseHelper.getOK(requestWrapper);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            log.debug("handle() No entity.");
         }
+        // Woo!
+        return ResponseHelper.getOK(requestWrapper);
     }
 }
