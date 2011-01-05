@@ -306,7 +306,7 @@ class CategoryIT extends BaseApiTest {
     updateCategoryFieldJson('wikiName', 'empty', '');
     updateCategoryFieldJson('wikiName', 'short', 'a');
     updateCategoryFieldJson('wikiName', 'long', String.randomString(256));
-    // TODO: updateCategoryFieldJson('wikiName', 'duplicate', 'TODO');
+    updateCategoryFieldJson('wikiName', 'duplicate', 'CLM_food_life_cycle_database');
     updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
     updateCategoryFieldJson('provenance', 'long', String.randomString(256));
     updateCategoryFieldJson('authority', 'long', String.randomString(256));
