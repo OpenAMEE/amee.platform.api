@@ -22,13 +22,12 @@
 package com.amee.domain;
 
 import com.amee.base.utils.ThreadBeanHolder;
+import java.util.Locale;
 
 /**
  * A thread local helper for retrieving the locale string of the request
  */
 public class LocaleHolder extends ThreadBeanHolder {
-
-    public static final String KEY = "locale";
 
     /**
      * Does the current request thread have the default locale.
@@ -38,8 +37,8 @@ public class LocaleHolder extends ThreadBeanHolder {
      * {@see LocaleName.DEFAULT_LOCALE}
      */
     public static boolean isDefaultLocale() {
-        String locale = (String) get(KEY);
-        return LocaleConstants.DEFAULT_LOCALE.toString().equals(locale);
+        Locale locale = get(Locale.class);
+        return LocaleConstants.DEFAULT_LOCALE.equals(locale);
     }
 
     /**
@@ -49,6 +48,19 @@ public class LocaleHolder extends ThreadBeanHolder {
      * @return - the locale string of the current request thread.
      */
     public static String getLocale() {
-        return (String) get(KEY);    
+        Locale currentLocale = get(Locale.class);
+        if (currentLocale != null) {
+            return currentLocale.toString();
+        }
+        return null;
+    }
+
+    /**
+     * Stores a Locale object for the given country.
+     *
+     * @param country the country to set the locale for.
+     */
+    public static void setLocale(String country) {
+        set(Locale.class, new Locale(country));
     }
 }
