@@ -4,6 +4,7 @@ import org.junit.AfterClass
 import org.junit.Before
 import org.junit.BeforeClass
 import org.springframework.context.support.ClassPathXmlApplicationContext
+import org.joda.time.DateTimeZone
 
 /**
  * A base class for API integration tests.
@@ -24,6 +25,11 @@ abstract class BaseApiTest {
 
     // Augment String with a random method.
     addRandomStringMethodToString();
+
+    // Set the default timezone
+    def timeZone = TimeZone.getTimeZone(System.getProperty("AMEE_TIME_ZONE", "UTC"))
+    TimeZone.setDefault(timeZone)
+    DateTimeZone.setDefault(DateTimeZone.forTimeZone(timeZone))
 
     // Spring application context.
     context = new ClassPathXmlApplicationContext("classpath*:applicationContext*.xml")
