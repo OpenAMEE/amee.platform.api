@@ -22,7 +22,7 @@ public class DataItemValidatorTest {
     public void setUp() {
         ThreadBeanHolder.clear();
         mockService = mock(IMetadataService.class);
-        ThreadBeanHolder.set("metadataService", mockService);
+        ThreadBeanHolder.set(IMetadataService.class, mockService);
     }
 
     @Test

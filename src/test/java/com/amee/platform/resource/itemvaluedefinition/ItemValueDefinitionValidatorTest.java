@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.utils.ThreadBeanHolder;
+import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.service.locale.LocaleService;
@@ -23,9 +24,9 @@ public class ItemValueDefinitionValidatorTest {
     public void setUp() {
         ThreadBeanHolder.clear();
         mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set("metadataService", mockMetadataService);
+        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set("localeService", mockLocaleService);
+        ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
     }
 
     @Test
