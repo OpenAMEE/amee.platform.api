@@ -20,7 +20,7 @@ public class TagValidatorTest {
     public void setUp() {
         ThreadBeanHolder.clear();
         mockTagService = mock(TagService.class);
-        ThreadBeanHolder.set("tagService", mockTagService);
+        ThreadBeanHolder.set(TagService.class, mockTagService);
     }
 
     @Test
