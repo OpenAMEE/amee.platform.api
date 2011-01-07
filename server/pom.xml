@@ -222,14 +222,13 @@
                         <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
                         <CACHE_SERVICE_CLASS>com.amee.base.cache.EhCacheCacheService</CACHE_SERVICE_CLASS>
-                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
-                        </CACHE_MANAGER_CLASS>
+                        <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</CACHE_MANAGER_CLASS>
+                        <AMEE_TIME_ZONE>UTC</AMEE_TIME_ZONE>
                     </environmentVariables>
                     <systemPropertyVariables>
 
                         <!-- Hibernate -->
-                        <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider
-                        </amee.cacheProviderClass>
+                        <amee.cacheProviderClass>net.sf.ehcache.hibernate.SingletonEhCacheProvider</amee.cacheProviderClass>
                         <amee.useQueryCache>false</amee.useQueryCache>
                         <amee.useSecondLevelCache>false</amee.useSecondLevelCache>
                         <amee.hibernateDialect>org.hibernate.dialect.HSQLDialect</amee.hibernateDialect>
@@ -246,8 +245,7 @@
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
-                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider
-                        </org.joda.time.DateTimeZone.Provider>
+                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider</org.joda.time.DateTimeZone.Provider>
                         <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>
                         <amee.masterIndex>true</amee.masterIndex>
                         <amee.clearIndex>true</amee.clearIndex>
