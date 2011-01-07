@@ -66,10 +66,9 @@ public class Permission extends AMEEEntity implements Comparable {
 
     /**
      * A String containing permission entries structured as JSON. These entries
-     * are private but exposed via a Set of PermissionEntty instances.
+     * are private but exposed via a Set of PermissionEntry instances.
      */
     @Column(name = "ENTRIES", length = ENTRIES_MAX_SIZE, nullable = false)
-    @Lob
     private String entries = "";
 
     /**
