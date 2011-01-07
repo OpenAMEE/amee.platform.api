@@ -2,7 +2,6 @@ package com.amee.platform.resource.datacategory;
 
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
-import com.amee.domain.IDataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +43,26 @@ public class DataCategoryValidator extends BaseValidator {
     }
 
     private void addPath() {
-        // TODO: This must be unique amongst peers.
         add(new ValidationSpecification()
                 .setName("path")
                 .setMinSize(DataCategory.PATH_MIN_SIZE)
                 .setMaxSize(DataCategory.PATH_MAX_SIZE)
                 .setFormat(PATH_PATTERN_STRING)
                 .setAllowEmpty(true)
+                .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                // Ensure DataCategory is unique on path.
+                                DataCategory thisDC = (DataCategory) object;
+                                if ((thisDC != null) && (thisDC.getDataCategory() != null)) {
+                                    if (!dataService.isDataCategoryUniqueByPath(thisDC)) {
+                                        errors.rejectValue("path", "duplicate");
+                                    }
+                                }
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        })
         );
     }
 
@@ -64,11 +76,10 @@ public class DataCategoryValidator extends BaseValidator {
                         new ValidationSpecification.CustomValidation() {
                             @Override
                             public int validate(Object object, Object value, Errors errors) {
-                                // Ensure DataCategory is unique on WikiName.
+                                // Ensure DataCategory is unique on wikiName.
                                 DataCategory thisDC = (DataCategory) object;
                                 if (thisDC != null) {
-                                    DataCategory otherDC = dataService.getDataCategoryByWikiName(thisDC.getWikiName());
-                                    if ((otherDC != null) && !otherDC.equals(thisDC)) {
+                                    if (!dataService.isDataCategoryUniqueByWikiName(thisDC)) {
                                         errors.rejectValue("wikiName", "duplicate");
                                     }
                                 }

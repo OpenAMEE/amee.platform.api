@@ -1,7 +1,6 @@
 package com.amee.platform.resource.datacategory;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.IDataService;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.service.data.DataService;
@@ -43,6 +42,8 @@ public class DataCategoryValidatorTest {
 
         when(mockLocaleService.getLocaleNameValue(good, "name"))
                 .thenReturn("name");
+        when(mockDataService.isDataCategoryUniqueByWikiName(good))
+                .thenReturn(true);
 
         BindException errorsGood = new BindException(good, "good");
 
