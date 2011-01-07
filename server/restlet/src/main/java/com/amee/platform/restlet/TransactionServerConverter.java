@@ -2,8 +2,8 @@ package com.amee.platform.restlet;
 
 import com.amee.base.transaction.TransactionController;
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.calculation.service.CalculationService;
 import com.amee.domain.*;
+import com.amee.domain.profile.CO2CalculationService;
 import com.noelios.restlet.http.HttpRequest;
 import com.noelios.restlet.http.HttpResponse;
 import com.noelios.restlet.http.HttpServerCall;
@@ -31,7 +31,7 @@ public class TransactionServerConverter extends HttpServerConverter {
         ThreadBeanHolder.set(IProfileItemService.class, (IProfileItemService) springContext.getBean("profileItemService"));
         ThreadBeanHolder.set(ILocaleService.class, (ILocaleService) springContext.getBean("localeService"));
         ThreadBeanHolder.set(IMetadataService.class, (IMetadataService) springContext.getBean("metadataService"));
-        ThreadBeanHolder.set(CalculationService.class, (CalculationService) springContext.getBean("calculationService"));
+        ThreadBeanHolder.set(CO2CalculationService.class, (CO2CalculationService) springContext.getBean("calculationService"));
         // Pass request through.
         return super.toRequest(httpCall);
     }
