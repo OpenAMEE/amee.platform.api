@@ -16,7 +16,7 @@
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <hibernate-core.version>3.5.1-Final</hibernate-core.version>
+        <hibernate-core.version>3.6.0.Final</hibernate-core.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <junit.version>4.7</junit.version>
         <slf4j.version>1.5.11</slf4j.version>
@@ -179,11 +179,6 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
             <version>${hibernate-core.version}</version>
         </dependency>
         <dependency>
