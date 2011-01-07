@@ -10,6 +10,7 @@
                 <ref local="v_3_0_0"/>
                 <ref local="v_3_1_0"/>
                 <ref local="v_3_2_0"/>
+                <ref local="v_3_3_0"/>
             </list>
         </property>
     </bean>
@@ -24,6 +25,10 @@
 
     <bean id="v_3_2_0" class="com.amee.base.domain.Version">
         <constructor-arg value="3.2.0"/>
+    </bean>
+
+    <bean id="v_3_3_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.3.0"/>
     </bean>
 
 </beans>

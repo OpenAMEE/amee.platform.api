@@ -6,6 +6,24 @@ import static org.junit.Assert.*
 
 class ItemDefinitionIT extends BaseApiTest {
 
+  static def itemDefinitionUids = [
+          '11D3548466F2',
+          '1B3B44CAE90C',
+          'BB33FDB20228',
+          '001D2DF83D01',
+          '0A64D80D77CD',
+          '8B4B7C308D51',
+          '00F880E2B3AA']
+
+  static def itemDefinitionNames = [
+          'Computers Generic',
+          'Cooking',
+          'Entertainment Generic',
+          'Kitchen Generic',
+          'GHGElectricity',
+          'GHGUSSubregion',
+          'EcoSpold']
+
   def static expectedUsageNames = ['usage1', 'usage2'];
   def static expectedUsagePresents = ['false', 'true'];
 
@@ -15,13 +33,31 @@ class ItemDefinitionIT extends BaseApiTest {
   }
 
   @Test
-  @Ignore("Item Definition list GET not implemented in API")
   void getItemDefinitionsJson() {
+    def response = client.get(
+            path: '/3.3/definitions;name',
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    assertEquals itemDefinitionUids.size(), response.data.itemDefinitions.size()
+    assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort()
+    assert itemDefinitionNames.sort() == response.data.itemDefinitions.collect {it.name}.sort()
   }
 
   @Test
-  @Ignore("Item Definition list GET not implemented in API")
   void getItemDefinitionsXml() {
+    def response = client.get(
+            path: '/3.3/definitions;name',
+            contentType: XML);
+    assertEquals 200, response.status;
+    assertEquals 'application/xml', response.contentType;
+    assertEquals 'OK', response.data.Status.text();
+    def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
+    assertEquals itemDefinitionUids.size(), allItemDefinitions.size()
+    assert itemDefinitionUids.sort() == allItemDefinitions.@uid*.text().sort()
+    assert itemDefinitionNames.sort() == allItemDefinitions.Name*.text().sort()
   }
 
   @Test

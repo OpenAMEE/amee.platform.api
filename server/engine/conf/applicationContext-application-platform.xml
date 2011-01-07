@@ -215,7 +215,7 @@
                 <entry key="">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="itemDefinitionsResource"/>
-                        <property name="since" value="3.1.0"/>
+                        <property name="since" value="3.3.0"/>
                     </bean>
                 </entry>
                 <entry key="/{itemDefinitionIdentifier}">
@@ -252,9 +252,21 @@
         </property>
     </bean>
 
-    <!-- TODO: itemDefinitionsResource -->
-
-    <!-- TODO: itemDefinitionResource -->
+    <bean id="itemDefinitionsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.itemdefinition.ItemDefinitionsResource$Builder"/>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="itemDefinitionResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
