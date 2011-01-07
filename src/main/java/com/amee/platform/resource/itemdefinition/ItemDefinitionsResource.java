@@ -11,5 +11,7 @@ public interface ItemDefinitionsResource {
     interface Renderer extends ResourceRenderer {
 
         public void newItemDefinition(ItemDefinitionResource.Renderer renderer);
+
+        public void setTruncated(boolean truncated);
     }
 }

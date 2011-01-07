@@ -30,6 +30,10 @@ public class ItemDefinitionsDOMRenderer_3_3_0 implements ItemDefinitionsResource
         itemDefinitionsElem.addContent(((Document) renderer.getObject()).getRootElement().getChild("ItemDefinition").detach());
     }
 
+    public void setTruncated(boolean truncated) {
+        itemDefinitionsElem.setAttribute("truncated", "" + truncated);
+    }
+
     public String getMediaType() {
         return "application/xml";
     }

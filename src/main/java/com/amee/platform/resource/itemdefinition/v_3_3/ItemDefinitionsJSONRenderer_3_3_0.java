@@ -36,6 +36,10 @@ public class ItemDefinitionsJSONRenderer_3_3_0 implements ItemDefinitionsResourc
         }
     }
 
+    public void setTruncated(boolean truncated) {
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
+    }
+
     public String getMediaType() {
         return "application/json";
     }

@@ -1,5 +1,6 @@
 package com.amee.platform.resource.itemdefinition.v_3_3;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -15,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Scope("prototype")
@@ -45,21 +44,22 @@ public class ItemDefinitionsBuilder_3_3_0 implements ItemDefinitionsResource.Bui
         validationHelper.setItemDefinitionFilter(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
 
-            // Get ItemDefinitions.
-            List<ItemDefinition> itemDefinitions = definitionService.getItemDefinitions();
-
-            // Load Metadatas if needed (for usages).
-            if (requestWrapper.getMatrixParameters().containsKey("usages")) {
-                metadataService.loadMetadatasForItemDefinitions(itemDefinitions);
-            }
-
             // Start Renderer.
             ItemDefinitionsResource.Renderer renderer = getRenderer(requestWrapper);
             renderer.start();
 
+            // Get ItemDefinitions.
+            ResultsWrapper<ItemDefinition> resultsWrapper = definitionService.getItemDefinitions(filter);
+            renderer.setTruncated(resultsWrapper.isTruncated());
+
+            // Load Metadatas if needed (for usages).
+            if (requestWrapper.getMatrixParameters().containsKey("usages")) {
+                metadataService.loadMetadatasForItemDefinitions(resultsWrapper.getResults());
+            }
+
             // Add ItemDefinitions.
             ItemDefinitionResource.Builder itemDefinitionBuilder = getItemDefinitionBuilder(requestWrapper);
-            for (ItemDefinition itemDefinition : itemDefinitions) {
+            for (ItemDefinition itemDefinition : resultsWrapper.getResults()) {
                 itemDefinitionBuilder.handle(requestWrapper, itemDefinition);
                 renderer.newItemDefinition(itemDefinitionBuilder.getRenderer(requestWrapper));
             }
