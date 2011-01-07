@@ -2,6 +2,8 @@ package com.amee.platform.restlet;
 
 import com.amee.base.transaction.TransactionController;
 import com.amee.base.utils.ThreadBeanHolder;
+import com.amee.calculation.service.CalculationService;
+import com.amee.domain.*;
 import com.noelios.restlet.http.HttpRequest;
 import com.noelios.restlet.http.HttpResponse;
 import com.noelios.restlet.http.HttpServerCall;
@@ -24,12 +26,12 @@ public class TransactionServerConverter extends HttpServerConverter {
         // Clear the ThreadBeanHolder at the start of each request.
         ThreadBeanHolder.clear();
         // Store commonly used services.
-        ThreadBeanHolder.set("dataService", springContext.getBean("dataService"));
-        ThreadBeanHolder.set("dataItemService", springContext.getBean("dataItemService"));
-        ThreadBeanHolder.set("profileItemService", springContext.getBean("profileItemService"));
-        ThreadBeanHolder.set("localeService", springContext.getBean("localeService"));
-        ThreadBeanHolder.set("metadataService", springContext.getBean("metadataService"));
-        ThreadBeanHolder.set("calculationService", springContext.getBean("calculationService"));
+        ThreadBeanHolder.set(IDataService.class, (IDataService) springContext.getBean("dataService"));
+        ThreadBeanHolder.set(IDataItemService.class, (IDataItemService) springContext.getBean("dataItemService"));
+        ThreadBeanHolder.set(IProfileItemService.class, (IProfileItemService) springContext.getBean("profileItemService"));
+        ThreadBeanHolder.set(ILocaleService.class, (ILocaleService) springContext.getBean("localeService"));
+        ThreadBeanHolder.set(IMetadataService.class, (IMetadataService) springContext.getBean("metadataService"));
+        ThreadBeanHolder.set(CalculationService.class, (CalculationService) springContext.getBean("calculationService"));
         // Pass request through.
         return super.toRequest(httpCall);
     }
