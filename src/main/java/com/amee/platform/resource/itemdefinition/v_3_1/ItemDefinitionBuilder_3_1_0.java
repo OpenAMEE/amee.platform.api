@@ -54,7 +54,7 @@ public class ItemDefinitionBuilder_3_1_0 implements ItemDefinitionResource.Build
         }
     }
 
-    protected void handle(
+    public void handle(
             RequestWrapper requestWrapper,
             ItemDefinition itemDefinition) {
 
