@@ -63,6 +63,60 @@ class ItemDefinitionIT extends BaseApiTest {
   }
 
   @Test
+  void getItemDefinitionsByNameInvalidJson() {
+    getItemDefinitionsByNameJson('short', '12');
+    getItemDefinitionsByNameJson('long', String.randomString(256));
+  }
+
+  void getItemDefinitionsByNameJson(code, value) {
+    try {
+      def query = [:];
+      query['name'] = value;
+      client.get(
+              path: '/3.3/definitions;name',
+              query: query,
+              contentType: JSON);
+      fail 'Response status code should have been 400 (' + code + ').';
+    } catch (HttpResponseException e) {
+      def response = e.response;
+      assertEquals 400, response.status;
+      assertEquals 'application/json', response.contentType;
+      assertTrue response.data instanceof net.sf.json.JSON;
+      assertEquals 'INVALID', response.data.status;
+      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
+      assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+    }
+  }
+
+  @Test
+  void getItemDefinitionsPageOneJson() {
+    def response = client.get(
+            path: '/3.3/definitions;name',
+            query: ['resultLimit': 5],
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    assertTrue response.data.resultsTruncated;
+    assertEquals 5, response.data.itemDefinitions.size();
+  }
+
+  @Test
+  void getItemDefinitionsPageTwoJson() {
+    def response = client.get(
+            path: '/3.3/definitions;name',
+            query: ['resultStart': 5, 'resultLimit': 5],
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    assertFalse response.data.resultsTruncated;
+    assertEquals 2, response.data.itemDefinitions.size();
+  }
+
+  @Test
   void getItemDefinitionsXml() {
     def response = client.get(
             path: '/3.3/definitions;name',
