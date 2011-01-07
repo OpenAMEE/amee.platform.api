@@ -41,9 +41,25 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
     assertEquals 'OK', response.data.status;
-    assertEquals itemDefinitionUids.size(), response.data.itemDefinitions.size()
-    assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort()
-    assert itemDefinitionNames.sort() == response.data.itemDefinitions.collect {it.name}.sort()
+    assertEquals itemDefinitionUids.size(), response.data.itemDefinitions.size();
+    assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort();
+    assert itemDefinitionNames.sort() == response.data.itemDefinitions.collect {it.name}.sort();
+  }
+
+  @Test
+  void getItemDefinitionsByNameJson() {
+    def response = client.get(
+            path: '/3.3/definitions;name',
+            query: ['name': 'cooking'],
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    assertFalse response.data.resultsTruncated;
+    assertEquals 1, response.data.itemDefinitions.size();
+    assert ['1B3B44CAE90C'] == response.data.itemDefinitions.collect {it.uid}.sort();
+    assert ['Cooking'] == response.data.itemDefinitions.collect {it.name}.sort();
   }
 
   @Test
@@ -54,6 +70,7 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
+    assertEquals 'false', response.data.ItemDefinitions.@truncated.text()
     def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
     assertEquals itemDefinitionUids.size(), allItemDefinitions.size()
     assert itemDefinitionUids.sort() == allItemDefinitions.@uid*.text().sort()
