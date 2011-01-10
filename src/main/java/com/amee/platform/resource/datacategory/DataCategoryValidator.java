@@ -3,6 +3,8 @@ package com.amee.platform.resource.datacategory;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.data.DataCategory;
+import com.amee.service.auth.AuthenticationService;
+import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -18,7 +20,13 @@ public class DataCategoryValidator extends BaseValidator {
     private final static String WIKI_NAME_PATTERN_STRING = PATH_PATTERN_STRING;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private DataService dataService;
+
+    @Autowired
+    private ResourceAuthorizationService resourceAuthorizationService;
 
     public DataCategoryValidator() {
         super();
@@ -28,6 +36,7 @@ public class DataCategoryValidator extends BaseValidator {
         addWikiDoc();
         addProvenance();
         addAuthority();
+        addDataCategory();
     }
 
     public boolean supports(Class clazz) {
@@ -110,6 +119,37 @@ public class DataCategoryValidator extends BaseValidator {
                 .setName("authority")
                 .setMaxSize(DataCategory.AUTHORITY_MAX_SIZE)
                 .setAllowEmpty(true)
+        );
+    }
+
+    private void addDataCategory() {
+        add(new ValidationSpecification()
+                .setName("dataCategory")
+                .setAllowEmpty(false)
+                .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                DataCategory thisDC = (DataCategory) object;
+                                DataCategory newParentDC = (DataCategory) value;
+                                // New parent DataCategory cannot be this DataCategory.
+                                if (thisDC.equals(newParentDC)) {
+                                    errors.rejectValue("dataCategory", "same");
+                                } else {
+                                    // Parent DataCategories cannot contain children of this DataCategory.
+                                    // Loop over parents until we go past the root or reach this DataCategory.
+                                    DataCategory parentDC = thisDC.getDataCategory();
+                                    while (parentDC != null) {
+                                        if (parentDC.equals(thisDC)) {
+                                            errors.rejectValue("dataCategory", "child");
+                                            break;
+                                        }
+                                        parentDC = parentDC.getDataCategory();
+                                    }
+                                }
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        })
         );
     }
 

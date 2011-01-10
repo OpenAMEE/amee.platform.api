@@ -2,9 +2,11 @@ package com.amee.platform.resource.datacategory;
 
 import com.amee.base.validation.ValidationHelper;
 import com.amee.domain.data.DataCategory;
+import com.amee.platform.resource.DataCategoryEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 
 import java.util.HashSet;
@@ -17,8 +19,16 @@ public class DataCategoryValidationHelper extends ValidationHelper {
     @Autowired
     private DataCategoryValidator dataCategoryValidator;
 
+    @Autowired
+    private DataCategoryEditor dataCategoryEditor;
+
     private DataCategory dataCategory;
     private Set<String> allowedFields;
+
+    @Override
+    protected void registerCustomEditors(DataBinder dataBinder) {
+        dataBinder.registerCustomEditor(DataCategory.class, "dataCategory", dataCategoryEditor);
+    }
 
     @Override
     public Object getObject() {
@@ -45,6 +55,7 @@ public class DataCategoryValidationHelper extends ValidationHelper {
             allowedFields.add("wikiDoc");
             allowedFields.add("provenance");
             allowedFields.add("authority");
+            allowedFields.add("dataCategory");
         }
         return allowedFields.toArray(new String[]{});
     }

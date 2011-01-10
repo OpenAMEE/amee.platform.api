@@ -1,5 +1,6 @@
 package com.amee.platform.resource.datacategory;
 
+import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRenderer;
 
@@ -13,5 +14,8 @@ public interface DataCategoriesResource {
         public void newDataCategory(DataCategoryResource.Renderer renderer);
 
         public void setTruncated(boolean truncated);
+    }
+
+    public static interface FormAcceptor extends ResourceAcceptor {
     }
 }

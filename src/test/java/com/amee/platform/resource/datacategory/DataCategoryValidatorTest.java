@@ -40,15 +40,23 @@ public class DataCategoryValidatorTest {
         DataCategoryValidator validator = new DataCategoryValidator();
         validator.setDataService(mockDataService);
 
+        DataCategory root = new DataCategory();
+        root.setPath("");
+        root.setWikiName("Root");
+        root.setName("Root");
+
         DataCategory good = new DataCategory();
 
         when(mockLocaleService.getLocaleNameValue(good, "name"))
                 .thenReturn("name");
+        when(mockDataService.isDataCategoryUniqueByPath(good))
+                .thenReturn(true);
         when(mockDataService.isDataCategoryUniqueByWikiName(good))
                 .thenReturn(true);
 
         BindException errorsGood = new BindException(good, "good");
 
+        good.setDataCategory(root);
         good.setName("name");
         good.setPath(RandomStringUtils.randomAlphanumeric(10));
         good.setWikiName(RandomStringUtils.randomAlphanumeric(10));

@@ -20,7 +20,6 @@ public abstract class ReturnValueDefinitionsAcceptor implements ResourceAcceptor
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
-
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Get ItemDefinition identifier.
