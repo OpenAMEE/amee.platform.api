@@ -216,9 +216,7 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     }
 
     public void setDataCategory(DataCategory dataCategory) {
-        if (dataCategory != null) {
-            this.dataCategory = dataCategory;
-        }
+        this.dataCategory = dataCategory;
     }
 
     public ItemDefinition getItemDefinition() {
