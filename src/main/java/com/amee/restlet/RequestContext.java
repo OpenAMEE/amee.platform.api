@@ -24,16 +24,19 @@ public class RequestContext {
     private String requestPath = "";
     private String method = "";
     private String requestParameters = "";
+    private String formParameters = "";
     private String error = "";
-    private String form = "";
-    private String label = "";
-    private String type = "";
     private String more = "";
     private long start = 0L;
     private int status = 200;
+    private String userUid = "";
 
     public RequestContext() {
         this.start = System.currentTimeMillis();
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     public void setMore(String more) {
@@ -105,20 +108,20 @@ public class RequestContext {
     }
 
     /**
-     * Store a string representation of the form parameters.
-     * @param form The Form keys and values.
+     * Store a string representation of the formParameters parameters.
+     * @param formParameters The Form keys and values.
      */
-    public void setForm(Form form) {
-        this.form = getParameters(form);
+    public void setFormParameters(Form formParameters) {
+        this.formParameters = getParameters(formParameters);
     }
 
     /**
-     * Store a string representation of the form parameters.
+     * Store a string representation of the formParameters parameters.
      *
-     * @param params A Map of form parameters keys and values.
+     * @param params A Map of formParameters parameters keys and values.
      */
     public void setForm(Map<String, String> params) {
-        this.form = getParameters(params);
+        this.formParameters = getParameters(params);
     }
 
     public void setStatus(Status status) {
@@ -133,13 +136,19 @@ public class RequestContext {
         transactions.info(toString());
     }
 
+    /**
+     * Returns a description of this RequestContext suitable for logging.
+     * The exact details are subject to change but the following may be considered typical:
+     * 
+     * "USER_UID|REQUEST_PATH|REQUEST_PARAMS|FORM_PARAMS|ERROR_MSG|METHOD|ADDITIONAL_INFO|STATUS|DURATION"
+     */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append(userUid).append("|");
         sb.append(requestPath).append("|");
-        sb.append(type).append("|");
-        sb.append(label).append("|");
-        sb.append(requestParameters.replace("=", "__")).append("|");
-        sb.append(form).append("|");
+        sb.append(requestParameters).append("|");
+        sb.append(formParameters).append("|");
         sb.append(error).append("|");
         sb.append(method).append("|");
         sb.append(more).append("|");
