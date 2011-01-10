@@ -6,8 +6,10 @@ import org.apache.commons.logging.LogFactory;
 import org.restlet.data.Form;
 import org.restlet.data.Parameter;
 import org.restlet.data.Request;
+import org.restlet.data.Status;
 
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A simple bean for holding contextual information about the request.
@@ -28,6 +30,7 @@ public class RequestContext {
     private String type = "";
     private String more = "";
     private long start = 0L;
+    private int status = 200;
 
     public RequestContext() {
         this.start = System.currentTimeMillis();
@@ -55,8 +58,8 @@ public class RequestContext {
         this.requestParameters = getParameters(request.getResourceRef().getQueryAsForm());
     }
 
-    private String getParameters(Form parmameters) {
-        Iterator<Parameter> i = parmameters.iterator();
+    private String getParameters(Form parameters) {
+        Iterator<Parameter> i = parameters.iterator();
         if (!i.hasNext())
             return "";
 
@@ -78,14 +81,48 @@ public class RequestContext {
         }
     }
 
+    private String getParameters(Map<String, String> parameters) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry entry : parameters.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("__");
+            if (!entry.getValue().equals("password")) {
+                sb.append(entry.getValue());
+            } else {
+                sb.append("XXXXXX");
+            }
+            sb.append(", ");
+        }
+
+        // Remove the final trailing separator and space
+        return sb.substring(0, sb.length() - 2);
+    }
+
     public void setError(String error) {
         if (StringUtils.isNotBlank(error)) {
             this.error = error;
         }
     }
 
+    /**
+     * Store a string representation of the form parameters.
+     * @param form The Form keys and values.
+     */
     public void setForm(Form form) {
         this.form = getParameters(form);
+    }
+
+    /**
+     * Store a string representation of the form parameters.
+     *
+     * @param params A Map of form parameters keys and values.
+     */
+    public void setForm(Map<String, String> params) {
+        this.form = getParameters(params);
+    }
+
+    public void setStatus(Status status) {
+        this.status = status.getCode();
     }
 
     public void error() {
@@ -106,6 +143,7 @@ public class RequestContext {
         sb.append(error).append("|");
         sb.append(method).append("|");
         sb.append(more).append("|");
+        sb.append(status + "|");
         sb.append(System.currentTimeMillis() - start);
         return sb.toString();
     }

@@ -4,6 +4,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
+import com.amee.restlet.RequestContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -33,6 +34,8 @@ public class ResourceAcceptManager extends ResourceManager {
                 // Send RequestWrapper to ResourceAcceptor.
                 Object result;
                 RequestWrapper requestWrapper = getRequestWrapper(entity);
+                RequestContext context = (RequestContext) getRequest().getAttributes().get("requestContext");
+                context.setForm(requestWrapper.getFormParameters());
                 try {
                     result = acceptors.get(mediaType.getName()).handle(requestWrapper);
                 } catch (ResourceException e) {

@@ -31,6 +31,7 @@ public class TransactionControllerFilter extends Filter {
             requestContext.error();
             throw new RuntimeException(t);
         } finally {
+            requestContext.setStatus(response.getStatus());
             requestContext.record();
             transactionController.afterHandle(success && !response.getStatus().isError());
         }
