@@ -1,5 +1,4 @@
 import groovyx.net.http.HttpResponseException
-import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -12,25 +11,25 @@ class CategoryIT extends BaseApiTest {
           '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
           'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '25C9445D11E6', 'FD093356A2F9',
           '23B9564ED6AA', '77D7394D46E5', '00383F6EA807', '4304B67B1D19', '588527FFBC5F', '245CBD734418',
-          '245CBD734419', '15AC6CF74915', 'DF717F2CB5CB']
+          '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
 
   static def categoryUidsExcEcoinvent = [
           'CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA',
           '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
           'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '588527FFBC5F', '245CBD734418',
-          '245CBD734419', '15AC6CF74915', 'DF717F2CB5CB']
+          '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
 
   static def categoryNames = [
           'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment',
           'Generic', 'Kitchen', 'Generic', 'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
           'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant',
-          'chlorine, gaseous, diaphragm cell, at plant', 'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'Embodied', 'Clm']
+          'chlorine, gaseous, diaphragm cell, at plant', 'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm']
 
   static def categoryNamesExcEcoinvent = [
           'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking',
           'Entertainment', 'Generic', 'Kitchen', 'Generic', 'Business', 'Energy',
           'Electricity', 'US', 'Subregion', 'Waste',
-          'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'Embodied', 'Clm']
+          'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm']
 
   static def categoryWikiNames = [
           'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment',
@@ -39,23 +38,48 @@ class CategoryIT extends BaseApiTest {
           'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics',
           'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant',
           'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
-          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'Embodied', 'CLM_food_life_cycle_database']
+          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database']
 
   static def categoryWikiNamesExcEcoinvent = [
           'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking',
           'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
           'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'Embodied', 'CLM_food_life_cycle_database']
+          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database']
 
   @Test
-  @Ignore("POST not implemented in API")
-  void createCategory() {
-    client.contentType = JSON
-    def response = client.post(
-            path: '/3.0/categories/CATEGORY1',
-            body: [wikiName: 'testWikiName'],
-            requestContentType: URLENC)
-    assertEquals 201, response.status
+  void createCategoryJson() {
+    setAdminUser();
+      // Create a DataCategory.
+    def responsePost = client.post(
+            path: '/3.3/categories',
+            body: [
+                    dataCategory: 'Root',
+                    path: 'testPath',
+                    name: 'Test Name',
+                    wikiName: 'Test_Wiki_Name'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status
+    // Get the new DataCategory.
+    def responseGet = client.get(
+            path: '/3.3/categories/Test_Wiki_Name',
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 'application/json', responseGet.contentType;
+    assertTrue responseGet.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', responseGet.data.status;
+    assertEquals "Test Name", responseGet.data.category.name
+    assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
+    // Then delete it
+    def responseDelete = client.delete(path: '/3.3/categories/Test_Wiki_Name');
+    assertEquals 200, responseDelete.status;
+    // We should get a 404 here
+    try {
+      client.get(path: '/3.3/categories/Test_Wiki_Name');
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
   }
 
   @Test
@@ -334,6 +358,9 @@ class CategoryIT extends BaseApiTest {
     updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
     updateCategoryFieldJson('provenance', 'long', String.randomString(256));
     updateCategoryFieldJson('authority', 'long', String.randomString(256));
+    updateCategoryFieldJson('dataCategory', 'same', '245CBD734418');
+    updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child');
+    updateCategoryFieldJson('dataCategory', 'empty', 'XXX');
   }
 
   void updateCategoryFieldJson(field, code, value) {
@@ -356,7 +383,6 @@ class CategoryIT extends BaseApiTest {
       assertTrue response.data instanceof net.sf.json.JSON;
       assertEquals 'INVALID', response.data.status;
       assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
       assertTrue([code] == response.data.validationResult.errors.collect {it.code});
     }
   }

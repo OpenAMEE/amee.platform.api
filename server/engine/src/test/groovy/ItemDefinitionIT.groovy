@@ -83,7 +83,6 @@ class ItemDefinitionIT extends BaseApiTest {
       assertEquals 'application/json', response.contentType;
       assertTrue response.data instanceof net.sf.json.JSON;
       assertEquals 'INVALID', response.data.status;
-      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
       assertTrue([code] == response.data.validationResult.errors.collect {it.code});
     }
   }
@@ -221,7 +220,6 @@ class ItemDefinitionIT extends BaseApiTest {
       assertEquals 'INVALID', response.data.status;
       // NOTE: This is commented out as 'usages' becomes 'usagesString' on the server-side causing this check to fail.
       // assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
       assertTrue([code] == response.data.validationResult.errors.collect {it.code});
     }
   }

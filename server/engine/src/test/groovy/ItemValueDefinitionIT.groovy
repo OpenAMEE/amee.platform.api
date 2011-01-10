@@ -147,7 +147,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
       assertTrue response.data instanceof net.sf.json.JSON;
       assertEquals 'INVALID', response.data.status;
       assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-      assertTrue([value] == response.data.validationResult.errors.collect {it.value});
       assertTrue([code] == response.data.validationResult.errors.collect {it.code});
     }
   }

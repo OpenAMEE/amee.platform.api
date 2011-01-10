@@ -97,6 +97,7 @@
     <bean id="dataCategoriesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
         <property name="allowDelete" value="false"/>
+        <property name="allowPost" value="true"/>
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="categories"/>
         <property name="attributeNames">
@@ -110,13 +111,16 @@
                           value="com.amee.platform.resource.datacategory.DataCategoriesResource$Builder"/>
             </bean>
         </property>
-        <!--<property name="acceptors">-->
-        <!--<map>-->
-        <!--<entry key="application/x-www-form-urlencoded">-->
-        <!--<bean class="com.amee.platform.resource.category.DataCategoriesFormAcceptor"/>-->
-        <!--</entry>-->
-        <!--</map>-->
-        <!--</property>-->
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.datacategory.DataCategoriesResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
     </bean>
 
     <bean id="dataCategoryResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
@@ -144,9 +148,12 @@
                 </entry>
             </map>
         </property>
-        <!--<property name="remover">-->
-        <!--<bean class="com.amee.platform.resource.category.DataCategoryRemover"/>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.datacategory.DataCategoryResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="dataItemsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
@@ -166,13 +173,6 @@
                           value="com.amee.platform.resource.dataitem.DataItemsResource$Builder"/>
             </bean>
         </property>
-        <!--<property name="acceptors">-->
-        <!--<map>-->
-        <!--<entry key="application/x-www-form-urlencoded">-->
-        <!--<bean class="com.amee.platform.resource.item.DataItemsFormAcceptor"/>-->
-        <!--</entry>-->
-        <!--</map>-->
-        <!--</property>-->
     </bean>
 
     <bean id="dataItemResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
