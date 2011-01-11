@@ -90,6 +90,12 @@
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}/tags" value-ref="tagsRouter"/>
+                <entry key="/{categoryIdentifier}/drill">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="drillResource"/>
+                        <property name="since" value="3.3.0"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
@@ -535,6 +541,23 @@
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
                           value="com.amee.platform.resource.tag.TagResource$Remover"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Drill -->
+    <bean id="drillResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>categoryIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.drill.DrillResource$Builder"/>
             </bean>
         </property>
     </bean>
