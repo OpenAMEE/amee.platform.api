@@ -2,6 +2,7 @@ package com.amee.platform.restlet;
 
 import com.amee.domain.auth.User;
 import com.amee.restlet.BaseGuard;
+import com.amee.restlet.RequestContext;
 import com.amee.service.auth.AuthenticationService;
 import org.restlet.Application;
 import org.restlet.data.ChallengeScheme;
@@ -30,6 +31,8 @@ public class CollectCredentialsGuard extends BaseGuard {
         if (activeUser != null) {
             request.getAttributes().put("activeUser", activeUser);
             request.getAttributes().put("activeUserUid", activeUser.getUid());
+            RequestContext context = (RequestContext) request.getAttributes().get("requestContext");
+            context.setUserUid(activeUser.getUid());
             return true;
         } else {
             return false;
