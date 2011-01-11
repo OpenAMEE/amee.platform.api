@@ -18,9 +18,9 @@
 
     <!-- Annotations and other stuff. -->
     <!-- Commented out as part of: https://jira.amee.com/browse/PL-9456 -->
-    <!--<context:load-time-weaver/>-->
+    <context:load-time-weaver/>
     <!--<context:spring-configured/>-->
-    <!--<context:annotation-config/>-->
+    <context:annotation-config/>
     <context:component-scan base-package="com"/>
     <!--<tx:annotation-driven mode="aspectj"/>-->
 
@@ -31,9 +31,9 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="testDataSource"/>
         <!-- Commented out as part of: https://jira.amee.com/browse/PL-9456 -->
-        <!--<property name="loadTimeWeaver">-->
-        <!--<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>-->
-        <!--</property>-->
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+        </property>
     </bean>
 
     <!-- TransactionManager. -->
