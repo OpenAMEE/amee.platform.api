@@ -9,9 +9,9 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.drill.DrillResource;
+import com.amee.platform.search.SearchDrillDownService;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
-import com.amee.service.data.DrillDownService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class DrillBuilder_3_3_0 implements DrillResource.Builder {
     private DataService dataService;
 
     @Autowired
-    private DrillDownService drillDownService;
+    private SearchDrillDownService searchDrillDownService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
@@ -63,7 +63,7 @@ public class DrillBuilder_3_3_0 implements DrillResource.Builder {
     protected void handle(RequestWrapper requestWrapper, DataCategory dataCategory) {
 
         List<Choice> selections = getSelections(requestWrapper);
-        Choices choices = drillDownService.getChoices(dataCategory, selections);
+        Choices choices = searchDrillDownService.getChoices(dataCategory, selections);
 
         DrillResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();

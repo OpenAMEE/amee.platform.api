@@ -18,7 +18,7 @@ public class DrillJSONRenderer_3_3_0 implements DrillResource.Renderer {
     private JSONObject drillObj;
     private JSONArray selectionsArr;
     private JSONObject choicesObj;
-    private JSONArray choicesArr;
+    private JSONArray valuesArr;
 
     public void start() {
         rootObj = new JSONObject();
@@ -48,17 +48,12 @@ public class DrillJSONRenderer_3_3_0 implements DrillResource.Renderer {
         choicesObj = new JSONObject();
         ResponseHelper.put(drillObj, "choices", choicesObj);
         ResponseHelper.put(choicesObj, "name", name);
-        choicesArr = new JSONArray();
-        ResponseHelper.put(choicesObj, "choices", choicesArr);
+        valuesArr = new JSONArray();
+        ResponseHelper.put(choicesObj, "values", valuesArr);
     }
 
     public void newChoice(Choice choice) {
-        JSONObject obj = new JSONObject();
-        if (!choice.getValue().equals(choice.getName())) {
-            ResponseHelper.put(obj, "name", choice.getName());
-        }
-        ResponseHelper.put(obj, "value", choice.getValue());
-        choicesArr.put(obj);
+        valuesArr.put(choice.getValue());
     }
 
     public String getMediaType() {

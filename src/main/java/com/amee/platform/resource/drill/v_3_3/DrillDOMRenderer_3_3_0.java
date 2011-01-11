@@ -17,6 +17,7 @@ public class DrillDOMRenderer_3_3_0 implements DrillResource.Renderer {
     private Element drillElem;
     private Element selectionsElem;
     private Element choicesElem;
+    private Element valuesElem;
 
     public void start() {
         rootElem = new Element("Representation");
@@ -45,16 +46,13 @@ public class DrillDOMRenderer_3_3_0 implements DrillResource.Renderer {
     public void startChoices(String name) {
         choicesElem = new Element("Choices");
         drillElem.addContent(choicesElem);
-        choicesElem.setAttribute("name", name);
+        choicesElem.addContent(new Element("Name").setText(name));
+        valuesElem = new Element("Values");
+        choicesElem.addContent(valuesElem);
     }
 
     public void newChoice(Choice choice) {
-        Element elem = new Element("Choice");
-        choicesElem.addContent(elem);
-        if (!choice.getValue().equals(choice.getName())) {
-            elem.addContent(new Element("Name").setText(choice.getName()));
-        }
-        elem.addContent(new Element("Value").setText(choice.getValue()));
+        valuesElem.addContent(new Element("Value").setText(choice.getValue()));
     }
 
     public String getMediaType() {
