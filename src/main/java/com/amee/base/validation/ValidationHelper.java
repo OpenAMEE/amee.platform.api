@@ -5,6 +5,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -15,6 +17,9 @@ import java.util.Map;
 public abstract class ValidationHelper {
 
     private final Log log = LogFactory.getLog(getClass());
+
+    @Autowired
+    private MessageSource messageSource;
 
     private DataBinder dataBinder;
 
@@ -126,7 +131,7 @@ public abstract class ValidationHelper {
 
     public ValidationResult getValidationResult() {
         // We always want a new ValidationResult.
-        ValidationResult validationResult = new ValidationResult();
+        ValidationResult validationResult = new ValidationResult(messageSource);
         // Add the errors.
         validationResult.setErrors(getErrors());
         // Add the values.
