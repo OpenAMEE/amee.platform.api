@@ -289,7 +289,7 @@ class TagIT extends BaseApiTest {
             query: ['tags': 'entitytagtobedeleted'],
             contentType: JSON);
     assertEquals 200, responseGet.status;
-    assertEquals 1, responseGet.data.categories.size();
+    assertEquals 'We expected at least one category. Is RabbitMQ running?', 1, responseGet.data.categories.size();
     assert ['Kitchen_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
     // Then delete the EntityTag.
     def responseDelete = client.delete(path: '/3.3/categories/Kitchen_generic/tags/entitytagtobedeleted');
@@ -327,7 +327,7 @@ class TagIT extends BaseApiTest {
             query: ['tags': 'entitytagtobedeleted'],
             contentType: JSON);
     assertEquals 200, responseGet.status;
-    assertEquals 1, responseGet.data.categories.size();
+    assertEquals 'We expected at least one category. Is RabbitMQ running?', 1, responseGet.data.categories.size();
     assert ['Entertainment_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
     // Then delete the EntityTag.
     responseDelete = client.delete(path: '/3.3/categories/Entertainment_generic/tags/entitytagtobedeleted');
@@ -361,6 +361,51 @@ class TagIT extends BaseApiTest {
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
     }
+  }
+
+  @Test
+  void createAndRemoveMultipleEntityTagsJson() {
+    setAdminUser();
+    // Check categories cannot be discovered via the tag.
+    def responseGet = client.get(path: '/3.3/categories',
+            query: ['tags': 'entitytagtobedeleted'],
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 0, responseGet.data.categories.size();
+    // Create a new Tag & EntityTag on a DataCategory.
+    def responsePost = client.post(
+            path: '/3.3/categories/Kitchen_generic/tags',
+            body: [tag: 'entitytagtobedeleted'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status;
+    // Create a new EntityTag on another DataCategory.
+    responsePost = client.post(
+            path: '/3.3/categories/Entertainment_generic/tags',
+            body: [tag: 'entitytagtobedeleted'],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status;
+    // Sleep a little to give the index a chance to be updated.
+    sleep(1000);
+    // Check the categories can be discovered via the tag.
+    responseGet = client.get(path: '/3.3/categories',
+            query: ['tags': 'entitytagtobedeleted'],
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 'We expected at least two categories. Is RabbitMQ running?', 2, responseGet.data.categories.size();
+    assert ['Kitchen_generic', 'Entertainment_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
+    // Now delete the Tag.
+    def responseDelete = client.delete(path: '/3.3/tags/entitytagtobedeleted');
+    assertEquals 200, responseDelete.status;
+    // Sleep a little to give the index a chance to be updated.
+    sleep(1000);
+    // Check categories cannot be discovered via the tag.
+    responseGet = client.get(path: '/3.3/categories',
+            query: ['tags': 'entitytagtobedeleted'],
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 0, responseGet.data.categories.size();
   }
 
   @Test
