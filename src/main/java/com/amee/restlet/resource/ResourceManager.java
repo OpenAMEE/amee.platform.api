@@ -1,5 +1,6 @@
 package com.amee.restlet.resource;
 
+import com.amee.restlet.AMEESpringServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -19,6 +20,13 @@ public class ResourceManager {
 
     public void init(GenericResource resource) {
         this.resource = resource;
+    }
+
+    /**
+     * This is how we tell if the request came via HTTPS as SSL is terminated at the load balancer.
+     */
+    protected boolean isSecure() {
+        return getActiveServer().isSecure();
     }
 
     protected boolean isOk(JSONObject result) {
@@ -110,5 +118,9 @@ public class ResourceManager {
 
     public void setAttributeNames(Set<String> attributeNames) {
         resource.setAttributeNames(attributeNames);
+    }
+
+    public AMEESpringServer getActiveServer() {
+        return (AMEESpringServer) getRequest().getAttributes().get("activeServer");
     }
 }

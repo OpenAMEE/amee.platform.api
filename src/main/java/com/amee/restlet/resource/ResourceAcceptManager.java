@@ -108,7 +108,12 @@ public class ResourceAcceptManager extends ResourceManager {
     public void handleLocation(JSONObject result) {
         try {
             if (result.has("location")) {
-                getResponse().setLocationRef(new Reference(result.getString("location")));
+                if (isSecure()) {
+
+                    // Override the protocol if the 'secure' server is being used.
+                    getRequest().getResourceRef().setProtocol(Protocol.HTTPS);
+                }
+                getResponse().setLocationRef(new Reference(getRequest().getResourceRef().getHostIdentifier() + result.getString("location")));
             }
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
@@ -162,7 +167,12 @@ public class ResourceAcceptManager extends ResourceManager {
     public void handleLocation(Element result) {
         String location = result.getChildText("Location");
         if (location != null) {
-            getResponse().setLocationRef(new Reference(location));
+            if (isSecure()) {
+
+                // Override the protocol if the 'secure' server is being used.
+                getRequest().getResourceRef().setProtocol(Protocol.HTTPS);
+            }
+            getResponse().setLocationRef(new Reference(getRequest().getResourceRef().getHostIdentifier() + location));
         }
     }
 

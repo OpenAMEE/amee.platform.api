@@ -31,9 +31,12 @@ public class RestletEngine extends Engine {
 
         // Configure Restlet server (ajp, http, etc).
         // TODO: Try and do this in Spring XML config.  
-        Server ajpServer = ((Server) getSpringContext().getBean("platformServer"));
-        ajpServer.getContext().getAttributes().put("transactionController", getTransactionController());
-        ajpServer.getContext().getAttributes().put("springContext", getSpringContext());
+        Server server = ((Server) getSpringContext().getBean("platformServer"));
+        server.getContext().getAttributes().put("transactionController", getTransactionController());
+        server.getContext().getAttributes().put("springContext", getSpringContext());
+        Server secureServer = ((Server) getSpringContext().getBean("platformSecureServer"));
+        secureServer.getContext().getAttributes().put("transactionController", getTransactionController());
+        secureServer.getContext().getAttributes().put("springContext", getSpringContext());
 
         // Configure Restlet logging to log on a single line.
         LogService logService = container.getLogService();
@@ -47,9 +50,9 @@ public class RestletEngine extends Engine {
             // TODO: Make this a start-up argument instead.
             String startServletContext = System.getenv("START_SERVLET_CONTEXT");
             if (Boolean.parseBoolean(startServletContext)) {
-                org.mortbay.jetty.Server server = (org.mortbay.jetty.Server) getSpringContext().getBean("servletServer");
-                server.start();
-                server.join();
+                org.mortbay.jetty.Server servletServer = (org.mortbay.jetty.Server) getSpringContext().getBean("servletServer");
+                servletServer.start();
+                servletServer.join();
             }
             return true;
         } catch (Exception e) {
