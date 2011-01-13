@@ -6,11 +6,14 @@ import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.ObjectType;
+import com.amee.domain.tag.EntityTag;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagResource;
 import com.amee.platform.resource.tag.TagResourceService;
 import com.amee.platform.resource.tag.TagValidationHelper;
 import com.amee.service.auth.ResourceAuthorizationService;
+import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.tag.TagService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +41,9 @@ public class TagFormAcceptor_3_2_0 implements TagResource.FormAcceptor {
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
+    @Autowired
+    private InvalidationService invalidationService;
+
     @Override
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
@@ -54,10 +60,14 @@ public class TagFormAcceptor_3_2_0 implements TagResource.FormAcceptor {
                 // Authorized?
                 resourceAuthorizationService.ensureAuthorizedForModify(
                         requestWrapper.getAttributes().get("activeUserUid"), tag);
-                // Handle the DataCategory update (entity updated via validation binding).
+                // Handle the Tag update (entity updated via validation binding).
                 validationHelper.setTag(tag);
                 if (validationHelper.isValid(requestWrapper.getFormParameters())) {
-                    // TODO: Invalidation.
+                    // Invalidation.
+                    for (EntityTag entityTag : tagService.getEntityTagsForTag(ObjectType.DC, tag)) {
+                        invalidationService.add(entityTag.getEntityReference());
+                    }
+                    // Woo!
                     return ResponseHelper.getOK(requestWrapper);
                 } else {
                     throw new ValidationException(validationHelper.getValidationResult());
