@@ -187,6 +187,8 @@ class DataItemIT extends BaseApiTest {
     } catch (HttpResponseException e) {
       def response = e.response;
       assertEquals 403, response.status;
+      assertEquals 403, response.data.status.code;
+      assertEquals 'Forbidden', response.data.status.name;
     }
   }
 }

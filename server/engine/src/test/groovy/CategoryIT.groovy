@@ -298,6 +298,7 @@ class CategoryIT extends BaseApiTest {
                     'wikiName': 'New_Wiki_Name',
                     'provenance': 'New Provenance.',
                     'authority': 'New Authority.',
+                    'history': 'New History.',
                     'wikiDoc': 'New WikiDoc.'],
             requestContentType: URLENC,
             contentType: JSON);
@@ -315,6 +316,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'New_Wiki_Name', responseGet.data.category.wikiName;
     assertEquals 'New Provenance.', responseGet.data.category.provenance;
     assertEquals 'New Authority.', responseGet.data.category.authority;
+    assertEquals 'New History.', responseGet.data.category.history;
     assertEquals 'New WikiDoc.', responseGet.data.category.wikiDoc;
   }
 
@@ -358,6 +360,7 @@ class CategoryIT extends BaseApiTest {
     updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
     updateCategoryFieldJson('provenance', 'long', String.randomString(256));
     updateCategoryFieldJson('authority', 'long', String.randomString(256));
+    updateCategoryFieldJson('history', 'long', String.randomString(32768));
     updateCategoryFieldJson('dataCategory', 'same', '245CBD734418');
     updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child');
     updateCategoryFieldJson('dataCategory', 'empty', 'XXX');

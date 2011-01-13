@@ -2,7 +2,9 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>Validation Messages</comment>
-    <entry key="name.empty">You must enter a name.</entry>
-    <entry key="name.short">The name is too short.</entry>
-    <entry key="name.long">The name is too long.</entry>
+    <entry key="empty.name">The name is empty.</entry>
+    <entry key="short.name">The name is too short.</entry>
+    <entry key="long.name">The name is too long.</entry>
+    <entry key="typeMismatch.unit">The value is not a valid unit.</entry>
+    <entry key="typeMismatch.perUnit">The value is not a valid per-unit.</entry>
 </properties>
