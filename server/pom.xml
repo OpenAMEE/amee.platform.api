@@ -202,7 +202,7 @@
                         <!--<VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>-->
 
                         <!-- RabbitMQ -->
-                        <MESSAGING_RUN_SLEEP>30000</MESSAGING_RUN_SLEEP>
+                        <MESSAGING_RUN_SLEEP>1000</MESSAGING_RUN_SLEEP>
                         <RABBIT_MQ_ADDRESS>127.0.0.1</RABBIT_MQ_ADDRESS>
                         <RABBIT_MQ_PORT>5672</RABBIT_MQ_PORT>
                         <RABBIT_MQ_USERNAME>guest</RABBIT_MQ_USERNAME>
@@ -255,6 +255,7 @@
                         <amee.checkDataCategories>true</amee.checkDataCategories>
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
+                        <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
                     </systemPropertyVariables>
                     <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
                     </argLine>
