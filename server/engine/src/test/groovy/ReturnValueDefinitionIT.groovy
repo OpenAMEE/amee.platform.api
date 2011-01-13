@@ -21,8 +21,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertTrue responsePost.headers['Location'] != null;
     assertTrue responsePost.headers['Location'].value != null;
     def location = responsePost.headers['Location'].value;
+    assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[5];
+    returnValueDefinitionUids[2] = location.split('/')[7];
     returnValueDefinitionTypes[2] = 'CO2';
     // Get the new RVD.
     def responseGet = client.get(
@@ -178,7 +179,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def location = responsePost.headers['Location'].value
 
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[5]
+    returnValueDefinitionUids[2] = location.split('/')[7]
     returnValueDefinitionTypes[2] = 'new'
 
     // Check the new one is default.
