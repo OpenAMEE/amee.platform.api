@@ -63,6 +63,7 @@ public class DataCategoryValidatorTest {
         good.setWikiDoc(RandomStringUtils.random(10));
         good.setProvenance(RandomStringUtils.random(10));
         good.setAuthority(RandomStringUtils.random(10));
+        good.setHistory(RandomStringUtils.random(10));
 
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());
@@ -265,6 +266,26 @@ public class DataCategoryValidatorTest {
 
         bad.setName("name");
         bad.setAuthority(RandomStringUtils.random(DataCategory.AUTHORITY_MAX_SIZE + 1));
+
+        validator.validate(bad, errorsBad);
+        assertTrue("Object should fail validation", errorsBad.hasErrors());
+    }
+
+    @Test
+    public void testHistoryGreaterThanMax() {
+
+        DataCategoryValidator validator = new DataCategoryValidator();
+        validator.setDataService(mockDataService);
+
+        DataCategory bad = new DataCategory();
+
+        when(mockLocaleService.getLocaleNameValue(bad, "name"))
+                .thenReturn("name");
+
+        BindException errorsBad = new BindException(bad, "bad");
+
+        bad.setName("name");
+        bad.setHistory(RandomStringUtils.random(DataCategory.HISTORY_MAX_SIZE + 1));
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());

@@ -165,6 +165,10 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
         // Not implemented for ecospold.
     }
 
+    public void addHistory() {
+        // Not implemented for ecospold.
+    }
+
     public void addWikiDoc() {
         // Not implemented for ecospold.
     }

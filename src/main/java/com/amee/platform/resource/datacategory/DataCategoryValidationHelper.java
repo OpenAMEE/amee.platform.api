@@ -55,6 +55,7 @@ public class DataCategoryValidationHelper extends ValidationHelper {
             allowedFields.add("wikiDoc");
             allowedFields.add("provenance");
             allowedFields.add("authority");
+            allowedFields.add("history");
             allowedFields.add("dataCategory");
         }
         return allowedFields.toArray(new String[]{});

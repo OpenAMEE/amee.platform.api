@@ -65,6 +65,10 @@ public class DataCategoryJSONRenderer_3_0_0 implements DataCategoryResource.Rend
         ResponseHelper.put(dataCategoryObj, "authority", dataCategory.getAuthority());
     }
 
+    public void addHistory() {
+        ResponseHelper.put(dataCategoryObj, "history", dataCategory.getHistory());
+    }
+
     public void addWikiDoc() {
         ResponseHelper.put(dataCategoryObj, "wikiDoc", dataCategory.getWikiDoc());
     }

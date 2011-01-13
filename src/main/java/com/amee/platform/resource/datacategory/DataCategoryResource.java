@@ -32,6 +32,8 @@ public interface DataCategoryResource {
 
         public void addAuthority();
 
+        public void addHistory();
+
         public void addWikiDoc();
 
         public void addProvenance();

@@ -36,6 +36,7 @@ public class DataCategoryValidator extends BaseValidator {
         addWikiDoc();
         addProvenance();
         addAuthority();
+        addHistory();
         addDataCategory();
     }
 
@@ -118,6 +119,14 @@ public class DataCategoryValidator extends BaseValidator {
         add(new ValidationSpecification()
                 .setName("authority")
                 .setMaxSize(DataCategory.AUTHORITY_MAX_SIZE)
+                .setAllowEmpty(true)
+        );
+    }
+
+    private void addHistory() {
+        add(new ValidationSpecification()
+                .setName("history")
+                .setMaxSize(DataCategory.HISTORY_MAX_SIZE)
                 .setAllowEmpty(true)
         );
     }

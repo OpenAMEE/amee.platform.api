@@ -40,6 +40,7 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
         filter.setLoadMetadatas(
                 requestWrapper.getMatrixParameters().containsKey("full") ||
                         requestWrapper.getMatrixParameters().containsKey("authority") ||
+                        requestWrapper.getMatrixParameters().containsKey("history") ||
                         requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
                         requestWrapper.getMatrixParameters().containsKey("provenance"));
         SearchResource.SearchFilterValidationHelper validationHelper = getValidationHelper(requestWrapper);

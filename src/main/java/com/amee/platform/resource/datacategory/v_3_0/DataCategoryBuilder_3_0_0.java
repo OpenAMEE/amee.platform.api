@@ -83,6 +83,7 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
         boolean path = requestWrapper.getMatrixParameters().containsKey("path");
         boolean parent = requestWrapper.getMatrixParameters().containsKey("parent");
         boolean authority = requestWrapper.getMatrixParameters().containsKey("authority");
+        boolean history = requestWrapper.getMatrixParameters().containsKey("history");
         boolean wikiDoc = requestWrapper.getMatrixParameters().containsKey("wikiDoc");
         boolean provenance = requestWrapper.getMatrixParameters().containsKey("provenance");
         boolean itemDefinition = requestWrapper.getMatrixParameters().containsKey("itemDefinition");
@@ -104,6 +105,9 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
         }
         if (authority || full) {
             renderer.addAuthority();
+        }
+        if (history || full) {
+            renderer.addHistory();
         }
         if (wikiDoc || full) {
             renderer.addWikiDoc();

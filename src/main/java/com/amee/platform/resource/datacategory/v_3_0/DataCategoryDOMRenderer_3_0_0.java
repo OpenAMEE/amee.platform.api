@@ -64,6 +64,10 @@ public class DataCategoryDOMRenderer_3_0_0 implements DataCategoryResource.Rende
         dataCategoryElem.addContent(new Element("Authority").setText(dataCategory.getAuthority()));
     }
 
+    public void addHistory() {
+        dataCategoryElem.addContent(new Element("History").setText(dataCategory.getHistory()));
+    }
+
     public void addWikiDoc() {
         dataCategoryElem.addContent(new Element("WikiDoc").setText(dataCategory.getWikiDoc()));
     }
