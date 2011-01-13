@@ -50,6 +50,7 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
     public final static int AUTHORITY_MAX_SIZE = 255;
+    public final static int HISTORY_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "DATA_CATEGORY_ID")
@@ -294,6 +295,15 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
 
     public void setAuthority(String authority) {
         getOrCreateMetadata("authority").setValue(authority);
+        onModify();
+    }
+
+    public String getHistory() {
+        return getMetadataValue("history");
+    }
+
+    public void setHistory(String history) {
+        getOrCreateMetadata("history").setValue(history);
         onModify();
     }
 
