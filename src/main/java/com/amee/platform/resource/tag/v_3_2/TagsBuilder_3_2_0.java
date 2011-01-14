@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Scope("prototype")
 @Since("3.2.0")
@@ -50,7 +52,17 @@ public class TagsBuilder_3_2_0 implements TagsResource.Builder {
             TagsResource.Renderer renderer = getRenderer(requestWrapper);
             renderer.start();
             TagResource.Builder builder = getTagBuilder(requestWrapper);
-            for (Tag tag : tagService.getTags(entity, filter.getIncTags(), filter.getExcTags())) {
+            // Get Tags. Tags list will differ depending on whether we are getting tags for an entity or for tag sets.
+            List<Tag> tags;
+            if (entity != null) {
+                // get Tags based on entity.
+                tags = tagService.getTags(entity);
+            } else {
+                // Get Tags based on tag sets.
+                tags = tagService.getTagsWithCount(filter.getIncTags(), filter.getExcTags());
+            }
+            // Add Tags to representation.
+            for (Tag tag : tags) {
                 builder.handle(requestWrapper, tag);
                 renderer.newTag(builder.getRenderer(requestWrapper));
             }

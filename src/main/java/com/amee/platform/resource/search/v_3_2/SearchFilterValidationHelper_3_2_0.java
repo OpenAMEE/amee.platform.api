@@ -41,8 +41,8 @@ public class SearchFilterValidationHelper_3_2_0 extends ValidationHelper impleme
         boosts.put("tags", 10.0f);
         dataBinder.registerCustomEditor(Query.class, "q", new MultiFieldQueryParserEditor(fields, boosts));
         dataBinder.registerCustomEditor(Set.class, "types", new ObjectTypesEditor());
-        dataBinder.registerCustomEditor(Query.class, "tags", new QueryParserEditor("tags"));
-        dataBinder.registerCustomEditor(Query.class, "excTags", new QueryParserEditor("tags"));
+        dataBinder.registerCustomEditor(Query.class, "tags", QueryParserEditor.getTagQueryParserEditor("tags"));
+        dataBinder.registerCustomEditor(Query.class, "excTags", QueryParserEditor.getTagQueryParserEditor("tags"));
     }
 
     @Override
