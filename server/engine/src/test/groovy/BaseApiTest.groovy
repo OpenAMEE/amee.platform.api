@@ -85,7 +85,7 @@ abstract class BaseApiTest {
     @Before
     void setUp() {
         // Get the HTTP client
-        client = new RESTClient("http://${config.api.host}:${config.api.port}");
+        client = new RESTClient("${config.api.protocol}://${config.api.host}:${config.api.port}");
         // Set standard user as default.
         setStandardUser();
     }

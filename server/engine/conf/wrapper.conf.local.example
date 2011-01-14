@@ -45,6 +45,7 @@ set.PROTOCOL=http
 
 # PORT
 set.PORT=8081
+set.SECURE_PORT=8091
 
 # Memory sizing
 wrapper.java.initmemory=256

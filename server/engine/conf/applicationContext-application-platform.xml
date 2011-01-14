@@ -19,10 +19,14 @@
                 <entry key="">
                     <bean class="com.amee.restlet.transaction.TransactionControllerFilter">
                         <property name="next">
-                            <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
-                                <constructor-arg index="0" ref="platformApplication"/>
-                                <constructor-arg index="1" ref="authenticationService"/>
-                                <property name="next" ref="versionsRouter"/>
+                            <bean class="com.amee.restlet.SiteFilter">
+                                <property name="next">
+                                    <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
+                                        <constructor-arg index="0" ref="platformApplication"/>
+                                        <constructor-arg index="1" ref="authenticationService"/>
+                                        <property name="next" ref="versionsRouter"/>
+                                    </bean>
+                                </property>
                             </bean>
                         </property>
                     </bean>

@@ -216,6 +216,7 @@
                         <HOST_NAME>localhost</HOST_NAME>
                         <PROTOCOL>http</PROTOCOL>
                         <PORT>8888</PORT>
+                        <SECURE_PORT>8889</SECURE_PORT>
 
                         <CONF_HOME>${basedir}/conf</CONF_HOME>
                         <AMEE_HOME>${basedir}</AMEE_HOME>

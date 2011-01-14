@@ -1,3 +1,4 @@
+api.protocol = "http"
 api.host = "localhost"
 api.port = 8888
 api.standard.user = "load"
