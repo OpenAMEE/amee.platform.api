@@ -180,7 +180,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryUids.size(), response.data.categories.size()
     assert categoryUids.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
-    assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}.sort()
+    assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}
   }
 
   @Test
@@ -195,7 +195,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryUidsExcEcoinvent.size(), response.data.categories.size()
     assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNamesExcEcoinvent.sort() == response.data.categories.collect {it.name}.sort()
-    assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
+    assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}
   }
 
   @Test
@@ -210,7 +210,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryUids.size(), allCategories.size()
     assert categoryUids.sort() == allCategories.@uid*.text().sort()
     assert categoryNames.sort() == allCategories.Name*.text().sort()
-    assert categoryWikiNames.sort() == allCategories.WikiName*.text().sort()
+    assert categoryWikiNames.sort() == allCategories.WikiName*.text()
   }
 
   @Test
