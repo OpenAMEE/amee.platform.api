@@ -49,7 +49,7 @@ class CategoryIT extends BaseApiTest {
   @Test
   void createCategoryJson() {
     setAdminUser();
-      // Create a DataCategory.
+    // Create a DataCategory.
     def responsePost = client.post(
             path: '/3.3/categories',
             body: [
@@ -344,28 +344,123 @@ class CategoryIT extends BaseApiTest {
     }
   }
 
+  /**
+   * Tests the validation rules for the Data Category name field.
+   *
+   * The rules are as follows:
+   *
+   * <ul>
+   * <li>Mandatory.
+   * <li>Duplicates are allowed.
+   * <li>No longer than 255 chars.
+   * <li>Must not be empty.
+   * </ul>
+   */
   @Test
-  void updateInvalidCategoryFields() {
+  void updateWithInvalidName() {
     setAdminUser();
     updateCategoryFieldJson('name', 'empty', '');
     updateCategoryFieldJson('name', 'short', 'a');
     updateCategoryFieldJson('name', 'long', String.randomString(256));
+  }
+
+  /**
+   * Tests the validation rules for the Data Category path field.
+   *
+   * The rules are as follows:
+   *
+   * <ul>
+   * <li>Mandatory.
+   * <li>Unique on lower case of entire string amongst peer Data Categories (those at same level in hierarchy).
+   * <li>Intended to look like this: 'a_data_category_path' or 'apath' or 'anumberpath3'.
+   * <li>Must match this regular expression: "^[a-zA-Z0-9_\\-]*$"
+   * <li>Numbers and letters only, any case.
+   * <li>No special character except underscores ('_') and hyphens ('-').
+   * <li>No white space.
+   * <li>No longer than 255 characters.
+   * </ul>
+   *
+   * TODO: Although it is legal for a Data Category to have a path that is empty in practice this is not allowed as
+   * the root Data Category is the only one with an empty path. See PL-9542.
+   */
+  @Test
+  void updateWithInvalidPath() {
     updateCategoryFieldJson('path', 'long', String.randomString(256));
     updateCategoryFieldJson('path', 'format', 'n o t v a l i d');
     updateCategoryFieldJson('path', 'duplicate', 'co2benchmark2');
+  }
+
+  /**
+   * Tests the validation rules for the Data Category wikiName field.
+   *
+   * The rules are as follows:
+   *
+   * <ul>
+   * <li>Mandatory.
+   * <li>Unique on lower case of entire string amongst *all* Data Categories.
+   * <li>Intended to look like this: 'Light_Goods_Freight_Defra'
+   * <li>Must match this regular expression: "^[a-zA-Z0-9_\\-]*$"
+   * <li>Numbers and letters only, any case.
+   * <li>No special character except underscores ('_') and hyphens ('-').
+   * <li>No white space.
+   * <li>No longer than 255 characters.
+   * <li>No shorter than 3 characters.
+   * </ul>
+   */
+  @Test
+  void updateWithInvalidWikiName() {
     updateCategoryFieldJson('wikiName', 'empty', '');
-    updateCategoryFieldJson('wikiName', 'short', 'a');
+    updateCategoryFieldJson('wikiName', 'short', '12');
     updateCategoryFieldJson('wikiName', 'long', String.randomString(256));
     updateCategoryFieldJson('wikiName', 'duplicate', 'CLM_food_life_cycle_database');
+  }
+
+  /**
+   * Tests the validation rules for the Data Category metadata field (wikiDoc, provenance, authority, history).
+   *
+   * The rules are as follows:
+   *
+   * <ul>
+   * <li>All are optional.
+   * <li>wikiDoc and history must be no longer than 32767 characters.
+   * <li>provenance and authority must be no longer than 255 characters.
+   * </ul>
+   */
+  @Test
+  void updateWithInvalidMetadata() {
     updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
     updateCategoryFieldJson('provenance', 'long', String.randomString(256));
     updateCategoryFieldJson('authority', 'long', String.randomString(256));
     updateCategoryFieldJson('history', 'long', String.randomString(32768));
+  }
+
+  /**
+   * Tests the validation rules for setting the parent Data Category of a Data Category.
+   *
+   * The rules are as follows:
+   *
+   * <ul>
+   * <li>The parent Data Category must not be the same as the target Data Category.
+   * <li>The parent Data Category must not be a child of the target Data Category in the hierarchy.
+   * <li>All Data Categories must have a parent Data Category (except the root Data Category).
+   * </ul>
+   *
+   * TODO: Rules handling updates to the root Data Category have not yet been coded up. See PL-9542.
+   */
+  @Test
+  void updateWithInvalidParentCategory() {
     updateCategoryFieldJson('dataCategory', 'same', '245CBD734418');
     updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child');
     updateCategoryFieldJson('dataCategory', 'empty', 'XXX');
   }
 
+  /**
+   * Submits a single Data Category field value and tests the result. An error is expected.
+   *
+   * @param field that is being updated
+   * @param code expected upon error
+   * @param value to submit
+   */
   void updateCategoryFieldJson(field, code, value) {
     try {
       // Create form body.
