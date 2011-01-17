@@ -266,97 +266,65 @@ class TagIT extends BaseApiTest {
     setAdminUser();
     client.contentType = JSON;
     // Check the category cannot be discovered via the tag.
-    def responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 0, responseGet.data.categories.size();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], []);
     // Create a new Tag & EntityTag on a DataCategory.
-    def responsePost = client.post(
-            path: '/3.3/categories/Kitchen_generic/tags',
-            body: [tag: 'entitytagtobedeleted'],
-            requestContentType: URLENC,
-            contentType: JSON);
-    assertEquals 201, responsePost.status;
+    postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted');
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // The EntityTag should exist.
-    responseGet = client.get(path: '/3.3/categories/Kitchen_generic/tags/entitytagtobedeleted');
+    def responseGet = client.get(path: '/3.3/categories/Kitchen_generic/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseGet.status;
-    assertEquals 'entitytagtobedeleted', responseGet.data.tag.tag;
+    assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
     // Check the category can be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 'We expected at least one category. Is RabbitMQ running?', 1, responseGet.data.categories.size();
-    assert ['Kitchen_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic']);
     // Then delete the EntityTag.
-    def responseDelete = client.delete(path: '/3.3/categories/Kitchen_generic/tags/entitytagtobedeleted');
+    def responseDelete = client.delete(path: '/3.3/categories/Kitchen_generic/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseDelete.status;
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // We should get a 404 here for the EntityTag.
     try {
-      client.get(path: '/3.3/categories/Kitchen_generic/tags/entitytagtobedeleted');
+      client.get(path: '/3.3/categories/Kitchen_generic/tags/entity_tag_to_be_deleted');
       fail 'Should have thrown an exception';
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
     }
     // Check the category cannot be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 0, responseGet.data.categories.size();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], []);
     // Create another EntityTag on another DataCategory.
-    responsePost = client.post(
-            path: '/3.3/categories/Entertainment_generic/tags',
-            body: [tag: 'entitytagtobedeleted'],
-            requestContentType: URLENC,
-            contentType: JSON);
-    assertEquals 201, responsePost.status;
+    postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted');
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // The EntityTag should exist.
-    responseGet = client.get(path: '/3.3/categories/Entertainment_generic/tags/entitytagtobedeleted');
+    responseGet = client.get(path: '/3.3/categories/Entertainment_generic/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseGet.status;
-    assertEquals 'entitytagtobedeleted', responseGet.data.tag.tag;
+    assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
     // Check the category can be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 'We expected at least one category. Is RabbitMQ running?', 1, responseGet.data.categories.size();
-    assert ['Entertainment_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Entertainment_generic']);
     // Then delete the EntityTag.
-    responseDelete = client.delete(path: '/3.3/categories/Entertainment_generic/tags/entitytagtobedeleted');
+    responseDelete = client.delete(path: '/3.3/categories/Entertainment_generic/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseDelete.status;
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // We should get a 404 here for the EntityTag.
     try {
-      client.get(path: '/3.3/categories/Entertainment_generic/tags/entitytagtobedeleted');
+      client.get(path: '/3.3/categories/Entertainment_generic/tags/entity_tag_to_be_deleted');
       fail 'Should have thrown an exception';
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
     }
     // Check the category cannot be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 0, responseGet.data.categories.size();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], []);
     // The Tag should still exist.
-    responseGet = client.get(path: '/3.3/tags/entitytagtobedeleted');
+    responseGet = client.get(path: '/3.3/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseGet.status;
-    assertEquals 'entitytagtobedeleted', responseGet.data.tag.tag;
+    assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
     // Now delete the Tag.
-    responseDelete = client.delete(path: '/3.3/tags/entitytagtobedeleted');
+    responseDelete = client.delete(path: '/3.3/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseDelete.status;
     // We should get a 404 here for the Tag.
     try {
-      client.get(path: '/3.3/tags/entitytagtobedeleted');
+      client.get(path: '/3.3/tags/entity_tag_to_be_deleted');
       fail 'Should have thrown an exception';
     } catch (HttpResponseException e) {
       assertEquals 404, e.response.status;
@@ -367,45 +335,110 @@ class TagIT extends BaseApiTest {
   void createAndRemoveMultipleEntityTagsJson() {
     setAdminUser();
     // Check categories cannot be discovered via the tag.
-    def responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 0, responseGet.data.categories.size();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], []);
     // Create a new Tag & EntityTag on a DataCategory.
-    def responsePost = client.post(
-            path: '/3.3/categories/Kitchen_generic/tags',
-            body: [tag: 'entitytagtobedeleted'],
-            requestContentType: URLENC,
-            contentType: JSON);
-    assertEquals 201, responsePost.status;
+    postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted');
     // Create a new EntityTag on another DataCategory.
-    responsePost = client.post(
-            path: '/3.3/categories/Entertainment_generic/tags',
-            body: [tag: 'entitytagtobedeleted'],
-            requestContentType: URLENC,
-            contentType: JSON);
-    assertEquals 201, responsePost.status;
+    postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted');
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // Check the categories can be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
-            contentType: JSON);
-    assertEquals 200, responseGet.status;
-    assertEquals 'We expected at least two categories. Is RabbitMQ running?', 2, responseGet.data.categories.size();
-    assert ['Kitchen_generic', 'Entertainment_generic'].sort() == responseGet.data.categories.collect {it.wikiName}.sort();
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic', 'Entertainment_generic']);
     // Now delete the Tag.
-    def responseDelete = client.delete(path: '/3.3/tags/entitytagtobedeleted');
+    def responseDelete = client.delete(path: '/3.3/tags/entity_tag_to_be_deleted');
     assertEquals 200, responseDelete.status;
     // Sleep a little to give the index a chance to be updated.
     sleep(1000);
     // Check categories cannot be discovered via the tag.
-    responseGet = client.get(path: '/3.3/categories',
-            query: ['tags': 'entitytagtobedeleted'],
+    testFilterCategories(['tags': 'entity_tag_to_be_deleted'], []);
+  }
+
+  @Test
+  void filterOnMultipleTagsJson() {
+    setAdminUser();
+    // Tag DataCategories.
+    postTagToCategory('Kitchen_generic', 'test_tag_1');
+    postTagToCategory('Entertainment_generic', 'test_tag_1');
+    postTagToCategory('Entertainment_generic', 'test_tag_2');
+    postTagToCategory('Entertainment_generic', 'test_tag_3');
+    postTagToCategory('Computers_generic', 'test_tag_3');
+    // Sleep a little to give the index a chance to be updated.
+    sleep(1000);
+    // Check the categories can be discovered.
+    testFilterCategories(['tags': 'test_tag_1'], ['Kitchen_generic', 'Entertainment_generic']);
+    testFilterCategories(['tags': 'test_tag_2'], ['Entertainment_generic']);
+    testFilterCategories(['tags': 'test_tag_3'], ['Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_1 OR test_tag_2 OR test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_1 test_tag_2 test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_1, test_tag_2, test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_1,test_tag_2,test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_3,test_tag_2,test_tag_1'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testFilterCategories(['tags': 'test_tag_1 AND test_tag_2 AND test_tag_3'], ['Entertainment_generic']);
+    testFilterCategories(['tags': 'test_tag_2 OR test_tag_3', 'excTags': 'test_tag_1'], ['Computers_generic']);
+    testFilterCategories(['tags': '(test_tag_2 OR test_tag_3) NOT test_tag_1'], ['Computers_generic']);
+    // Check the categories can be searched for.
+    testSearchForCategories(['q': 'kitchen', 'tags': 'test_tag_1'], ['Kitchen_generic']);
+    testSearchForCategories(['q': 'kitchen', 'tags': '-test_tag_1'], []);
+    testSearchForCategories(['q': 'generic', 'tags': 'test_tag_3'], ['Entertainment_generic', 'Computers_generic']);
+    testSearchForCategories(['q': 'generic', 'tags': 'test_tag_1,test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic']);
+    testSearchForCategories(['q': 'generic', 'tags': 'test_tag_1,test_tag_3', 'excTags': 'test_tag_2'], ['Kitchen_generic', 'Computers_generic']);
+    testSearchForCategories(['q': 'generic', 'tags': '(test_tag_1 OR test_tag_3) NOT test_tag_2'], ['Kitchen_generic', 'Computers_generic']);
+    testSearchForCategories(['q': 'blahblah', 'tags': 'test_tag_1'], []);
+    // Test tag counts.
+    testTags(['incTags': 'test_tag_1'],
+            ['electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
+            [2, 1, 1, 1, 2, 1, 1]);
+    testTags(['incTags': 'test_tag_1, test_tag_2, test_tag_3'],
+            ['computer', 'electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
+            [1, 3, 1, 1, 1, 2, 1, 2]);
+    testTags(['excTags': 'test_tag_1'],
+            ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'ecoinvent', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste'],
+            [1, 1, 1, 1, 1, 6, 2, 2, 2, 2, 1, 1, 1, 1]);
+    // Now delete the Tags.
+    def responseDelete = client.delete(path: '/3.3/tags/test_tag_1');
+    assertEquals 200, responseDelete.status;
+    responseDelete = client.delete(path: '/3.3/tags/test_tag_2');
+    assertEquals 200, responseDelete.status;
+    responseDelete = client.delete(path: '/3.3/tags/test_tag_3');
+    assertEquals 200, responseDelete.status;
+  }
+
+  private def postTagToCategory(category, tag) {
+    def responsePost = client.post(
+            path: '/3.3/categories/' + category + '/tags',
+            body: [tag: tag],
+            requestContentType: URLENC,
+            contentType: JSON);
+    assertEquals 201, responsePost.status
+  }
+
+  private def testFilterCategories(query, expected) {
+    def responseGet = client.get(path: '/3.3/categories',
+            query: query,
             contentType: JSON);
     assertEquals 200, responseGet.status;
-    assertEquals 0, responseGet.data.categories.size();
+    assertEquals 'Unexpected result. Is RabbitMQ running?', expected.size(), responseGet.data.categories.size();
+    assert expected.sort() == responseGet.data.categories.collect {it.wikiName}.sort();
+  }
+
+  private def testSearchForCategories(query, expected) {
+    query['types'] = 'DC';
+    def responseGet = client.get(path: '/3.3/search',
+            query: query,
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 'Unexpected result. Is RabbitMQ running?', expected.size(), responseGet.data.results.size();
+    assert expected.sort() == responseGet.data.results.collect {it.wikiName}.sort();
+  }
+
+  private def testTags(query, expectedTags, expectedCounts) {
+    def responseGet = client.get(path: '/3.3/tags',
+            query: query,
+            contentType: JSON);
+    assertEquals 200, responseGet.status;
+    assertEquals 'Unexpected result. Is RabbitMQ running?', expectedTags.size(), responseGet.data.tags.size();
+    assert expectedTags.sort() == responseGet.data.tags.collect {it.tag}.sort();
+    assert expectedCounts.sort() == responseGet.data.tags.collect {it.count}.sort();
   }
 
   @Test
