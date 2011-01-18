@@ -46,6 +46,28 @@ class CategoryIT extends BaseApiTest {
           'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
           'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database']
 
+  /**
+   * Tests for creation, fetch and deletion of a Data Category using JSON responses.
+   *
+   * Create a new Data Category by POSTing to '/categories'.
+   *
+   * Supported parameters are:
+   *
+   * <ul>
+   * <li>name
+   * <li>path
+   * <li>wikiName
+   * <li>wikiDoc
+   * <li>provenance
+   * <li>authority
+   * <li>history - since 3.3.0.
+   * <li>dataCategory - since 3.3.0.
+   * </ul>
+   *
+   * NOTE: For detailed rules on these parameters see the validation tests below.
+   *
+   * Delete (TRASH) a Data Category by sending a DELETE request to '/categories/{UID|wikiName}' (since 3.3.0).
+   */
   @Test
   void createCategoryJson() {
     setAdminUser();
@@ -82,6 +104,47 @@ class CategoryIT extends BaseApiTest {
     }
   }
 
+  /**
+   * Tests fetching a Data Category by wikiName using JSON responses.
+   *
+   * Fetch a Data Category by sending a GET request to '/categories/{UID|wikiName}'.
+   *
+   * Data Category GET requests support the following query parameters to filter the results.
+   *
+   * <ul>
+   * <li>uid -
+   * <li>name - Include
+   * <li>path
+   * <li>fullPath
+   * <li>wikiName
+   * <li>wikiDoc
+   * <li>provenance
+   * <li>authority
+   * <li>parentUid - Include Data Categories whose parent matches the UID.
+   * <li>parentWikiName - Include Data Categories whose parent matches the wikiName.
+   * <li>itemDefinitionUid - Include Data Categories associated with matching Item Definitions by UID.
+   * <li>itemDefinitionName - Include Data Categories associated with matching Item Definitions by name.
+   * <li>tags - Include Data Categories tagged with tags in this expression.
+   * <li>excTags - Don't include Data Categories tagged with tags in this expression.
+   * <li>resultStart - Zero-based starting index offset to support result-set 'pagination'.
+   * <li>resultLimit - Limit the number of entries in the result-set.
+   * </ul>
+   *
+   * Data Category GET requests support the following matrix parameters to modify the response.
+   *
+   * <ul>
+   * <li>full - include all values.
+   * <li>audit - include the status, created and modified values.
+   * <li>path - include the path and fullPath values.
+   * <li>parent - include the parentUid and parentWikiName values.
+   * <li>authority - include the authority value.
+   * <li>history - include the history value (since 3.3.0).
+   * <li>wikiDoc - include the wikiDoc value.
+   * <li>provenance - include the provenance value.
+   * <li>itemDefinition - include the UID and name of the associated Item Definition (if linked).
+   * <li>tags - include a collection of associated tags.
+   * </ul>
+   */
   @Test
   void getCategoryByWikiNameJson() {
     client.contentType = JSON
@@ -96,6 +159,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
 
+  /**
+   * Tests fetching a Data Category by UID using JSON responses.
+   */
   @Test
   void getCategoryByUidJson() {
     client.contentType = JSON
@@ -110,6 +176,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
 
+  /**
+   * Tests fetching a previously deleted Data Category by wikiName using JSON responses.
+   */
   @Test
   void getTrashedCategoryByWikiNameJson() {
     setRootUser();
@@ -126,16 +195,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
 
-  @Test
-  void getMissingCategoryByWikiName() {
-    try {
-      client.get(path: '/3.1/categories/Wibble')
-      fail 'Should have thrown an exception';
-    } catch (HttpResponseException e) {
-      assertEquals 404, e.response.status;
-    }
-  }
-
+  /**
+   * Tests fetching a previously deleted Data Category by UID using JSON responses.
+   */
   @Test
   void getTrashedCategoryByUidJson() {
     setRootUser();
@@ -152,6 +214,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals "Kitchen_generic", response.data.category.wikiName
   }
 
+  /**
+   * Tests fetching a Data Category, whose parent has been deleted, by UID using JSON responses.
+   */
   @Test
   void getInferredTrashedCategoryByUidJson() {
     setRootUser();
@@ -168,6 +233,24 @@ class CategoryIT extends BaseApiTest {
     assertEquals "Kitchen_generic_child", response.data.category.wikiName
   }
 
+  /**
+   * Tests fetching a non-existent Data Category by wikiName.
+   */
+  @Test
+  void getMissingCategoryByWikiName() {
+    try {
+      client.get(path: '/3.1/categories/Wibble')
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
+  }
+
+  /**
+   * Tests getting a list of categories using JSON responses.
+   *
+   * The same matrix parameters described above are supported.
+   */
   @Test
   void getCategoriesJson() {
     client.contentType = JSON
@@ -183,6 +266,9 @@ class CategoryIT extends BaseApiTest {
     assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
 
+  /**
+   * Tests getting a list of categories using JSON responses with some categories excluded by tag.
+   */
   @Test
   void getCategoriesWithTagsExcludedJson() {
     client.contentType = JSON
@@ -198,6 +284,9 @@ class CategoryIT extends BaseApiTest {
     assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
 
+  /**
+   * Tests getting a list of categories using XML responses.
+   */
   @Test
   void getCategoriesXml() {
     client.contentType = XML
@@ -286,6 +375,13 @@ class CategoryIT extends BaseApiTest {
     assertEquals 7, allCategories.size()
   }
 
+  /**
+   * Tests that a Data Category can be updated with valid values.
+   *
+   * Update a Data Category by sending a PUT request to '/categories/{UID|wikiName}'.
+   *
+   * NOTE: For detailed rules on these parameters see the validation tests below.
+   */
   @Test
   void updateCategoryJson() {
     setAdminUser();
@@ -320,6 +416,10 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'New WikiDoc.', responseGet.data.category.wikiDoc;
   }
 
+  /**
+   * Tests that multiple invalid Data Categories fields cause the expected 400 invalid response. Tests the
+   * transaction rollback capability.
+   */
   @Test
   void updateInvalidCategoryJson() {
     setAdminUser();
@@ -422,7 +522,7 @@ class CategoryIT extends BaseApiTest {
    *
    * <ul>
    * <li>All are optional.
-   * <li>wikiDoc and history must be no longer than 32767 characters.
+   * <li>wikiDoc and history (since 3.3.0) must be no longer than 32767 characters.
    * <li>provenance and authority must be no longer than 255 characters.
    * </ul>
    */
@@ -443,6 +543,7 @@ class CategoryIT extends BaseApiTest {
    * <li>The parent Data Category must not be the same as the target Data Category.
    * <li>The parent Data Category must not be a child of the target Data Category in the hierarchy.
    * <li>All Data Categories must have a parent Data Category (except the root Data Category).
+   * <li>The value can be either a UID or a wikiName. Either must be of a valid format.
    * </ul>
    *
    * TODO: Rules handling updates to the root Data Category have not yet been coded up. See PL-9542.
