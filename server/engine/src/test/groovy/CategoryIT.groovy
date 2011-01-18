@@ -9,18 +9,18 @@ import static org.junit.Assert.*
 class CategoryIT extends BaseApiTest {
 
   // See import.sql
-  static def categoryUids = [
-          'CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA',
-          '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
-          'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '25C9445D11E6', 'FD093356A2F9',
-          '23B9564ED6AA', '77D7394D46E5', '00383F6EA807', '4304B67B1D19', '588527FFBC5F', '245CBD734418',
-          '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
+  // static def categoryUids = [
+  //        'CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA',
+  //        '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
+  //        'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '25C9445D11E6', 'FD093356A2F9',
+  //        '23B9564ED6AA', '77D7394D46E5', '00383F6EA807', '4304B67B1D19', '588527FFBC5F', '245CBD734418',
+  //        '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
 
-  static def categoryUidsExcEcoinvent = [
-          'CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA',
-          '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
-          'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '588527FFBC5F', '245CBD734418',
-          '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
+  // static def categoryUidsExcEcoinvent = [
+  //        'CD310BEBAC52', 'BBA3AC3E795E', '427DFCC65E52', '3FE23FDC8CEA', 'F27BF795BB04', '54C8A44254AA',
+  //        '75AD9B83B7BF', '319DDB5EC18E', '4BD595E1873A', '3C03A03B5F3A', '99B121BB416C', '066196F049DD',
+  //        'E71CA2FCFFEA', 'AA59F9613F2A', 'D9289C55E595', '3035D381872B', '588527FFBC5F', '245CBD734418',
+  //        '245CBD734419', '245CBD734420', '15AC6CF74915', 'DF717F2CB5CB']
 
   static def categoryNames = [
           'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment',
@@ -32,7 +32,7 @@ class CategoryIT extends BaseApiTest {
           'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking',
           'Entertainment', 'Generic', 'Kitchen', 'Generic', 'Business', 'Energy',
           'Electricity', 'US', 'Subregion', 'Waste',
-          'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm']
+          'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm', 'LCA']
 
   static def categoryWikiNames = [
           'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment',
@@ -47,7 +47,7 @@ class CategoryIT extends BaseApiTest {
           'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking',
           'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
           'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database']
+          'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database', 'LCA']
 
   /**
    * Tests for creation, fetch and deletion of a Data Category using JSON responses.
@@ -255,8 +255,8 @@ class CategoryIT extends BaseApiTest {
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertFalse response.data.resultsTruncated
-    assertEquals categoryUids.size(), response.data.categories.size()
-    assert categoryUids.sort() == response.data.categories.collect {it.uid}.sort()
+    assertEquals categoryNames.size(), response.data.categories.size()
+    // assert categoryUids.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
     assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
@@ -273,8 +273,8 @@ class CategoryIT extends BaseApiTest {
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertFalse response.data.resultsTruncated
-    assertEquals categoryUidsExcEcoinvent.size(), response.data.categories.size()
-    assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
+    assertEquals categoryNamesExcEcoinvent.size(), response.data.categories.size()
+    // assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNamesExcEcoinvent.sort() == response.data.categories.collect {it.name}.sort()
     assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
@@ -291,8 +291,8 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text()
     assertEquals 'false', response.data.Categories.@truncated.text()
     def allCategories = response.data.Categories.Category
-    assertEquals categoryUids.size(), allCategories.size()
-    assert categoryUids.sort() == allCategories.@uid*.text().sort()
+    assertEquals categoryNames.size(), allCategories.size()
+    // assert categoryUids.sort() == allCategories.@uid*.text().sort()
     assert categoryNames.sort() == allCategories.Name*.text().sort()
     assert categoryWikiNames.sort() == allCategories.WikiName*.text().sort()
   }
@@ -309,7 +309,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals 14, response.data.categories.size()
+    assertEquals 8, response.data.categories.size()
   }
 
   /**
@@ -324,7 +324,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     def allCategories = response.data.Categories.Category
-    assertEquals 14, allCategories.size()
+    assertEquals 8, allCategories.size()
   }
 
   /**
@@ -497,6 +497,7 @@ class CategoryIT extends BaseApiTest {
    */
   @Test
   void updateWithInvalidPath() {
+    setAdminUser();
     updateCategoryFieldJson('path', 'long', String.randomString(256));
     updateCategoryFieldJson('path', 'format', 'n o t v a l i d');
     updateCategoryFieldJson('path', 'duplicate', 'co2benchmark2');
@@ -521,6 +522,7 @@ class CategoryIT extends BaseApiTest {
    */
   @Test
   void updateWithInvalidWikiName() {
+    setAdminUser();
     updateCategoryFieldJson('wikiName', 'empty', '');
     updateCategoryFieldJson('wikiName', 'short', '12');
     updateCategoryFieldJson('wikiName', 'long', String.randomString(256));
@@ -540,6 +542,7 @@ class CategoryIT extends BaseApiTest {
    */
   @Test
   void updateWithInvalidMetadata() {
+    setAdminUser();
     updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
     updateCategoryFieldJson('provenance', 'long', String.randomString(256));
     updateCategoryFieldJson('authority', 'long', String.randomString(256));
@@ -562,6 +565,7 @@ class CategoryIT extends BaseApiTest {
    */
   @Test
   void updateWithInvalidParentCategory() {
+    setAdminUser();
     updateCategoryFieldJson('dataCategory', 'same', '245CBD734418');
     updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child');
     updateCategoryFieldJson('dataCategory', 'empty', 'XXX');
