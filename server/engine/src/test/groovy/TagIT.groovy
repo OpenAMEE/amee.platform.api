@@ -3,6 +3,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Data Category API.
+ *
+ * TODO: Document Tags API fully here. See https://jira.amee.com/browse/PL-9546 to vote on this task.
+ */
 class TagIT extends BaseApiTest {
 
   def tagUids = [

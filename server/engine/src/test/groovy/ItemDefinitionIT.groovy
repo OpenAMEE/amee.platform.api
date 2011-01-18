@@ -4,6 +4,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Item Definition API.
+ *
+ * TODO: Document Item Definition API fully here. See https://jira.amee.com/browse/PL-9548 to vote on this task.
+ */
 class ItemDefinitionIT extends BaseApiTest {
 
   static def itemDefinitionUids = [

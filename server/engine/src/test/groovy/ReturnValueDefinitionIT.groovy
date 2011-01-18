@@ -3,6 +3,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Return Value Definition API.
+ *
+ * TODO: Document Return Value Definition API fully here. See https://jira.amee.com/browse/PL-9550 to vote on this task.
+ */
 class ReturnValueDefinitionIT extends BaseApiTest {
 
   def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];

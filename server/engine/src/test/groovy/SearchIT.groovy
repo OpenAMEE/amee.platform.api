@@ -4,6 +4,11 @@ import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Search API.
+ *
+ * TODO: Document Search API fully here. See https://jira.amee.com/browse/PL-9551 to vote on this task.
+ */
 class SearchIT extends BaseApiTest {
 
   @Test

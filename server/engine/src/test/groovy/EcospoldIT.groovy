@@ -4,6 +4,9 @@ import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.fail
 
+/**
+ * Tests for the Data Category API for ecoinvent data.
+ */
 class EcospoldIT extends BaseApiTest {
 
   @Test
