@@ -3,6 +3,9 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Data Category API.
+ */
 class CategoryIT extends BaseApiTest {
 
   // See import.sql
@@ -51,7 +54,7 @@ class CategoryIT extends BaseApiTest {
    *
    * Create a new Data Category by POSTing to '/categories'.
    *
-   * Supported parameters are:
+   * Supported POST parameters are:
    *
    * <ul>
    * <li>name
@@ -92,10 +95,10 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', responseGet.data.status;
     assertEquals "Test Name", responseGet.data.category.name
     assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
-    // Then delete it
+    // Then delete it.
     def responseDelete = client.delete(path: '/3.3/categories/Test_Wiki_Name');
     assertEquals 200, responseDelete.status;
-    // We should get a 404 here
+    // We should get a 404 here.
     try {
       client.get(path: '/3.3/categories/Test_Wiki_Name');
       fail 'Should have thrown an exception';
@@ -112,22 +115,14 @@ class CategoryIT extends BaseApiTest {
    * Data Category GET requests support the following query parameters to filter the results.
    *
    * <ul>
-   * <li>uid -
-   * <li>name - Include
-   * <li>path
-   * <li>fullPath
-   * <li>wikiName
-   * <li>wikiDoc
-   * <li>provenance
-   * <li>authority
-   * <li>parentUid - Include Data Categories whose parent matches the UID.
-   * <li>parentWikiName - Include Data Categories whose parent matches the wikiName.
-   * <li>itemDefinitionUid - Include Data Categories associated with matching Item Definitions by UID.
-   * <li>itemDefinitionName - Include Data Categories associated with matching Item Definitions by name.
-   * <li>tags - Include Data Categories tagged with tags in this expression.
-   * <li>excTags - Don't include Data Categories tagged with tags in this expression.
-   * <li>resultStart - Zero-based starting index offset to support result-set 'pagination'.
-   * <li>resultLimit - Limit the number of entries in the result-set.
+   * <li>uid, name, path, fullPath, wikiName, wikiDoc, provenance, authority, parentUid,
+   *     parentWikiName, itemDefinitionUid, itemDefinitionName - Include Data Categories that match one or more of
+   *     these fields. Query values can be Lucene expressions.
+   * <li>tags - Include Data Categories tagged with tags matching this expression. This can be a comma separated
+   *     list of tags or a full Lucene expression.
+   * <li>excTags - Exclude Data Categories tagged with tags matching this expression. Same rules as 'tags' above.
+   * <li>resultStart - Zero-based starting index offset to support result-set 'pagination'. Defaults to 0.
+   * <li>resultLimit - Limit the number of entries in the result-set. Defaults to 50 with a max of 100.
    * </ul>
    *
    * Data Category GET requests support the following matrix parameters to modify the response.
@@ -302,6 +297,9 @@ class CategoryIT extends BaseApiTest {
     assert categoryWikiNames.sort() == allCategories.WikiName*.text().sort()
   }
 
+  /**
+   * Tests getting a list of categories filtered by authority using JSON responses.
+   */
   @Test
   void filterByAuthorityJson() {
     client.contentType = JSON
@@ -314,6 +312,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 14, response.data.categories.size()
   }
 
+  /**
+   * Tests getting a list of categories filtered by authority using XML responses.
+   */
   @Test
   void filterByAuthorityXml() {
     client.contentType = XML
@@ -326,6 +327,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 14, allCategories.size()
   }
 
+  /**
+   * Tests getting a list of categories filtered by tags using JSON responses.
+   */
   @Test
   void filterByTagsJson() {
     client.contentType = JSON
@@ -338,6 +342,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 4, response.data.categories.size()
   }
 
+  /**
+   * Tests getting a list of categories filtered by tags using XML responses.
+   */
   @Test
   void filterByTagsXml() {
     client.contentType = XML
@@ -346,13 +353,15 @@ class CategoryIT extends BaseApiTest {
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
-
     def allCategories = response.data.Categories.Category
     assertEquals 4, allCategories.size()
   }
 
+  /**
+   * Tests getting a list of categories filtered by fullPath using JSON responses.
+   */
   @Test
-  void filterByPathJson() {
+  void filterByFullPathJson() {
     client.contentType = JSON
     def response = client.get(path: '/3.0/categories',
             query: ['fullPath': '/home/appliances/*'])
@@ -363,6 +372,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 7, response.data.categories.size()
   }
 
+  /**
+   * Tests getting a list of categories filtered by fullPath using XML responses.
+   */
   @Test
   void filterByPathXml() {
     client.contentType = XML
