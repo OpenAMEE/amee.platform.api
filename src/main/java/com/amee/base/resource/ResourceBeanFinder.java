@@ -4,9 +4,11 @@ import com.amee.base.domain.VersionBeanFinder;
 import com.amee.base.validation.ValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Validator;
 
 /**
- * A service bean to aid in discovery of Renderers whilst respecting the Since and Until annotations.
+ * A service bean to aid in discovery of ResourceBuilders, Renderers & ValidationHelper whilst
+ * respecting the Since and Until annotations.
  */
 @Service
 public class ResourceBeanFinder {
@@ -51,6 +53,23 @@ public class ResourceBeanFinder {
             return renderer;
         } else {
             throw new MediaTypeNotSupportedException();
+        }
+    }
+
+    // Validator.
+
+    public Validator getValidator(final Class clazz, final RequestWrapper requestWrapper) {
+        return getValidator(clazz.getName(), requestWrapper);
+    }
+
+    public Validator getValidator(final String className, final RequestWrapper requestWrapper) {
+        // Get the Validator with the supplied class name.
+        Validator validator = (Validator) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion());
+        // A Validator must exist or we shall throw a IllegalStateException.
+        if (validator != null) {
+            return validator;
+        } else {
+            throw new IllegalStateException("At least one Validator was expected.");
         }
     }
 
