@@ -11,14 +11,14 @@ import static org.junit.Assert.*
  */
 class ItemDefinitionIT extends BaseApiTest {
 
-  static def itemDefinitionUids = [
-          '11D3548466F2',
-          '1B3B44CAE90C',
-          'BB33FDB20228',
-          '001D2DF83D01',
-          '0A64D80D77CD',
-          '8B4B7C308D51',
-          '00F880E2B3AA']
+  // static def itemDefinitionUids = [
+  //        '11D3548466F2',
+  //        '1B3B44CAE90C',
+  //        'BB33FDB20228',
+  //        '001D2DF83D01',
+  //        '0A64D80D77CD',
+  //        '8B4B7C308D51',
+  //        '00F880E2B3AA']
 
   static def itemDefinitionNames = [
           'Computers Generic',
@@ -46,8 +46,8 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
     assertEquals 'OK', response.data.status;
-    assertEquals itemDefinitionUids.size(), response.data.itemDefinitions.size();
-    assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort();
+    assertEquals itemDefinitionNames.size(), response.data.itemDefinitions.size();
+    // assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort();
     assert itemDefinitionNames.sort() == response.data.itemDefinitions.collect {it.name}.sort();
   }
 
@@ -130,8 +130,8 @@ class ItemDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text();
     assertEquals 'false', response.data.ItemDefinitions.@truncated.text()
     def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
-    assertEquals itemDefinitionUids.size(), allItemDefinitions.size()
-    assert itemDefinitionUids.sort() == allItemDefinitions.@uid*.text().sort()
+    assertEquals itemDefinitionNames.size(), allItemDefinitions.size()
+    // assert itemDefinitionUids.sort() == allItemDefinitions.@uid*.text().sort()
     assert itemDefinitionNames.sort() == allItemDefinitions.Name*.text().sort()
   }
 
