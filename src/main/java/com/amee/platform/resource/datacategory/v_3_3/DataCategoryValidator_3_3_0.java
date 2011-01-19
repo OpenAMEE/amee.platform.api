@@ -1,8 +1,10 @@
-package com.amee.platform.resource.datacategory;
+package com.amee.platform.resource.datacategory.v_3_3;
 
+import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.data.DataCategory;
+import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.auth.AuthenticationService;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
@@ -13,7 +15,8 @@ import org.springframework.validation.Errors;
 
 @Service
 @Scope("prototype")
-public class DataCategoryValidator extends BaseValidator {
+@Since("3.3.0")
+public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCategoryResource.DataCategoryValidator {
 
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_\\-]*$";
@@ -28,8 +31,12 @@ public class DataCategoryValidator extends BaseValidator {
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
-    public DataCategoryValidator() {
+    public DataCategoryValidator_3_3_0() {
         super();
+        initialise();
+    }
+
+    protected void initialise() {
         addName();
         addPath();
         addWikiName();
@@ -44,7 +51,7 @@ public class DataCategoryValidator extends BaseValidator {
         return DataCategory.class.isAssignableFrom(clazz);
     }
 
-    private void addName() {
+    protected void addName() {
         add(new ValidationSpecification()
                 .setName("name")
                 .setMinSize(DataCategory.NAME_MIN_SIZE)
@@ -52,7 +59,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addPath() {
+    protected void addPath() {
         add(new ValidationSpecification()
                 .setName("path")
                 .setMinSize(DataCategory.PATH_MIN_SIZE)
@@ -76,7 +83,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addWikiName() {
+    protected void addWikiName() {
         add(new ValidationSpecification()
                 .setName("wikiName")
                 .setMinSize(DataCategory.WIKI_NAME_MIN_SIZE)
@@ -99,7 +106,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addWikiDoc() {
+    protected void addWikiDoc() {
         add(new ValidationSpecification()
                 .setName("wikiDoc")
                 .setMaxSize(DataCategory.WIKI_DOC_MAX_SIZE)
@@ -107,7 +114,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addProvenance() {
+    protected void addProvenance() {
         add(new ValidationSpecification()
                 .setName("provenance")
                 .setMaxSize(DataCategory.PROVENANCE_MAX_SIZE)
@@ -115,7 +122,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addAuthority() {
+    protected void addAuthority() {
         add(new ValidationSpecification()
                 .setName("authority")
                 .setMaxSize(DataCategory.AUTHORITY_MAX_SIZE)
@@ -123,7 +130,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addHistory() {
+    protected void addHistory() {
         add(new ValidationSpecification()
                 .setName("history")
                 .setMaxSize(DataCategory.HISTORY_MAX_SIZE)
@@ -131,7 +138,7 @@ public class DataCategoryValidator extends BaseValidator {
         );
     }
 
-    private void addDataCategory() {
+    protected void addDataCategory() {
         add(new ValidationSpecification()
                 .setName("dataCategory")
                 .setAllowEmpty(false)

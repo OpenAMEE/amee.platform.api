@@ -5,6 +5,7 @@ import com.amee.domain.IDataService;
 import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.DataCategory;
+import com.amee.platform.resource.datacategory.v_3_3.DataCategoryValidator_3_3_0;
 import com.amee.service.data.DataService;
 import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
@@ -37,7 +38,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testValid() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory root = new DataCategory();
@@ -72,7 +73,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testNameGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -93,7 +94,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testNameLessThanMin() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -114,7 +115,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testPathGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -134,7 +135,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testPathBadChars() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -154,7 +155,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -174,7 +175,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameLessThanMin() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -194,7 +195,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameBadChars() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -214,7 +215,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiDocGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -234,7 +235,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testProvenanceGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -254,7 +255,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testAuthorityGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();
@@ -274,7 +275,7 @@ public class DataCategoryValidatorTest {
     @Test
     public void testHistoryGreaterThanMax() {
 
-        DataCategoryValidator validator = new DataCategoryValidator();
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
 
         DataCategory bad = new DataCategory();

@@ -7,8 +7,8 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
+import com.amee.platform.resource.datacategory.DataCategoryAcceptor;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
-import com.amee.platform.resource.datacategory.DataCategoryValidationHelper;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 @Since("3.0.0")
-public class DataCategoryFormAcceptor_3_0_0 implements DataCategoryResource.FormAcceptor {
+public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor implements DataCategoryResource.FormAcceptor {
 
     @Autowired
     private DataService dataService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
-
-    @Autowired
-    private DataCategoryValidationHelper validationHelper;
 
     @Transactional(rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
@@ -42,6 +39,7 @@ public class DataCategoryFormAcceptor_3_0_0 implements DataCategoryResource.Form
                 resourceAuthorizationService.ensureAuthorizedForModify(
                         requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
                 // Handle the DataCategory update (entity updated via validation binding).
+                DataCategoryResource.DataCategoryValidationHelper validationHelper = getValidationHelper(requestWrapper);
                 validationHelper.setDataCategory(dataCategory);
                 if (validationHelper.isValid(requestWrapper.getFormParameters())) {
                     dataService.invalidate(dataCategory);

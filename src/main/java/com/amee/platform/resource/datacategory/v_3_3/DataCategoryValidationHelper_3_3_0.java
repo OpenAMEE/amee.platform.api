@@ -1,8 +1,10 @@
-package com.amee.platform.resource.datacategory;
+package com.amee.platform.resource.datacategory.v_3_3;
 
+import com.amee.base.domain.Since;
 import com.amee.base.validation.ValidationHelper;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.DataCategoryEditor;
+import com.amee.platform.resource.datacategory.DataCategoryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -14,16 +16,15 @@ import java.util.Set;
 
 @Service
 @Scope("prototype")
-public class DataCategoryValidationHelper extends ValidationHelper {
+@Since("3.3.0")
+public class DataCategoryValidationHelper_3_3_0 extends ValidationHelper implements DataCategoryResource.DataCategoryValidationHelper {
 
     @Autowired
-    private DataCategoryValidator dataCategoryValidator;
+    protected DataCategoryEditor dataCategoryEditor;
 
-    @Autowired
-    private DataCategoryEditor dataCategoryEditor;
-
-    private DataCategory dataCategory;
-    private Set<String> allowedFields;
+    protected DataCategory dataCategory;
+    protected Set<String> allowedFields;
+    protected DataCategoryResource.DataCategoryValidator validator;
 
     @Override
     protected void registerCustomEditors(DataBinder dataBinder) {
@@ -37,7 +38,12 @@ public class DataCategoryValidationHelper extends ValidationHelper {
 
     @Override
     protected Validator getValidator() {
-        return dataCategoryValidator;
+        return validator;
+    }
+
+    @Override
+    public void setValidator(DataCategoryResource.DataCategoryValidator validator) {
+        this.validator = validator;
     }
 
     @Override
@@ -61,10 +67,12 @@ public class DataCategoryValidationHelper extends ValidationHelper {
         return allowedFields.toArray(new String[]{});
     }
 
+    @Override
     public DataCategory getDataCategory() {
         return dataCategory;
     }
 
+    @Override
     public void setDataCategory(DataCategory dataCategory) {
         this.dataCategory = dataCategory;
     }
