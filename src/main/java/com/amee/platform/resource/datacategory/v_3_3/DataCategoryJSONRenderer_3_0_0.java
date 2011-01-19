@@ -1,4 +1,4 @@
-package com.amee.platform.resource.datacategory.v_3_0;
+package com.amee.platform.resource.datacategory.v_3_3;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
