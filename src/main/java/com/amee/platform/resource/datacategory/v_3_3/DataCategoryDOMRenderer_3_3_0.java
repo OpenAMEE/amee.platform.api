@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.0.0")
-public class DataCategoryDOMRenderer_3_0_0 implements DataCategoryResource.Renderer {
+@Since("3.3.0")
+public class DataCategoryDOMRenderer_3_3_0 implements DataCategoryResource.Renderer {
 
     private DataCategory dataCategory;
     private Element rootElem;
