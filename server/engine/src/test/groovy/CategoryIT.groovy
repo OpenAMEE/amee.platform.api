@@ -399,7 +399,7 @@ class CategoryIT extends BaseApiTest {
     setAdminUser();
     // 1) Do the update (CO2_Benchmark).
     def responsePut = client.put(
-            path: '/3.2/categories/245CBD734418',
+            path: '/3.3/categories/245CBD734418',
             body: [
                     'path': 'newPath',
                     'name': 'New Name',
@@ -413,7 +413,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 201, responsePut.status;
     // 2) Check values have been updated (CO2_Benchmark).
     def responseGet = client.get(
-            path: '/3.2/categories/245CBD734418;full',
+            path: '/3.3/categories/245CBD734418;full',
             contentType: JSON);
     assertEquals 200, responseGet.status;
     assertEquals 'application/json', responseGet.contentType;
@@ -585,7 +585,7 @@ class CategoryIT extends BaseApiTest {
       body[field] = value;
       // Update Category (CO2_Benchmark).
       client.put(
-              path: '/3.2/categories/245CBD734418',
+              path: '/3.3/categories/245CBD734418',
               body: body,
               requestContentType: URLENC,
               contentType: JSON);
