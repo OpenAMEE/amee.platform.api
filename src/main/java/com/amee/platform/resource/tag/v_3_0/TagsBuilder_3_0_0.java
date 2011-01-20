@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Scope("prototype")
 @Since("3.0.0")
@@ -21,9 +23,24 @@ public class TagsBuilder_3_0_0 extends TagsBuilder_3_2_0 {
 
     @Override
     public void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity) {
+
+        List<Tag> tags;
+
+        // Start the Renderer.
         TagsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
-        for (Tag tag : tagService.getTags(entity)) {
+
+        // Are we getting tags for a entity rather than just all Tags?
+        if (entity != null) {
+            // Get Tags for specific entity.
+            tags = tagService.getTags(entity);
+        } else {
+            // Get all Tags.
+            tags = tagService.getTagsWithCount();
+        }
+
+        // Render the Tags.
+        for (Tag tag : tags) {
             renderer.newTag(tag);
         }
     }
