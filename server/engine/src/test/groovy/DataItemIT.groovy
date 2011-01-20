@@ -3,6 +3,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Data Item API.
+ *
+ * TODO: Document Data Item API fully here. See https://jira.amee.com/browse/PL-9547 to vote on this task.
+ */
 class DataItemIT extends BaseApiTest {
 
   static def dataItemUids = [

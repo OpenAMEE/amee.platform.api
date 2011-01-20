@@ -4,6 +4,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Item Value Definition API.
+ *
+ * TODO: Document Item Value Definition API fully here. See https://jira.amee.com/browse/PL-9549 to vote on this task.
+ */
 class ItemValueDefinitionIT extends BaseApiTest {
 
   // TODO: 3.0 tests.

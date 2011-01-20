@@ -59,10 +59,10 @@ abstract class BaseApiTest {
         // NOTE: Remember to exclude trashed and implicitly trashed categories in the count.
         println 'Waiting while the index is built...'
         int count = 0;
-        while (SearchIndexer.getCount() < CategoryIT.categoryUids.size()) {
-            sleep(1000)
+        while (SearchIndexer.getCount() < (CategoryIT.categoryNames.size() - 1)) {
+            sleep(1000);
             count++;
-            println 'Waited ' + count + ' second(s) whilst the index is being built...'
+            println 'Waited ' + count + ' second(s) whilst the index is being built... (' + SearchIndexer.getCount() + '/' + CategoryIT.categoryNames.size() + ')';
         }
 
         // Ensure index reader is re-opened.

@@ -3,6 +3,11 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Data Category API.
+ *
+ * TODO: Document Tags API fully here. See https://jira.amee.com/browse/PL-9546 to vote on this task.
+ */
 class TagIT extends BaseApiTest {
 
   def tagUids = [
@@ -17,7 +22,8 @@ class TagIT extends BaseApiTest {
           '59ABE00632F7',
           '30D53C8213A2',
           'DE5E8C70DB60',
-          'EA3E8C70DBFE',
+          'ZBDV9V20SI2C',
+          '5CECA47185F8',
           '000FD23CD3A2',
           '001FD23CD3A2']
 
@@ -33,11 +39,12 @@ class TagIT extends BaseApiTest {
           'US',
           'waste',
           'electricity',
-          'ecoinvent',
+          'Ecoinvent',
+          'LCA',
           'inc_tag_1',
           'inc_tag_2'];
 
-  def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 6, 4, 2];
+  def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 4, 6, 7];
 
   def incTagUids = [
           '932FD23CD3A2',
@@ -67,7 +74,8 @@ class TagIT extends BaseApiTest {
           '59ABE00632F7',
           '30D53C8213A2',
           'DE5E8C70DB60',
-          'EA3E8C70DBFE',
+          'ZBDV9V20SI2C',
+          '5CECA47185F8',
           '001FD23CD3A2']
 
   def excTagNames = [
@@ -78,37 +86,56 @@ class TagIT extends BaseApiTest {
           'US',
           'waste',
           'electricity',
-          'ecoinvent',
+          'Ecoinvent',
+          'LCA',
           'inc_tag_2'];
 
-  def excTagCounts = [1, 1, 6, 2, 2, 2, 1, 1, 1];
+  def excTagCounts = [1, 1, 1, 1, 1, 2, 2, 2, 6, 7];
 
   @Test
   void getAllTagsJson() {
+    getAllTagsJson("3.0");
+    getAllTagsJson("3.1");
+    getAllTagsJson("3.2");
+    getAllTagsJson("3.3");
+  }
+
+  void getAllTagsJson(String version) {
     client.contentType = JSON
     def response = client.get(
-            path: '/3.2/tags')
+            path: '/' + version + '/tags')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals tagUids.size(), response.data.tags.size()
-    assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
+    assertEquals tagNames.size(), response.data.tags.size()
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
+    }
     assertEquals tagNames.sort(), response.data.tags.collect {it.tag}.sort();
     assertEquals tagCounts.sort(), response.data.tags.collect {it.count}.sort();
   }
 
   @Test
   void getAllTagsXml() {
+    getAllTagsXml("3.0");
+    getAllTagsXml("3.1");
+    getAllTagsXml("3.2");
+    getAllTagsXml("3.3");
+  }
+
+  void getAllTagsXml(String version) {
     client.contentType = XML
     def response = client.get(
-            path: '/3.2/tags')
+            path: '/' + version + '/tags')
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     def allTags = response.data.Tags.children()
-    assertEquals tagUids.size(), allTags.size()
-    assertEquals tagUids.sort(), allTags.@uid*.text().sort();
+    assertEquals tagNames.size(), allTags.size()
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals tagUids.sort(), allTags.@uid*.text().sort();
+    }
     assertEquals tagNames.sort(), allTags.Tag*.text().sort();
     assertEquals tagCounts.sort(), allTags.Count*.text().collect {it.toInteger()}.sort();
   }
@@ -181,12 +208,12 @@ class TagIT extends BaseApiTest {
 
   @Test
   void getTagByTagJson() {
-    getTagByPathJson('ecoinvent');
+    getTagByPathJson('Ecoinvent');
   }
 
   @Test
   void getTagByUidJson() {
-    getTagByPathJson('EA3E8C70DBFE');
+    getTagByPathJson('ZBDV9V20SI2C');
   }
 
   void getTagByPathJson(path) {
@@ -197,18 +224,18 @@ class TagIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType;
     assertTrue response.data instanceof net.sf.json.JSON;
     assertEquals 'OK', response.data.status;
-    assertEquals 'EA3E8C70DBFE', response.data.tag.uid;
-    assertEquals 'ecoinvent', response.data.tag.tag;
+    assertEquals 'ZBDV9V20SI2C', response.data.tag.uid;
+    assertEquals 'Ecoinvent', response.data.tag.tag;
   }
 
   @Test
   void getTagByTagXml() {
-    getTagByPathXml('ecoinvent');
+    getTagByPathXml('Ecoinvent');
   }
 
   @Test
   void getTagByUidXml() {
-    getTagByPathXml('EA3E8C70DBFE');
+    getTagByPathXml('ZBDV9V20SI2C');
   }
 
   void getTagByPathXml(path) {
@@ -218,8 +245,8 @@ class TagIT extends BaseApiTest {
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
-    assertEquals 'EA3E8C70DBFE', response.data.Tag.@uid.text();
-    assertEquals 'ecoinvent', response.data.Tag.Tag.text();
+    assertEquals 'ZBDV9V20SI2C', response.data.Tag.@uid.text();
+    assertEquals 'Ecoinvent', response.data.Tag.Tag.text();
   }
 
   @Test
@@ -392,8 +419,8 @@ class TagIT extends BaseApiTest {
             ['computer', 'electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
             [1, 3, 1, 1, 1, 2, 1, 2]);
     testTags(['excTags': 'test_tag_1'],
-            ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'ecoinvent', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste'],
-            [1, 1, 1, 1, 1, 6, 2, 2, 2, 2, 1, 1, 1, 1]);
+            ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'Ecoinvent', 'LCA', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste'],
+            [1, 1, 1, 1, 1, 6, 7, 2, 2, 2, 2, 1, 1, 1, 1]);
     // Now delete the Tags.
     def responseDelete = client.delete(path: '/3.3/tags/test_tag_1');
     assertEquals 200, responseDelete.status;

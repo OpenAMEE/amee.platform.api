@@ -4,6 +4,9 @@ import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.fail
 
+/**
+ * Tests for the Data Category API for ecoinvent data.
+ */
 class EcospoldIT extends BaseApiTest {
 
   @Test
@@ -12,7 +15,7 @@ class EcospoldIT extends BaseApiTest {
     setEcoinventUser();
 
     // We parse the response as XML but request x.ecospold+xml
-    def response = client.get(path: '/3/categories/4304B67B1D19',
+    def response = client.get(path: '/3/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
             contentType: XML,
             headers: [Accept: 'application/x.ecospold+xml'])
 
@@ -68,7 +71,7 @@ class EcospoldIT extends BaseApiTest {
   @Test
   void getEcospoldCategoryNotAuthorized() {
     try {
-      client.get(path: '/3/categories/4304B67B1D19',
+      client.get(path: '/3/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
               contentType: XML,
               headers: [Accept: 'application/x.ecospold+xml'])
       fail 'Expected 403'
