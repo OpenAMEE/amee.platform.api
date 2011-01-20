@@ -13,7 +13,7 @@
     <!-- Properties. -->
     <properties>
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.4.1-DEV</amee-platform-api.version>
+        <amee-platform-api.version>3.4.2-DEV</amee-platform-api.version>
         <amee-base.version>1.0.6-SNAPSHOT</amee-base.version>
         <amee-persist.version>1.0.8-SNAPSHOT</amee-persist.version>
         <amee-messaging.version>1.0.6-SNAPSHOT</amee-messaging.version>
