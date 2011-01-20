@@ -84,6 +84,14 @@ public class RequestContext {
         }
     }
 
+    /**
+     * Echos incoming parameters map to a double underscore separated name/value pair and then comma separated String.
+     * <p/>
+     * For example ['aaa' -> 'ccc', 'eee' -> 'yyy] becomes 'aaa__ccc, eee_yyy'.
+     *
+     * @param parameters to convert to comma separated String
+     * @return comma separated String
+     */
     private String getParameters(Map<String, String> parameters) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry entry : parameters.entrySet()) {
@@ -96,9 +104,8 @@ public class RequestContext {
             }
             sb.append(", ");
         }
-
         // Remove the final trailing separator and space
-        return sb.substring(0, sb.length() - 2);
+        return StringUtils.chomp(sb.toString(), ", ");
     }
 
     public void setError(String error) {
@@ -109,6 +116,7 @@ public class RequestContext {
 
     /**
      * Store a string representation of the formParameters parameters.
+     *
      * @param formParameters The Form keys and values.
      */
     public void setFormParameters(Form formParameters) {
@@ -139,7 +147,7 @@ public class RequestContext {
     /**
      * Returns a description of this RequestContext suitable for logging.
      * The exact details are subject to change but the following may be considered typical:
-     * 
+     * <p/>
      * "USER_UID|REQUEST_PATH|REQUEST_PARAMS|FORM_PARAMS|ERROR_MSG|METHOD|ADDITIONAL_INFO|STATUS|DURATION"
      */
     @Override
