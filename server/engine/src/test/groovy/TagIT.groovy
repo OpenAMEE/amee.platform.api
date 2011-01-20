@@ -94,30 +94,48 @@ class TagIT extends BaseApiTest {
 
   @Test
   void getAllTagsJson() {
+    getAllTagsJson("3.0");
+    getAllTagsJson("3.1");
+    getAllTagsJson("3.2");
+    getAllTagsJson("3.3");
+  }
+
+  void getAllTagsJson(String version) {
     client.contentType = JSON
     def response = client.get(
-            path: '/3.2/tags')
+            path: '/' + version + '/tags')
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals tagUids.size(), response.data.tags.size()
-    assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
+    assertEquals tagNames.size(), response.data.tags.size()
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
+    }
     assertEquals tagNames.sort(), response.data.tags.collect {it.tag}.sort();
     assertEquals tagCounts.sort(), response.data.tags.collect {it.count}.sort();
   }
 
   @Test
   void getAllTagsXml() {
+    getAllTagsXml("3.0");
+    getAllTagsXml("3.1");
+    getAllTagsXml("3.2");
+    getAllTagsXml("3.3");
+  }
+
+  void getAllTagsXml(String version) {
     client.contentType = XML
     def response = client.get(
-            path: '/3.2/tags')
+            path: '/' + version + '/tags')
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
     def allTags = response.data.Tags.children()
-    assertEquals tagUids.size(), allTags.size()
-    assertEquals tagUids.sort(), allTags.@uid*.text().sort();
+    assertEquals tagNames.size(), allTags.size()
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals tagUids.sort(), allTags.@uid*.text().sort();
+    }
     assertEquals tagNames.sort(), allTags.Tag*.text().sort();
     assertEquals tagCounts.sort(), allTags.Count*.text().collect {it.toInteger()}.sort();
   }
