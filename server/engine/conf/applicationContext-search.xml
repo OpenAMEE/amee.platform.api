@@ -4,6 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="searchDrillDownService" class="com.amee.platform.search.SearchDrillDownService"/>
+
     <bean id="searchService" class="com.amee.platform.search.SearchService"/>
 
     <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryService"/>
