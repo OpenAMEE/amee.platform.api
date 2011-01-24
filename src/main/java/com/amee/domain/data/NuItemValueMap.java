@@ -17,17 +17,15 @@ import java.util.*;
  * descending order (most recent first) for multi-valued histories.
  *
  * Note: This class has a natural ordering that is inconsistent with equals.
- *
- * TODO: instead of extending HashMap it may be better to use an encapsulated HashMap.
- *
- * TODO: Perhaps we should make BaseItemValue implement comparable.
  */
-public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
+public class NuItemValueMap {
 
     Log log = LogFactory.getLog(getClass());
 
     @Transient
     private transient ItemValueMap adapter;
+
+    private Map<String, SortedSet<BaseItemValue>> map = new HashMap<String, SortedSet<BaseItemValue>>();
 
     /**
      * Get the head {@link BaseItemValue} in the historical sequence (the earliest value).
@@ -37,7 +35,7 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
      */
     public BaseItemValue get(String path) {
         BaseItemValue itemValue = null;
-        SortedSet<BaseItemValue> series = super.get(path);
+        SortedSet<BaseItemValue> series = map.get(path);
         if (series != null) {
             itemValue = series.last();
         }
@@ -52,8 +50,8 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
      */
     public List<BaseItemValue> getAll(Date startDate) {
         List<BaseItemValue> itemValues = new ArrayList<BaseItemValue>();
-        for (Object path : super.keySet()) {
-            BaseItemValue itemValue = get((String) path, startDate);
+        for (String path : map.keySet()) {
+            BaseItemValue itemValue = get(path, startDate);
             if (itemValue != null) {
                 itemValues.add(itemValue);
             } else {
@@ -72,7 +70,7 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
      */
     public BaseItemValue get(String path, Date startDate) {
         BaseItemValue itemValue = null;
-        SortedSet<BaseItemValue> series = super.get(path);
+        SortedSet<BaseItemValue> series = map.get(path);
         if (series != null) {
             itemValue = find(series, startDate);
         }
@@ -81,20 +79,19 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
 
     public void put(String path, BaseItemValue itemValue) {
         // Create TreeSet if it does not exist for this path.
-        if (!containsKey(path)) {
-            super.put(path, new TreeSet<BaseItemValue>(
+        if (!map.containsKey(path)) {
+            map.put(path, new TreeSet<BaseItemValue>(
                 Collections.reverseOrder(
                     new Comparator<BaseItemValue>() {
                         public int compare(BaseItemValue iv1, BaseItemValue iv2) {
-                            if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass()) &&
-                                ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
+                            if (isHistoricValue(iv1) && isHistoricValue(iv2)) {
                                 // Both BaseItemValue are part of a history, compare their startDates.
                                 return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
-                            } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
+                            } else if (isHistoricValue(iv1)) {
                                 // The first BaseItemValue is historical, but the second is not, so it needs to
                                 // come after the second BaseItemValue.
                                 return 1;
-                            } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
+                            } else if (isHistoricValue(iv2)) {
                                 // The second BaseItemValue is historical, but the first is not, so it needs to
                                 // come after the first BaseItemValue.
                                 return -1;
@@ -108,7 +105,7 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
                     })));
         }
         // Add itemValue to the TreeSet for this path.
-        SortedSet<BaseItemValue> itemValues = super.get(path);
+        SortedSet<BaseItemValue> itemValues = map.get(path);
         itemValues.add(itemValue);
     }
 
@@ -119,8 +116,8 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
      * @return the List of {@link BaseItemValue}. Will be empty is there exists no {@link BaseItemValue}s with this path.
      */
     public List<BaseItemValue> getAll(String path) {
-        Object o = super.get(path);
-        return o != null ? new ArrayList((TreeSet<BaseItemValue>) o) : new ArrayList();
+        SortedSet<BaseItemValue> series = map.get(path);
+        return series != null ? new ArrayList<BaseItemValue>(series) : new ArrayList<BaseItemValue>();
     }
 
     /**
@@ -139,7 +136,7 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
         // Find active BaseItemValue.
         BaseItemValue selected = null;
         for (BaseItemValue itemValue : itemValues) {
-            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
+            if (isHistoricValue(itemValue)) {
                 if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
                     selected = itemValue;
                     selected.setHistoryAvailable(itemValues.size() > 1);
@@ -153,11 +150,19 @@ public class NuItemValueMap extends HashMap<String, SortedSet<BaseItemValue>> {
         return selected;
     }
 
+    private static boolean isHistoricValue(BaseItemValue itemValue) {
+        return ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass());
+    }
+
     public ItemValueMap getAdapter() {
         return adapter;
     }
 
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
+    }
+
+    public Set keySet() {
+        return map.keySet();
     }
 }
