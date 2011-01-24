@@ -8,7 +8,7 @@ class DrillDownIT extends BaseApiTest {
   @Test
   void canDrillDownJson() {
     doDrillDownJson(['nothing_to_see': 'here'], 21, 'numberOfPeople');
-    doDrillDownJson(['numberOfPeople': '5'], 6, 'fuel');
+    doDrillDownJson(['numberOfPeople': '5'], 5, 'fuel');
     doDrillDownJson(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid');
   }
 
