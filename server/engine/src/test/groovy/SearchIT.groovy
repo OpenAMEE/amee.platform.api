@@ -53,19 +53,4 @@ class SearchIT extends BaseApiTest {
       assertEquals 'INVALID', response.data.status;
     }
   }
-
-  /**
-   * See: https://jira.amee.com/browse/PL-6589
-   */
-  @Test
-  void searchForDataItemsWithSameIDJson() {
-    client.contentType = JSON
-    def response = client.get(path: '/3.2/search',
-            query: ['q': 'GasTest', 'types': 'DI'])
-    assertEquals 200, response.status
-    assertEquals 'application/json', response.contentType
-    assertTrue response.data instanceof net.sf.json.JSON
-    assertEquals 'OK', response.data.status
-    assertEquals 2, response.data.results.size()
-  }
 }

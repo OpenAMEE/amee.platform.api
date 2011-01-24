@@ -13,7 +13,7 @@ class DataItemIT extends BaseApiTest {
   static def dataItemUids = [
           '004CF30590A5',
           '897513300787',
-          'ZZ7513300787',
+          '48891C73D581',
           '6C663D2B8681',
           '9EFA0CE242D0',
           'A81FD238C501'
