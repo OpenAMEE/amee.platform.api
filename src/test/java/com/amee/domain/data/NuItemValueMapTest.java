@@ -17,54 +17,55 @@ public class NuItemValueMapTest {
 
     private NuItemValueMap map;
 
-    private DataItemTextValueHistory tvh1, tvh2;
-    private DataItemTextValue tv1, tv2;
+    private DataItemTextValue tv1;
+    private DataItemTextValue tv2;
+    private DataItemTextValueHistory tvh1;
+    private DataItemTextValueHistory tvh2;
 
     @Before
     public void setup() {
         map = new NuItemValueMap();
-
-        tvh1 = new DataItemTextValueHistory();
-        tvh2 = new DataItemTextValueHistory();
-
         tv1 = new DataItemTextValue();
         tv2 = new DataItemTextValue();
+
+        tvh1 = new DataItemTextValueHistory();
+        tvh1.setStartDate(dt("12:20"));
+        tvh2 = new DataItemTextValueHistory();
+        tvh2.setStartDate(dt("11:20"));
+        map.put("/foo", tvh1);
+        map.put("/foo", tvh2);
+        map.put("/foo", tv1);
+
+        // Put an identical non-historical value. This will not be added to the set.
+        map.put("/foo", tv2);
     }
 
     @Test
     public void pathEmpty() {
-        assertEquals(0, map.getAll("/foo").size());
+        assertEquals(0, map.getAll("/bar").size());
+    }
+
+    /**
+     * Should be sorted in startDate order descending (most recent first).
+     */
+    @Test
+    public void sortOrder() {
+        List expected = Arrays.asList(tvh1, tvh2, tv1);
+        assertEquals(expected, map.getAll("/foo"));
     }
 
     @Test
-    public void pathWithExternalHistoryValuesOnly() {
-        tvh1.setStartDate(dt("12:20"));
-        map.put("/foo", tvh1);
-
-        tvh2.setStartDate(dt("11:20"));
-        map.put("/foo", tvh2);
-
-        List expected = Arrays.asList(tvh2, tvh1);
-        assertEquals(expected, map.getAll("/foo"));        
+    public void getEarliestValue() {
+        assertEquals(tv1, map.get("/foo"));
     }
-
+    
     @Test
-    public void pathWithMixedItems() {
-        tvh1.setStartDate(dt("18:15"));
-        map.put("/foo", tvh1);
-
-        map.put("/foo", tv1);
-
-        tvh2.setStartDate(dt("11:11"));
-        map.put("/foo", tvh2);
-
-        map.put("/foo", tv2);
-
-        List expected = Arrays.asList(tv1, tvh2, tvh1);
-        assertEquals(expected, map.getAll("/foo"));                
+    public void getAtStartDate() {
+        assertEquals(tvh2, map.get("/foo", dt("12:00")));
+        assertEquals(tv1, map.get("/foo", dt("01:00")));
     }
 
-    Date dt(String s) {
+    private Date dt(String s) {
         DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm");
         return fmt.parseDateTime(s).toDate();
     }
