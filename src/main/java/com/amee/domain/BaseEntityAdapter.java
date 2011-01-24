@@ -83,24 +83,16 @@ public abstract class BaseEntityAdapter implements DatedObject, Serializable {
     }
 
     public boolean isLegacy() {
-        if (getLegacyEntity() != null) {
-            return true;
-        } else if (getNuEntity() != null) {
-            return false;
-        } else {
-            throw new IllegalStateException("Missing entity.");
-        }
+        return false;
     }
 
     public BaseEntity getAdaptedEntity() {
         if (isLegacy()) {
-            return getLegacyEntity();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity();
         }
     }
-
-    public abstract BaseEntity getLegacyEntity();
 
     public abstract BaseEntity getNuEntity();
 }

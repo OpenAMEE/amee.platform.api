@@ -107,7 +107,7 @@ public class DataItemBuilder implements ItemBuilder {
      * Get the JSON representation of this DataItem.
      *
      * @param detailed    - true if a detailed representation is required.
-     * @param showHistory - true if the representation should include any historical sequences of {@link com.amee.domain.data.LegacyItemValue)s.
+     * @param showHistory - true if the representation should include any historical sequences of Item Values.
      * @return the JSON representation.
      * @throws JSONException
      */
@@ -141,7 +141,7 @@ public class DataItemBuilder implements ItemBuilder {
      * Get the DOM representation of this DataItem.
      *
      * @param detailed    - true if a detailed representation is required.
-     * @param showHistory - true if the representation should include any historical sequences of {@link com.amee.domain.data.LegacyItemValue)s.
+     * @param showHistory - true if the representation should include any historical sequences of Item Values.
      * @return the DOM representation.
      */
     public Element getElement(Document document, boolean detailed, boolean showHistory) {

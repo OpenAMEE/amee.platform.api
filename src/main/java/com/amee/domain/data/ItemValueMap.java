@@ -11,42 +11,19 @@ import java.util.Set;
 
 public class ItemValueMap {
 
-    private LegacyItemValueMap legacyItemValueMap;
     private NuItemValueMap nuItemValueMap;
 
     @Transient
     private transient ItemValueMap adapter;
-
-    public ItemValueMap(LegacyItemValueMap legacyItemValueMap) {
-        super();
-        setLegacyItemValueMap(legacyItemValueMap);
-    }
 
     public ItemValueMap(NuItemValueMap nuItemValueMap) {
         super();
         setNuItemValueMap(nuItemValueMap);
     }
 
-    private void setLegacyItemValueMap(LegacyItemValueMap itemValueMap) {
-        itemValueMap.setAdapter(this);
-        this.legacyItemValueMap = itemValueMap;
-    }
-
     private void setNuItemValueMap(NuItemValueMap itemValueMap) {
         itemValueMap.setAdapter(this);
         this.nuItemValueMap = itemValueMap;
-    }
-
-    public static ItemValueMap getItemValueMap(LegacyItemValueMap itemValueMap) {
-        if (itemValueMap != null) {
-            if (itemValueMap.getAdapter() != null) {
-                return itemValueMap.getAdapter();
-            } else {
-                return new ItemValueMap(itemValueMap);
-            }
-        } else {
-            return null;
-        }
     }
 
     public static ItemValueMap getItemValueMap(NuItemValueMap itemValueMap) {
@@ -62,23 +39,12 @@ public class ItemValueMap {
     }
 
     public boolean isLegacy() {
-        if (getLegacyItemValueMap() != null) {
-            return true;
-        } else if (getNuItemValueMap() != null) {
-            return false;
-        } else {
-            throw new IllegalStateException("Missing map.");
-        }
+        return false;
     }
 
     public ItemValue get(String path) {
         if (isLegacy()) {
-            LegacyItemValue liv = getLegacyItemValueMap().get(path);
-            if (liv != null) {
-                return ItemValue.getItemValue(liv);
-            } else {
-                return null;
-            }
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             BaseItemValue biv = getNuItemValueMap().get(path);
             if (biv != null) {
@@ -91,7 +57,7 @@ public class ItemValueMap {
 
     public List<ItemValue> getAll(Date startDate) {
         if (isLegacy()) {
-            return legacyToAdapter(getLegacyItemValueMap().getAll(startDate));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return nuToAdapter(getNuItemValueMap().getAll(startDate));
         }
@@ -99,7 +65,7 @@ public class ItemValueMap {
 
     public List<ItemValue> getAll(String path) {
         if (isLegacy()) {
-            return legacyToAdapter(getLegacyItemValueMap().getAll(path));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return nuToAdapter(getNuItemValueMap().getAll(path));
         }
@@ -107,12 +73,7 @@ public class ItemValueMap {
 
     public ItemValue get(String path, Date startDate) {
         if (isLegacy()) {
-            LegacyItemValue liv = getLegacyItemValueMap().get(path, startDate);
-            if (liv != null) {
-                return ItemValue.getItemValue(liv);
-            } else {
-                return null;
-            }
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             BaseItemValue biv = getNuItemValueMap().get(path, startDate);
             if (biv != null) {
@@ -125,21 +86,11 @@ public class ItemValueMap {
 
     public ItemValue put(String path, ItemValue itemValue) {
         if (isLegacy()) {
-            getLegacyItemValueMap().put(path, itemValue.getLegacyEntity());
-            return itemValue;
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuItemValueMap().put(path, itemValue.getNuEntity());
             return itemValue;
         }
-    }
-
-    private List<ItemValue> legacyToAdapter(List<LegacyItemValue> legacyItemValues) {
-        return (List<ItemValue>) CollectionUtils.collect(
-                legacyItemValues, new Transformer() {
-                    public Object transform(Object legacyItemValue) {
-                        return ((LegacyItemValue) legacyItemValue).getAdapter();
-                    }
-                });
     }
 
     private List<ItemValue> nuToAdapter(List<BaseItemValue> baseItemValues) {
@@ -151,17 +102,13 @@ public class ItemValueMap {
                 });
     }
 
-    public LegacyItemValueMap getLegacyItemValueMap() {
-        return legacyItemValueMap;
-    }
-
     public NuItemValueMap getNuItemValueMap() {
         return nuItemValueMap;
     }
 
     public Set keySet() {
         if (isLegacy()) {
-            return getLegacyItemValueMap().keySet();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuItemValueMap().keySet();
         }

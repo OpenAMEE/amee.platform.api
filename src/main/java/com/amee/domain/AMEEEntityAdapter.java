@@ -129,14 +129,11 @@ public abstract class AMEEEntityAdapter extends BaseEntityAdapter implements IAM
     @Override
     public AMEEEntity getAdaptedEntity() {
         if (isLegacy()) {
-            return getLegacyEntity();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity();
         }
     }
-
-    @Override
-    public abstract AMEEEntity getLegacyEntity();
 
     @Override
     public abstract AMEEEntity getNuEntity();

@@ -27,13 +27,12 @@ import com.amee.platform.science.StartEndDate;
 
 public class DataItem extends Item {
 
-    public final static int PATH_MAX_SIZE = LegacyDataItem.PATH_MAX_SIZE;
-    public final static int WIKI_DOC_MAX_SIZE = LegacyDataItem.WIKI_DOC_MAX_SIZE;
-    public final static int PROVENANCE_MAX_SIZE = LegacyDataItem.PROVENANCE_MAX_SIZE;
+    public final static int PATH_MAX_SIZE = NuDataItem.PATH_MAX_SIZE;
+    public final static int WIKI_DOC_MAX_SIZE = NuDataItem.WIKI_DOC_MAX_SIZE;
+    public final static int PROVENANCE_MAX_SIZE = NuDataItem.PROVENANCE_MAX_SIZE;
 
     public final static boolean USE_NU = true;
 
-    private LegacyDataItem legacyEntity;
     private NuDataItem nuEntity;
 
     public DataItem() {
@@ -41,7 +40,7 @@ public class DataItem extends Item {
         if (USE_NU) {
             setNuEntity(new NuDataItem());
         } else {
-            setLegacyEntity(new LegacyDataItem());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         }
     }
 
@@ -50,30 +49,13 @@ public class DataItem extends Item {
         if (USE_NU) {
             setNuEntity(new NuDataItem(dataCategory, itemDefinition));
         } else {
-            setLegacyEntity(new LegacyDataItem(dataCategory, itemDefinition));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         }
-    }
-
-    public DataItem(LegacyDataItem dataItem) {
-        super();
-        setLegacyEntity(dataItem);
     }
 
     public DataItem(NuDataItem dataItem) {
         super();
         setNuEntity(dataItem);
-    }
-
-    public static DataItem getDataItem(LegacyDataItem dataItem) {
-        if (dataItem != null) {
-            if (dataItem.getAdapter() != null) {
-                return dataItem.getAdapter();
-            } else {
-                return new DataItem(dataItem);
-            }
-        } else {
-            return null;
-        }
     }
 
     public static DataItem getDataItem(NuDataItem dataItem) {
@@ -90,7 +72,7 @@ public class DataItem extends Item {
 
     public String getLabel() {
         if (isLegacy()) {
-            return getLegacyEntity().getLabel();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getItemService().getLabel(getNuEntity());
         }
@@ -99,7 +81,7 @@ public class DataItem extends Item {
     @Override
     public String getPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getPath();
         }
@@ -107,7 +89,7 @@ public class DataItem extends Item {
 
     public void setPath(String path) {
         if (isLegacy()) {
-            getLegacyEntity().setPath(path);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setPath(path);
         }
@@ -115,7 +97,7 @@ public class DataItem extends Item {
 
     public String getWikiDoc() {
         if (isLegacy()) {
-            return getLegacyEntity().getWikiDoc();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getWikiDoc();
         }
@@ -123,7 +105,7 @@ public class DataItem extends Item {
 
     public void setWikiDoc(String wikiDoc) {
         if (isLegacy()) {
-            getLegacyEntity().setWikiDoc(wikiDoc);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setWikiDoc(wikiDoc);
         }
@@ -131,7 +113,7 @@ public class DataItem extends Item {
 
     public String getProvenance() {
         if (isLegacy()) {
-            return getLegacyEntity().getProvenance();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getProvenance();
         }
@@ -139,7 +121,7 @@ public class DataItem extends Item {
 
     public void setProvenance(String provenance) {
         if (isLegacy()) {
-            getLegacyEntity().setProvenance(provenance);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setProvenance(provenance);
         }
@@ -148,7 +130,7 @@ public class DataItem extends Item {
     @Override
     public boolean isTrash() {
         if (isLegacy()) {
-            return getLegacyEntity().isTrash();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isTrash();
         }
@@ -157,7 +139,7 @@ public class DataItem extends Item {
     @Override
     public StartEndDate getStartDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getStartDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return new StartEndDate(IDataItemService.EPOCH);
         }
@@ -166,7 +148,7 @@ public class DataItem extends Item {
     @Override
     public StartEndDate getEndDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getEndDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return null;
         }
@@ -175,20 +157,10 @@ public class DataItem extends Item {
     @Override
     public ObjectType getObjectType() {
         if (isLegacy()) {
-            return ObjectType.DI;
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ObjectType.NDI;
         }
-    }
-
-    @Override
-    public LegacyDataItem getLegacyEntity() {
-        return legacyEntity;
-    }
-
-    public void setLegacyEntity(LegacyDataItem legacyEntity) {
-        legacyEntity.setAdapter(this);
-        this.legacyEntity = legacyEntity;
     }
 
     @Override

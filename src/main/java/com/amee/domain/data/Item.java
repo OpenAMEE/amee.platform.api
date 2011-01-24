@@ -27,7 +27,6 @@ import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.path.Pathable;
-import com.amee.domain.profile.LegacyProfileItem;
 import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.Duration;
@@ -39,20 +38,10 @@ import java.util.Set;
 
 public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
-    public final static int NAME_MAX_SIZE = LegacyItem.NAME_MAX_SIZE;
+    public final static int NAME_MAX_SIZE = NuDataItem.NAME_MAX_SIZE;
 
     public Item() {
         super();
-    }
-
-    public static Item getItem(LegacyItem item) {
-        if (LegacyDataItem.class.isAssignableFrom(item.getClass())) {
-            return DataItem.getDataItem((LegacyDataItem) item);
-        } else if (LegacyProfileItem.class.isAssignableFrom(item.getClass())) {
-            return ProfileItem.getProfileItem((LegacyProfileItem) item);
-        } else {
-            throw new RuntimeException("Class not supported: " + item.getClass().toString());
-        }
     }
 
     public static Item getItem(BaseItem item) {
@@ -67,7 +56,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void addItemValue(ItemValue itemValue) {
         if (isLegacy()) {
-            getLegacyEntity().addItemValue(itemValue.getLegacyEntity());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getItemService().addItemValue(itemValue.getNuEntity());
         }
@@ -75,7 +64,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public Set<ItemValueDefinition> getItemValueDefinitions() {
         if (isLegacy()) {
-            return getLegacyEntity().getItemValueDefinitions();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getItemService().getItemValueDefinitionsInUse(getNuEntity());
         }
@@ -83,7 +72,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public List<IAMEEEntityReference> getHierarchy() {
         if (isLegacy()) {
-            return getLegacyEntity().getHierarchy();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getHierarchy();
         }
@@ -91,7 +80,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public ItemDefinition getItemDefinition() {
         if (isLegacy()) {
-            return getLegacyEntity().getItemDefinition();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getItemDefinition();
         }
@@ -99,7 +88,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void setItemDefinition(ItemDefinition itemDefinition) {
         if (isLegacy()) {
-            getLegacyEntity().setItemDefinition(itemDefinition);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setItemDefinition(itemDefinition);
         }
@@ -107,7 +96,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public DataCategory getDataCategory() {
         if (isLegacy()) {
-            return getLegacyEntity().getDataCategory();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getDataCategory();
         }
@@ -115,7 +104,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void setDataCategory(DataCategory dataCategory) {
         if (isLegacy()) {
-            getLegacyEntity().setDataCategory(dataCategory);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setDataCategory(dataCategory);
         }
@@ -123,7 +112,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public String getName() {
         if (isLegacy()) {
-            return getLegacyEntity().getName();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getName();
         }
@@ -131,7 +120,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public String getDisplayName() {
         if (isLegacy()) {
-            return getLegacyEntity().getDisplayName();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getDisplayName();
         }
@@ -139,7 +128,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public String getDisplayPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getDisplayPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getDisplayPath();
         }
@@ -147,7 +136,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public String getFullPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getFullPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getFullPath();
         }
@@ -155,11 +144,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public List<ItemValue> getItemValues() {
         if (isLegacy()) {
-            List<ItemValue> itemValues = new ArrayList<ItemValue>();
-            for (LegacyItemValue legacyItemValue : getLegacyEntity().getItemValues()) {
-                itemValues.add(ItemValue.getItemValue(legacyItemValue));
-            }
-            return itemValues;
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             List<ItemValue> itemValues = new ArrayList<ItemValue>();
             for (BaseItemValue baseItemValue : getItemService().getItemValues(getNuEntity())) {
@@ -171,11 +156,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public List<ItemValue> getAllItemValues(String itemValuePath) {
         if (isLegacy()) {
-            List<ItemValue> itemValues = new ArrayList<ItemValue>();
-            for (LegacyItemValue legacyItemValue : getLegacyEntity().getAllItemValues(itemValuePath)) {
-                itemValues.add(ItemValue.getItemValue(legacyItemValue));
-            }
-            return itemValues;
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             List<ItemValue> itemValues = new ArrayList<ItemValue>();
             for (BaseItemValue baseItemValue : getItemService().getAllItemValues(getNuEntity(), itemValuePath)) {
@@ -188,7 +169,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
     @Deprecated
     public ItemValueMap getItemValuesMap() {
         if (isLegacy()) {
-            return ItemValueMap.getItemValueMap(getLegacyEntity().getItemValuesMap());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ItemValueMap.getItemValueMap(getItemService().getItemValuesMap(getNuEntity()));
         }
@@ -196,7 +177,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public ItemValue getItemValue(String identifier, Date startDate) {
         if (isLegacy()) {
-            return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier, startDate));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ItemValue.getItemValue(getItemService().getItemValue(getNuEntity(), identifier, startDate));
         }
@@ -204,7 +185,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public ItemValue getItemValue(String identifier) {
         if (isLegacy()) {
-            return ItemValue.getItemValue(getLegacyEntity().getItemValue(identifier));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ItemValue.getItemValue(getItemService().getItemValue(getNuEntity(), identifier));
         }
@@ -212,7 +193,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void setName(String name) {
         if (isLegacy()) {
-            getLegacyEntity().setName(name);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setName(name);
         }
@@ -224,7 +205,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public boolean supportsCalculation() {
         if (isLegacy()) {
-            return getLegacyEntity().supportsCalculation();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().supportsCalculation();
         }
@@ -232,7 +213,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public boolean isWithinLifeTime(Date date) {
         if (isLegacy()) {
-            return getLegacyEntity().isWithinLifeTime(date);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             // Data or Profile?
             if (NuDataItem.class.isAssignableFrom(getNuEntity().getClass())) {
@@ -249,7 +230,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void setEffectiveStartDate(Date effectiveStartDate) {
         if (isLegacy()) {
-            getLegacyEntity().setEffectiveStartDate(effectiveStartDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setEffectiveStartDate(effectiveStartDate);
         }
@@ -257,7 +238,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public Date getEffectiveStartDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getEffectiveStartDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getEffectiveStartDate();
         }
@@ -265,7 +246,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public void setEffectiveEndDate(Date effectiveEndDate) {
         if (isLegacy()) {
-            getLegacyEntity().setEffectiveEndDate(effectiveEndDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setEffectiveEndDate(effectiveEndDate);
         }
@@ -273,7 +254,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public Date getEffectiveEndDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getEffectiveEndDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getEffectiveEndDate();
         }
@@ -281,7 +262,7 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public Duration getDuration() {
         if (isLegacy()) {
-            return getLegacyEntity().getDuration();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             // Data or Profile?
             if (NuDataItem.class.isAssignableFrom(getNuEntity().getClass())) {
@@ -298,13 +279,11 @@ public abstract class Item extends AMEEEntityAdapter implements Pathable {
 
     public boolean isUnique(ItemValueDefinition itemValueDefinition, StartEndDate startDate) {
         if (isLegacy()) {
-            return getLegacyEntity().isUnique(itemValueDefinition, startDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getItemService().isUnique(getNuEntity(), itemValueDefinition, startDate);
         }
     }
-
-    public abstract LegacyItem getLegacyEntity();
 
     public abstract BaseItem getNuEntity();
 

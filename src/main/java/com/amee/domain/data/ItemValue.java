@@ -38,7 +38,6 @@ import java.util.List;
 
 public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalValue {
 
-    private LegacyItemValue legacyEntity;
     private BaseItemValue nuEntity;
 
     /**
@@ -54,8 +53,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     public ItemValue(ItemValueDefinition itemValueDefinition, Item item, boolean isHistory) {
         super();
         if (item.isLegacy()) {
-            setLegacyEntity(new LegacyItemValue(itemValueDefinition, item.getLegacyEntity()));
-            getLegacyEntity().setAdapter(this);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             BaseItemValue itemValue;
             // Data or Profile?
@@ -109,28 +107,10 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         setValue(value);
     }
 
-    public ItemValue(LegacyItemValue itemValue) {
-        super();
-        setLegacyEntity(itemValue);
-        getLegacyEntity().setAdapter(this);
-    }
-
     public ItemValue(BaseItemValue itemValue) {
         super();
         setNuEntity(itemValue);
         getNuEntity().setAdapter(this);
-    }
-
-    public static ItemValue getItemValue(LegacyItemValue legacyItemValue) {
-        if (legacyItemValue != null) {
-            if (legacyItemValue.getAdapter() != null) {
-                return legacyItemValue.getAdapter();
-            } else {
-                return new ItemValue(legacyItemValue);
-            }
-        } else {
-            return null;
-        }
     }
 
     public static ItemValue getItemValue(BaseItemValue baseItemValue) {
@@ -147,7 +127,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public ItemValue getCopy() {
         if (isLegacy()) {
-            return ItemValue.getItemValue(getLegacyEntity().getCopy());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ItemValue.getItemValue(getNuEntity().getCopy());
         }
@@ -156,7 +136,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getUsableValue() {
         if (isLegacy()) {
-            return getLegacyEntity().getUsableValue();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getUsableValue();
         }
@@ -164,7 +144,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public boolean isUsableValue() {
         if (isLegacy()) {
-            return getLegacyEntity().isUsableValue();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isUsableValue();
         }
@@ -172,7 +152,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public List<IAMEEEntityReference> getHierarchy() {
         if (isLegacy()) {
-            return getLegacyEntity().getHierarchy();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getHierarchy();
         }
@@ -181,7 +161,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getName() {
         if (isLegacy()) {
-            return getLegacyEntity().getName();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getName();
         }
@@ -190,7 +170,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getDisplayName() {
         if (isLegacy()) {
-            return getLegacyEntity().getDisplayName();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getDisplayName();
         }
@@ -199,7 +179,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getPath();
         }
@@ -208,7 +188,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getDisplayPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getDisplayPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getDisplayPath();
         }
@@ -217,7 +197,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getFullPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getFullPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getFullPath();
         }
@@ -225,7 +205,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public ItemValueDefinition getItemValueDefinition() {
         if (isLegacy()) {
-            return getLegacyEntity().getItemValueDefinition();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getItemValueDefinition();
         }
@@ -233,7 +213,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setItemValueDefinition(ItemValueDefinition itemValueDefinition) {
         if (isLegacy()) {
-            getLegacyEntity().setItemValueDefinition(itemValueDefinition);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setItemValueDefinition(itemValueDefinition);
         }
@@ -241,7 +221,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public Item getItem() {
         if (isLegacy()) {
-            return Item.getItem(getLegacyEntity().getItem());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return Item.getItem(getNuEntity().getItem());
         }
@@ -249,7 +229,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setItem(Item item) {
         if (isLegacy()) {
-            getLegacyEntity().setItem(item.getLegacyEntity());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setItem(item.getNuEntity());
         }
@@ -261,7 +241,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
         }
 
         if (isLegacy()) {
-            return getLegacyEntity().getValue();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getValueAsString();
         }
@@ -269,7 +249,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setValue(String value) {
         if (isLegacy()) {
-            getLegacyEntity().setValue(value);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setValue(value);
         }
@@ -278,7 +258,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public StartEndDate getStartDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getStartDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((BaseProfileItemValue) getNuEntity()).getProfileItem().getStartDate();
@@ -296,7 +276,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setStartDate(Date startDate) {
         if (isLegacy()) {
-            getLegacyEntity().setStartDate(startDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 if (HistoryValue.class.isAssignableFrom(getNuEntity().getClass())) {
@@ -311,7 +291,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public boolean isDouble() {
         if (isLegacy()) {
-            return getLegacyEntity().isDouble();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isDouble();
         }
@@ -320,7 +300,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountUnit getUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getUnit();
@@ -333,7 +313,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountUnit getCanonicalUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getCanonicalUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalUnit();
@@ -345,7 +325,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setUnit(String unit) throws IllegalArgumentException {
         if (isLegacy()) {
-            getLegacyEntity().setUnit(unit);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 ((NumberValue) getNuEntity()).setUnit(unit);
@@ -358,7 +338,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountPerUnit getPerUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getPerUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getPerUnit();
@@ -371,7 +351,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getCanonicalPerUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalPerUnit();
@@ -383,7 +363,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setPerUnit(String perUnit) throws IllegalArgumentException {
         if (isLegacy()) {
-            getLegacyEntity().setPerUnit(perUnit);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 ((NumberValue) getNuEntity()).setPerUnit(perUnit);
@@ -396,7 +376,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountCompoundUnit getCompoundUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getCompoundUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCompoundUnit();
@@ -409,7 +389,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public AmountCompoundUnit getCanonicalCompoundUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().getCanonicalCompoundUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             if (NumberValue.class.isAssignableFrom(getNuEntity().getClass())) {
                 return ((NumberValue) getNuEntity()).getCanonicalCompoundUnit();
@@ -422,7 +402,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public boolean hasUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().hasUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return NumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
                     ((NumberValue) getNuEntity()).hasUnit();
@@ -432,7 +412,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public boolean hasPerUnit() {
         if (isLegacy()) {
-            return getLegacyEntity().hasPerUnit();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return NumberValue.class.isAssignableFrom(getNuEntity().getClass()) &&
                     ((NumberValue) getNuEntity()).hasPerUnit();
@@ -445,7 +425,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public boolean isNonZero() {
         if (isLegacy()) {
-            return getLegacyEntity().isNonZero();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isNonZero();
         }
@@ -454,7 +434,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public String getLabel() {
         if (isLegacy()) {
-            return getLegacyEntity().getLabel();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getLabel();
         }
@@ -468,7 +448,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public boolean isConvertible() {
         if (isLegacy()) {
-            return getLegacyEntity().isConvertible();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isConvertible();
         }
@@ -476,7 +456,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public boolean isHistoryAvailable() {
         if (isLegacy()) {
-            return getLegacyEntity().isHistoryAvailable();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isHistoryAvailable();
         }
@@ -484,7 +464,7 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
 
     public void setHistoryAvailable(boolean historyAvailable) {
         if (isLegacy()) {
-            getLegacyEntity().setHistoryAvailable(historyAvailable);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setHistoryAvailable(historyAvailable);
         }
@@ -507,15 +487,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
                 throw new IllegalStateException("A BaseDataItemValue or BaseProfileItemValue was expected.");
             }
         }
-    }
-
-    public LegacyItemValue getLegacyEntity() {
-        return legacyEntity;
-    }
-
-    public void setLegacyEntity(LegacyItemValue legacyEntity) {
-        legacyEntity.setAdapter(this);
-        this.legacyEntity = legacyEntity;
     }
 
     public BaseItemValue getNuEntity() {

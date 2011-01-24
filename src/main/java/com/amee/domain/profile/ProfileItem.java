@@ -16,7 +16,6 @@ public class ProfileItem extends Item {
 
     public final static boolean USE_NU = true;
 
-    private LegacyProfileItem legacyEntity;
     private NuProfileItem nuEntity;
 
     public ProfileItem() {
@@ -24,14 +23,14 @@ public class ProfileItem extends Item {
         if (USE_NU) {
             setNuEntity(new NuProfileItem());
         } else {
-            setLegacyEntity(new LegacyProfileItem());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         }
     }
 
     public ProfileItem(Profile profile, DataItem dataItem) {
         super();
         if (dataItem.isLegacy()) {
-            setLegacyEntity(new LegacyProfileItem(profile, dataItem.getLegacyEntity()));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             setNuEntity(new NuProfileItem(profile, dataItem.getNuEntity()));
         }
@@ -40,32 +39,15 @@ public class ProfileItem extends Item {
     public ProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
         super();
         if (dataItem.isLegacy()) {
-            setLegacyEntity(new LegacyProfileItem(profile, dataCategory, dataItem.getLegacyEntity()));
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             setNuEntity(new NuProfileItem(profile, dataCategory, dataItem.getNuEntity()));
         }
     }
 
-    public ProfileItem(LegacyProfileItem profileItem) {
-        super();
-        setLegacyEntity(profileItem);
-    }
-
     public ProfileItem(NuProfileItem profileItem) {
         super();
         setNuEntity(profileItem);
-    }
-
-    public static ProfileItem getProfileItem(LegacyProfileItem profileItem) {
-        if (profileItem != null) {
-            if (profileItem.getAdapter() != null) {
-                return profileItem.getAdapter();
-            } else {
-                return new ProfileItem(profileItem);
-            }
-        } else {
-            return null;
-        }
     }
 
     public static ProfileItem getProfileItem(NuProfileItem profileItem) {
@@ -82,7 +64,7 @@ public class ProfileItem extends Item {
 
     public ProfileItem getCopy() {
         if (isLegacy()) {
-            return ProfileItem.getProfileItem(getLegacyEntity().getCopy());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ProfileItem.getProfileItem(getNuEntity().getCopy());
         }
@@ -91,7 +73,7 @@ public class ProfileItem extends Item {
     @Override
     public String getPath() {
         if (isLegacy()) {
-            return getLegacyEntity().getPath();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getPath();
         }
@@ -99,7 +81,7 @@ public class ProfileItem extends Item {
 
     public Profile getProfile() {
         if (isLegacy()) {
-            return getLegacyEntity().getProfile();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getProfile();
         }
@@ -107,7 +89,7 @@ public class ProfileItem extends Item {
 
     public void setProfile(Profile profile) {
         if (isLegacy()) {
-            getLegacyEntity().setProfile(profile);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setProfile(profile);
         }
@@ -115,7 +97,7 @@ public class ProfileItem extends Item {
 
     public DataItem getDataItem() {
         if (isLegacy()) {
-            return DataItem.getDataItem(getLegacyEntity().getDataItem());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return DataItem.getDataItem(getNuEntity().getDataItem());
         }
@@ -123,7 +105,7 @@ public class ProfileItem extends Item {
 
     public void setDataItem(DataItem dataItem) {
         if (isLegacy()) {
-            getLegacyEntity().setDataItem(dataItem.getLegacyEntity());
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setDataItem(dataItem.getNuEntity());
         }
@@ -131,7 +113,7 @@ public class ProfileItem extends Item {
 
     public StartEndDate getStartDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getStartDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getStartDate();
         }
@@ -139,7 +121,7 @@ public class ProfileItem extends Item {
 
     public void setStartDate(Date startDate) {
         if (isLegacy()) {
-            getLegacyEntity().setStartDate(startDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setStartDate(startDate);
         }
@@ -148,7 +130,7 @@ public class ProfileItem extends Item {
     @Override
     public StartEndDate getEndDate() {
         if (isLegacy()) {
-            return getLegacyEntity().getEndDate();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getEndDate();
         }
@@ -156,7 +138,7 @@ public class ProfileItem extends Item {
 
     public void setEndDate(Date endDate) {
         if (isLegacy()) {
-            getLegacyEntity().setEndDate(endDate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setEndDate(endDate);
         }
@@ -164,7 +146,7 @@ public class ProfileItem extends Item {
 
     public boolean isEnd() {
         if (isLegacy()) {
-            return getLegacyEntity().isEnd();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isEnd();
         }
@@ -172,7 +154,7 @@ public class ProfileItem extends Item {
 
     public ReturnValues getAmounts(boolean recalculate) {
         if (isLegacy()) {
-            return getLegacyEntity().getAmounts(recalculate);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getAmounts(recalculate);
         }
@@ -180,7 +162,7 @@ public class ProfileItem extends Item {
 
     public ReturnValues getAmounts() {
         if (isLegacy()) {
-            return getLegacyEntity().getAmounts();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getAmounts();
         }
@@ -189,7 +171,7 @@ public class ProfileItem extends Item {
     @Deprecated
     public double getAmount() {
         if (isLegacy()) {
-            return getLegacyEntity().getAmount();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().getAmount();
         }
@@ -197,7 +179,7 @@ public class ProfileItem extends Item {
 
     public void setAmounts(ReturnValues amounts) {
         if (isLegacy()) {
-            getLegacyEntity().setAmounts(amounts);
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             getNuEntity().setAmounts(amounts);
         }
@@ -205,7 +187,7 @@ public class ProfileItem extends Item {
 
     public boolean hasNonZeroPerTimeValues() {
         if (isLegacy()) {
-            return getLegacyEntity().hasNonZeroPerTimeValues();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getItemService().hasNonZeroPerTimeValues(getNuEntity());
         }
@@ -213,7 +195,7 @@ public class ProfileItem extends Item {
 
     public boolean isSingleFlight() {
         if (isLegacy()) {
-            return getLegacyEntity().isSingleFlight();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getItemService().isSingleFlight(getNuEntity());
         }
@@ -222,7 +204,7 @@ public class ProfileItem extends Item {
     @Override
     public boolean isTrash() {
         if (isLegacy()) {
-            return getLegacyEntity().isTrash();
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return getNuEntity().isTrash();
         }
@@ -231,20 +213,10 @@ public class ProfileItem extends Item {
     @Override
     public ObjectType getObjectType() {
         if (isLegacy()) {
-            return ObjectType.PI;
+            throw new IllegalStateException("Legacy entities are no longer supported.");
         } else {
             return ObjectType.NPI;
         }
-    }
-
-    @Override
-    public LegacyProfileItem getLegacyEntity() {
-        return legacyEntity;
-    }
-
-    public void setLegacyEntity(LegacyProfileItem legacyEntity) {
-        legacyEntity.setAdapter(this);
-        this.legacyEntity = legacyEntity;
     }
 
     @Override
