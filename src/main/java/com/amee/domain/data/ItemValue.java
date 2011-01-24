@@ -19,7 +19,6 @@
  */
 package com.amee.domain.data;
 
-import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.*;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.HistoryValue;
@@ -473,20 +472,6 @@ public class ItemValue extends AMEEEntityAdapter implements Pathable, ExternalVa
     @Override
     public ObjectType getObjectType() {
         return ObjectType.IV;
-    }
-
-    public IItemService getItemService() {
-        if (isLegacy()) {
-            throw new IllegalStateException("IItemService implementations should not use the new services.");
-        } else {
-            if (BaseDataItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ThreadBeanHolder.get(IDataItemService.class);
-            } else if (BaseProfileItemValue.class.isAssignableFrom(getNuEntity().getClass())) {
-                return ThreadBeanHolder.get(IProfileItemService.class);
-            } else {
-                throw new IllegalStateException("A BaseDataItemValue or BaseProfileItemValue was expected.");
-            }
-        }
     }
 
     public BaseItemValue getNuEntity() {
