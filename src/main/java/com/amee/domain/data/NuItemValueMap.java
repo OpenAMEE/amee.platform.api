@@ -14,7 +14,7 @@ import java.util.*;
  * <p/>
  * The keys will be the {@link BaseItemValue} paths. The entries will be a SortedSet of {@link BaseItemValue} instances. The Set will
  * consist of a single entry for single-valued {@link BaseItemValue} histories and a set of {@link BaseItemValue}s sorted in
- * descending order (most recent first) for multi-valued histories.
+ * descending order (most recent first) for multi-valued histories. The non-historical value is the last item in the set.
  *
  * Note: This class has a natural ordering that is inconsistent with equals.
  */
@@ -124,14 +124,14 @@ public class NuItemValueMap {
      * Find the active BaseItemValue at startDate. The active BaseItemValue is the one occurring at or
      * immediately before startDate.
      *
-     * @param itemValues the item values sorted by startDate, most recent first (descending)
+     * @param itemValues the item values sorted by startDate, most recent first (descending).
      * @param startDate
      * @return the discovered BaseItemValue, or null if not found
      */
     private static BaseItemValue find(SortedSet<BaseItemValue> itemValues, Date startDate) {
-        // Default to the earliest possible date.
+        // Default to the current date.
         if (startDate == null) {
-            startDate = IDataItemService.EPOCH;
+            startDate = new Date();
         }
         // Find active BaseItemValue.
         BaseItemValue selected = null;
@@ -139,14 +139,14 @@ public class NuItemValueMap {
             if (isHistoricValue(itemValue)) {
                 if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
                     selected = itemValue;
-                    selected.setHistoryAvailable(itemValues.size() > 1);
                     break;
                 }
             } else {
-                // Non-historical values always come first.
+                // No historical values match so use the non-historical value.
                 selected = itemValue;
             }
         }
+        selected.setHistoryAvailable(itemValues.size() > 1);
         return selected;
     }
 
