@@ -19,7 +19,7 @@ public class InternalCrypto extends BaseCrypto {
         super();
     }
 
-    private synchronized static void initialise() throws CryptoException {
+    protected synchronized static void initialise() throws CryptoException {
         if (InternalCrypto.secretKeySpec == null) {
             String keyFileName = System.getProperty(KEY_FILE);
             String saltFileName = System.getProperty(SALT_FILE);
@@ -27,14 +27,20 @@ public class InternalCrypto extends BaseCrypto {
                 File keyFile = new File(keyFileName);
                 File saltFile = new File(saltFileName);
                 if (keyFile.isFile() && saltFile.isFile()) {
-                    secretKeySpec = InternalCrypto.readKeyFromFile(keyFile);
-                    salt = InternalCrypto.readSaltFromFile(saltFile);
-                    iv = new javax.crypto.spec.IvParameterSpec(InternalCrypto.salt);
+                    initialise(InternalCrypto.readKeyFromFile(keyFile), InternalCrypto.readSaltFromFile(saltFile));
                 }
             }
             if ((secretKeySpec == null) || (iv == null)) {
                 throw new RuntimeException("Could not create SecretKeySpec or IvParameterSpec instances. Check key and salt files.");
             }
+        }
+    }
+
+    protected synchronized static void initialise(SecretKeySpec newSecretKey, byte[] newSalt) throws CryptoException {
+        if (InternalCrypto.secretKeySpec == null) {
+            InternalCrypto.secretKeySpec = newSecretKey;
+            InternalCrypto.salt = newSalt;
+            InternalCrypto.iv = new javax.crypto.spec.IvParameterSpec(newSalt);
         }
     }
 
