@@ -2,6 +2,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import groovyx.net.http.RESTClient
 
 /**
  * Tests for the Return Value Definition API.
@@ -13,9 +14,14 @@ class ReturnValueDefinitionIT extends BaseApiTest {
   def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
   def static returnValueDefinitionTypes = ['co2', 'co2e'];
 
+  /**
+   * This test also checks for the case described in: https://jira.amee.com/browse/PL-3692
+   */
   @Test
   void createReturnValueDefinition() {
     setAdminUser();
+    // Check RVD list is as expected, pre-update.
+    getReturnValueDefinitionsJson();
     // Create a new RVD.
     def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -26,10 +32,11 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertTrue responsePost.headers['Location'] != null;
     assertTrue responsePost.headers['Location'].value != null;
     def location = responsePost.headers['Location'].value;
-    assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+    // assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[7];
-    returnValueDefinitionTypes[2] = 'CO2';
+    def uid = location.split('/')[7];
+    returnValueDefinitionUids[] = uid;
+    returnValueDefinitionTypes[] = 'CO2';
     // Get the new RVD.
     def responseGet = client.get(
             path: location,
@@ -38,6 +45,16 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'application/json', responseGet.contentType;
     assertTrue responseGet.data instanceof net.sf.json.JSON;
     assertEquals 'OK', responseGet.data.status;
+    // Find new RVD in list of RVDs.
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/returnvalues',
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    def uids = response.data.returnValueDefinitions.collect {it.uid};
+    assertTrue uids.contains(uid);
   }
 
   @Test
@@ -184,8 +201,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def location = responsePost.headers['Location'].value
 
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[7]
-    returnValueDefinitionTypes[2] = 'new'
+    returnValueDefinitionUids[] = location.split('/')[7]
+    returnValueDefinitionTypes[] = 'new'
 
     // Check the new one is default.
     responseGet = client.get(path: location + ';full', contentType: JSON)
