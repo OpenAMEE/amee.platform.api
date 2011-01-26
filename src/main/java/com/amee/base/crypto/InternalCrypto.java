@@ -19,7 +19,7 @@ public class InternalCrypto extends BaseCrypto {
         super();
     }
 
-    protected synchronized static void initialise() throws CryptoException {
+    private synchronized static void initialise() throws CryptoException {
         if (InternalCrypto.secretKeySpec == null) {
             String keyFileName = System.getProperty(KEY_FILE);
             String saltFileName = System.getProperty(SALT_FILE);
@@ -38,9 +38,13 @@ public class InternalCrypto extends BaseCrypto {
 
     protected synchronized static void initialise(SecretKeySpec newSecretKey, byte[] newSalt) throws CryptoException {
         if (InternalCrypto.secretKeySpec == null) {
-            InternalCrypto.secretKeySpec = newSecretKey;
-            InternalCrypto.salt = newSalt;
-            InternalCrypto.iv = new javax.crypto.spec.IvParameterSpec(newSalt);
+            if ((newSecretKey != null) && (newSalt != null) && (newSalt.length == 16)) {
+                InternalCrypto.secretKeySpec = newSecretKey;
+                InternalCrypto.salt = newSalt;
+                InternalCrypto.iv = new javax.crypto.spec.IvParameterSpec(newSalt);
+            } else {
+                throw new IllegalStateException("Could not set SecretKeySpec or IvParameterSpec instances.");
+            }
         }
     }
 
