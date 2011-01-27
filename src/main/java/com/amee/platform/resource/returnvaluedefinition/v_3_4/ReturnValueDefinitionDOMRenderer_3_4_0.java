@@ -1,4 +1,4 @@
-package com.amee.platform.resource.returnvaluedefinition.v_3_2;
+package com.amee.platform.resource.returnvaluedefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 @Since("3.2.0")
-public class ReturnValueDefinitionDOMRenderer_3_2_0 implements ReturnValueDefinitionResource.Renderer {
+public class ReturnValueDefinitionDOMRenderer_3_4_0 implements ReturnValueDefinitionResource.Renderer {
 
     private ReturnValueDefinition returnValueDefinition;
     private Element rootElem;
