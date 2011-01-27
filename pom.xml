@@ -14,7 +14,7 @@
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <amee-base.version>1.0.6</amee-base.version>
-        <amee-platform-service.version>1.0.17-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-service.version>1.0.17</amee-platform-service.version>
         <!-- External Versions. -->
         <junit.version>4.7</junit.version>
         <org-json.version>2.0</org-json.version>
