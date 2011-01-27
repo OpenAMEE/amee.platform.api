@@ -2,6 +2,7 @@ package com.amee.platform.resource.returnvaluedefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
@@ -12,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.2.0")
+@Since("3.4.0")
 public class ReturnValueDefinitionDOMRenderer_3_4_0 implements ReturnValueDefinitionResource.Renderer {
 
-    private ReturnValueDefinition returnValueDefinition;
-    private Element rootElem;
-    private Element returnValueDefinitionElem;
+    protected ReturnValueDefinition returnValueDefinition;
+    protected Element rootElem;
+    protected Element returnValueDefinitionElem;
 
     @Override
     public void start() {
@@ -62,7 +63,8 @@ public class ReturnValueDefinitionDOMRenderer_3_4_0 implements ReturnValueDefini
         returnValueDefinitionElem.addContent(e);
         e.setAttribute("uid", valueDefinition.getUid());
         e.addContent(new Element("Name").setText(valueDefinition.getName()));
-        e.addContent(new Element("ValueType").setText(valueDefinition.getValueType().getName()));
+        e.addContent(new Element("ValueType").setText(
+                valueDefinition.getValueType().equals(ValueType.DOUBLE) ? "DOUBLE" : valueDefinition.getValueType().getName()));
     }
 
     @Override

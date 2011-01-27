@@ -3,6 +3,7 @@ package com.amee.platform.resource.returnvaluedefinition.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
@@ -12,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.2.0")
+@Since("3.4.0")
 public class ReturnValueDefinitionJSONRenderer_3_4_0 implements ReturnValueDefinitionResource.Renderer {
 
-    private ReturnValueDefinition returnValueDefinition;
-    private JSONObject rootObj;
-    private JSONObject returnValueDefinitionObj;
+    protected ReturnValueDefinition returnValueDefinition;
+    protected JSONObject rootObj;
+    protected JSONObject returnValueDefinitionObj;
 
     @Override
     public void start() {
@@ -61,7 +62,8 @@ public class ReturnValueDefinitionJSONRenderer_3_4_0 implements ReturnValueDefin
         JSONObject itemDefinitionObj = new JSONObject();
         ResponseHelper.put(itemDefinitionObj, "uid", valueDefinition.getUid());
         ResponseHelper.put(itemDefinitionObj, "name", valueDefinition.getName());
-        ResponseHelper.put(itemDefinitionObj, "valueType", valueDefinition.getValueType().getName());
+        ResponseHelper.put(itemDefinitionObj, "valueType",
+                valueDefinition.getValueType().equals(ValueType.DOUBLE) ? "DOUBLE" : valueDefinition.getValueType().getName());
         ResponseHelper.put(returnValueDefinitionObj, "valueDefinition", itemDefinitionObj);
     }
 
