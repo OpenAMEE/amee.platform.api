@@ -79,6 +79,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         boolean type = requestWrapper.getMatrixParameters().containsKey("type");
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
         boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
+        boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
 
         // New ReturnValueDefinition & basic.
         renderer.newReturnValueDefinition(returnValueDefinition);
@@ -99,6 +100,9 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         }
         if (flags || full) {
             renderer.addFlags();
+        }
+        if (audit || full) {
+            renderer.addAudit();
         }
     }
 
