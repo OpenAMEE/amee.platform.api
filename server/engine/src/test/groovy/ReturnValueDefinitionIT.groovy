@@ -2,7 +2,6 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
-import groovyx.net.http.RESTClient
 
 /**
  * Tests for the Return Value Definition API.
@@ -35,8 +34,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     // assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
     // Add new RVD to local state.
     def uid = location.split('/')[7];
-    returnValueDefinitionUids[] = uid;
-    returnValueDefinitionTypes[] = 'CO2';
+    returnValueDefinitionUids << uid;
+    returnValueDefinitionTypes << 'CO2';
     // Get the new RVD.
     def responseGet = client.get(
             path: location,
@@ -55,6 +54,19 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.status;
     def uids = response.data.returnValueDefinitions.collect {it.uid};
     assertTrue uids.contains(uid);
+    // Then delete it.
+    def responseDelete = client.delete(path: location);
+    assertEquals 200, responseDelete.status;
+    // We should get a 404 here.
+    try {
+      client.get(path: location);
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
+    // Remove it from the collection.
+    returnValueDefinitionUids.remove(returnValueDefinitionUids.size() - 1);
+    returnValueDefinitionTypes.remove(returnValueDefinitionTypes.size() - 1);
   }
 
   @Test
@@ -201,8 +213,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def location = responsePost.headers['Location'].value
 
     // Add new RVD to local state.
-    returnValueDefinitionUids[] = location.split('/')[7]
-    returnValueDefinitionTypes[] = 'new'
+    returnValueDefinitionUids << location.split('/')[7]
+    returnValueDefinitionTypes << 'new'
 
     // Check the new one is default.
     responseGet = client.get(path: location + ';full', contentType: JSON)
