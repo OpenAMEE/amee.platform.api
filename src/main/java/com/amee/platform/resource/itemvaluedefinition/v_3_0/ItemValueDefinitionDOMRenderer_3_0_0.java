@@ -2,7 +2,7 @@ package com.amee.platform.resource.itemvaluedefinition.v_3_0;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
-import com.amee.platform.resource.itemvaluedefinition.v_3_1.ItemValueDefinitionDOMRenderer_3_1_0;
+import com.amee.platform.resource.itemvaluedefinition.v_3_4.ItemValueDefinitionDOMRenderer_3_4_0;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 @Since("3.0.0")
-public class ItemValueDefinitionDOMRenderer_3_0_0 extends ItemValueDefinitionDOMRenderer_3_1_0 {
+public class ItemValueDefinitionDOMRenderer_3_0_0 extends ItemValueDefinitionDOMRenderer_3_4_0 {
 
     @Override
     public void addValue() {

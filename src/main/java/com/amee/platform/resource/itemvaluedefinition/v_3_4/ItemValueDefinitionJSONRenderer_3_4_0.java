@@ -1,4 +1,4 @@
-package com.amee.platform.resource.itemvaluedefinition.v_3_1;
+package com.amee.platform.resource.itemvaluedefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
@@ -17,8 +17,8 @@ import java.util.Collection;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ItemValueDefinitionJSONRenderer_3_1_0 implements ItemValueDefinitionResource.Renderer {
+@Since("3.4.0")
+public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitionResource.Renderer {
 
     private ItemValueDefinition itemValueDefinition;
     private JSONObject rootObj;
