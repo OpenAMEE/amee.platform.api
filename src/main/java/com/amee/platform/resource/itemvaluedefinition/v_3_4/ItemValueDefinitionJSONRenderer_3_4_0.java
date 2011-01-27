@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.APIVersion;
 import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -20,9 +21,9 @@ import java.util.Collection;
 @Since("3.4.0")
 public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitionResource.Renderer {
 
-    private ItemValueDefinition itemValueDefinition;
-    private JSONObject rootObj;
-    private JSONObject itemValueDefinitionObj;
+    protected ItemValueDefinition itemValueDefinition;
+    protected JSONObject rootObj;
+    protected JSONObject itemValueDefinitionObj;
 
     @Override
     public void start() {
@@ -88,7 +89,8 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
         JSONObject itemDefinitionObj = new JSONObject();
         ResponseHelper.put(itemDefinitionObj, "uid", valueDefinition.getUid());
         ResponseHelper.put(itemDefinitionObj, "name", valueDefinition.getName());
-        ResponseHelper.put(itemDefinitionObj, "valueType", valueDefinition.getValueType().getName());
+        ResponseHelper.put(itemDefinitionObj, "valueType",
+                valueDefinition.getValueType().equals(ValueType.DOUBLE) ? "DOUBLE" : valueDefinition.getValueType().getName());
         ResponseHelper.put(itemValueDefinitionObj, "valueDefinition", itemDefinitionObj);
     }
 

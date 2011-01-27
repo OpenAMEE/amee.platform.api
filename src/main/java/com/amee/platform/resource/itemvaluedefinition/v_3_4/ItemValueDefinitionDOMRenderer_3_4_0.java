@@ -3,6 +3,7 @@ package com.amee.platform.resource.itemvaluedefinition.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.domain.APIVersion;
 import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
@@ -19,9 +20,9 @@ import java.util.Collection;
 @Since("3.4.0")
 public class ItemValueDefinitionDOMRenderer_3_4_0 implements ItemValueDefinitionResource.Renderer {
 
-    private ItemValueDefinition itemValueDefinition;
-    private Element rootElem;
-    private Element itemValueDefinitionElem;
+    protected ItemValueDefinition itemValueDefinition;
+    protected Element rootElem;
+    protected Element itemValueDefinitionElem;
 
     @Override
     public void start() {
@@ -88,7 +89,8 @@ public class ItemValueDefinitionDOMRenderer_3_4_0 implements ItemValueDefinition
         itemValueDefinitionElem.addContent(e);
         e.setAttribute("uid", valueDefinition.getUid());
         e.addContent(new Element("Name").setText(valueDefinition.getName()));
-        e.addContent(new Element("ValueType").setText(valueDefinition.getValueType().getName()));
+        e.addContent(new Element("ValueType").setText(
+                valueDefinition.getValueType().equals(ValueType.DOUBLE) ? "DOUBLE" : valueDefinition.getValueType().getName()));
     }
 
     @Override
