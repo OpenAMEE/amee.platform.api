@@ -96,8 +96,15 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getReturnValueDefinitionJson() {
+    getReturnValueDefinitionJson("3.1")
+    getReturnValueDefinitionJson("3.2")
+    getReturnValueDefinitionJson("3.3")
+    getReturnValueDefinitionJson("3.4")
+  }
+
+  void getReturnValueDefinitionJson(String version) {
     def response = client.get(
-            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -112,16 +119,29 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name;
     assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid;
     assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name;
-    assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
-    assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created;
-    assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified;
-    assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
+    if (Double.valueOf(version) >= 3.4) {
+      assertEquals 'DOUBLE', response.data.returnValueDefinition.valueDefinition.valueType;
+    } else {
+      assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
+    }
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created;
+      assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified;
+      assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
+    }
   }
 
   @Test
   void getReturnValueDefinitionXml() {
+    getReturnValueDefinitionXml("3.1");
+    getReturnValueDefinitionXml("3.2");
+    getReturnValueDefinitionXml("3.3");
+    getReturnValueDefinitionXml("3.4");
+  }
+
+  void getReturnValueDefinitionXml(String version) {
     def response = client.get(
-            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
@@ -135,10 +155,16 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text();
     assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text();
     assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text();
-    assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
-    assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text();
-    assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text();
-    assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
+    if (Double.valueOf(version) >= 3.4) {
+      assertEquals 'DOUBLE', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
+    } else {
+      assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
+    }
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text();
+      assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text();
+      assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
+    }
   }
 
   @Test
