@@ -12,28 +12,32 @@ import java.util.*;
 /**
  * A Map of {@link BaseItemValue} instances.
  * <p/>
- * The keys will be the {@link BaseItemValue} paths. The entries will be a Set of {@link BaseItemValue} instances. The Set will
- * consist of a single entry for single-valued {@link BaseItemValue} histories.
+ * The keys will be the {@link BaseItemValue} paths. The entries will be a SortedSet of {@link BaseItemValue} instances. The Set will
+ * consist of a single entry for single-valued {@link BaseItemValue} histories and a set of {@link BaseItemValue}s sorted in
+ * descending order (most recent first) for multi-valued histories. The non-historical value is the last item in the set.
+ *
+ * Note: This class has a natural ordering that is inconsistent with equals.
  */
-@SuppressWarnings("unchecked")
-public class NuItemValueMap extends HashMap {
+public class NuItemValueMap {
 
     Log log = LogFactory.getLog(getClass());
 
     @Transient
     private transient ItemValueMap adapter;
 
+    private Map<String, SortedSet<BaseItemValue>> map = new HashMap<String, SortedSet<BaseItemValue>>();
+
     /**
-     * Get the head {@link BaseItemValue} in the historical sequence.
+     * Get the head {@link BaseItemValue} in the historical sequence (the earliest value).
      *
      * @param path - the {@link BaseItemValue} path.
-     * @return the head {@link BaseItemValue} in the historical sequence.
+     * @return the head (earliest) {@link BaseItemValue} in the historical sequence.
      */
     public BaseItemValue get(String path) {
         BaseItemValue itemValue = null;
-        TreeSet<BaseItemValue> series = (TreeSet<BaseItemValue>) super.get(path);
+        SortedSet<BaseItemValue> series = map.get(path);
         if (series != null) {
-            itemValue = series.first();
+            itemValue = series.last();
         }
         return itemValue;
     }
@@ -45,9 +49,9 @@ public class NuItemValueMap extends HashMap {
      * @return the set of active {@link BaseItemValue}s at the passed start Date.
      */
     public List<BaseItemValue> getAll(Date startDate) {
-        List<BaseItemValue> itemValues = new ArrayList();
-        for (Object path : super.keySet()) {
-            BaseItemValue itemValue = get((String) path, startDate);
+        List<BaseItemValue> itemValues = new ArrayList<BaseItemValue>();
+        for (String path : map.keySet()) {
+            BaseItemValue itemValue = get(path, startDate);
             if (itemValue != null) {
                 itemValues.add(itemValue);
             } else {
@@ -66,7 +70,7 @@ public class NuItemValueMap extends HashMap {
      */
     public BaseItemValue get(String path, Date startDate) {
         BaseItemValue itemValue = null;
-        Set<BaseItemValue> series = (TreeSet<BaseItemValue>) super.get(path);
+        SortedSet<BaseItemValue> series = map.get(path);
         if (series != null) {
             itemValue = find(series, startDate);
         }
@@ -75,31 +79,33 @@ public class NuItemValueMap extends HashMap {
 
     public void put(String path, BaseItemValue itemValue) {
         // Create TreeSet if it does not exist for this path.
-        if (!containsKey(path)) {
-            super.put(path, new TreeSet<BaseItemValue>(new Comparator<BaseItemValue>() {
-                public int compare(BaseItemValue iv1, BaseItemValue iv2) {
-                    if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass()) &&
-                            ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
-                        // Both BaseItemValue are part of a history, compare their startDates.
-                        return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
-                    } else if (ExternalHistoryValue.class.isAssignableFrom(iv1.getClass())) {
-                        // The first BaseItemValue is historical, but the second is not, so it needs to
-                        // come after the second BaseItemValue.
-                        return 1;
-                    } else if (ExternalHistoryValue.class.isAssignableFrom(iv2.getClass())) {
-                        // The second BaseItemValue is historical, but the first is not, so it needs to
-                        // come after the first BaseItemValue.
-                        return -1;
-                    } else {
-                        // Both BaseItemValues are not historical. This should not happen but consider them equal.
-                        log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
-                        return 0;
-                    }
-                }
-            }));
+        if (!map.containsKey(path)) {
+            map.put(path, new TreeSet<BaseItemValue>(
+                Collections.reverseOrder(
+                    new Comparator<BaseItemValue>() {
+                        public int compare(BaseItemValue iv1, BaseItemValue iv2) {
+                            if (isHistoricValue(iv1) && isHistoricValue(iv2)) {
+                                // Both BaseItemValue are part of a history, compare their startDates.
+                                return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
+                            } else if (isHistoricValue(iv1)) {
+                                // The first BaseItemValue is historical, but the second is not, so it needs to
+                                // come after the second BaseItemValue.
+                                return 1;
+                            } else if (isHistoricValue(iv2)) {
+                                // The second BaseItemValue is historical, but the first is not, so it needs to
+                                // come after the first BaseItemValue.
+                                return -1;
+                            } else {
+                                // Both BaseItemValues are not historical. This should not happen but consider them equal.
+                                // The new BaseItemValue will not be added to the TreeSet (see class note about inconsistency with equals).
+                                log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
+                                return 0;
+                            }
+                        }
+                    })));
         }
         // Add itemValue to the TreeSet for this path.
-        Set<BaseItemValue> itemValues = (Set<BaseItemValue>) super.get(path);
+        SortedSet<BaseItemValue> itemValues = map.get(path);
         itemValues.add(itemValue);
     }
 
@@ -110,38 +116,42 @@ public class NuItemValueMap extends HashMap {
      * @return the List of {@link BaseItemValue}. Will be empty is there exists no {@link BaseItemValue}s with this path.
      */
     public List<BaseItemValue> getAll(String path) {
-        Object o = super.get(path);
-        return o != null ? new ArrayList((TreeSet<BaseItemValue>) o) : new ArrayList();
+        SortedSet<BaseItemValue> series = map.get(path);
+        return series != null ? new ArrayList<BaseItemValue>(series) : new ArrayList<BaseItemValue>();
     }
 
     /**
      * Find the active BaseItemValue at startDate. The active BaseItemValue is the one occurring at or
      * immediately before startDate.
      *
-     * @param itemValues
+     * @param itemValues the item values sorted by startDate, most recent first (descending).
      * @param startDate
      * @return the discovered BaseItemValue, or null if not found
      */
-    private static BaseItemValue find(Set<BaseItemValue> itemValues, Date startDate) {
-        // Default to the earliest possible date.
+    private static BaseItemValue find(SortedSet<BaseItemValue> itemValues, Date startDate) {
+        // Default to the current date.
         if (startDate == null) {
-            startDate = IDataItemService.EPOCH;
+            startDate = new Date();
         }
         // Find active BaseItemValue.
         BaseItemValue selected = null;
         for (BaseItemValue itemValue : itemValues) {
-            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
+            if (isHistoricValue(itemValue)) {
                 if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
                     selected = itemValue;
-                    selected.setHistoryAvailable(itemValues.size() > 1);
                     break;
                 }
             } else {
-                // Non-historical values always come first.
+                // No historical values match so use the non-historical value.
                 selected = itemValue;
             }
         }
+        selected.setHistoryAvailable(itemValues.size() > 1);
         return selected;
+    }
+
+    private static boolean isHistoricValue(BaseItemValue itemValue) {
+        return ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass());
     }
 
     public ItemValueMap getAdapter() {
@@ -150,5 +160,9 @@ public class NuItemValueMap extends HashMap {
 
     public void setAdapter(ItemValueMap adapter) {
         this.adapter = adapter;
+    }
+
+    public Set keySet() {
+        return map.keySet();
     }
 }
