@@ -90,6 +90,10 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         return (StringUtils.isNotBlank(perUnit) && getItemValueDefinition().isAnyPerUnit()) || getItemValueDefinition().hasPerUnit();
     }
 
+    public boolean hasPerTimeUnit() {
+        return hasPerUnit() && getPerUnit().isTime();
+    }
+
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
         return getItemValueDefinition().getPerUnit();

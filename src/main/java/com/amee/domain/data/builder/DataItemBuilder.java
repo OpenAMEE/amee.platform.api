@@ -1,12 +1,14 @@
 package com.amee.domain.data.builder;
 
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.DataItem;
-import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.BaseDataItemValue;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +18,10 @@ import org.w3c.dom.Element;
 
 public class DataItemBuilder implements ItemBuilder {
 
-    private DataItem item;
+    private NuDataItem item;
+    private IDataItemService dataItemService;
 
-    public DataItemBuilder(DataItem item) {
+    public DataItemBuilder(NuDataItem item) {
         this.item = item;
     }
 
@@ -42,18 +45,18 @@ public class DataItemBuilder implements ItemBuilder {
     }
 
     private void buildElementItemValues(Document document, Element itemValuesElem) {
-        for (ItemValue itemValue : item.getItemValues()) {
+        for (BaseItemValue itemValue : dataItemService.getItemValues(item)) {
             itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this).getElement(document, false));
         }
     }
 
     private void buildElementItemValuesWithHistory(Document document, Element itemValuesElem) {
-        for (Object o1 : item.getItemValuesMap().keySet()) {
+        for (Object o1 : dataItemService.getItemValuesMap(item).keySet()) {
             String path = (String) o1;
             Element itemValueSeries = document.createElement("ItemValueSeries");
             itemValueSeries.setAttribute("path", path);
-            for (Object o2 : item.getAllItemValues(path)) {
-                ItemValue itemValue = (ItemValue) o2;
+            for (Object o2 : dataItemService.getAllItemValues(item, path)) {
+                BaseDataItemValue itemValue = (BaseDataItemValue) o2;
                 itemValueSeries.appendChild(new ItemValueBuilder(itemValue).getElement(document, false));
             }
             itemValuesElem.appendChild(itemValueSeries);
@@ -84,18 +87,18 @@ public class DataItemBuilder implements ItemBuilder {
     }
 
     private void buildJSONItemValues(JSONArray itemValues) throws JSONException {
-        for (ItemValue itemValue : item.getItemValues()) {
+        for (BaseItemValue itemValue : dataItemService.getItemValues(item)) {
             itemValues.put(new ItemValueBuilder(itemValue, this).getJSONObject(false));
         }
     }
 
     private void buildJSONItemValuesWithHistory(JSONArray itemValues) throws JSONException {
-        for (Object o1 : item.getItemValuesMap().keySet()) {
+        for (Object o1 : dataItemService.getItemValuesMap(item).keySet()) {
             String path = (String) o1;
             JSONObject values = new JSONObject();
             JSONArray valueSet = new JSONArray();
-            for (Object o2 : item.getAllItemValues(path)) {
-                ItemValue itemValue = (ItemValue) o2;
+            for (Object o2 : dataItemService.getAllItemValues(item, path)) {
+                BaseItemValue itemValue = (BaseItemValue) o2;
                 valueSet.put(new ItemValueBuilder(itemValue).getJSONObject(false));
             }
             values.put(path, valueSet);
@@ -115,10 +118,12 @@ public class DataItemBuilder implements ItemBuilder {
         JSONObject obj = new JSONObject();
         buildJSON(obj, detailed, showHistory);
         obj.put("path", item.getPath());
-        obj.put("label", item.getLabel());
-        obj.put("startDate", StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
-        obj.put("endDate",
-                (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
+        obj.put("label", dataItemService.getLabel(item));
+        obj.put("startDate",
+                StartEndDate.getLocalStartEndDate(
+                        new StartEndDate(IDataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString());
+        obj.put("endDate", "");
+        // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
         return obj;
     }
 
@@ -148,11 +153,12 @@ public class DataItemBuilder implements ItemBuilder {
         Element dataItemElement = document.createElement("DataItem");
         buildElement(document, dataItemElement, detailed, showHistory);
         dataItemElement.appendChild(XMLUtils.getElement(document, "Path", item.getDisplayPath()));
-        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", item.getLabel()));
+        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(item)));
         dataItemElement.appendChild(XMLUtils.getElement(document, "StartDate",
-                StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
-        dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate",
-                (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
+                StartEndDate.getLocalStartEndDate(
+                        new StartEndDate(IDataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString()));
+        dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate", ""));
+        // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
         return dataItemElement;
     }
 

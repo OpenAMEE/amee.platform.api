@@ -22,7 +22,6 @@ package com.amee.domain.item;
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
@@ -45,9 +44,6 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
 
     @Transient
     private transient String fullPath;
-
-    @Transient
-    private transient ItemValue adapter;
 
     public BaseItemValue() {
         super();
@@ -185,12 +181,4 @@ public abstract class BaseItemValue extends AMEEEntity implements Pathable, Exte
     }
 
     public abstract void setValue(String value);
-
-    public ItemValue getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(ItemValue adapter) {
-        this.adapter = adapter;
-    }
 }

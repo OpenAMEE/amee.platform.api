@@ -1,6 +1,7 @@
 package com.amee.domain.data;
 
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.item.BaseItemValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,13 +13,13 @@ public class LocaleNameTest {
     private LocaleName localeName;
     private ItemDefinition mockItemDef;
     private DataCategory mockDataCategory;
-    private ItemValue mockItemValue;
+    private BaseItemValue mockItemValue;
 
     @Before
     public void setUp() throws Exception {
         mockItemDef = mock(ItemDefinition.class);
         mockDataCategory = mock(DataCategory.class);
-        mockItemValue = mock(ItemValue.class);
+        mockItemValue = mock(BaseItemValue.class);
     }
 
     @Test

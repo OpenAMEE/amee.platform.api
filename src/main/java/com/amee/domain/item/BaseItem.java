@@ -22,7 +22,6 @@ package com.amee.domain.item;
 import com.amee.domain.AMEEEntity;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.Item;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.Pathable;
 
@@ -172,8 +171,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     public boolean supportsCalculation() {
         return !getItemDefinition().getAlgorithms().isEmpty();
     }
-
-    public abstract Item getAdapter();
 
     /**
      * Set the effective start date.

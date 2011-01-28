@@ -8,7 +8,6 @@ import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.data.NuDataItem;
 import com.amee.domain.profile.CO2CalculationService;
 import com.amee.domain.profile.Profile;
-import com.amee.domain.profile.ProfileItem;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
@@ -42,9 +41,6 @@ public class NuProfileItem extends BaseItem {
 
     @Transient
     private ReturnValues amounts = new ReturnValues();
-
-    @Transient
-    private transient ProfileItem adapter;
 
     public NuProfileItem() {
         super();
@@ -155,7 +151,7 @@ public class NuProfileItem extends BaseItem {
     public ReturnValues getAmounts(boolean recalculate) {
         if (amounts.getReturnValues().isEmpty() || recalculate) {
             log.debug("getAmounts() - calculating amounts");
-            getCalculationService().calculate(ProfileItem.getProfileItem(this));
+            getCalculationService().calculate(this);
         }
         return amounts;
     }
@@ -189,10 +185,10 @@ public class NuProfileItem extends BaseItem {
     }
 
     /**
-     * Set the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
+     * Set the effective start date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups.
      *
-     * @param effectiveStartDate - the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups. If NULL or
-     *                           before {@link com.amee.domain.data.LegacyItem#getStartDate()} this value is ignored.
+     * @param effectiveStartDate - the effective start date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups. If NULL or
+     *                           before the start date this value is ignored.
      */
     public void setEffectiveStartDate(Date effectiveStartDate) {
         if ((effectiveStartDate != null) && effectiveStartDate.before(getStartDate())) {
@@ -203,7 +199,7 @@ public class NuProfileItem extends BaseItem {
     }
 
     /**
-     * Get the effective start date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
+     * Get the effective start date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups.
      *
      * @return - the effective start date. If no date has been explicitly specified,
      *         then the Item startDate is returned.
@@ -217,10 +213,10 @@ public class NuProfileItem extends BaseItem {
     }
 
     /**
-     * Set the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
+     * Set the effective end date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups.
      *
-     * @param effectiveEndDate - the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups. If NULL or
-     *                         after {@link com.amee.domain.data.LegacyItem#getEndDate()} (if set) this value is ignored.
+     * @param effectiveEndDate - the effective end date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups. If NULL or
+     *                         after the end date (if set) this value is ignored.
      */
     public void setEffectiveEndDate(Date effectiveEndDate) {
         if ((getEndDate() != null) && (effectiveEndDate != null) && effectiveEndDate.after(getEndDate())) {
@@ -231,7 +227,7 @@ public class NuProfileItem extends BaseItem {
     }
 
     /**
-     * Get the effective end date for {@link com.amee.domain.data.LegacyItemValue} look-ups.
+     * Get the effective end date for {@link com.amee.domain.item.profile.BaseProfileItemValue} look-ups.
      *
      * @return - the effective end date. If no date has been explicitly specified,
      *         then the Item endDate is returned.
@@ -266,13 +262,5 @@ public class NuProfileItem extends BaseItem {
     @Transient
     protected CO2CalculationService getCalculationService() {
         return ThreadBeanHolder.get(CO2CalculationService.class);
-    }
-
-    public ProfileItem getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(ProfileItem adapter) {
-        this.adapter = adapter;
     }
 }

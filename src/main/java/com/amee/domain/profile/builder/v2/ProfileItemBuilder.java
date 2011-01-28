@@ -20,14 +20,16 @@
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.IDataItemService;
+import com.amee.domain.IProfileItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.DataItem;
-import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
-import com.amee.domain.profile.ProfileItem;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.platform.science.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,15 +41,17 @@ import java.util.Map;
 
 public class ProfileItemBuilder implements ItemBuilder {
 
-    private ProfileItem item;
+    private NuProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
+    private IDataItemService dataItemService;
+    private IProfileItemService profileItemService;
 
-    public ProfileItemBuilder(ProfileItem item, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(NuProfileItem item, AmountCompoundUnit returnUnit) {
         this.item = item;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(ProfileItem item) {
+    public ProfileItemBuilder(NuProfileItem item) {
         this.item = item;
     }
 
@@ -59,7 +63,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         obj.put("name", item.getName().isEmpty() ? JSONObject.NULL : item.getName());
         JSONArray itemValues = new JSONArray();
         // Find all matching active ItemValues at the item startDate
-        for (ItemValue itemValue : item.getItemValues()) {
+        for (BaseItemValue itemValue : profileItemService.getItemValues(item)) {
             itemValues.put(new ItemValueBuilder(itemValue, this).getJSONObject(false));
         }
         obj.put("itemValues", itemValues);
@@ -78,7 +82,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         element.appendChild(XMLUtils.getElement(document, "Name", item.getName()));
         Element itemValuesElem = document.createElement("ItemValues");
         // Find all matching active ItemValues at the item startDate
-        for (ItemValue itemValue : item.getItemValues()) {
+        for (BaseItemValue itemValue : profileItemService.getItemValues(item)) {
             itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this).getElement(document, false));
         }
         element.appendChild(itemValuesElem);
@@ -151,9 +155,9 @@ public class ProfileItemBuilder implements ItemBuilder {
         obj.put("dataItem", new DataItemBuilder(item.getDataItem()).getIdentityJSONObject());
 
         // DataItem
-        DataItem bDataItem = item.getDataItem();
+        NuDataItem bDataItem = item.getDataItem();
         JSONObject dataItemObj = new DataItemBuilder(bDataItem).getIdentityJSONObject();
-        dataItemObj.put("Label", bDataItem.getLabel());
+        dataItemObj.put("Label", dataItemService.getLabel(bDataItem));
         obj.put("dataItem", dataItemObj);
 
         if (detailed) {
@@ -212,9 +216,9 @@ public class ProfileItemBuilder implements ItemBuilder {
                 (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
 
         // DataItem
-        DataItem bDataItem = item.getDataItem();
+        NuDataItem bDataItem = item.getDataItem();
         Element dataItemElement = new DataItemBuilder(bDataItem).getIdentityElement(document);
-        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", bDataItem.getLabel()));
+        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(bDataItem)));
 
         element.appendChild(dataItemElement);
 

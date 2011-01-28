@@ -21,6 +21,7 @@
  */
 package com.amee.domain.profile;
 
+import com.amee.domain.item.profile.NuProfileItem;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,10 +35,10 @@ public interface CO2CalculationService {
 
     /**
      * Calculate the {@link com.amee.platform.science.CO2Amount CO2Amount} of a ProfileItem. The calculated value is
-     * set into the passed {@link ProfileItem}.
+     * set into the passed {@link NuProfileItem}.
      *
-     * @param profileItem - the {@link ProfileItem} for which to calculate the
+     * @param profileItem - the {@link NuProfileItem} for which to calculate the
      * {@link com.amee.platform.science.CO2Amount CO2Amount}
      */
-    void calculate(ProfileItem profileItem);
+    void calculate(NuProfileItem profileItem);
 }

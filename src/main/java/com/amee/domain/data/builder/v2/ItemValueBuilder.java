@@ -21,9 +21,14 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
+import com.amee.domain.item.data.BaseDataItemValue;
+import com.amee.domain.item.profile.BaseProfileItemValue;
+import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,14 +37,14 @@ import org.w3c.dom.Element;
 
 public class ItemValueBuilder implements Builder {
 
-    private ItemValue itemValue;
+    private BaseItemValue itemValue;
     private ItemBuilder itemBuilder;
 
-    public ItemValueBuilder(ItemValue itemValue) {
+    public ItemValueBuilder(BaseItemValue itemValue) {
         this.itemValue = itemValue;
     }
 
-    public ItemValueBuilder(ItemValue itemValue, ItemBuilder itemBuilder) {
+    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder) {
         this(itemValue);
         this.itemBuilder = itemBuilder;
     }
@@ -53,11 +58,17 @@ public class ItemValueBuilder implements Builder {
         obj.put("uid", itemValue.getUid());
         obj.put("path", itemValue.getPath());
         obj.put("name", itemValue.getName());
-        obj.put("value", itemValue.getValue());
-        obj.put("unit", itemValue.getUnit());
-        obj.put("perUnit", itemValue.getPerUnit());
+        obj.put("value", itemValue.getValueAsString());
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue numberValue = (NumberValue) itemValue;
+            obj.put("unit", numberValue.getUnit());
+            obj.put("perUnit", numberValue.getPerUnit());
+        } else {
+            obj.put("unit", "");
+            obj.put("perUnit", "");
+        }
         obj.put("startDate",
-                StartEndDate.getLocalStartEndDate(itemValue.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
+                StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString());
         obj.put("itemValueDefinition", itemValue.getItemValueDefinition().getJSONObject(false));
         obj.put("displayName", itemValue.getDisplayName());
         obj.put("displayPath", itemValue.getDisplayPath());
@@ -78,11 +89,17 @@ public class ItemValueBuilder implements Builder {
         element.setAttribute("uid", itemValue.getUid());
         element.appendChild(XMLUtils.getElement(document, "Path", itemValue.getPath()));
         element.appendChild(XMLUtils.getElement(document, "Name", itemValue.getName()));
-        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValue()));
-        element.appendChild(XMLUtils.getElement(document, "Unit", itemValue.getUnit().toString()));
-        element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValue.getPerUnit().toString()));
+        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValueAsString()));
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue numberValue = (NumberValue) itemValue;
+            element.appendChild(XMLUtils.getElement(document, "Unit", numberValue.getUnit().toString()));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", numberValue.getPerUnit().toString()));
+        } else {
+            element.appendChild(XMLUtils.getElement(document, "Unit", ""));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", ""));
+        }
         element.appendChild(XMLUtils.getElement(document, "StartDate",
-                StartEndDate.getLocalStartEndDate(itemValue.getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
+                StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
         element.appendChild(itemValue.getItemValueDefinition().getElement(document, false));
         if (detailed) {
             element.setAttribute("Created", itemValue.getCreated().toString());
@@ -101,5 +118,22 @@ public class ItemValueBuilder implements Builder {
 
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, "ItemValue", itemValue);
+    }
+
+    /**
+     * TODO: PL-6618 - This logic is copied in a number of places.
+     */
+    public StartEndDate getStartDate() {
+        if (BaseProfileItemValue.class.isAssignableFrom(itemValue.getClass())) {
+            return ((BaseProfileItemValue) itemValue).getProfileItem().getStartDate();
+        } else if (BaseDataItemValue.class.isAssignableFrom(itemValue.getClass())) {
+            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
+                return ((ExternalHistoryValue) itemValue).getStartDate();
+            } else {
+                return new StartEndDate(IDataItemService.EPOCH);
+            }
+        } else {
+            throw new IllegalStateException("A BaseProfileItemValue or BaseDataItemValue instance was expected.");
+        }
     }
 }
