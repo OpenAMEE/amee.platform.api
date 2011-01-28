@@ -44,8 +44,16 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionJson() {
+    getItemValueDefinitionJson("3.0");
+    getItemValueDefinitionJson("3.1");
+    getItemValueDefinitionJson("3.2");
+    getItemValueDefinitionJson("3.3");
+    getItemValueDefinitionJson("3.4");
+  }
+
+  void getItemValueDefinitionJson(String version) {
     def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            path: '/' + version + '/definitions/11D3548466F2/values/7B8149D9ADE7;full',
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -53,44 +61,63 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.status;
     assertEquals 'KWh Per Year', response.data.itemValueDefinition.name;
     assertEquals 'kWhPerYear', response.data.itemValueDefinition.path;
-    assertEquals '', response.data.itemValueDefinition.choices;
-    assertEquals false, response.data.itemValueDefinition.fromProfile;
-    assertEquals true, response.data.itemValueDefinition.fromData;
     assertEquals '11D3548466F2', response.data.itemValueDefinition.itemDefinition.uid;
     assertEquals 'Computers Generic', response.data.itemValueDefinition.itemDefinition.name;
-    assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid;
-    assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name;
-    assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType;
-    assertEquals 2, response.data.itemValueDefinition.usages.size();
-    assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name};
-    assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type};
-    assert ['true', 'false'] == response.data.itemValueDefinition.usages.collect {it.active};
-
+    if (Double.valueOf(version) >= 3.1) {
+      assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid;
+      assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name;
+      assertEquals false, response.data.itemValueDefinition.fromProfile;
+      assertEquals true, response.data.itemValueDefinition.fromData;
+      assertEquals '', response.data.itemValueDefinition.choices;
+      assertEquals 2, response.data.itemValueDefinition.usages.size();
+      assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name};
+      assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type};
+      assert ['true', 'false'] == response.data.itemValueDefinition.usages.collect {it.active};
+      if (Double.valueOf(version) >= 3.4) {
+        assertEquals 'DOUBLE', response.data.itemValueDefinition.valueDefinition.valueType;
+      } else {
+        assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType;
+      }
+    }
   }
 
   @Test
   void getItemValueDefinitionXml() {
+    getItemValueDefinitionXml("3.0")
+    getItemValueDefinitionXml("3.1")
+    getItemValueDefinitionXml("3.2")
+    getItemValueDefinitionXml("3.3")
+    getItemValueDefinitionXml("3.4")
+  }
+
+  void getItemValueDefinitionXml(String version) {
     def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            path: '/' + version + '/definitions/11D3548466F2/values/7B8149D9ADE7;full',
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
     assertEquals 'OK', response.data.Status.text();
     assertEquals 'KWh Per Year', response.data.ItemValueDefinition.Name.text();
     assertEquals 'kWhPerYear', response.data.ItemValueDefinition.Path.text();
-    assertEquals '', response.data.ItemValueDefinition.Choices.text();
-    assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text();
-    assertEquals 'true', response.data.ItemValueDefinition.FromData.text();
     assertEquals '11D3548466F2', response.data.ItemValueDefinition.ItemDefinition.@uid.text();
     assertEquals 'Computers Generic', response.data.ItemValueDefinition.ItemDefinition.Name.text();
-    assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text();
-    assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text();
-    assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
-    def allUsages = response.data.ItemValueDefinition.Usages.Usage;
-    assertEquals 2, allUsages.size();
-    assert ['usage2', 'usage3'] == allUsages.Name*.text();
-    assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
-    assert ['true', 'false'] == allUsages.@active*.text();
+    if (Double.valueOf(version) >= 3.1) {
+      assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text();
+      assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text();
+      assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text();
+      assertEquals 'true', response.data.ItemValueDefinition.FromData.text();
+      assertEquals '', response.data.ItemValueDefinition.Choices.text();
+      def allUsages = response.data.ItemValueDefinition.Usages.Usage;
+      assertEquals 2, allUsages.size();
+      assert ['usage2', 'usage3'] == allUsages.Name*.text();
+      assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
+      assert ['true', 'false'] == allUsages.@active*.text();
+      if (Double.valueOf(version) >= 3.4) {
+        assertEquals 'DOUBLE', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
+      } else {
+        assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
+      }
+    }
   }
 
   @Test

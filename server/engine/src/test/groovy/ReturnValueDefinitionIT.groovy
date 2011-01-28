@@ -13,9 +13,14 @@ class ReturnValueDefinitionIT extends BaseApiTest {
   def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
   def static returnValueDefinitionTypes = ['co2', 'co2e'];
 
+  /**
+   * This test also checks for the case described in: https://jira.amee.com/browse/PL-3692
+   */
   @Test
   void createReturnValueDefinition() {
     setAdminUser();
+    // Check RVD list is as expected, pre-update.
+    getReturnValueDefinitionsJson();
     // Create a new RVD.
     def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -26,10 +31,11 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertTrue responsePost.headers['Location'] != null;
     assertTrue responsePost.headers['Location'].value != null;
     def location = responsePost.headers['Location'].value;
-    assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+    // assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[7];
-    returnValueDefinitionTypes[2] = 'CO2';
+    def uid = location.split('/')[7];
+    returnValueDefinitionUids << uid;
+    returnValueDefinitionTypes << 'CO2';
     // Get the new RVD.
     def responseGet = client.get(
             path: location,
@@ -38,6 +44,29 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'application/json', responseGet.contentType;
     assertTrue responseGet.data instanceof net.sf.json.JSON;
     assertEquals 'OK', responseGet.data.status;
+    // Find new RVD in list of RVDs.
+    def response = client.get(
+            path: '/3.1/definitions/11D3548466F2/returnvalues',
+            contentType: JSON);
+    assertEquals 200, response.status;
+    assertEquals 'application/json', response.contentType;
+    assertTrue response.data instanceof net.sf.json.JSON;
+    assertEquals 'OK', response.data.status;
+    def uids = response.data.returnValueDefinitions.collect {it.uid};
+    assertTrue uids.contains(uid);
+    // Then delete it.
+    def responseDelete = client.delete(path: location);
+    assertEquals 200, responseDelete.status;
+    // We should get a 404 here.
+    try {
+      client.get(path: location);
+      fail 'Should have thrown an exception';
+    } catch (HttpResponseException e) {
+      assertEquals 404, e.response.status;
+    }
+    // Remove it from the collection.
+    returnValueDefinitionUids.remove(returnValueDefinitionUids.size() - 1);
+    returnValueDefinitionTypes.remove(returnValueDefinitionTypes.size() - 1);
   }
 
   @Test
@@ -67,8 +96,15 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getReturnValueDefinitionJson() {
+    getReturnValueDefinitionJson("3.1")
+    getReturnValueDefinitionJson("3.2")
+    getReturnValueDefinitionJson("3.3")
+    getReturnValueDefinitionJson("3.4")
+  }
+
+  void getReturnValueDefinitionJson(String version) {
     def response = client.get(
-            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -83,16 +119,29 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name;
     assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid;
     assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name;
-    assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
-    assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created;
-    assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified;
-    assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
+    if (Double.valueOf(version) >= 3.4) {
+      assertEquals 'DOUBLE', response.data.returnValueDefinition.valueDefinition.valueType;
+    } else {
+      assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
+    }
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created;
+      assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified;
+      assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
+    }
   }
 
   @Test
   void getReturnValueDefinitionXml() {
+    getReturnValueDefinitionXml("3.1");
+    getReturnValueDefinitionXml("3.2");
+    getReturnValueDefinitionXml("3.3");
+    getReturnValueDefinitionXml("3.4");
+  }
+
+  void getReturnValueDefinitionXml(String version) {
     def response = client.get(
-            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
@@ -106,10 +155,16 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text();
     assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text();
     assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text();
-    assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
-    assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text();
-    assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text();
-    assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
+    if (Double.valueOf(version) >= 3.4) {
+      assertEquals 'DOUBLE', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
+    } else {
+      assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
+    }
+    if (Double.valueOf(version) >= 3.2) {
+      assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text();
+      assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text();
+      assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
+    }
   }
 
   @Test
@@ -184,8 +239,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def location = responsePost.headers['Location'].value
 
     // Add new RVD to local state.
-    returnValueDefinitionUids[2] = location.split('/')[7]
-    returnValueDefinitionTypes[2] = 'new'
+    returnValueDefinitionUids << location.split('/')[7]
+    returnValueDefinitionTypes << 'new'
 
     // Check the new one is default.
     responseGet = client.get(path: location + ';full', contentType: JSON)
