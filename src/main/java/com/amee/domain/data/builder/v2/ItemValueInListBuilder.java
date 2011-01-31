@@ -21,14 +21,11 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.IItemService;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
-import com.amee.domain.item.data.BaseDataItemValue;
-import com.amee.domain.item.profile.BaseProfileItemValue;
-import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +35,7 @@ import org.w3c.dom.Element;
 public class ItemValueInListBuilder implements Builder {
 
     private BaseItemValue itemValue;
+    private IItemService itemService;
 
     public ItemValueInListBuilder(BaseItemValue itemValue) {
         this.itemValue = itemValue;
@@ -66,7 +64,7 @@ public class ItemValueInListBuilder implements Builder {
             obj.put("unit", "");
             obj.put("perUnit", "");
         }
-        obj.put("startDate", StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString());
+        obj.put("startDate", StartEndDate.getLocalStartEndDate(itemService.getStartDate(itemValue), TimeZoneHolder.getTimeZone()).toString());
         // Related entities.
         obj.put("itemValueDefinition", getItemValueDefinitionJSONObject(itemValue.getItemValueDefinition()));
         return obj;
@@ -102,7 +100,7 @@ public class ItemValueInListBuilder implements Builder {
             element.appendChild(XMLUtils.getElement(document, "PerUnit", ""));
         }
         element.appendChild(XMLUtils.getElement(document, "StartDate",
-                StartEndDate.getLocalStartEndDate(getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
+                StartEndDate.getLocalStartEndDate(itemService.getStartDate(itemValue), TimeZoneHolder.getTimeZone()).toString()));
         // Related entities.
         element.appendChild(getItemValueDefinitionElement(document, itemValue.getItemValueDefinition()));
         return element;
@@ -122,22 +120,5 @@ public class ItemValueInListBuilder implements Builder {
     @Override
     public Element getIdentityElement(Document document) {
         throw new UnsupportedOperationException();
-    }
-
-    /**
-     * TODO: PL-6618 - This logic is copied in a number of places.
-     */
-    public StartEndDate getStartDate() {
-        if (BaseProfileItemValue.class.isAssignableFrom(itemValue.getClass())) {
-            return ((BaseProfileItemValue) itemValue).getProfileItem().getStartDate();
-        } else if (BaseDataItemValue.class.isAssignableFrom(itemValue.getClass())) {
-            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
-                return ((ExternalHistoryValue) itemValue).getStartDate();
-            } else {
-                return new StartEndDate(IDataItemService.EPOCH);
-            }
-        } else {
-            throw new IllegalStateException("A BaseProfileItemValue or BaseDataItemValue instance was expected.");
-        }
     }
 }

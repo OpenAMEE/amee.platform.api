@@ -3,6 +3,7 @@ package com.amee.domain;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.NuDataItem;
+import com.amee.platform.science.StartEndDate;
 
 import java.util.Date;
 import java.util.List;
@@ -43,4 +44,8 @@ public interface IDataItemService extends IItemService {
     public void persist(BaseItemValue itemValue);
 
     public void remove(BaseItemValue itemValue);
+
+    public StartEndDate getStartDate(NuDataItem dataItem);
+
+    public StartEndDate getEndDate(NuDataItem dataItem);
 }

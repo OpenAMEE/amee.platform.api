@@ -38,4 +38,6 @@ public interface IItemService {
     public void addItemValue(BaseItemValue itemValue);
 
     public void clearItemValues();
+
+    public StartEndDate getStartDate(BaseItemValue itemValue);
 }
