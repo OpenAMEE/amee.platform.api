@@ -1,12 +1,15 @@
 package com.amee.platform.resource.dataitem.v_3_2;
 
 import com.amee.base.domain.Since;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
+import com.amee.service.item.DataItemService;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +18,10 @@ import org.springframework.stereotype.Service;
 @Since("3.2.0")
 public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
 
-    protected DataItem dataItem;
+    @Autowired
+    protected DataItemService dataItemService;
+
+    protected NuDataItem dataItem;
     protected Element rootElem;
     protected Element dataItemElem;
     protected Element valuesElem;
@@ -28,7 +34,7 @@ public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
         rootElem.addContent(new Element("Status").setText("OK"));
     }
 
-    public void newDataItem(DataItem dataItem) {
+    public void newDataItem(NuDataItem dataItem) {
         this.dataItem = dataItem;
         dataItemElem = new Element("Item");
         if (rootElem != null) {
@@ -45,7 +51,7 @@ public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
     }
 
     public void addLabel() {
-        dataItemElem.addContent(new Element("Label").setText(dataItem.getLabel()));
+        dataItemElem.addContent(new Element("Label").setText(dataItemService.getLabel(dataItem)));
     }
 
     public void addPath() {
@@ -84,17 +90,20 @@ public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
         dataItemElem.addContent(valuesElem);
     }
 
-    public void newValue(ItemValue itemValue) {
+    public void newValue(BaseItemValue itemValue) {
         Element valueElem = new Element("Value");
         valueElem.setAttribute("history", Boolean.toString(itemValue.isHistoryAvailable()));
         valueElem.addContent(new Element("Path").setText(itemValue.getPath()));
-        valueElem.addContent(new Element("Value").setText(itemValue.getValue()));
-        if (itemValue.hasUnit()) {
-            valueElem.addContent(new Element("Unit").setText(itemValue.getUnit().toString()));
-        }
-        if (itemValue.hasPerUnit()) {
-            valueElem.addContent(new Element("PerUnit").setText(itemValue.getPerUnit().toString()));
-            valueElem.addContent(new Element("CompoundUnit").setText(itemValue.getCompoundUnit().toString()));
+        valueElem.addContent(new Element("Value").setText(itemValue.getValueAsString()));
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue nv = (NumberValue) itemValue;
+            if (nv.hasUnit()) {
+                valueElem.addContent(new Element("Unit").setText(nv.getUnit().toString()));
+            }
+            if (nv.hasPerUnit()) {
+                valueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
+                valueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
+            }
         }
         valuesElem.addContent(valueElem);
     }

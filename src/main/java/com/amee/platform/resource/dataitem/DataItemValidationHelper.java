@@ -1,7 +1,7 @@
 package com.amee.platform.resource.dataitem;
 
 import com.amee.base.validation.ValidationHelper;
-import com.amee.domain.data.DataItem;
+import com.amee.domain.item.data.NuDataItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class DataItemValidationHelper extends ValidationHelper {
     @Autowired
     private DataItemValidator dataItemValidator;
 
-    private DataItem dataItem;
+    private NuDataItem dataItem;
     private Set<String> allowedFields;
 
     @Override
@@ -47,11 +47,11 @@ public class DataItemValidationHelper extends ValidationHelper {
         return allowedFields.toArray(new String[]{});
     }
 
-    public DataItem getDataItem() {
+    public NuDataItem getDataItem() {
         return dataItem;
     }
 
-    public void setDataItem(DataItem dataItem) {
+    public void setDataItem(NuDataItem dataItem) {
         this.dataItem = dataItem;
     }
 }

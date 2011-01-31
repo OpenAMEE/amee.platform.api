@@ -2,12 +2,15 @@ package com.amee.platform.resource.dataitem.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
+import com.amee.service.item.DataItemService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,10 @@ import org.springframework.stereotype.Service;
 @Since("3.2.0")
 public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
 
-    protected DataItem dataItem;
+    @Autowired
+    protected DataItemService dataItemService;
+
+    protected NuDataItem dataItem;
     protected JSONObject rootObj;
     protected JSONObject dataItemObj;
     protected JSONArray valuesArr;
@@ -29,7 +35,7 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
         ResponseHelper.put(rootObj, "status", "OK");
     }
 
-    public void newDataItem(DataItem dataItem) {
+    public void newDataItem(NuDataItem dataItem) {
         this.dataItem = dataItem;
         dataItemObj = new JSONObject();
         if (rootObj != null) {
@@ -46,7 +52,7 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
     }
 
     public void addLabel() {
-        ResponseHelper.put(dataItemObj, "label", dataItem.getLabel());
+        ResponseHelper.put(dataItemObj, "label", dataItemService.getLabel(dataItem));
     }
 
     public void addPath() {
@@ -85,16 +91,19 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
         ResponseHelper.put(dataItemObj, "values", valuesArr);
     }
 
-    public void newValue(ItemValue itemValue) {
+    public void newValue(BaseItemValue itemValue) {
         JSONObject valueObj = new JSONObject();
         ResponseHelper.put(valueObj, "path", itemValue.getPath());
-        ResponseHelper.put(valueObj, "value", itemValue.getValue());
-        if (itemValue.hasUnit()) {
-            ResponseHelper.put(valueObj, "unit", itemValue.getUnit().toString());
-        }
-        if (itemValue.hasPerUnit()) {
-            ResponseHelper.put(valueObj, "perUnit", itemValue.getPerUnit().toString());
-            ResponseHelper.put(valueObj, "compoundUnit", itemValue.getCompoundUnit().toString());
+        ResponseHelper.put(valueObj, "value", itemValue.getValueAsString());
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue nv = (NumberValue) itemValue;
+            if (nv.hasUnit()) {
+                ResponseHelper.put(valueObj, "unit", nv.getUnit().toString());
+            }
+            if (nv.hasPerUnit()) {
+                ResponseHelper.put(valueObj, "perUnit", nv.getPerUnit().toString());
+                ResponseHelper.put(valueObj, "compoundUnit", nv.getCompoundUnit().toString());
+            }
         }
         ResponseHelper.put(valueObj, "history", itemValue.isHistoryAvailable());
         valuesArr.put(valueObj);
