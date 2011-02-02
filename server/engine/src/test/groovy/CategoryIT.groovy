@@ -339,7 +339,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 8, allCategories.size()
 
     // Should not be sorted
-    assertFalse response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
+    assertFalse allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
   }
 
   /**
@@ -375,7 +375,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 4, allCategories.size()
 
     // Should not be sorted
-    assertFalse response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
+    assertFalse allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
   }
 
   /**
@@ -412,7 +412,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 7, allCategories.size()
 
     // Should be sorted
-    assertTrue response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
+    assertTrue allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
   }
 
   /**
