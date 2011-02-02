@@ -20,8 +20,8 @@
         <amee-restlet.version>1.0.11</amee-restlet.version>
         <amee-platform-science.version>1.0.12</amee-platform-science.version>
         <amee-platform-domain.version>1.0.12</amee-platform-domain.version>
-        <amee-platform-service.version>1.0.17-SNAPSHOT</amee-platform-service.version>
-        <amee-platform-resource.version>1.0.18-SNAPSHOT</amee-platform-resource.version>
+        <amee-platform-service.version>1.0.18-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-resource.version>1.0.19-SNAPSHOT</amee-platform-resource.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
