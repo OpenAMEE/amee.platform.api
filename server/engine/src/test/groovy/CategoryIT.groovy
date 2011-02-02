@@ -125,6 +125,10 @@ class CategoryIT extends BaseApiTest {
    * <li>resultLimit - Limit the number of entries in the result-set. Defaults to 50 with a max of 100.
    * </ul>
    *
+   * Results will be sorted by wikiName unless one or more of the following query parameters are supplied (in which
+   * case results will be sorted by relevance): name, wikiName, wikiDoc, provenance, authority, parentWikiName,
+   * itemDefinitionName, tags, excTags.
+   *
    * Data Category GET requests support the following matrix parameters to modify the response.
    *
    * <ul>
@@ -258,6 +262,8 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryNames.size(), response.data.categories.size()
     // assert categoryUids.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
+
+    // Results are sorted by wikiName
     assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}
   }
 
@@ -276,7 +282,10 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryNamesExcEcoinvent.size(), response.data.categories.size()
     // assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNamesExcEcoinvent.sort() == response.data.categories.collect {it.name}.sort()
-    assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}
+
+    // Results should not be sorted
+    assert categoryWikiNamesExcEcoinvent.sort() != response.data.categories.collect {it.wikiName}
+    assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
 
   /**
@@ -310,6 +319,9 @@ class CategoryIT extends BaseApiTest {
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals 8, response.data.categories.size()
+
+    // Should not be sorted
+    assertFalse response.data.categories.first().wikiName < response.data.categories.last().wikiName
   }
 
   /**
@@ -325,6 +337,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text()
     def allCategories = response.data.Categories.Category
     assertEquals 8, allCategories.size()
+
+    // Should not be sorted
+    assertFalse response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
   }
 
   /**
@@ -340,6 +355,9 @@ class CategoryIT extends BaseApiTest {
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals 4, response.data.categories.size()
+
+    // Should not be sorted
+    assertFalse response.data.categories.first().wikiName < response.data.categories.last().wikiName
   }
 
   /**
@@ -355,6 +373,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text()
     def allCategories = response.data.Categories.Category
     assertEquals 4, allCategories.size()
+
+    // Should not be sorted
+    assertFalse response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
   }
 
   /**
@@ -369,7 +390,11 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
-    assertEquals 7, response.data.categories.size()
+    def allCategories = response.data.categories
+    assertEquals 7, allCategories.size()
+
+    // Should  be sorted
+    assertTrue response.data.categories.first().wikiName < response.data.categories.last().wikiName
   }
 
   /**
@@ -385,6 +410,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text()
     def allCategories = response.data.Categories.Category
     assertEquals 7, allCategories.size()
+
+    // Should be sorted
+    assertTrue response.data.Categories.Category[0].WikiName.text() < response.data.Categories.Category[allCategories.size() - 1].WikiName.text()
   }
 
   /**
