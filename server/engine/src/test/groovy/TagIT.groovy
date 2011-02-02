@@ -10,6 +10,8 @@ import static org.junit.Assert.*
  */
 class TagIT extends BaseApiTest {
 
+    static def versions = [3.0, 3.1, 3.2, 3.3]
+
   def tagUids = [
           '932FD23CD3A2',
           '5708D3DBF601',
@@ -94,22 +96,19 @@ class TagIT extends BaseApiTest {
 
   @Test
   void getAllTagsJson() {
-    getAllTagsJson("3.0");
-    getAllTagsJson("3.1");
-    getAllTagsJson("3.2");
-    getAllTagsJson("3.3");
+    versions.each { version -> getAllTagsJson(version) }
   }
 
-  void getAllTagsJson(String version) {
+  def getAllTagsJson(version) {
     client.contentType = JSON
     def response = client.get(
-            path: '/' + version + '/tags')
+            path: "/${version}/tags")
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
     assertTrue response.data instanceof net.sf.json.JSON
     assertEquals 'OK', response.data.status
     assertEquals tagNames.size(), response.data.tags.size()
-    if (Double.valueOf(version) >= 3.2) {
+    if (version >= 3.2) {
       assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
     }
     assertEquals tagNames.sort(), response.data.tags.collect {it.tag}.sort();
@@ -118,16 +117,13 @@ class TagIT extends BaseApiTest {
 
   @Test
   void getAllTagsXml() {
-    getAllTagsXml("3.0");
-    getAllTagsXml("3.1");
-    getAllTagsXml("3.2");
-    getAllTagsXml("3.3");
+    versions.each { version -> getAllTagsXml(version) }
   }
 
-  void getAllTagsXml(String version) {
+  def getAllTagsXml(version) {
     client.contentType = XML
     def response = client.get(
-            path: '/' + version + '/tags')
+            path: "/${version}/tags")
     assertEquals 200, response.status
     assertEquals 'application/xml', response.contentType
     assertEquals 'OK', response.data.Status.text()
