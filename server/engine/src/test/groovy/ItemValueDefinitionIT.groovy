@@ -13,6 +13,8 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   // TODO: 3.0 tests.
 
+    static def versions = [3.0, 3.1, 3.2, 3.3, 3.4]
+
   @Test
   @Ignore("Item Value Definition POST not implemented in API")
   void createItemValueDefinition() {
@@ -28,6 +30,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertTrue response.data instanceof net.sf.json.JSON;
     assertEquals 'OK', response.data.status;
     assertEquals 6, response.data.itemValueDefinitions.size();
+
+    // Should be sorted by name
+    assertTrue response.data.itemValueDefinitions.first().name < response.data.itemValueDefinitions.last().name
   }
 
   @Test
@@ -40,20 +45,19 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.Status.text();
     def allItemValueDefinitions = response.data.ItemValueDefinitions.ItemValueDefinition;
     assertEquals 6, allItemValueDefinitions.size();
+
+    // Should be sorted by name
+    assertTrue allItemValueDefinitions[0].Name.text() < allItemValueDefinitions[-1].Name.text()
   }
 
   @Test
   void getItemValueDefinitionJson() {
-    getItemValueDefinitionJson("3.0");
-    getItemValueDefinitionJson("3.1");
-    getItemValueDefinitionJson("3.2");
-    getItemValueDefinitionJson("3.3");
-    getItemValueDefinitionJson("3.4");
+      versions.each { version -> getItemValueDefinitionJson(version) }
   }
 
-  void getItemValueDefinitionJson(String version) {
+  def getItemValueDefinitionJson(version) {
     def response = client.get(
-            path: '/' + version + '/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -63,7 +67,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 'kWhPerYear', response.data.itemValueDefinition.path;
     assertEquals '11D3548466F2', response.data.itemValueDefinition.itemDefinition.uid;
     assertEquals 'Computers Generic', response.data.itemValueDefinition.itemDefinition.name;
-    if (Double.valueOf(version) >= 3.1) {
+    if (version >= 3.1) {
       assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid;
       assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name;
       assertEquals false, response.data.itemValueDefinition.fromProfile;
@@ -73,7 +77,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
       assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name};
       assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type};
       assert ['true', 'false'] == response.data.itemValueDefinition.usages.collect {it.active};
-      if (Double.valueOf(version) >= 3.4) {
+      if (version >= 3.4) {
         assertEquals 'DOUBLE', response.data.itemValueDefinition.valueDefinition.valueType;
       } else {
         assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType;
@@ -83,16 +87,12 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getItemValueDefinitionXml() {
-    getItemValueDefinitionXml("3.0")
-    getItemValueDefinitionXml("3.1")
-    getItemValueDefinitionXml("3.2")
-    getItemValueDefinitionXml("3.3")
-    getItemValueDefinitionXml("3.4")
+      versions.each { version -> getItemValueDefinitionXml(version) }
   }
 
-  void getItemValueDefinitionXml(String version) {
+  def getItemValueDefinitionXml(version) {
     def response = client.get(
-            path: '/' + version + '/definitions/11D3548466F2/values/7B8149D9ADE7;full',
+            path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
@@ -101,7 +101,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 'kWhPerYear', response.data.ItemValueDefinition.Path.text();
     assertEquals '11D3548466F2', response.data.ItemValueDefinition.ItemDefinition.@uid.text();
     assertEquals 'Computers Generic', response.data.ItemValueDefinition.ItemDefinition.Name.text();
-    if (Double.valueOf(version) >= 3.1) {
+    if (version >= 3.1) {
       assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text();
       assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text();
       assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text();
@@ -112,7 +112,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
       assert ['usage2', 'usage3'] == allUsages.Name*.text();
       assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
       assert ['true', 'false'] == allUsages.@active*.text();
-      if (Double.valueOf(version) >= 3.4) {
+      if (version >= 3.4) {
         assertEquals 'DOUBLE', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
       } else {
         assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
