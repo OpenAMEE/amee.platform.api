@@ -32,15 +32,10 @@ public class ReturnValueDefinitionsFormAcceptor_3_1_0 extends ReturnValueDefinit
         validationHelper.setReturnValueDefinition(returnValueDefinition);
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
             log.debug("handle() Persist ReturnValueDefinition.");
-
             // Add to ItemDefinition.
             returnValueDefinition.getItemDefinition().add(returnValueDefinition);
-
             // If default is true, update the others.
-            if (returnValueDefinition.isDefaultType()) {
-                definitionService.unsetDefaultTypes(returnValueDefinition);
-            }
-
+            definitionService.unsetDefaultTypes(returnValueDefinition);
             // Invalidate based on the ItemDefinition.
             definitionService.invalidate(returnValueDefinition.getItemDefinition());
             return ResponseHelper.getOK(
