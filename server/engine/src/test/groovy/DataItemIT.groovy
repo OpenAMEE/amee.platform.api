@@ -76,7 +76,7 @@ class DataItemIT extends BaseApiTest {
 
   def getFilteredDataItemsJson(version) {
     client.contentType = JSON
-    def response = client.get(path: "/${version}/categories/Cooking/items",
+    def response = client.get(path: "/${version}/categories/Cooking/items;full",
             query: ['numberOfPeople': '1'])
     assertEquals 200, response.status
     assertEquals 'application/json', response.contentType
