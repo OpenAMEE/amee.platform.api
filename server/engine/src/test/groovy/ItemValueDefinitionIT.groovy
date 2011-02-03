@@ -32,7 +32,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 6, response.data.itemValueDefinitions.size();
 
     // Should be sorted by name
-    assertTrue response.data.itemValueDefinitions.first().name < response.data.itemValueDefinitions.last().name
+    assertTrue response.data.itemValueDefinitions.first().name.compareToIgnoreCase(response.data.itemValueDefinitions.last().name) < 0
   }
 
   @Test
@@ -47,7 +47,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
     assertEquals 6, allItemValueDefinitions.size();
 
     // Should be sorted by name
-    assertTrue allItemValueDefinitions[0].Name.text() < allItemValueDefinitions[-1].Name.text()
+    assertTrue allItemValueDefinitions[0].Name.text().compareToIgnoreCase(allItemValueDefinitions[-1].Name.text()) < 0
   }
 
   @Test
