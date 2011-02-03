@@ -111,7 +111,9 @@ class TagIT extends BaseApiTest {
     if (version >= 3.2) {
       assertEquals tagUids.sort(), response.data.tags.collect {it.uid}.sort();
     }
-    assertEquals tagNames.sort(), response.data.tags.collect {it.tag}.sort();
+
+    // Tags are sorted by tag
+    assertEquals tagNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.tags.collect {it.tag};
     assertEquals tagCounts.sort(), response.data.tags.collect {it.count}.sort();
   }
 
@@ -132,7 +134,9 @@ class TagIT extends BaseApiTest {
     if (Double.valueOf(version) >= 3.2) {
       assertEquals tagUids.sort(), allTags.@uid*.text().sort();
     }
-    assertEquals tagNames.sort(), allTags.Tag*.text().sort();
+
+    // Tags are sorted by tag
+    assertEquals tagNames.sort { a, b -> a.compareToIgnoreCase(b) }, allTags.Tag*.text();
     assertEquals tagCounts.sort(), allTags.Count*.text().collect {it.toInteger()}.sort();
   }
 
@@ -148,7 +152,7 @@ class TagIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertEquals incTagUids.size(), response.data.tags.size()
     assertEquals incTagUids.sort(), response.data.tags.collect {it.uid}.sort();
-    assertEquals incTagNames.sort(), response.data.tags.collect {it.tag}.sort();
+    assertEquals incTagNames.sort(), response.data.tags.collect {it.tag};
     assertEquals incTagCounts.sort(), response.data.tags.collect {it.count}.sort();
   }
 
@@ -164,7 +168,7 @@ class TagIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertEquals excTagUids.size(), response.data.tags.size()
     assertEquals excTagUids.sort(), response.data.tags.collect {it.uid}.sort();
-    assertEquals excTagNames.sort(), response.data.tags.collect {it.tag}.sort();
+    assertEquals excTagNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.tags.collect {it.tag};
     assertEquals excTagCounts.sort(), response.data.tags.collect {it.count}.sort();
   }
 
@@ -179,7 +183,7 @@ class TagIT extends BaseApiTest {
     getInvalidTagsFieldJson('excTags', 'format', 'moo,n o t v a l i d,boo');
   }
 
-  void getInvalidTagsFieldJson(field, code, value) {
+  def getInvalidTagsFieldJson(field, code, value) {
     try {
       // Create query.
       def query = [:];
@@ -212,7 +216,7 @@ class TagIT extends BaseApiTest {
     getTagByPathJson('ZBDV9V20SI2C');
   }
 
-  void getTagByPathJson(path) {
+  def getTagByPathJson(path) {
     client.contentType = JSON
     def response = client.get(
             path: '/3.2/tags/' + path);
@@ -234,7 +238,7 @@ class TagIT extends BaseApiTest {
     getTagByPathXml('ZBDV9V20SI2C');
   }
 
-  void getTagByPathXml(path) {
+  def getTagByPathXml(path) {
     client.contentType = XML
     def response = client.get(
             path: '/3.2/tags/' + path);
@@ -258,7 +262,7 @@ class TagIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertEquals uids.size(), response.data.tags.size()
     assertEquals uids.sort(), response.data.tags.collect {it.uid}.sort();
-    assertEquals names.sort(), response.data.tags.collect {it.tag}.sort();
+    assertEquals names.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.tags.collect {it.tag};
   }
 
   @Test
