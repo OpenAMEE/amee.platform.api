@@ -65,7 +65,7 @@ class DataItemIT extends BaseApiTest {
 
     // Should  be sorted by label
     if (version >= 3.2 ) {
-        assertTrue response.data.items.first().label < response.data.items.last().label
+        assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) < 0
     }
   }
 
@@ -87,7 +87,7 @@ class DataItemIT extends BaseApiTest {
 
     // Should not be sorted by label
     if (version >= 3.2 ) {
-        assertFalse response.data.items.first().label < response.data.items.last().label
+        assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) > 0
     }
   }
 
@@ -110,7 +110,7 @@ class DataItemIT extends BaseApiTest {
 
     // Should  be sorted by label
     if (version >= 3.2 ) {
-        assertTrue allDataItems[0].Label.text() < allDataItems[-1].Label.text()
+        assertTrue allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
     }
   }
 
