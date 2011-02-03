@@ -264,7 +264,7 @@ class CategoryIT extends BaseApiTest {
     assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
 
     // Results are sorted by wikiName
-    assert categoryWikiNames.sort() == response.data.categories.collect {it.wikiName}
+    assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.categories.collect {it.wikiName}
   }
 
   /**
@@ -283,8 +283,8 @@ class CategoryIT extends BaseApiTest {
     // assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
     assert categoryNamesExcEcoinvent.sort() == response.data.categories.collect {it.name}.sort()
 
-    // Results should not be sorted
-    assert categoryWikiNamesExcEcoinvent.sort() != response.data.categories.collect {it.wikiName}
+    // Results should NOT be sorted
+    assert categoryWikiNamesExcEcoinvent.sort { a, b -> a.compareToIgnoreCase(b) } != response.data.categories.collect {it.wikiName}
     assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
   }
 
@@ -303,7 +303,9 @@ class CategoryIT extends BaseApiTest {
     assertEquals categoryNames.size(), allCategories.size()
     // assert categoryUids.sort() == allCategories.@uid*.text().sort()
     assert categoryNames.sort() == allCategories.Name*.text().sort()
-    assert categoryWikiNames.sort() == allCategories.WikiName*.text()
+
+    // Should be sorted by wikiName
+    assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, allCategories.WikiName*.text()
   }
 
   /**
@@ -320,8 +322,8 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertEquals 8, response.data.categories.size()
 
-    // Should not be sorted
-    assertFalse response.data.categories.first().wikiName < response.data.categories.last().wikiName
+    // Should NOT be sorted
+    assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) > 0
   }
 
   /**
@@ -338,8 +340,8 @@ class CategoryIT extends BaseApiTest {
     def allCategories = response.data.Categories.Category
     assertEquals 8, allCategories.size()
 
-    // Should not be sorted
-    assertFalse allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
+    // Should NOT be sorted
+    assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) > 0
   }
 
   /**
@@ -356,8 +358,8 @@ class CategoryIT extends BaseApiTest {
     assertEquals 'OK', response.data.status
     assertEquals 4, response.data.categories.size()
 
-    // Should not be sorted
-    assertFalse response.data.categories.first().wikiName < response.data.categories.last().wikiName
+    // Should NOT be sorted
+    assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) > 0
   }
 
   /**
@@ -374,8 +376,8 @@ class CategoryIT extends BaseApiTest {
     def allCategories = response.data.Categories.Category
     assertEquals 4, allCategories.size()
 
-    // Should not be sorted
-    assertFalse allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
+    // Should NOT be sorted
+    assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) > 0
   }
 
   /**
@@ -393,8 +395,8 @@ class CategoryIT extends BaseApiTest {
     def allCategories = response.data.categories
     assertEquals 7, allCategories.size()
 
-    // Should  be sorted
-    assertTrue response.data.categories.first().wikiName < response.data.categories.last().wikiName
+    // Should be sorted
+    assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) < 0
   }
 
   /**
@@ -412,7 +414,7 @@ class CategoryIT extends BaseApiTest {
     assertEquals 7, allCategories.size()
 
     // Should be sorted
-    assertTrue allCategories[0].WikiName.text() < allCategories[-1].WikiName.text()
+    assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) < 0
   }
 
   /**
