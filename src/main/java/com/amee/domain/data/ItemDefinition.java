@@ -231,7 +231,13 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
     }
 
     public Set<ItemValueDefinition> getActiveItemValueDefinitions() {
-        Set<ItemValueDefinition> activeItemValueDefinitions = new HashSet<ItemValueDefinition>();
+        Set<ItemValueDefinition> activeItemValueDefinitions = new TreeSet<ItemValueDefinition>(
+            new Comparator<ItemValueDefinition>() {
+                public int compare(ItemValueDefinition ivd1, ItemValueDefinition ivd2) {
+                    return ivd1.getName().compareTo(ivd2.getName());
+                }
+            }
+        );
         for (ItemValueDefinition itemValueDefinition : itemValueDefinitions) {
             if (!itemValueDefinition.isTrash()) {
                 activeItemValueDefinitions.add(itemValueDefinition);
