@@ -9,6 +9,7 @@ import static org.junit.Assert.*
  * TODO: Document Return Value Definition API fully here. See https://jira.amee.com/browse/PL-9550 to vote on this task.
  */
 class ReturnValueDefinitionIT extends BaseApiTest {
+    static def versions = [3.1, 3.2, 3.3, 3.4]
 
   def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
   def static returnValueDefinitionTypes = ['co2', 'co2e'];
@@ -31,7 +32,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertTrue responsePost.headers['Location'] != null;
     assertTrue responsePost.headers['Location'].value != null;
     def location = responsePost.headers['Location'].value;
-    // assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+    assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
     // Add new RVD to local state.
     def uid = location.split('/')[7];
     returnValueDefinitionUids << uid;
@@ -96,15 +97,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getReturnValueDefinitionJson() {
-    getReturnValueDefinitionJson("3.1")
-    getReturnValueDefinitionJson("3.2")
-    getReturnValueDefinitionJson("3.3")
-    getReturnValueDefinitionJson("3.4")
+      versions.each { version -> getReturnValueDefinitionJson(version) }
   }
 
-  void getReturnValueDefinitionJson(String version) {
+  def getReturnValueDefinitionJson(version) {
     def response = client.get(
-            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -119,12 +117,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name;
     assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid;
     assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name;
-    if (Double.valueOf(version) >= 3.4) {
+    if (version >= 3.4) {
       assertEquals 'DOUBLE', response.data.returnValueDefinition.valueDefinition.valueType;
     } else {
       assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType;
     }
-    if (Double.valueOf(version) >= 3.2) {
+    if (version >= 3.2) {
       assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created;
       assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified;
       assertEquals 'ACTIVE', response.data.returnValueDefinition.status;
@@ -133,15 +131,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
   @Test
   void getReturnValueDefinitionXml() {
-    getReturnValueDefinitionXml("3.1");
-    getReturnValueDefinitionXml("3.2");
-    getReturnValueDefinitionXml("3.3");
-    getReturnValueDefinitionXml("3.4");
+      versions.each { version -> getReturnValueDefinitionXml(version) }
   }
 
-  void getReturnValueDefinitionXml(String version) {
+  def getReturnValueDefinitionXml(version) {
     def response = client.get(
-            path: '/' + version + '/definitions/11D3548466F2/returnvalues/B0268549CD9C;full',
+            path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
@@ -155,12 +150,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text();
     assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text();
     assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text();
-    if (Double.valueOf(version) >= 3.4) {
+    if (version >= 3.4) {
       assertEquals 'DOUBLE', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
     } else {
       assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text();
     }
-    if (Double.valueOf(version) >= 3.2) {
+    if (version >= 3.2) {
       assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text();
       assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text();
       assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text();
@@ -170,7 +165,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
   @Test
   void getReturnValueDefinitionsJson() {
     def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues',
+            path: '/3.1/definitions/11D3548466F2/returnvalues;full',
             contentType: JSON);
     assertEquals 200, response.status;
     assertEquals 'application/json', response.contentType;
@@ -178,12 +173,15 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals 'OK', response.data.status;
     assertEquals returnValueDefinitionUids.size(), response.data.returnValueDefinitions.size();
     assertEquals returnValueDefinitionUids.sort(), response.data.returnValueDefinitions.collect {it.uid}.sort();
+
+    // Should  be sorted by type
+    assertTrue response.data.returnValueDefinitions.first().type < response.data.returnValueDefinitions.last().type
   }
 
   @Test
   void getReturnValueDefinitionsXml() {
     def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues',
+            path: '/3.1/definitions/11D3548466F2/returnvalues;full',
             contentType: XML);
     assertEquals 200, response.status;
     assertEquals 'application/xml', response.contentType;
@@ -191,6 +189,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def allReturnValueDefinitions = response.data.ReturnValueDefinitions.ReturnValueDefinition;
     assertEquals returnValueDefinitionUids.size(), allReturnValueDefinitions.size();
     assertEquals returnValueDefinitionUids.sort(), allReturnValueDefinitions.@uid*.text().sort();
+
+    // Should  be sorted by type
+    assertTrue allReturnValueDefinitions[0].Type.text() < allReturnValueDefinitions[-1].Type.text()
   }
 
   @Test
