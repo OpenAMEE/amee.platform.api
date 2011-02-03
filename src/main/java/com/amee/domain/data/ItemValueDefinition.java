@@ -195,7 +195,13 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public String getName() {
-        return getLocaleService().getLocaleNameValue(this, name);
+
+        // May be called for invalidation when we don't have an ILocaleService object in the ThreadBeanHolder.
+        if (getLocaleService() == null) {
+            return name;
+        } else {
+            return getLocaleService().getLocaleNameValue(this, name);
+        }
     }
 
     @Override

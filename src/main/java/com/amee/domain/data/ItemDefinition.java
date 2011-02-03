@@ -254,7 +254,7 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         Set<ReturnValueDefinition> activeReturnValueDefinitions = new TreeSet<ReturnValueDefinition>(
             new Comparator<ReturnValueDefinition>() {
                 public int compare(ReturnValueDefinition rvd1, ReturnValueDefinition rvd2) {
-                    return rvd1.getType().compareTo(rvd2.getType());
+                    return rvd1.getType().compareToIgnoreCase(rvd2.getType());
                 }
             }
         );
