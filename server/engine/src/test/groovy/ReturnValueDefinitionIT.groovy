@@ -175,7 +175,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals returnValueDefinitionUids.sort(), response.data.returnValueDefinitions.collect {it.uid}.sort();
 
     // Should  be sorted by type
-    assertTrue response.data.returnValueDefinitions.first().type < response.data.returnValueDefinitions.last().type
+    assertTrue response.data.returnValueDefinitions.first().type.compareToIgnoreCase(response.data.returnValueDefinitions.last().type) < 0
   }
 
   @Test
@@ -191,7 +191,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     assertEquals returnValueDefinitionUids.sort(), allReturnValueDefinitions.@uid*.text().sort();
 
     // Should  be sorted by type
-    assertTrue allReturnValueDefinitions[0].Type.text() < allReturnValueDefinitions[-1].Type.text()
+    assertTrue allReturnValueDefinitions[0].Type.text().compareToIgnoreCase(allReturnValueDefinitions[-1].Type.text()) < 0
   }
 
   @Test
