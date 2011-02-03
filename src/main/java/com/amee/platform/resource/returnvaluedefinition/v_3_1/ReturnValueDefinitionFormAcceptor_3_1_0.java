@@ -23,8 +23,12 @@ public class ReturnValueDefinitionFormAcceptor_3_1_0 extends ReturnValueDefiniti
     protected Object handle(RequestWrapper requestWrapper, ReturnValueDefinition returnValueDefinition) {
         validationHelper.setReturnValueDefinition(returnValueDefinition);
         if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+
             // If default is true, update the others.
-            definitionService.unsetDefaultTypes(returnValueDefinition);
+            if (returnValueDefinition.isDefaultType()) {
+                definitionService.unsetDefaultTypes(returnValueDefinition);
+            }
+            
             definitionService.invalidate(returnValueDefinition.getItemDefinition());
             return ResponseHelper.getOK(requestWrapper);
         } else {
