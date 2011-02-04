@@ -33,5 +33,4 @@ public class DataItemNumberValue extends BaseDataItemNumberValue {
     public ObjectType getObjectType() {
         return ObjectType.DINV;
     }
-
 }

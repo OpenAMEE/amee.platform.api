@@ -1,6 +1,7 @@
 package com.amee.domain.data;
 
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.item.data.NuDataItem;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -8,13 +9,13 @@ import static org.mockito.Mockito.*;
 
 public class DataItemTest {
 
-    private DataItem di;
+    private NuDataItem di;
     private DataCategory mockDc;
     private ItemDefinition mockItemDef;
 
     @Before
     public void setUp() {
-        di = new DataItem();
+        di = new NuDataItem();
 
         mockDc = mock(DataCategory.class);
         di.setDataCategory(mockDc);

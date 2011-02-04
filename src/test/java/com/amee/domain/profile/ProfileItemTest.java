@@ -2,9 +2,9 @@ package com.amee.domain.profile;
 
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.LegacyDataItem;
+import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.profile.NuProfileItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,19 +16,17 @@ public class ProfileItemTest {
 
     private DataCategory mockDataCategory;
     private ItemDefinition mockItemDefinition;
-    private LegacyDataItem legacyDataItem;
-    private DataItem dataItem;
+    private NuDataItem dataItem;
     private Profile mockProfile;
-    private ProfileItem profileItem;
+    private NuProfileItem profileItem;
 
     @Before
     public void setUp() throws Exception {
         mockDataCategory = mock(DataCategory.class);
         mockItemDefinition = mock(ItemDefinition.class);
-        legacyDataItem = new LegacyDataItem(mockDataCategory, mockItemDefinition);
-        dataItem = new DataItem(legacyDataItem);
+        dataItem = new NuDataItem(mockDataCategory, mockItemDefinition);
         mockProfile = mock(Profile.class);
-        profileItem = new ProfileItem(mockProfile, dataItem);
+        profileItem = new NuProfileItem(mockProfile, dataItem);
     }
 
     @Test

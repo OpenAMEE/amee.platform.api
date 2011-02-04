@@ -1,9 +1,9 @@
 package com.amee.domain;
 
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.NuDataItem;
+import com.amee.platform.science.StartEndDate;
 
 import java.util.Date;
 import java.util.List;
@@ -17,9 +17,15 @@ public interface IDataItemService extends IItemService {
 
     public List<NuDataItem> getDataItems(IDataCategoryReference dataCategory);
 
+    public List<NuDataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
+
     public List<NuDataItem> getDataItems(Set<Long> dataItemIds);
 
+    public NuDataItem getDataItemByIdentifier(DataCategory parent, String path);
+
     public Map<String, NuDataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+
+    public NuDataItem getDataItemByUid(DataCategory parent, String uid);
 
     public NuDataItem getItemByUid(String uid);
 
@@ -27,9 +33,19 @@ public interface IDataItemService extends IItemService {
 
     public String getLabel(NuDataItem dataItem);
 
+    public void checkDataItem(NuDataItem dataItem);
+
     public void persist(NuDataItem dataItem);
+
+    public void persist(NuDataItem dataItem, boolean checkDataItem);
+
+    public void remove(NuDataItem dataItem);
 
     public void persist(BaseItemValue itemValue);
 
-    public void remove(DataItem dataItem);
+    public void remove(BaseItemValue itemValue);
+
+    public StartEndDate getStartDate(NuDataItem dataItem);
+
+    public StartEndDate getEndDate(NuDataItem dataItem);
 }

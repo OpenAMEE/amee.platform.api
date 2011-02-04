@@ -1,5 +1,7 @@
 package com.amee.domain.data;
 
+import com.amee.domain.IItemService;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.StartEndDate;
 import org.apache.commons.collections.Predicate;
 
@@ -10,18 +12,19 @@ import java.util.List;
  */
 class CurrentItemValuePredicate implements Predicate {
 
-    private List<ItemValue> itemValues;
+    private List<BaseItemValue> itemValues;
+    private IItemService itemService;
 
-    public CurrentItemValuePredicate(List<ItemValue> itemValues) {
+    public CurrentItemValuePredicate(List<BaseItemValue> itemValues) {
         this.itemValues = itemValues;
     }
 
     public boolean evaluate(Object o) {
-        ItemValue iv = (ItemValue) o;
-        StartEndDate startDate = iv.getStartDate();
+        BaseItemValue iv = (BaseItemValue) o;
+        StartEndDate startDate = itemService.getStartDate(iv);
         String path = iv.getItemValueDefinition().getPath();
-        for (ItemValue itemValue : itemValues) {
-            if (startDate.before(itemValue.getStartDate()) &&
+        for (BaseItemValue itemValue : itemValues) {
+            if (startDate.before(itemService.getStartDate(itemValue)) &&
                     itemValue.getItemValueDefinition().getPath().equals(path)) {
                 return false;
             }

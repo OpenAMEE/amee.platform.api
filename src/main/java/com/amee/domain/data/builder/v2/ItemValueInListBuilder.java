@@ -21,9 +21,11 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
+import com.amee.domain.IItemService;
 import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,9 +34,10 @@ import org.w3c.dom.Element;
 
 public class ItemValueInListBuilder implements Builder {
 
-    private ItemValue itemValue;
+    private BaseItemValue itemValue;
+    private IItemService itemService;
 
-    public ItemValueInListBuilder(ItemValue itemValue) {
+    public ItemValueInListBuilder(BaseItemValue itemValue) {
         this.itemValue = itemValue;
     }
 
@@ -52,10 +55,16 @@ public class ItemValueInListBuilder implements Builder {
         // Data.
         obj.put("path", itemValue.getPath());
         obj.put("name", itemValue.getName());
-        obj.put("value", itemValue.getValue());
-        obj.put("unit", itemValue.getUnit());
-        obj.put("perUnit", itemValue.getPerUnit());
-        obj.put("startDate", StartEndDate.getLocalStartEndDate(itemValue.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
+        obj.put("value", itemValue.getValueAsString());
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue numberValue = (NumberValue) itemValue;
+            obj.put("unit", numberValue.getUnit());
+            obj.put("perUnit", numberValue.getPerUnit());
+        } else {
+            obj.put("unit", "");
+            obj.put("perUnit", "");
+        }
+        obj.put("startDate", StartEndDate.getLocalStartEndDate(itemService.getStartDate(itemValue), TimeZoneHolder.getTimeZone()).toString());
         // Related entities.
         obj.put("itemValueDefinition", getItemValueDefinitionJSONObject(itemValue.getItemValueDefinition()));
         return obj;
@@ -81,11 +90,17 @@ public class ItemValueInListBuilder implements Builder {
         // Data.
         element.appendChild(XMLUtils.getElement(document, "Path", itemValue.getPath()));
         element.appendChild(XMLUtils.getElement(document, "Name", itemValue.getName()));
-        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValue()));
-        element.appendChild(XMLUtils.getElement(document, "Unit", itemValue.getUnit().toString()));
-        element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValue.getPerUnit().toString()));
+        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValueAsString()));
+        if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+            NumberValue numberValue = (NumberValue) itemValue;
+            element.appendChild(XMLUtils.getElement(document, "Unit", numberValue.getUnit().toString()));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", numberValue.getPerUnit().toString()));
+        } else {
+            element.appendChild(XMLUtils.getElement(document, "Unit", ""));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", ""));
+        }
         element.appendChild(XMLUtils.getElement(document, "StartDate",
-                StartEndDate.getLocalStartEndDate(itemValue.getStartDate(), TimeZoneHolder.getTimeZone()).toString()));
+                StartEndDate.getLocalStartEndDate(itemService.getStartDate(itemValue), TimeZoneHolder.getTimeZone()).toString()));
         // Related entities.
         element.appendChild(getItemValueDefinitionElement(document, itemValue.getItemValueDefinition()));
         return element;

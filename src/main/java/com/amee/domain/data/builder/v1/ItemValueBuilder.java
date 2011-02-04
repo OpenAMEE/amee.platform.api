@@ -3,8 +3,8 @@ package com.amee.domain.data.builder.v1;
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
 import com.amee.domain.ItemBuilder;
-import com.amee.domain.data.ItemValue;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -31,16 +31,16 @@ import org.w3c.dom.Element;
  */
 public class ItemValueBuilder implements Builder {
 
-    private ItemValue itemValue;
+    private BaseItemValue itemValue;
     private Builder itemValueDefinitionRenderer;
     private ItemBuilder itemBuilder;
 
-    public ItemValueBuilder(ItemValue itemValue) {
+    public ItemValueBuilder(BaseItemValue itemValue) {
         this.itemValue = itemValue;
         this.itemValueDefinitionRenderer = new ItemValueDefinitionBuilder(itemValue.getItemValueDefinition());
     }
 
-    public ItemValueBuilder(ItemValue itemValue, ItemBuilder itemBuilder) {
+    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder) {
         this(itemValue);
         this.itemBuilder = itemBuilder;
     }
@@ -55,7 +55,7 @@ public class ItemValueBuilder implements Builder {
         obj.put("uid", itemValue.getUid());
         obj.put("path", itemValue.getPath());
         obj.put("name", itemValue.getName());
-        obj.put("value", itemValue.getValue());
+        obj.put("value", itemValue.getValueAsString());
         ItemValueDefinition itemValueDefinition = itemValue.getItemValueDefinition();
         itemValueDefinition.setBuilder(itemValueDefinitionRenderer);
         obj.put("itemValueDefinition", itemValueDefinition.getJSONObject(false));
@@ -76,7 +76,7 @@ public class ItemValueBuilder implements Builder {
         element.setAttribute("uid", itemValue.getUid());
         element.appendChild(XMLUtils.getElement(document, "Path", itemValue.getPath()));
         element.appendChild(XMLUtils.getElement(document, "Name", itemValue.getName()));
-        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValue()));
+        element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValueAsString()));
         ItemValueDefinition itemValueDefinition = itemValue.getItemValueDefinition();
         itemValueDefinition.setBuilder(itemValueDefinitionRenderer);
         element.appendChild(itemValueDefinition.getElement(document, false));

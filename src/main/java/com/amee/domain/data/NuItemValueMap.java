@@ -22,9 +22,6 @@ public class NuItemValueMap {
 
     Log log = LogFactory.getLog(getClass());
 
-    @Transient
-    private transient ItemValueMap adapter;
-
     private Map<String, SortedSet<BaseItemValue>> map = new HashMap<String, SortedSet<BaseItemValue>>();
 
     /**
@@ -152,14 +149,6 @@ public class NuItemValueMap {
 
     private static boolean isHistoricValue(BaseItemValue itemValue) {
         return ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass());
-    }
-
-    public ItemValueMap getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(ItemValueMap adapter) {
-        this.adapter = adapter;
     }
 
     public Set keySet() {

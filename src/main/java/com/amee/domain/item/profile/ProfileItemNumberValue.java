@@ -44,7 +44,24 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, Double value) {
         this(itemValueDefinition, profileItem);
-        setValue(value);
+        if (value != null) {
+            setValue(value);
+        } else {
+            setValue(0.0);
+        }
+    }
+
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, String value) {
+        this(itemValueDefinition, profileItem);
+        if (value != null) {
+            try {
+                setValue(Double.valueOf(value));
+            } catch (NumberFormatException e) {
+                setValue(0.0);
+            }
+        } else {
+            setValue(0.0);
+        }
     }
 
     protected void copyTo(BaseItemValue o) {
@@ -89,6 +106,10 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     @Override
     public boolean hasPerUnit() {
         return (StringUtils.isNotBlank(perUnit) && getItemValueDefinition().isAnyPerUnit()) || getItemValueDefinition().hasPerUnit();
+    }
+
+    public boolean hasPerTimeUnit() {
+        return hasPerUnit() && getPerUnit().isTime();
     }
 
     @Override
