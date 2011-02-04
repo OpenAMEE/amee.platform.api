@@ -119,24 +119,6 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
-    <!-- Item -->
-    <cache name="com.amee.domain.data.LegacyItem"
-           maxElementsInMemory="12500"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-    <cache name="com.amee.domain.data.LegacyItem.itemValues"
-           maxElementsInMemory="57500"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
     <!-- ItemDefinition -->
     <cache name="com.amee.domain.data.ItemDefinition"
            maxElementsInMemory="2000"
@@ -164,24 +146,6 @@
     </cache>
     <cache name="com.amee.domain.data.ItemDefinition.returnValueDefinitions"
            maxElementsInMemory="2000"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-
-    <!-- ItemValue -->
-    <cache name="com.amee.domain.data.LegacyItemValue"
-           maxElementsInMemory="57500"
-           eternal="false"
-           overflowToDisk="false"
-           timeToIdleSeconds="900"
-           timeToLiveSeconds="1800"
-           memoryStoreEvictionPolicy="LFU">
-    </cache>
-    <cache name="com.amee.domain.data.LegacyItemValue.localeValues"
-           maxElementsInMemory="57500"
            eternal="false"
            overflowToDisk="false"
            timeToIdleSeconds="900"
