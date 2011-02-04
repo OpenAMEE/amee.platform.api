@@ -3,7 +3,7 @@ package com.amee.platform.resource.dataitem;
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
-import com.amee.domain.data.DataItem;
+import com.amee.domain.item.data.NuDataItem;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class DataItemValidatorTest {
     @Test
     public void testValid() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem good = new DataItem();
+        NuDataItem good = new NuDataItem();
         when(mockService.getMetadataForEntity(good, "*"))
                 .thenReturn(new Metadata());
 
@@ -46,13 +46,13 @@ public class DataItemValidatorTest {
     @Test
     public void testNameGreaterThanMax() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem bad = new DataItem();
+        NuDataItem bad = new NuDataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
 
         BindException errorsBad = new BindException(bad, "bad");
 
-        bad.setName(RandomStringUtils.random(DataItem.NAME_MAX_SIZE + 1));
+        bad.setName(RandomStringUtils.random(NuDataItem.NAME_MAX_SIZE + 1));
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
@@ -61,13 +61,13 @@ public class DataItemValidatorTest {
     @Test
     public void testPathGreaterThanMax() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem bad = new DataItem();
+        NuDataItem bad = new NuDataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
 
         BindException errorsBad = new BindException(bad, "bad");
 
-        bad.setPath(RandomStringUtils.random(DataItem.PATH_MAX_SIZE + 1));
+        bad.setPath(RandomStringUtils.random(NuDataItem.PATH_MAX_SIZE + 1));
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
@@ -76,7 +76,7 @@ public class DataItemValidatorTest {
     @Test
     public void testPathBadChars() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem bad = new DataItem();
+        NuDataItem bad = new NuDataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
 
@@ -91,13 +91,13 @@ public class DataItemValidatorTest {
     @Test
     public void testWikiDocGreaterThanMax() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem bad = new DataItem();
+        NuDataItem bad = new NuDataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
 
         BindException errorsBad = new BindException(bad, "bad");
 
-        bad.setWikiDoc(RandomStringUtils.random(DataItem.WIKI_DOC_MAX_SIZE + 1));
+        bad.setWikiDoc(RandomStringUtils.random(NuDataItem.WIKI_DOC_MAX_SIZE + 1));
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
@@ -106,13 +106,13 @@ public class DataItemValidatorTest {
     @Test
     public void testProvenanceGreaterThanMax() {
         DataItemValidator validator = new DataItemValidator();
-        DataItem bad = new DataItem();
+        NuDataItem bad = new NuDataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
 
         BindException errorsBad = new BindException(bad, "bad");
 
-        bad.setProvenance(RandomStringUtils.random(DataItem.PROVENANCE_MAX_SIZE + 1));
+        bad.setProvenance(RandomStringUtils.random(NuDataItem.PROVENANCE_MAX_SIZE + 1));
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());

@@ -3,12 +3,13 @@ package com.amee.platform.resource.datacategory.v_3_2;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MediaTypeNotSupportedException;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.data.DataService;
+import com.amee.service.item.DataItemService;
 import com.amee.service.locale.LocaleService;
 import com.amee.service.metadata.MetadataService;
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +42,9 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private DataItemService dataItemService;
 
     @Autowired
     private MetadataService metadataService;
@@ -111,17 +115,17 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
         localeService.loadLocaleNamesForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
 
         // Fetch DataItems.
-        List<DataItem> dataItems = dataService.getDataItems(dataCategory, false);
+        List<NuDataItem> dataItems = dataItemService.getDataItems(dataCategory, false);
 
         // Pre-cache X for Data Items.
         metadataService.loadMetadatasForDataItems(dataItems);
 
         // For each data item, add each item value definition name and data item value
-        for (DataItem dataItem : dataItems) {
+        for (NuDataItem dataItem : dataItems) {
 
             Element exchangeElem = new Element("exchange", NS);
 
-            for (ItemValue itemValue : dataItem.getItemValues()) {
+            for (BaseItemValue itemValue : dataItemService.getItemValues(dataItem)) {
 
                 // Convert group to category and subGroup to subCategory
                 String name = itemValue.getName();
@@ -134,11 +138,11 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
                 // The outputGroup and inputGroup values are displayed as child elements not attributes
                 // Only display the element if it is non-empty.
                 if (name.equals("outputGroup") || name.equals("inputGroup")) {
-                    if (!itemValue.getValue().isEmpty()) {
-                        exchangeElem.addContent(new Element(name, NS).setText(itemValue.getValue()));
+                    if (!itemValue.getValueAsString().isEmpty()) {
+                        exchangeElem.addContent(new Element(name, NS).setText(itemValue.getValueAsString()));
                     }
                 } else {
-                    exchangeElem.setAttribute(name, itemValue.getValue());
+                    exchangeElem.setAttribute(name, itemValue.getValueAsString());
                 }
             }
             flowDataElem.addContent(exchangeElem);

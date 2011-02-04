@@ -6,12 +6,13 @@ import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.DataItem;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValue;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.NuDataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
+import com.amee.service.item.DataItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,9 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
@@ -45,7 +49,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
                 if (dataItemIdentifier != null) {
                     // Get DataItem.
-                    DataItem dataItem = dataService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
+                    NuDataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
                         // Authorized?
                         resourceAuthorizationService.ensureAuthorizedForBuild(
@@ -69,7 +73,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
         }
     }
 
-    public void handle(RequestWrapper requestWrapper, DataItem dataItem) {
+    public void handle(RequestWrapper requestWrapper, NuDataItem dataItem) {
 
         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
@@ -117,7 +121,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
         }
         if (values || full) {
             renderer.startValues();
-            for (ItemValue itemValue : dataItem.getItemValues()) {
+            for (BaseItemValue itemValue : dataItemService.getItemValues(dataItem)) {
                 renderer.newValue(itemValue);
             }
         }
