@@ -1,5 +1,6 @@
 package com.amee.persist;
 
+import com.amee.base.transaction.AMEETransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,5 +32,10 @@ public class DummyEntityService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void remove(DummyEntity dummyEntity) {
         dao.remove(dummyEntity);
+    }
+
+    @AMEETransaction
+    public void doNothingWithinAMEETransaction() {
+        // Do nothing.
     }
 }

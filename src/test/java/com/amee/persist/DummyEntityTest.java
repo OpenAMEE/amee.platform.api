@@ -29,9 +29,9 @@ public class DummyEntityTest extends PersistTest {
     }
 
     @Test
-    public void shouldLoadExistingDummyEntity() {
+    public void shouldFetchAnExistingDummyEntity() {
         DummyEntity dummyEntity = dummyEntityService.getDummyEntityByUid("655B1AD17733");
-        assertTrue("Should load existing DummyEntity.", dummyEntity != null);
+        assertTrue("Should fetch an existing DummyEntity.", dummyEntity != null);
     }
 
     @Test
@@ -49,5 +49,10 @@ public class DummyEntityTest extends PersistTest {
         // Fetch the entity, but should be null.
         DummyEntity removedDummyEntity = dummyEntityService.getDummyEntityByUid(fetchedDummyEntity.getUid());
         assertTrue("Should NOT be able to fetch the DummyEntity.", removedDummyEntity == null);
+    }
+
+    @Test
+    public void shouldDoNothingWithinAMEETransaction() {
+        dummyEntityService.doNothingWithinAMEETransaction();
     }
 }
