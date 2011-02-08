@@ -30,6 +30,9 @@ public class DummyEntityDAOImpl_JpaDaoSupport extends JpaDaoSupport implements D
     }
 
     public void persist(DummyEntity dummyEntity) {
+        if (dummyEntity.getDummyText().equals("An illegal value.")) {
+            throw new IllegalArgumentException("An illegal value was used.");
+        }
         getJpaTemplate().persist(dummyEntity);
     }
 

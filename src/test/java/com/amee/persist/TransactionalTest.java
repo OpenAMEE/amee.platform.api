@@ -7,9 +7,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
@@ -38,6 +40,17 @@ public class TransactionalTest extends BaseTest {
     }
 
     @Test
+    public void shouldCreateADummyEntity() {
+        // Create an entity.
+        DummyEntity newDummyEntity = new DummyEntity();
+        newDummyEntity.setDummyText("Dummy Text.");
+        dummyEntityService.persist(newDummyEntity);
+        // Fetch the entity.
+        DummyEntity fetchedDummyEntity = dummyEntityService.getDummyEntityByUid(newDummyEntity.getUid());
+        assertTrue("Should be able to fetch the DummyEntity.", fetchedDummyEntity != null);
+    }
+
+    @Test
     @Transactional(propagation = Propagation.REQUIRED)
     public void shouldCreateAndRemoveADummyEntity() {
         // Create an entity.
@@ -52,6 +65,32 @@ public class TransactionalTest extends BaseTest {
         // Fetch the entity, but should be null.
         DummyEntity removedDummyEntity = dummyEntityService.getDummyEntityByUid(fetchedDummyEntity.getUid());
         assertTrue("Should NOT be able to fetch the DummyEntity.", removedDummyEntity == null);
+    }
+
+    @Test
+    public void shouldNotCreateAnInvalidDummyEntity() {
+        List<DummyEntity> dummyEntities = new ArrayList<DummyEntity>();
+        // Create a new valid entity.
+        DummyEntity newDummyEntityOne = new DummyEntity();
+        newDummyEntityOne.setDummyText("An valid value.");
+        dummyEntities.add(newDummyEntityOne);
+        // Create a new invalid entity.
+        DummyEntity newDummyEntityTwo = new DummyEntity();
+        newDummyEntityTwo.setDummyText("An illegal value.");
+        dummyEntities.add(newDummyEntityTwo);
+        // Attempt to persist both entities.
+        try {
+            dummyEntityService.persist(dummyEntities);
+            fail("Should have thrown an IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // Swallow
+        }
+        // The first entity should not be persisted (rollback).
+        newDummyEntityOne = dummyEntityService.getDummyEntityByUid(newDummyEntityOne.getUid());
+        assertTrue("Should NOT be able to fetch the first DummyEntity.", newDummyEntityOne == null);
+        // The second entity should not be persisted (invalid).
+        newDummyEntityTwo = dummyEntityService.getDummyEntityByUid(newDummyEntityTwo.getUid());
+        assertTrue("Should NOT be able to fetch the second DummyEntity.", newDummyEntityTwo == null);
     }
 
     @Test

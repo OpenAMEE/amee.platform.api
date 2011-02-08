@@ -32,11 +32,13 @@ public class DummyEntityDAOImpl_EntityManager implements DummyEntityDAO {
     }
 
     public void persist(DummyEntity dummyEntity) {
+        if (dummyEntity.getDummyText().equals("An illegal value.")) {
+            throw new IllegalArgumentException("An illegal value was used.");
+        }
         entityManager.persist(dummyEntity);
     }
 
     public void remove(DummyEntity dummyEntity) {
-        entityManager.merge(dummyEntity);
         entityManager.remove(dummyEntity);
     }
 }

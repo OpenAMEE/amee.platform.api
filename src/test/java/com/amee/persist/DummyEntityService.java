@@ -24,12 +24,19 @@ public class DummyEntityService {
         return dao.getDummyEntityByUid(uid);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
     public void persist(DummyEntity dummyEntity) {
         dao.persist(dummyEntity);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    public void persist(List<DummyEntity> dummyEntities) {
+        for (DummyEntity dummyEntity : dummyEntities) {
+            dao.persist(dummyEntity);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
     public void remove(DummyEntity dummyEntity) {
         dao.remove(dummyEntity);
     }
