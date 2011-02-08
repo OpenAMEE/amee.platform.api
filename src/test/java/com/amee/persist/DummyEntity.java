@@ -15,6 +15,11 @@ public class DummyEntity extends BaseEntity {
         super();
     }
 
+    public DummyEntity(String dummyText) {
+        super();
+        setDummyText(dummyText);
+    }
+
     public String getDummyText() {
         return dummyText;
     }

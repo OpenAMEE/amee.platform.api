@@ -1,8 +1,6 @@
 package com.amee.persist;
 
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -11,9 +9,6 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 public class DummyEntityDAOImpl_EntityManager implements DummyEntityDAO {
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
     @PersistenceContext
     private EntityManager entityManager;

@@ -1,6 +1,7 @@
 package com.amee.persist;
 
 import com.amee.base.transaction.TransactionEvent;
+import com.amee.base.transaction.TransactionEventType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class DummyAMEETransactionListener implements ApplicationListener {
     @Autowired
     private DummyEntityDAO dao;
 
-    private List<String> events = new ArrayList<String>();
+    private List<TransactionEventType> events = new ArrayList<TransactionEventType>();
 
     public void onApplicationEvent(ApplicationEvent e) {
         if (e instanceof TransactionEvent) {
@@ -29,26 +30,37 @@ public class DummyAMEETransactionListener implements ApplicationListener {
                     log.debug("onApplicationEvent() BEFORE_BEGIN");
                     checkTransactionIsNotActive();
                     events.clear();
-                    events.add("BEFORE_BEGIN");
+                    events.add(TransactionEventType.BEFORE_BEGIN);
+                    break;
+                case ROLLBACK:
+                    log.debug("onApplicationEvent() ROLLBACK");
+                    checkTransactionIsNotActive();
+                    events.add(TransactionEventType.ROLLBACK);
                     break;
                 case END:
                     log.debug("onApplicationEvent() END");
                     checkTransactionIsNotActive();
-                    events.add("END");
+                    events.add(TransactionEventType.END);
                     break;
                 default:
-                    // Do nothing!
+                    throw new IllegalStateException("Event not trapped: " + te.toString());
             }
         }
     }
 
-    public List<String> getEvents() {
+    public List<TransactionEventType> getEvents() {
         return events;
     }
 
     private void checkTransactionIsNotActive() {
         if (dao.isTransactionActive()) {
             throw new IllegalStateException("Should NOT have a transaction.");
+        }
+    }
+
+    private void checkTransactionIsActive() {
+        if (!dao.isTransactionActive()) {
+            throw new IllegalStateException("Should have a transaction.");
         }
     }
 }

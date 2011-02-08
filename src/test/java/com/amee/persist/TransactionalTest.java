@@ -1,5 +1,6 @@
 package com.amee.persist;
 
+import com.amee.base.transaction.TransactionEventType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +120,22 @@ public class TransactionalTest extends BaseTest {
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         dummyEntityService.doSomethingWithinAMEETransactionAndDBTransaction();
         assertTrue("Should have two events", dummyAMEETransactionListener.getEvents().size() == 2);
+        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.BEFORE_BEGIN));
+        assertTrue("Should have END event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.END));
         assertFalse("Should still not have a transaction", dummyEntityService.isTransactionActive());
+    }
+
+    @Test
+    public void shouldSeeRollbackEvent() {
+        try {
+            dummyEntityService.doCauseRollbackWithinAMEETransactionAndDBTransaction();
+            fail("Should have thrown an IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {
+            // Swallow
+        }
+        assertTrue("Should have three events", dummyAMEETransactionListener.getEvents().size() == 3);
+        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.BEFORE_BEGIN));
+        assertTrue("Should have ROLLBACK event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.ROLLBACK));
+        assertTrue("Should have END event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.END));
     }
 }

@@ -57,6 +57,13 @@ public class DummyEntityService {
         getDummyEntities();
     }
 
+
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    public void doCauseRollbackWithinAMEETransactionAndDBTransaction() {
+        persist(new DummyEntity("An illegal value."));
+    }
+
     public boolean isTransactionActive() {
         return dao.isTransactionActive();
     }
