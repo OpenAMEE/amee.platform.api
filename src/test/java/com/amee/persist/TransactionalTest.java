@@ -12,10 +12,13 @@ import java.util.List;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class DummyEntityTest extends PersistTest {
+public class TransactionalTest extends BaseTest {
 
     @Autowired
     private DummyEntityService dummyEntityService;
+
+    @Autowired
+    private DummyAMEETransactionListener dummyAMEETransactionListener;
 
     @Test
     public void shouldHaveDummyEntityService() {
@@ -52,7 +55,8 @@ public class DummyEntityTest extends PersistTest {
     }
 
     @Test
-    public void shouldDoNothingWithinAMEETransaction() {
+    public void shouldListenToAMEETransactionEvents() {
         dummyEntityService.doNothingWithinAMEETransaction();
+        assertTrue("Should have two AMEETransaction events", dummyAMEETransactionListener.getEvents().size() == 2);
     }
 }

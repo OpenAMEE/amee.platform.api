@@ -8,7 +8,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-public abstract class PersistTest {
+public abstract class BaseTest {
 
     @Before
     public void before() {
