@@ -8,7 +8,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.platform.search.DataItemsFilter;
@@ -88,10 +88,10 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
         DataItemsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
         // Add Data Items to Renderer and build.
-        ResultsWrapper<NuDataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
+        ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
         renderer.setTruncated(resultsWrapper.isTruncated());
         DataItemResource.Builder dataItemBuilder = getDataItemBuilder(requestWrapper);
-        for (NuDataItem dataItem : resultsWrapper.getResults()) {
+        for (DataItem dataItem : resultsWrapper.getResults()) {
             dataItemBuilder.handle(requestWrapper, dataItem);
             renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
         }

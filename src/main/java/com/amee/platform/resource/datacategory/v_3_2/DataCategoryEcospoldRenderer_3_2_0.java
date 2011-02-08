@@ -5,7 +5,7 @@ import com.amee.base.resource.MediaTypeNotSupportedException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.data.DataService;
@@ -115,13 +115,13 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
         localeService.loadLocaleNamesForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());
 
         // Fetch DataItems.
-        List<NuDataItem> dataItems = dataItemService.getDataItems(dataCategory, false);
+        List<DataItem> dataItems = dataItemService.getDataItems(dataCategory, false);
 
         // Pre-cache X for Data Items.
         metadataService.loadMetadatasForDataItems(dataItems);
 
         // For each data item, add each item value definition name and data item value
-        for (NuDataItem dataItem : dataItems) {
+        for (DataItem dataItem : dataItems) {
 
             Element exchangeElem = new Element("exchange", NS);
 

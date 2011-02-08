@@ -6,7 +6,7 @@ import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -14,7 +14,7 @@ public interface DataItemResource {
 
     interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, NuDataItem dataItem);
+        public void handle(RequestWrapper requestWrapper, DataItem dataItem);
 
         public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
@@ -23,7 +23,7 @@ public interface DataItemResource {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
-        public void newDataItem(NuDataItem dataItem);
+        public void newDataItem(DataItem dataItem);
 
         public void addBasic();
 
