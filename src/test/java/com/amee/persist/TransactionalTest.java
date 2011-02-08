@@ -52,6 +52,8 @@ public class TransactionalTest extends BaseTest {
         DummyEntity newDummyEntity = new DummyEntity();
         newDummyEntity.setDummyText("Dummy Text.");
         dummyEntityService.persist(newDummyEntity);
+        // We still do NOT expect a transaction here.
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         // Fetch the entity.
         DummyEntity fetchedDummyEntity = dummyEntityService.getDummyEntityByUid(newDummyEntity.getUid());
         assertTrue("Should be able to fetch the DummyEntity.", fetchedDummyEntity != null);
@@ -61,7 +63,7 @@ public class TransactionalTest extends BaseTest {
     @Transactional(propagation = Propagation.REQUIRED)
     public void shouldCreateAndRemoveADummyEntity() {
         // We do expect a transaction here.
-        assertTrue("Should not have a transaction", dummyEntityService.isTransactionActive());
+        assertTrue("Should have a transaction", dummyEntityService.isTransactionActive());
         // Create an entity.
         DummyEntity newDummyEntity = new DummyEntity();
         newDummyEntity.setDummyText("Dummy Text.");
