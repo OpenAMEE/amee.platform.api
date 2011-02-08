@@ -4,7 +4,6 @@ import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.HistoryValue;
-import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -28,15 +27,15 @@ public class DataItemTextValueHistory extends BaseDataItemTextValue implements H
         super();
     }
 
-    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem) {
         super(itemValueDefinition, dataItem);
     }
 
-    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
+    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value) {
         super(itemValueDefinition, dataItem, value);
     }
 
-    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value, Date startDate) {
+    public DataItemTextValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value, Date startDate) {
         this(itemValueDefinition, dataItem, value);
         setStartDate(startDate);
     }

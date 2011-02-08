@@ -27,15 +27,15 @@ public class DataItemNumberValueHistory extends BaseDataItemNumberValue implemen
         super();
     }
 
-    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem) {
         super(itemValueDefinition, dataItem);
     }
 
-    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value) {
+    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem, Double value) {
         super(itemValueDefinition, dataItem, value);
     }
 
-    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value, Date startDate) {
+    public DataItemNumberValueHistory(ItemValueDefinition itemValueDefinition, DataItem dataItem, Double value, Date startDate) {
         this(itemValueDefinition, dataItem, value);
         setStartDate(startDate);
     }

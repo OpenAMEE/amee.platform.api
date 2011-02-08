@@ -30,7 +30,7 @@ import com.amee.domain.auth.User;
 import com.amee.domain.data.*;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.profile.NuProfileItem;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.EntityTag;
@@ -129,7 +129,7 @@ public enum ObjectType implements Serializable {
             return IVD;
         } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
             return RVD;
-        } else if (NuDataItem.class.isAssignableFrom(c)) {
+        } else if (DataItem.class.isAssignableFrom(c)) {
             return DI;
         } else if (NuProfileItem.class.isAssignableFrom(c)) {
             return PI;
@@ -183,8 +183,8 @@ public enum ObjectType implements Serializable {
             return ItemValueDefinition.class;
         } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
             return ReturnValueDefinition.class;
-        } else if (NuDataItem.class.isAssignableFrom(c)) {
-            return NuDataItem.class;
+        } else if (DataItem.class.isAssignableFrom(c)) {
+            return DataItem.class;
         } else if (NuProfileItem.class.isAssignableFrom(c)) {
             return NuProfileItem.class;
         } else if (BaseItemValue.class.isAssignableFrom(c)) {
@@ -231,7 +231,7 @@ public enum ObjectType implements Serializable {
         } else if (this.equals(DC)) {
             return DataCategory.class;
         } else if (this.equals(DI)) {
-            return NuDataItem.class;
+            return DataItem.class;
         } else if (this.equals(PI)) {
             return NuProfileItem.class;
         } else if (this.equals(IV)) {

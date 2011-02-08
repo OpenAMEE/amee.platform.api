@@ -8,7 +8,7 @@ import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,10 +18,10 @@ import org.w3c.dom.Element;
 
 public class DataItemBuilder implements ItemBuilder {
 
-    private NuDataItem item;
+    private DataItem item;
     private IDataItemService dataItemService;
 
-    public DataItemBuilder(NuDataItem item) {
+    public DataItemBuilder(DataItem item) {
         this.item = item;
     }
 

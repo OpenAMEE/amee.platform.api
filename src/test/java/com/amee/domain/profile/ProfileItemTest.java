@@ -3,7 +3,7 @@ package com.amee.domain.profile;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.profile.NuProfileItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class ProfileItemTest {
 
     private DataCategory mockDataCategory;
     private ItemDefinition mockItemDefinition;
-    private NuDataItem dataItem;
+    private DataItem dataItem;
     private Profile mockProfile;
     private NuProfileItem profileItem;
 
@@ -24,7 +24,7 @@ public class ProfileItemTest {
     public void setUp() throws Exception {
         mockDataCategory = mock(DataCategory.class);
         mockItemDefinition = mock(ItemDefinition.class);
-        dataItem = new NuDataItem(mockDataCategory, mockItemDefinition);
+        dataItem = new DataItem(mockDataCategory, mockItemDefinition);
         mockProfile = mock(Profile.class);
         profileItem = new NuProfileItem(mockProfile, dataItem);
     }

@@ -5,7 +5,7 @@ import com.amee.domain.AMEEStatus;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItem;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.profile.CO2CalculationService;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.science.ReturnValues;
@@ -29,7 +29,7 @@ public class NuProfileItem extends BaseItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "DATA_ITEM_ID")
-    private NuDataItem dataItem;
+    private DataItem dataItem;
 
     @Column(name = "START_DATE")
     @Index(name = "START_DATE_IND")
@@ -46,13 +46,13 @@ public class NuProfileItem extends BaseItem {
         super();
     }
 
-    public NuProfileItem(Profile profile, NuDataItem dataItem) {
+    public NuProfileItem(Profile profile, DataItem dataItem) {
         super(dataItem.getDataCategory(), dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
     }
 
-    public NuProfileItem(Profile profile, DataCategory dataCategory, NuDataItem dataItem) {
+    public NuProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
         super(dataCategory, dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
@@ -100,11 +100,11 @@ public class NuProfileItem extends BaseItem {
         this.profile = profile;
     }
 
-    public NuDataItem getDataItem() {
+    public DataItem getDataItem() {
         return dataItem;
     }
 
-    public void setDataItem(NuDataItem dataItem) {
+    public void setDataItem(DataItem dataItem) {
         if (dataItem != null) {
             this.dataItem = dataItem;
         }

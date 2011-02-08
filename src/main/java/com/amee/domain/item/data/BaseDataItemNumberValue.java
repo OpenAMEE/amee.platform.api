@@ -32,16 +32,16 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         super();
     }
 
-    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem) {
         super(itemValueDefinition, dataItem);
     }
 
-    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value) {
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, Double value) {
         this(itemValueDefinition, dataItem);
         setValue(value);
     }
 
-    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value) {
         this(itemValueDefinition, dataItem);
         setValue(value);
     }

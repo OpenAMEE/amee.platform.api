@@ -32,13 +32,12 @@ import org.joda.time.DateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
 @Table(name = "DATA_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class NuDataItem extends BaseItem {
+public class DataItem extends BaseItem {
 
     public final static int NAME_MAX_SIZE = 255;
     public final static int PATH_MAX_SIZE = 255;
@@ -51,15 +50,15 @@ public class NuDataItem extends BaseItem {
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
 
-    public NuDataItem() {
+    public DataItem() {
         super();
     }
 
-    public NuDataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
+    public DataItem(DataCategory dataCategory, ItemDefinition itemDefinition) {
         super(dataCategory, itemDefinition);
     }
 
-    protected void copyTo(NuDataItem o) {
+    protected void copyTo(DataItem o) {
         super.copyTo(o);
         o.path = path;
     }
