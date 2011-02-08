@@ -14,7 +14,7 @@ public class ProfileItemTextValueTest {
         ItemValueDefinition mockItemDef = mock(ItemValueDefinition.class);
         when(mockItemDef.isDouble()).thenReturn(false);
         when(mockItemDef.isInteger()).thenReturn(false);
-        ProfileItemTextValue o = new ProfileItemTextValue(mockItemDef, new NuProfileItem());
+        ProfileItemTextValue o = new ProfileItemTextValue(mockItemDef, new ProfileItem());
         o.setValue("foo");
 
         ProfileItemTextValue c = (ProfileItemTextValue) o.getCopy();

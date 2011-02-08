@@ -27,12 +27,12 @@ public class ProfileItemTextValue extends BaseProfileItemValue implements Extern
         super();
     }
 
-    public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem) {
+    public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem) {
         super(itemValueDefinition, profileItem);
         setValue(value);
     }
 
-    public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, String value) {
+    public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, String value) {
         this(itemValueDefinition, profileItem);
         setValue(value);
     }

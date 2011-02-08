@@ -4,7 +4,7 @@ import com.amee.domain.AMEEStatus;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.data.DataItem;
-import com.amee.domain.item.profile.NuProfileItem;
+import com.amee.domain.item.profile.ProfileItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class ProfileItemTest {
     private ItemDefinition mockItemDefinition;
     private DataItem dataItem;
     private Profile mockProfile;
-    private NuProfileItem profileItem;
+    private ProfileItem profileItem;
 
     @Before
     public void setUp() throws Exception {
@@ -26,7 +26,7 @@ public class ProfileItemTest {
         mockItemDefinition = mock(ItemDefinition.class);
         dataItem = new DataItem(mockDataCategory, mockItemDefinition);
         mockProfile = mock(Profile.class);
-        profileItem = new NuProfileItem(mockProfile, dataItem);
+        profileItem = new ProfileItem(mockProfile, dataItem);
     }
 
     @Test

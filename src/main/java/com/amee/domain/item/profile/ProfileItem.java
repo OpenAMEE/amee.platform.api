@@ -21,7 +21,7 @@ import java.util.Date;
 @Entity
 @Table(name = "PROFILE_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class NuProfileItem extends BaseItem {
+public class ProfileItem extends BaseItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "PROFILE_ID")
@@ -42,30 +42,30 @@ public class NuProfileItem extends BaseItem {
     @Transient
     private ReturnValues amounts = new ReturnValues();
 
-    public NuProfileItem() {
+    public ProfileItem() {
         super();
     }
 
-    public NuProfileItem(Profile profile, DataItem dataItem) {
+    public ProfileItem(Profile profile, DataItem dataItem) {
         super(dataItem.getDataCategory(), dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
     }
 
-    public NuProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
+    public ProfileItem(Profile profile, DataCategory dataCategory, DataItem dataItem) {
         super(dataCategory, dataItem.getItemDefinition());
         setProfile(profile);
         setDataItem(dataItem);
     }
 
-    public NuProfileItem getCopy() {
+    public ProfileItem getCopy() {
         log.debug("getCopy()");
-        NuProfileItem profileItem = new NuProfileItem();
+        ProfileItem profileItem = new ProfileItem();
         copyTo(profileItem);
         return profileItem;
     }
 
-    protected void copyTo(NuProfileItem o) {
+    protected void copyTo(ProfileItem o) {
         super.copyTo(o);
         o.profile = profile;
         o.dataItem = dataItem;

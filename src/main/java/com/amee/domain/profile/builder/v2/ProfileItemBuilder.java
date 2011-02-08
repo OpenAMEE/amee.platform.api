@@ -29,7 +29,7 @@ import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
-import com.amee.domain.item.profile.NuProfileItem;
+import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.science.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,17 +41,17 @@ import java.util.Map;
 
 public class ProfileItemBuilder implements ItemBuilder {
 
-    private NuProfileItem item;
+    private ProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
     private IDataItemService dataItemService;
     private IProfileItemService profileItemService;
 
-    public ProfileItemBuilder(NuProfileItem item, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(ProfileItem item, AmountCompoundUnit returnUnit) {
         this.item = item;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(NuProfileItem item) {
+    public ProfileItemBuilder(ProfileItem item) {
         this.item = item;
     }
 

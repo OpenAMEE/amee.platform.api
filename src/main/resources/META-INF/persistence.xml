@@ -20,7 +20,7 @@
         <class>com.amee.domain.item.data.DataItemTextValue</class>
         <class>com.amee.domain.item.data.DataItemTextValueHistory</class>
         <class>com.amee.domain.item.data.DataItem</class>
-        <class>com.amee.domain.item.profile.NuProfileItem</class>
+        <class>com.amee.domain.item.profile.ProfileItem</class>
         <class>com.amee.domain.item.profile.ProfileItemNumberValue</class>
         <class>com.amee.domain.item.profile.ProfileItemTextValue</class>
         <class>com.amee.domain.profile.Profile</class>
