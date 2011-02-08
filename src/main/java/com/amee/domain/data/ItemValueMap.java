@@ -18,7 +18,7 @@ import java.util.*;
  *
  * Note: This class has a natural ordering that is inconsistent with equals.
  */
-public class NuItemValueMap {
+public class ItemValueMap {
 
     Log log = LogFactory.getLog(getClass());
 

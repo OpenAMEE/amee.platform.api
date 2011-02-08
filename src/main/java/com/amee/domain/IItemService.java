@@ -1,7 +1,7 @@
 package com.amee.domain;
 
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.data.NuItemValueMap;
+import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.StartEndDate;
@@ -29,7 +29,7 @@ public interface IItemService {
 
     public BaseItemValue getItemValue(BaseItem item, String identifier);
 
-    public NuItemValueMap getItemValuesMap(BaseItem item);
+    public ItemValueMap getItemValuesMap(BaseItem item);
 
     public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
