@@ -11,4 +11,6 @@ public interface DummyEntityDAO {
     public void persist(DummyEntity dummyEntity);
 
     public void remove(DummyEntity dummyEntity);
+
+    public boolean isTransactionActive();
 }

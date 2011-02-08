@@ -10,8 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
@@ -29,18 +28,26 @@ public class TransactionalTest extends BaseTest {
 
     @Test
     public void shouldHaveSomeDummyEntities() {
+        // We do NOT expect a transaction here.
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
+        // Fetch existing entities.
         List<DummyEntity> dummyEntities = dummyEntityService.getDummyEntities();
         assertTrue("Should have some DummyEntities.", !dummyEntities.isEmpty());
     }
 
     @Test
     public void shouldFetchAnExistingDummyEntity() {
+        // We do NOT expect a transaction here.
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
+        // Fetch existing entity;
         DummyEntity dummyEntity = dummyEntityService.getDummyEntityByUid("655B1AD17733");
         assertTrue("Should fetch an existing DummyEntity.", dummyEntity != null);
     }
 
     @Test
     public void shouldCreateADummyEntity() {
+        // We do NOT expect a transaction here.
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         // Create an entity.
         DummyEntity newDummyEntity = new DummyEntity();
         newDummyEntity.setDummyText("Dummy Text.");
@@ -53,6 +60,8 @@ public class TransactionalTest extends BaseTest {
     @Test
     @Transactional(propagation = Propagation.REQUIRED)
     public void shouldCreateAndRemoveADummyEntity() {
+        // We do expect a transaction here.
+        assertTrue("Should not have a transaction", dummyEntityService.isTransactionActive());
         // Create an entity.
         DummyEntity newDummyEntity = new DummyEntity();
         newDummyEntity.setDummyText("Dummy Text.");
@@ -69,6 +78,8 @@ public class TransactionalTest extends BaseTest {
 
     @Test
     public void shouldNotCreateAnInvalidDummyEntity() {
+        // We do NOT expect a transaction here.
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         List<DummyEntity> dummyEntities = new ArrayList<DummyEntity>();
         // Create a new valid entity.
         DummyEntity newDummyEntityOne = new DummyEntity();
@@ -94,8 +105,18 @@ public class TransactionalTest extends BaseTest {
     }
 
     @Test
-    public void shouldListenToAMEETransactionEvents() {
+    public void shouldListenToEvents() {
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         dummyEntityService.doNothingWithinAMEETransaction();
-        assertTrue("Should have two AMEETransaction events", dummyAMEETransactionListener.getEvents().size() == 2);
+        assertTrue("Should have two events", dummyAMEETransactionListener.getEvents().size() == 2);
+        assertFalse("Should still not have a transaction", dummyEntityService.isTransactionActive());
+    }
+
+    @Test
+    public void shouldListenToEventsWithTransaction() {
+        assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
+        dummyEntityService.doSomethingWithinAMEETransactionAndDBTransaction();
+        assertTrue("Should have two events", dummyAMEETransactionListener.getEvents().size() == 2);
+        assertFalse("Should still not have a transaction", dummyEntityService.isTransactionActive());
     }
 }

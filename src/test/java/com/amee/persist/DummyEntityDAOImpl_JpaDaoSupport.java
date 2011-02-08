@@ -39,4 +39,8 @@ public class DummyEntityDAOImpl_JpaDaoSupport extends JpaDaoSupport implements D
     public void remove(DummyEntity dummyEntity) {
         getJpaTemplate().remove(dummyEntity);
     }
+
+    public boolean isTransactionActive() {
+        throw new UnsupportedOperationException();
+    }
 }

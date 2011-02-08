@@ -43,6 +43,21 @@ public class DummyEntityService {
 
     @AMEETransaction
     public void doNothingWithinAMEETransaction() {
-        // Do nothing.
+        if (dao.isTransactionActive()) {
+            throw new IllegalStateException("Should NOT have a transaction.");
+        }
+    }
+
+    @AMEETransaction
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public void doSomethingWithinAMEETransactionAndDBTransaction() {
+        if (!dao.isTransactionActive()) {
+            throw new IllegalStateException("Should have a transaction.");
+        }
+        getDummyEntities();
+    }
+
+    public boolean isTransactionActive() {
+        return dao.isTransactionActive();
     }
 }
