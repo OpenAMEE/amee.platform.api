@@ -20,8 +20,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     @Test
     void createReturnValueDefinition() {
         setAdminUser();
+
         // Check RVD list is as expected, pre-update.
         getReturnValueDefinitionsJson();
+
         // Create a new RVD.
         def responsePost = client.post(
             path: "/3.1/definitions/11D3548466F2/returnvalues",
@@ -33,10 +35,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertTrue responsePost.headers['Location'].value != null;
         def location = responsePost.headers['Location'].value;
         assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
         // Add new RVD to local state.
         def uid = location.split('/')[7];
         returnValueDefinitionUids << uid;
         returnValueDefinitionTypes << 'CO2';
+
         // Get the new RVD.
         def responseGet = client.get(
             path: location,
@@ -45,6 +49,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertEquals 'application/json', responseGet.contentType;
         assertTrue responseGet.data instanceof net.sf.json.JSON;
         assertEquals 'OK', responseGet.data.status;
+
         // Find new RVD in list of RVDs.
         def response = client.get(
             path: '/3.1/definitions/11D3548466F2/returnvalues',
@@ -54,10 +59,13 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         assertTrue response.data instanceof net.sf.json.JSON;
         assertEquals 'OK', response.data.status;
         def uids = response.data.returnValueDefinitions.collect {it.uid};
+        assertEquals returnValueDefinitionUids.sort(), uids.sort()
         assertTrue uids.contains(uid);
+
         // Then delete it.
         def responseDelete = client.delete(path: location);
         assertEquals 200, responseDelete.status;
+
         // We should get a 404 here.
         try {
             client.get(path: location);
@@ -65,6 +73,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         } catch (HttpResponseException e) {
             assertEquals 404, e.response.status;
         }
+
         // Remove it from the collection.
         returnValueDefinitionUids.remove(returnValueDefinitionUids.size() - 1);
         returnValueDefinitionTypes.remove(returnValueDefinitionTypes.size() - 1);
