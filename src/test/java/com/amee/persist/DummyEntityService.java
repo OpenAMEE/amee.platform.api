@@ -14,12 +14,12 @@ public class DummyEntityService {
     @Autowired
     private DummyEntityDAO dao;
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<DummyEntity> getDummyEntities() {
         return dao.getDummyEntities();
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public DummyEntity getDummyEntityByUid(String uid) {
         return dao.getDummyEntityByUid(uid);
     }
@@ -49,14 +49,13 @@ public class DummyEntityService {
     }
 
     @AMEETransaction
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public void doSomethingWithinAMEETransactionAndDBTransaction() {
         if (!dao.isTransactionActive()) {
             throw new IllegalStateException("Should have a transaction.");
         }
         getDummyEntities();
     }
-
 
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)

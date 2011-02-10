@@ -1,6 +1,8 @@
 package com.amee.persist;
 
 import com.amee.base.transaction.TransactionEventType;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,16 @@ public class TransactionalTest extends BaseTest {
 
     @Autowired
     private DummyAMEETransactionListener dummyAMEETransactionListener;
+
+    @Before
+    public void before() {
+        dummyAMEETransactionListener.reset();
+    }
+
+    @After
+    public void after() {
+        dummyAMEETransactionListener.reset();
+    }
 
     @Test
     public void shouldHaveDummyEntityService() {
@@ -111,7 +123,10 @@ public class TransactionalTest extends BaseTest {
     public void shouldListenToEvents() {
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         dummyEntityService.doNothingWithinAMEETransaction();
-        assertTrue("Should have two events", dummyAMEETransactionListener.getEvents().size() == 2);
+        assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
+        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getTransactionEventTypes().get(0).equals(TransactionEventType.BEFORE_BEGIN));
+        assertTrue("Should have COMMIT event.", dummyAMEETransactionListener.getTransactionEventTypes().get(1).equals(TransactionEventType.COMMIT));
+        assertTrue("Should have END event.", dummyAMEETransactionListener.getTransactionEventTypes().get(2).equals(TransactionEventType.END));
         assertFalse("Should still not have a transaction", dummyEntityService.isTransactionActive());
     }
 
@@ -119,9 +134,10 @@ public class TransactionalTest extends BaseTest {
     public void shouldListenToEventsWithTransaction() {
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         dummyEntityService.doSomethingWithinAMEETransactionAndDBTransaction();
-        assertTrue("Should have two events", dummyAMEETransactionListener.getEvents().size() == 2);
-        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.BEFORE_BEGIN));
-        assertTrue("Should have END event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.END));
+        assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
+        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getTransactionEventTypes().get(0).equals(TransactionEventType.BEFORE_BEGIN));
+        assertTrue("Should have COMMIT event.", dummyAMEETransactionListener.getTransactionEventTypes().get(1).equals(TransactionEventType.COMMIT));
+        assertTrue("Should have END event.", dummyAMEETransactionListener.getTransactionEventTypes().get(2).equals(TransactionEventType.END));
         assertFalse("Should still not have a transaction", dummyEntityService.isTransactionActive());
     }
 
@@ -133,9 +149,9 @@ public class TransactionalTest extends BaseTest {
         } catch (IllegalArgumentException e) {
             // Swallow
         }
-        assertTrue("Should have three events", dummyAMEETransactionListener.getEvents().size() == 3);
-        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.BEFORE_BEGIN));
-        assertTrue("Should have ROLLBACK event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.ROLLBACK));
-        assertTrue("Should have END event.", dummyAMEETransactionListener.getEvents().contains(TransactionEventType.END));
+        assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
+        assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getTransactionEventTypes().get(0).equals(TransactionEventType.BEFORE_BEGIN));
+        assertTrue("Should have ROLLBACK event.", dummyAMEETransactionListener.getTransactionEventTypes().get(1).equals(TransactionEventType.ROLLBACK));
+        assertTrue("Should have END event.", dummyAMEETransactionListener.getTransactionEventTypes().get(2).equals(TransactionEventType.END));
     }
 }

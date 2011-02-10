@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,7 +21,7 @@ public class DummyAMEETransactionListener implements ApplicationListener {
     @Autowired
     private DummyEntityDAO dao;
 
-    private List<TransactionEventType> events = new ArrayList<TransactionEventType>();
+    private List<TransactionEventType> transactionEventTypes = new ArrayList<TransactionEventType>();
 
     public void onApplicationEvent(ApplicationEvent e) {
         if (e instanceof TransactionEvent) {
@@ -29,18 +30,23 @@ public class DummyAMEETransactionListener implements ApplicationListener {
                 case BEFORE_BEGIN:
                     log.debug("onApplicationEvent() BEFORE_BEGIN");
                     checkTransactionIsNotActive();
-                    events.clear();
-                    events.add(TransactionEventType.BEFORE_BEGIN);
+                    transactionEventTypes.clear();
+                    transactionEventTypes.add(TransactionEventType.BEFORE_BEGIN);
                     break;
                 case ROLLBACK:
                     log.debug("onApplicationEvent() ROLLBACK");
                     checkTransactionIsNotActive();
-                    events.add(TransactionEventType.ROLLBACK);
+                    transactionEventTypes.add(TransactionEventType.ROLLBACK);
+                    break;
+                case COMMIT:
+                    log.debug("onApplicationEvent() COMMIT");
+                    checkTransactionIsNotActive();
+                    transactionEventTypes.add(TransactionEventType.COMMIT);
                     break;
                 case END:
                     log.debug("onApplicationEvent() END");
                     checkTransactionIsNotActive();
-                    events.add(TransactionEventType.END);
+                    transactionEventTypes.add(TransactionEventType.END);
                     break;
                 default:
                     throw new IllegalStateException("Event not trapped: " + te.toString());
@@ -48,8 +54,12 @@ public class DummyAMEETransactionListener implements ApplicationListener {
         }
     }
 
-    public List<TransactionEventType> getEvents() {
-        return events;
+    public List<TransactionEventType> getTransactionEventTypes() {
+        return Collections.unmodifiableList(transactionEventTypes);
+    }
+
+    public void reset() {
+        transactionEventTypes.clear();
     }
 
     private void checkTransactionIsNotActive() {

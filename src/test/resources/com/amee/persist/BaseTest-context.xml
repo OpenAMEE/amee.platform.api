@@ -28,11 +28,22 @@
     <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
+    <!-- jpaDialect -->
+    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+
     <!-- entityManagerFactory -->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="ameeDataSource"/>
         <property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
+        </property>
+        <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.transaction.factory_class">
+                    org.springframework.orm.hibernate3.SpringTransactionFactory
+                </prop>
+            </props>
         </property>
     </bean>
 
@@ -41,8 +52,11 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
         <property name="dataSource" ref="ameeDataSource"/>
         <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="transactionSynchronization">
+            <bean id="org.springframework.transaction.jta.JtaTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+        </property>
     </bean>
-    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
 
     <!-- JpaTemplate -->
     <bean id="jpaTemplate" class="org.springframework.orm.jpa.JpaTemplate">
