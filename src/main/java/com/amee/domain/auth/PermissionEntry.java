@@ -21,14 +21,13 @@
  */
 package com.amee.domain.auth;
 
-import com.amee.domain.AMEEStatus;
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.AMEEStatus;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.json.JSONException;
-import org.json.JSONArray;
-import org.w3c.dom.Element;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.Serializable;
 

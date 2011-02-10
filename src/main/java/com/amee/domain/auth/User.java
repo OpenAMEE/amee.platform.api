@@ -10,7 +10,6 @@ import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -47,7 +46,6 @@ public class User extends AMEEEntity implements Comparable {
     private UserType type = UserType.STANDARD;
 
     @Column(name = "USERNAME", length = USERNAME_SIZE, nullable = false)
-    @Index(name = "USERNAME_IND")
     private String username = "";
 
     @Column(name = "PASSWORD", length = PASSWORD_SIZE, nullable = false)
@@ -57,7 +55,6 @@ public class User extends AMEEEntity implements Comparable {
     private String name = "";
 
     @Column(name = "EMAIL", length = EMAIL_SIZE, nullable = false)
-    @Index(name = "EMAIL_IND")
     private String email = "";
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

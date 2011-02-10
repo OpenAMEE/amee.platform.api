@@ -22,6 +22,7 @@
 package com.amee.domain;
 
 import com.amee.base.utils.ThreadBeanHolder;
+
 import java.util.Locale;
 
 /**

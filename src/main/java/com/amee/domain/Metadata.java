@@ -2,7 +2,6 @@ package com.amee.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -25,7 +24,6 @@ public class Metadata extends AMEEEntity {
     private AMEEEntityReference entityReference = new AMEEEntityReference();
 
     @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
-    @Index(name = "NAME_IND")
     private String name = "";
 
     @Column(name = "VALUE", nullable = false, length = VALUE_MAX_SIZE)

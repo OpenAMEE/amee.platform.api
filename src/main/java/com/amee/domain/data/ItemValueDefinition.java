@@ -28,7 +28,6 @@ import com.amee.platform.science.*;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -73,7 +72,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     private String name = "";
 
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
-    @Index(name = "PATH_IND")
     private String path = "";
 
     @Column(name = "VALUE", length = VALUE_MAX_SIZE, nullable = true)
@@ -84,11 +82,9 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     private String choices = "";
 
     @Column(name = "FROM_PROFILE")
-    @Index(name = "FROM_PROFILE_IND")
     private boolean fromProfile = false;
 
     @Column(name = "FROM_DATA")
-    @Index(name = "FROM_PROFILE_IND")
     private boolean fromData = false;
 
     @Column(name = "ALLOWED_ROLES", length = ALLOWED_ROLES_MAX_SIZE, nullable = true)

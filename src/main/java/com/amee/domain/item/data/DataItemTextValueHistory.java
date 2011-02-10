@@ -7,7 +7,6 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +19,6 @@ import java.util.Date;
 public class DataItemTextValueHistory extends BaseDataItemTextValue implements HistoryValue {
 
     @Column(name = "START_DATE")
-    @Index(name = "START_DATE_IND")
     private Date startDate = new Date();
 
     public DataItemTextValueHistory() {

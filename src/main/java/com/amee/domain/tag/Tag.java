@@ -8,7 +8,6 @@ import com.amee.domain.ObjectType;
 import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ public class Tag extends AMEEEntity implements Pathable {
     private List<EntityTag> entityTags;
 
     @Column(name = "TAG", nullable = false, length = TAG_MAX_SIZE)
-    @Index(name = "TAG_IND")
     private String tag = "";
 
     @Transient

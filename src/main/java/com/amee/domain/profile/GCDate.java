@@ -2,9 +2,6 @@ package com.amee.domain.profile;
 
 import org.joda.time.DateTime;
 
-import java.util.Date;
-import java.util.TimeZone;
-
 /**
  * This file is part of AMEE.
  * <p/>
