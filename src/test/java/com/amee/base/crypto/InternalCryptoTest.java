@@ -1,7 +1,18 @@
 package com.amee.base.crypto;
 
+import org.junit.Test;
+
+/**
+ * TODO: The tests commented out below don't seem to work in Bamboo.
+ * <p/>
+ * See:https://jira.amee.com/browse/PL-10424
+ */
 public class InternalCryptoTest {
 
+    @Test
+    public void dummy() {
+
+    }
 
 //    @Before
 //    public void setUp() throws CryptoException {
