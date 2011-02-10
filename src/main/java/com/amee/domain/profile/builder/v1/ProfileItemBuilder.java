@@ -27,7 +27,7 @@ import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v1.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.profile.NuProfileItem;
+import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.StartEndDate;
 import org.json.JSONArray;
@@ -44,10 +44,10 @@ public class ProfileItemBuilder implements ItemBuilder {
     private static final String DAY_DATE = "yyyyMMdd";
     private static DateFormat DAY_DATE_FMT = new SimpleDateFormat(DAY_DATE);
 
-    private NuProfileItem item;
+    private ProfileItem item;
     private IProfileItemService profileItemService;
 
-    public ProfileItemBuilder(NuProfileItem item) {
+    public ProfileItemBuilder(ProfileItem item) {
         this.item = item;
     }
 

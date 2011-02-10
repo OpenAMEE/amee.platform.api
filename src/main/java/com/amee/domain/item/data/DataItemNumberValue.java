@@ -17,15 +17,15 @@ public class DataItemNumberValue extends BaseDataItemNumberValue {
         super();
     }
 
-    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem) {
         super(itemValueDefinition, dataItem);
     }
 
-    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, Double value) {
+    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, Double value) {
         super(itemValueDefinition, dataItem, value);
     }
 
-    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem, String value) {
+    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value) {
         super(itemValueDefinition, dataItem, value);
     }
 

@@ -4,8 +4,8 @@ import com.amee.domain.AMEEStatus;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.ValueType;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.data.DataItemTextValue;
-import com.amee.domain.item.data.NuDataItem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class ItemValueTest {
     private DataCategory mockDataCategory;
     private ValueDefinition mockValueDefinition;
     private ItemDefinition mockItemDefinition;
-    private NuDataItem dataItem;
+    private DataItem dataItem;
     private ItemValueDefinition mockItemValueDefinition;
     private BaseItemValue itemValue;
 
@@ -31,7 +31,7 @@ public class ItemValueTest {
         when(mockItemValueDefinition.getItemDefinition()).thenReturn(mockItemDefinition);
         when(mockItemValueDefinition.getValueDefinition()).thenReturn(mockValueDefinition);
         when(mockValueDefinition.getValueType()).thenReturn(ValueType.TEXT);
-        dataItem = new NuDataItem(mockDataCategory, mockItemDefinition);
+        dataItem = new DataItem(mockDataCategory, mockItemDefinition);
         itemValue = new DataItemTextValue(mockItemValueDefinition, dataItem);
     }
 

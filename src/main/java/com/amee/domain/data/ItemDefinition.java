@@ -234,7 +234,16 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         Set<ItemValueDefinition> activeItemValueDefinitions = new TreeSet<ItemValueDefinition>(
             new Comparator<ItemValueDefinition>() {
                 public int compare(ItemValueDefinition ivd1, ItemValueDefinition ivd2) {
-                    return ivd1.getName().compareToIgnoreCase(ivd2.getName());
+
+                    // Comparing by name is incompatible with equals
+                    int nameCompare = ivd1.getName().compareToIgnoreCase(ivd2.getName());
+                    if (nameCompare != 0) {
+                        return nameCompare;
+                    } else {
+
+                        // If the names are the same we need to fall back to the equals implementation.
+                        return ivd1.getUid().compareTo(ivd2.getUid());
+                    }
                 }
             }
         );
@@ -254,7 +263,16 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         Set<ReturnValueDefinition> activeReturnValueDefinitions = new TreeSet<ReturnValueDefinition>(
             new Comparator<ReturnValueDefinition>() {
                 public int compare(ReturnValueDefinition rvd1, ReturnValueDefinition rvd2) {
-                    return rvd1.getType().compareToIgnoreCase(rvd2.getType());
+
+                    // Comparing by type is incompatible with equals.
+                    int typeCompare = rvd1.getType().compareToIgnoreCase(rvd2.getType());
+                    if (typeCompare != 0) {
+                        return typeCompare;
+                    } else {
+
+                        // If the types are the same we need to fall back to the equals implementation.
+                        return rvd1.getUid().compareTo(rvd2.getUid());
+                    }
                 }
             }
         );

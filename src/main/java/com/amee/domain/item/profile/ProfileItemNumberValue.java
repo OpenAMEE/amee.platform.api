@@ -38,11 +38,11 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         super();
     }
 
-    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem) {
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem) {
         super(itemValueDefinition, profileItem);
     }
 
-    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, Double value) {
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, Double value) {
         this(itemValueDefinition, profileItem);
         if (value != null) {
             setValue(value);
@@ -51,7 +51,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         }
     }
 
-    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem, String value) {
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, String value) {
         this(itemValueDefinition, profileItem);
         if (value != null) {
             try {

@@ -16,13 +16,13 @@ public abstract class BaseProfileItemValue extends BaseItemValue implements Path
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PROFILE_ITEM_ID")
-    private NuProfileItem profileItem;
+    private ProfileItem profileItem;
 
     public BaseProfileItemValue() {
         super();
     }
 
-    public BaseProfileItemValue(ItemValueDefinition itemValueDefinition, NuProfileItem profileItem) {
+    public BaseProfileItemValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem) {
         super(itemValueDefinition);
         setProfileItem(profileItem);
     }
@@ -38,24 +38,24 @@ public abstract class BaseProfileItemValue extends BaseItemValue implements Path
         return status.equals(AMEEStatus.TRASH) || getProfileItem().isTrash() || getItemValueDefinition().isTrash();
     }
 
-    public NuProfileItem getProfileItem() {
+    public ProfileItem getProfileItem() {
         return profileItem;
     }
 
     @Override
-    public NuProfileItem getItem() {
+    public ProfileItem getItem() {
         return getProfileItem();
     }
 
     public void setItem(BaseItem item) {
-        if (NuProfileItem.class.isAssignableFrom(item.getClass())) {
-            this.profileItem = (NuProfileItem) item;
+        if (ProfileItem.class.isAssignableFrom(item.getClass())) {
+            this.profileItem = (ProfileItem) item;
         } else {
-            throw new IllegalStateException("A NuProfileItem instance was expected.");
+            throw new IllegalStateException("A ProfileItem instance was expected.");
         }
     }
 
-    public void setProfileItem(NuProfileItem profileItem) {
+    public void setProfileItem(ProfileItem profileItem) {
         this.profileItem = profileItem;
     }
 }

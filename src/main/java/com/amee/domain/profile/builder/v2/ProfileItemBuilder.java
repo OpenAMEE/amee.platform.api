@@ -28,8 +28,8 @@ import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
-import com.amee.domain.item.profile.NuProfileItem;
+import com.amee.domain.item.data.DataItem;
+import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.science.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,17 +41,17 @@ import java.util.Map;
 
 public class ProfileItemBuilder implements ItemBuilder {
 
-    private NuProfileItem item;
+    private ProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
     private IDataItemService dataItemService;
     private IProfileItemService profileItemService;
 
-    public ProfileItemBuilder(NuProfileItem item, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(ProfileItem item, AmountCompoundUnit returnUnit) {
         this.item = item;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(NuProfileItem item) {
+    public ProfileItemBuilder(ProfileItem item) {
         this.item = item;
     }
 
@@ -155,7 +155,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         obj.put("dataItem", new DataItemBuilder(item.getDataItem()).getIdentityJSONObject());
 
         // DataItem
-        NuDataItem bDataItem = item.getDataItem();
+        DataItem bDataItem = item.getDataItem();
         JSONObject dataItemObj = new DataItemBuilder(bDataItem).getIdentityJSONObject();
         dataItemObj.put("Label", dataItemService.getLabel(bDataItem));
         obj.put("dataItem", dataItemObj);
@@ -216,7 +216,7 @@ public class ProfileItemBuilder implements ItemBuilder {
                 (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
 
         // DataItem
-        NuDataItem bDataItem = item.getDataItem();
+        DataItem bDataItem = item.getDataItem();
         Element dataItemElement = new DataItemBuilder(bDataItem).getIdentityElement(document);
         dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(bDataItem)));
 

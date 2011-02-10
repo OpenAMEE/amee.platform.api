@@ -13,7 +13,7 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "DATA_ITEM_ID")
-    private NuDataItem dataItem;
+    private DataItem dataItem;
 
     @Transient
     private transient String fullPath;
@@ -22,7 +22,7 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
         super();
     }
 
-    public BaseDataItemValue(ItemValueDefinition itemValueDefinition, NuDataItem dataItem) {
+    public BaseDataItemValue(ItemValueDefinition itemValueDefinition, DataItem dataItem) {
         super(itemValueDefinition);
         setDataItem(dataItem);
     }
@@ -38,24 +38,24 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
         return status.equals(AMEEStatus.TRASH) || getDataItem().isTrash() || getItemValueDefinition().isTrash();
     }
 
-    public NuDataItem getDataItem() {
+    public DataItem getDataItem() {
         return dataItem;
     }
 
     @Override
-    public NuDataItem getItem() {
+    public DataItem getItem() {
         return getDataItem();
     }
 
     public void setItem(BaseItem item) {
-        if (NuDataItem.class.isAssignableFrom(item.getClass())) {
-            this.dataItem = (NuDataItem) item;
+        if (DataItem.class.isAssignableFrom(item.getClass())) {
+            this.dataItem = (DataItem) item;
         } else {
-            throw new IllegalStateException("A NuDataItem instance was expected.");
+            throw new IllegalStateException("A DataItem instance was expected.");
         }
     }
 
-    public void setDataItem(NuDataItem dataItem) {
+    public void setDataItem(DataItem dataItem) {
         this.dataItem = dataItem;
     }
 }

@@ -2,7 +2,7 @@ package com.amee.domain;
 
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.science.StartEndDate;
 
 import java.util.Date;
@@ -15,37 +15,37 @@ public interface IDataItemService extends IItemService {
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);
 
-    public List<NuDataItem> getDataItems(IDataCategoryReference dataCategory);
+    public List<DataItem> getDataItems(IDataCategoryReference dataCategory);
 
-    public List<NuDataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
+    public List<DataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
 
-    public List<NuDataItem> getDataItems(Set<Long> dataItemIds);
+    public List<DataItem> getDataItems(Set<Long> dataItemIds);
 
-    public NuDataItem getDataItemByIdentifier(DataCategory parent, String path);
+    public DataItem getDataItemByIdentifier(DataCategory parent, String path);
 
-    public Map<String, NuDataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+    public Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
 
-    public NuDataItem getDataItemByUid(DataCategory parent, String uid);
+    public DataItem getDataItemByUid(DataCategory parent, String uid);
 
-    public NuDataItem getItemByUid(String uid);
+    public DataItem getItemByUid(String uid);
 
-    public NuDataItem getDataItemByPath(DataCategory parent, String path);
+    public DataItem getDataItemByPath(DataCategory parent, String path);
 
-    public String getLabel(NuDataItem dataItem);
+    public String getLabel(DataItem dataItem);
 
-    public void checkDataItem(NuDataItem dataItem);
+    public void checkDataItem(DataItem dataItem);
 
-    public void persist(NuDataItem dataItem);
+    public void persist(DataItem dataItem);
 
-    public void persist(NuDataItem dataItem, boolean checkDataItem);
+    public void persist(DataItem dataItem, boolean checkDataItem);
 
-    public void remove(NuDataItem dataItem);
+    public void remove(DataItem dataItem);
 
     public void persist(BaseItemValue itemValue);
 
     public void remove(BaseItemValue itemValue);
 
-    public StartEndDate getStartDate(NuDataItem dataItem);
+    public StartEndDate getStartDate(DataItem dataItem);
 
-    public StartEndDate getEndDate(NuDataItem dataItem);
+    public StartEndDate getEndDate(DataItem dataItem);
 }

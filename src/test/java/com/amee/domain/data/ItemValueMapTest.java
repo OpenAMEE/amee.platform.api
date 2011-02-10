@@ -13,9 +13,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class NuItemValueMapTest {
+public class ItemValueMapTest {
 
-    private NuItemValueMap map;
+    private ItemValueMap map;
 
     private DataItemTextValue tv1;
     private DataItemTextValue tv2;
@@ -24,7 +24,7 @@ public class NuItemValueMapTest {
 
     @Before
     public void setup() {
-        map = new NuItemValueMap();
+        map = new ItemValueMap();
         tv1 = new DataItemTextValue();
         tv2 = new DataItemTextValue();
 
