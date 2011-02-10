@@ -160,7 +160,7 @@ public class RequestContext {
         sb.append(error).append("|");
         sb.append(method).append("|");
         sb.append(more).append("|");
-        sb.append(status + "|");
+        sb.append(status).append("|");
         sb.append(System.currentTimeMillis() - start);
         return sb.toString();
     }
