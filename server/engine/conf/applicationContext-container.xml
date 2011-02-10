@@ -24,7 +24,6 @@
         <constructor-arg index="1" value="${PORT}"/>
         <property name="parameters">
             <props>
-                <prop key="converter">com.amee.platform.restlet.TransactionServerConverter</prop>
                 <prop key="minThreads">50</prop>
                 <prop key="maxThreads">700</prop>
                 <prop key="threadMaxIdleTimeMs">30000</prop>
@@ -44,7 +43,6 @@
         <constructor-arg index="1" value="${SECURE_PORT}"/>
         <property name="parameters">
             <props>
-                <prop key="converter">com.amee.platform.restlet.TransactionServerConverter</prop>
                 <prop key="minThreads">50</prop>
                 <prop key="maxThreads">700</prop>
                 <prop key="threadMaxIdleTimeMs">30000</prop>

@@ -12,7 +12,13 @@
 
     <bean id="luceneService" class="com.amee.platform.search.LuceneServiceImpl"/>
 
-    <bean id="searchManager" class="com.amee.platform.search.SearchManager"/>
+    <bean id="searchManager" class="com.amee.platform.search.SearchManagerImpl"/>
+
+    <bean id="searchManagerRunner" class="com.amee.platform.search.SearchManagerRunner"/>
+
+    <bean id="searchIndexer" class="com.amee.platform.search.SearchIndexerImpl" scope="prototype"/>
+
+    <bean id="searchIndexerRunner" class="com.amee.platform.search.SearchIndexerRunner" scope="prototype"/>
 
     <bean id="searchIndexerTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="1"/>
