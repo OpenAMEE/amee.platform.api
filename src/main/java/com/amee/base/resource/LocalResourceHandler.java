@@ -55,10 +55,7 @@ public class LocalResourceHandler implements ResourceHandler {
     }
 
     /**
-     *
-     * @param requestWrapper
-     * @param handler
-     * @return
+     * TODO: What happens to values in ThreadLocal?
      */
     protected Object handleWithTimeout(final RequestWrapper requestWrapper, final ResourceHandler handler) {
         Object response = null;

@@ -1,8 +1,6 @@
 package com.amee.base.cache;
 
-import java.io.Serializable;
-
-public interface CacheService extends Serializable {
+public interface CacheService {
 
     void set(String region, String key, Object o);
 

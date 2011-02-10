@@ -11,7 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import java.io.Serializable;
 import java.util.TimeZone;
 
 /**
@@ -19,7 +18,7 @@ import java.util.TimeZone;
  * <p/>
  * See: http://wrapper.tanukisoftware.org/jdoc/org/tanukisoftware/wrapper/WrapperListener.html
  */
-public class Engine implements WrapperListener, Serializable {
+public class Engine implements WrapperListener {
 
     private final Log log = LogFactory.getLog(getClass());
 
