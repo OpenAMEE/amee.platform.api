@@ -1,7 +1,7 @@
 package com.amee.platform.resource.dataitem;
 
 import com.amee.base.validation.ValidationSpecification;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,29 +29,29 @@ public class DataItemValidator implements Validator {
         // name
         nameSpec = new ValidationSpecification();
         nameSpec.setName("name");
-        nameSpec.setMaxSize(NuDataItem.NAME_MAX_SIZE);
+        nameSpec.setMaxSize(DataItem.NAME_MAX_SIZE);
         nameSpec.setAllowEmpty(true);
         // path
         // TODO: This must be unique amongst peers, if set.
         pathSpec = new ValidationSpecification();
         pathSpec.setName("path");
-        pathSpec.setMaxSize(NuDataItem.PATH_MAX_SIZE);
+        pathSpec.setMaxSize(DataItem.PATH_MAX_SIZE);
         pathSpec.setFormat(PATH_PATTERN_STRING);
         pathSpec.setAllowEmpty(true);
         // wikiDoc
         wikiDocSpec = new ValidationSpecification();
         wikiDocSpec.setName("wikiDoc");
-        wikiDocSpec.setMaxSize(NuDataItem.WIKI_DOC_MAX_SIZE);
+        wikiDocSpec.setMaxSize(DataItem.WIKI_DOC_MAX_SIZE);
         wikiDocSpec.setAllowEmpty(true);
         // provenance
         provenanceSpec = new ValidationSpecification();
         provenanceSpec.setName("provenance");
-        provenanceSpec.setMaxSize(NuDataItem.PROVENANCE_MAX_SIZE);
+        provenanceSpec.setMaxSize(DataItem.PROVENANCE_MAX_SIZE);
         provenanceSpec.setAllowEmpty(true);
     }
 
     public boolean supports(Class clazz) {
-        return NuDataItem.class.isAssignableFrom(clazz);
+        return DataItem.class.isAssignableFrom(clazz);
     }
 
     public void validate(Object o, Errors e) {

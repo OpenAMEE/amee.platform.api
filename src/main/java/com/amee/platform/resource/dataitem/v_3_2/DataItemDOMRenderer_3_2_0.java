@@ -4,7 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.item.DataItemService;
 import org.jdom.Document;
@@ -21,7 +21,7 @@ public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
     @Autowired
     protected DataItemService dataItemService;
 
-    protected NuDataItem dataItem;
+    protected DataItem dataItem;
     protected Element rootElem;
     protected Element dataItemElem;
     protected Element valuesElem;
@@ -34,7 +34,7 @@ public class DataItemDOMRenderer_3_2_0 implements DataItemResource.Renderer {
         rootElem.addContent(new Element("Status").setText("OK"));
     }
 
-    public void newDataItem(NuDataItem dataItem) {
+    public void newDataItem(DataItem dataItem) {
         this.dataItem = dataItem;
         dataItemElem = new Element("Item");
         if (rootElem != null) {

@@ -8,7 +8,7 @@ import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemValidationHelper;
 import com.amee.service.auth.ResourceAuthorizationService;
@@ -51,7 +51,7 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
                 if (dataItemIdentifier != null) {
                     // Get DataItem.
-                    NuDataItem dataItem = dataItemService.getDataItemByUid(dataCategory, dataItemIdentifier);
+                    DataItem dataItem = dataItemService.getDataItemByUid(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
                         // Authorized?
                         resourceAuthorizationService.ensureAuthorizedForModify(

@@ -9,7 +9,7 @@ import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
@@ -53,7 +53,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
                 if (dataItemIdentifier != null) {
                     // Get DataItem.
-                    NuDataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
+                    DataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
                         // Authorized?
                         resourceAuthorizationService.ensureAuthorizedForBuild(
@@ -77,7 +77,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
         }
     }
 
-    public void handle(RequestWrapper requestWrapper, NuDataItem dataItem) {
+    public void handle(RequestWrapper requestWrapper, DataItem dataItem) {
 
         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();

@@ -8,7 +8,7 @@ import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntity;
 import com.amee.domain.data.DataCategory;
-import com.amee.domain.item.data.NuDataItem;
+import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.search.SearchResource;
@@ -74,9 +74,8 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
                     dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
                     renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
                     break;
-                case DI:
                 case NDI:
-                    dataItemBuilder.handle(requestWrapper, (NuDataItem) entity);
+                    dataItemBuilder.handle(requestWrapper, (DataItem) entity);
                     renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
                     break;
             }
