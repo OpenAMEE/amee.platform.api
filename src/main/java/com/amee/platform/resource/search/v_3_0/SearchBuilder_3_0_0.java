@@ -4,6 +4,7 @@ import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntity;
 import com.amee.domain.data.DataCategory;
@@ -16,6 +17,7 @@ import com.amee.platform.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -31,7 +33,9 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
 
     private SearchResource.Renderer searchRenderer;
 
-    @Transactional(readOnly = true)
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         SearchFilter filter = new SearchFilter();
         filter.setLoadDataItemValues(

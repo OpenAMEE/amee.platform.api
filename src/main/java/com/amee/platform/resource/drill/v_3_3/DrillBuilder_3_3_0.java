@@ -5,6 +5,7 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
@@ -15,6 +16,8 @@ import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,8 @@ public class DrillBuilder_3_3_0 implements DrillResource.Builder {
     private DrillResource.Renderer renderer;
 
     @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {

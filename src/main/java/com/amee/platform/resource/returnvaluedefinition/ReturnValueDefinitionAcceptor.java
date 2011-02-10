@@ -4,12 +4,14 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ReturnValueDefinitionAcceptor implements ResourceAcceptor {
@@ -20,7 +22,9 @@ public abstract class ReturnValueDefinitionAcceptor implements ResourceAcceptor 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
-    @Transactional(rollbackFor = {ValidationException.class})
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Get ItemDefinition identifier.
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");

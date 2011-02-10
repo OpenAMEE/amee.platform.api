@@ -3,6 +3,7 @@ package com.amee.platform.resource.datacategory.v_3_3;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.DataCategoriesResource;
@@ -13,6 +14,7 @@ import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,7 +29,8 @@ public class DataCategoriesFormAcceptor_3_3_0 extends DataCategoryAcceptor imple
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Override
-    @Transactional(rollbackFor = {ValidationException.class})
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) {
         // Create new DataCategory.
         DataCategory dataCategory = new DataCategory();

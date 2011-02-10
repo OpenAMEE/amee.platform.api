@@ -5,6 +5,8 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.base.transaction.AMEETransaction;
+import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
@@ -13,6 +15,8 @@ import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
@@ -25,6 +29,9 @@ public class ReturnValueDefinitionRemover_3_1_0 implements ReturnValueDefinition
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) {
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
         if (itemDefinitionIdentifier != null) {

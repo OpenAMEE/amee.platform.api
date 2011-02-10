@@ -5,6 +5,7 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.tag.EntityTag;
@@ -18,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -42,7 +44,8 @@ public class TagBuilder_3_2_0 implements TagResource.Builder {
     private TagResource.Renderer renderer;
 
     @Override
-    @Transactional(readOnly = true)
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get Tag identifier.
         String tagIdentifier = requestWrapper.getAttributes().get("tagIdentifier");

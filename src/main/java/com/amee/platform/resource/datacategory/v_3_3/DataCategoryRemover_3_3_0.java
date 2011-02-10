@@ -5,6 +5,8 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.base.transaction.AMEETransaction;
+import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.auth.ResourceAuthorizationService;
@@ -12,6 +14,8 @@ import com.amee.service.data.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
@@ -24,6 +28,9 @@ public class DataCategoryRemover_3_3_0 implements DataCategoryResource.Remover {
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) {
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {

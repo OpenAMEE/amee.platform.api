@@ -1,7 +1,6 @@
 package com.amee.platform.resource.datacategory;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.IDataService;
 import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.data.DataCategory;
@@ -32,7 +31,7 @@ public class DataCategoryValidatorTest {
         mockLocaleService = mock(LocaleService.class);
         ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
         mockDataService = mock(DataService.class);
-        ThreadBeanHolder.set(IDataService.class, mockDataService);
+        ThreadBeanHolder.set(DataService.class, mockDataService);
     }
 
     @Test

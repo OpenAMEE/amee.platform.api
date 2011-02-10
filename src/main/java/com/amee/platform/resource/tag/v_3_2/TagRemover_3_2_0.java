@@ -5,6 +5,8 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.base.transaction.AMEETransaction;
+import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -20,6 +22,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This Remover removes either Tags or EntityTags depending on context. If an entity is present
@@ -45,6 +49,8 @@ public class TagRemover_3_2_0 implements TagResource.Remover {
     private InvalidationService invalidationService;
 
     @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) {
         // Get Tag identifier.
         String tagIdentifier = requestWrapper.getAttributes().get("tagIdentifier");

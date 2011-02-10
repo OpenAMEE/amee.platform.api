@@ -5,6 +5,7 @@ import com.amee.base.resource.MissingAttributeException;
 import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
@@ -14,6 +15,7 @@ import com.amee.service.definition.DefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -32,7 +34,9 @@ public class ItemValueDefinitionsBuilder_3_1_0 implements ItemValueDefinitionsRe
 
     private ItemValueDefinitionsResource.Renderer itemValueDefinitionsRenderer;
 
-    @Transactional(readOnly = true)
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         // Get ItemDefinition identifier.
         String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");

@@ -4,6 +4,7 @@ import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.DataCategoriesResource;
@@ -14,6 +15,7 @@ import com.amee.platform.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -32,7 +34,9 @@ public class DataCategoriesBuilder_3_0_0 implements DataCategoriesResource.Build
 
     private DataCategoriesResource.Renderer dataCategoriesRenderer;
 
-    @Transactional(readOnly = true)
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
         DataCategoriesFilter filter = new DataCategoriesFilter();
         filter.setLoadMetadatas(

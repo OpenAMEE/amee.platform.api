@@ -3,6 +3,7 @@ package com.amee.platform.resource.tag.v_3_0;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
@@ -19,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -44,7 +46,8 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Override
-    @Transactional(rollbackFor = {ValidationException.class})
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         Tag tag;
         // Get existing tag if it exists.

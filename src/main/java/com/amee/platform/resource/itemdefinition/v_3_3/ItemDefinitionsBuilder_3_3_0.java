@@ -4,6 +4,7 @@ import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
@@ -15,6 +16,7 @@ import com.amee.service.metadata.MetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -36,7 +38,9 @@ public class ItemDefinitionsBuilder_3_3_0 implements ItemDefinitionsResource.Bui
 
     private ItemDefinitionsResource.Renderer itemDefinitionsRenderer;
 
-    @Transactional(readOnly = true)
+    @Override
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
 
         // Setup filter and validate.
