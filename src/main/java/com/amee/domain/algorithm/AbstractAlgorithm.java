@@ -5,7 +5,6 @@ import com.amee.domain.AMEEEntity;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -23,7 +22,6 @@ public abstract class AbstractAlgorithm extends AMEEEntity {
     public final static int NAME_SIZE = 255;
 
     @Column(name = "NAME", length = NAME_SIZE, nullable = false)
-    @Index(name = "NAME_IND")
     private String name = "";
 
     @Lob

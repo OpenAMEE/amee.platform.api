@@ -1,8 +1,8 @@
 package com.amee.domain.sheet;
 
 import com.amee.base.utils.UidGen;
-import com.amee.domain.ValueType;
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.ValueType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;

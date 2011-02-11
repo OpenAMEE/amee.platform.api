@@ -25,7 +25,6 @@ import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -64,11 +63,9 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     private String name = "";
 
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
-    @Index(name = "PATH_IND")
     private String path = "";
 
     @Column(name = "WIKI_NAME", length = WIKI_NAME_MAX_SIZE, nullable = false)
-    @Index(name = "WIKI_NAME_IND")
     private String wikiName = "";
 
     @Transient

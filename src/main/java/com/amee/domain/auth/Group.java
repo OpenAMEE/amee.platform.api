@@ -6,7 +6,6 @@ import com.amee.domain.ObjectType;
 import com.amee.domain.environment.Environment;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -36,7 +35,6 @@ public class Group extends AMEEEntity implements Comparable {
     public final static int DESCRIPTION_SIZE = 1000;
 
     @Column(name = "NAME", length = NAME_SIZE, nullable = false)
-    @Index(name = "NAME_IND")
     private String name = "";
 
     @Column(name = "DESCRIPTION", length = DESCRIPTION_SIZE, nullable = false)

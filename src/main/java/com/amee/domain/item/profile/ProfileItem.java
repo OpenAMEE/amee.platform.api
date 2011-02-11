@@ -12,7 +12,6 @@ import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Index;
 import org.joda.time.Duration;
 
 import javax.persistence.*;
@@ -32,11 +31,9 @@ public class ProfileItem extends BaseItem {
     private DataItem dataItem;
 
     @Column(name = "START_DATE")
-    @Index(name = "START_DATE_IND")
     protected Date startDate = new Date();
 
     @Column(name = "END_DATE")
-    @Index(name = "END_DATE_IND")
     protected Date endDate;
 
     @Transient

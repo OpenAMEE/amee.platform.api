@@ -1,12 +1,10 @@
 package com.amee.domain.data;
 
-import com.amee.domain.IDataItemService;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.ExternalHistoryValue;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.persistence.Transient;
 import java.util.*;
 
 /**
