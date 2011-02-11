@@ -90,6 +90,12 @@
                         <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
+                <entry key="/{categoryIdentifier}/items/{itemIdentifier}/calculation">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataItemCalculationResource"/>
+                        <property name="since" value="3.5.0"/>
+                    </bean>
+                </entry>
                 <entry key="/{categoryIdentifier}/tags" value-ref="tagsRouter"/>
                 <entry key="/{categoryIdentifier}/drill">
                     <bean class="com.amee.restlet.version.VersionFinder">
@@ -211,6 +217,25 @@
         <!--<property name="remover">-->
         <!--<bean class="com.amee.platform.resource.item.DataItemRemover"/>-->
         <!--</property>-->
+    </bean>
+
+    <bean id="dataItemCalculationResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="lastSegment" value="calculation"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>categoryIdentifier</value>
+                <value>itemIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.dataitem.DataItemCalculationResource$Builder"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="definitionsRouter" class="com.amee.restlet.version.VersionSpringRouter">
