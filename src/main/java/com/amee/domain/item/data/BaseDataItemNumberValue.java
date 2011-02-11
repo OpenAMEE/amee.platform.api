@@ -144,6 +144,11 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     }
 
     @Override
+    public double getValueAsDouble() {
+        return value;
+    }
+
+    @Override
     public String getValueAsString() {
         if (value != null) {
             NumberFormat f = NumberFormat.getInstance();

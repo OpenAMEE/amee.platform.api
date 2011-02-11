@@ -170,6 +170,11 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     @Override
+    public double getValueAsDouble() {
+        return value;
+    }
+
+    @Override
     public String getValueAsString() {
         if (value != null) {
             NumberFormat f = NumberFormat.getInstance();

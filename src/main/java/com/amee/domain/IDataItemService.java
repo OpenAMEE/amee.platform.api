@@ -3,6 +3,7 @@ package com.amee.domain;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
 
 import java.util.Date;
@@ -32,6 +33,8 @@ public interface IDataItemService extends IItemService {
     public DataItem getDataItemByPath(DataCategory parent, String path);
 
     public String getLabel(DataItem dataItem);
+
+    public Choices getUserValueChoices(DataItem dataItem, APIVersion apiVersion);
 
     public void checkDataItem(DataItem dataItem);
 

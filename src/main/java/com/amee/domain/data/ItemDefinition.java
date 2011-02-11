@@ -232,20 +232,20 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
 
     public Set<ItemValueDefinition> getActiveItemValueDefinitions() {
         Set<ItemValueDefinition> activeItemValueDefinitions = new TreeSet<ItemValueDefinition>(
-            new Comparator<ItemValueDefinition>() {
-                public int compare(ItemValueDefinition ivd1, ItemValueDefinition ivd2) {
+                new Comparator<ItemValueDefinition>() {
+                    public int compare(ItemValueDefinition ivd1, ItemValueDefinition ivd2) {
 
-                    // Comparing by name is incompatible with equals
-                    int nameCompare = ivd1.getName().compareToIgnoreCase(ivd2.getName());
-                    if (nameCompare != 0) {
-                        return nameCompare;
-                    } else {
+                        // Comparing by name is incompatible with equals
+                        int nameCompare = ivd1.getName().compareToIgnoreCase(ivd2.getName());
+                        if (nameCompare != 0) {
+                            return nameCompare;
+                        } else {
 
-                        // If the names are the same we need to fall back to the equals implementation.
-                        return ivd1.getUid().compareTo(ivd2.getUid());
+                            // If the names are the same we need to fall back to the equals implementation.
+                            return ivd1.getUid().compareTo(ivd2.getUid());
+                        }
                     }
                 }
-            }
         );
         for (ItemValueDefinition itemValueDefinition : itemValueDefinitions) {
             if (!itemValueDefinition.isTrash()) {
@@ -255,26 +255,39 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         return Collections.unmodifiableSet(activeItemValueDefinitions);
     }
 
+    /**
+     * Get a map of {@link ItemValueDefinition}s keyed by their path.
+     *
+     * @return map of {@link ItemValueDefinition}s
+     */
+    public Map<String, ItemValueDefinition> getItemValueDefinitionsMap() {
+        Map<String, ItemValueDefinition> itemValueDefinitions = new HashMap<String, ItemValueDefinition>();
+        for (ItemValueDefinition itemValueDefinition : getActiveItemValueDefinitions()) {
+            itemValueDefinitions.put(itemValueDefinition.getPath(), itemValueDefinition);
+        }
+        return itemValueDefinitions;
+    }
+
     public Set<ReturnValueDefinition> getReturnValueDefinitions() {
         return getActiveReturnValueDefinitions();
     }
 
     public Set<ReturnValueDefinition> getActiveReturnValueDefinitions() {
         Set<ReturnValueDefinition> activeReturnValueDefinitions = new TreeSet<ReturnValueDefinition>(
-            new Comparator<ReturnValueDefinition>() {
-                public int compare(ReturnValueDefinition rvd1, ReturnValueDefinition rvd2) {
+                new Comparator<ReturnValueDefinition>() {
+                    public int compare(ReturnValueDefinition rvd1, ReturnValueDefinition rvd2) {
 
-                    // Comparing by type is incompatible with equals.
-                    int typeCompare = rvd1.getType().compareToIgnoreCase(rvd2.getType());
-                    if (typeCompare != 0) {
-                        return typeCompare;
-                    } else {
+                        // Comparing by type is incompatible with equals.
+                        int typeCompare = rvd1.getType().compareToIgnoreCase(rvd2.getType());
+                        if (typeCompare != 0) {
+                            return typeCompare;
+                        } else {
 
-                        // If the types are the same we need to fall back to the equals implementation.
-                        return rvd1.getUid().compareTo(rvd2.getUid());
+                            // If the types are the same we need to fall back to the equals implementation.
+                            return rvd1.getUid().compareTo(rvd2.getUid());
+                        }
                     }
                 }
-            }
         );
         for (ReturnValueDefinition returnValueDefinition : returnValueDefinitions) {
             if (!returnValueDefinition.isTrash()) {
