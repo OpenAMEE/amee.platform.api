@@ -2,6 +2,8 @@ package com.amee.platform.science;
 
 public interface ExternalNumberValue {
 
+    public double getValueAsDouble();
+
     public AmountUnit getUnit();
 
     public AmountPerUnit getPerUnit();

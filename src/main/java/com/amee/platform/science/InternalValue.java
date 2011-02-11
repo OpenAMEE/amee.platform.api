@@ -15,7 +15,7 @@ import java.util.*;
 public class InternalValue {
 
     private final Log log = LogFactory.getLog(getClass());
-    private final Log slog =   LogFactory.getLog("science");
+    private final Log slog = LogFactory.getLog("science");
     private Object value;
 
     /**
@@ -32,11 +32,15 @@ public class InternalValue {
      *
      * @param value - the {@link ExternalValue} representation of the value.
      */
-    public InternalValue(ExternalValue value) {
-        if (value.isDouble()) {
-            this.value = asInternalDecimal(value).getValue();
+    public InternalValue(ExternalGenericValue value) {
+        if (ExternalNumberValue.class.isAssignableFrom(value.getClass())) {
+            ExternalNumberValue env = (ExternalNumberValue) value;
+            this.value = asInternalDecimal(env).getValue();
+        } else if (ExternalTextValue.class.isAssignableFrom(value.getClass())) {
+            ExternalTextValue etv = (ExternalTextValue) value;
+            this.value = etv.getUsableValue();
         } else {
-            this.value = value.getUsableValue();
+            throw new IllegalStateException("Expected an ExternalNumberValue or ExternalTextValue.");
         }
     }
 
@@ -48,8 +52,8 @@ public class InternalValue {
      * @param endDate   - the end Date to filter the series
      */
     public InternalValue(List<ExternalValue> values, Date startDate, Date endDate) {
-        slog.info ("Diagnostics from filtering:"+ values.size() + "," + new DateTime(startDate) +","+new DateTime(endDate))  ;
-  
+        slog.info("Diagnostics from filtering:" + values.size() + "," + new DateTime(startDate) + "," + new DateTime(endDate));
+
         if (values.get(0).isDouble()) {
             DataSeries ds = new DataSeries();
             for (ExternalValue itemValue : filterItemValues(values, startDate, endDate)) {
@@ -58,7 +62,7 @@ public class InternalValue {
             ds.setSeriesStartDate(new DateTime(startDate));
             ds.setSeriesEndDate(new DateTime(endDate));
             this.value = ds;
-            slog.info ("Series dates"+ds.getSeriesStartDate()+"->"+ds.getSeriesEndDate());
+            slog.info("Series dates" + ds.getSeriesStartDate() + "->" + ds.getSeriesEndDate());
         } else {
             this.value = values;
         }
@@ -90,16 +94,16 @@ public class InternalValue {
 
         Collections.sort(values, new Comparator<ExternalValue>() {
             public int compare(ExternalValue a, ExternalValue b) {
-                if (a.getStartDate() == b.getStartDate()) return 0 ;
-                if (a.getStartDate().before(b.getStartDate())) return -1 ;
+                if (a.getStartDate() == b.getStartDate()) return 0;
+                if (a.getStartDate().before(b.getStartDate())) return -1;
                 return 1;
             }
         });
 
         // endDate can be nil, indicating range-of-interest extends to infinite future time
         // in this case, only the final value in the interval is of interest to anyone
-        if (endDate==null) {
-            filteredValues.add(values.get(values.size()-1));
+        if (endDate == null) {
+            filteredValues.add(values.get(values.size() - 1));
             return filteredValues;
         }
 
@@ -110,15 +114,15 @@ public class InternalValue {
             StartEndDate currentStart = iv.getStartDate();
             if (currentStart.before(endDate) && !currentStart.before(startDate)) {
                 filteredValues.add(iv);
-                slog.info("Adding point at"+iv.getStartDate());
+                slog.info("Adding point at" + iv.getStartDate());
             } else if (currentStart.before(startDate) && currentStart.after(latest)) {
                 latest = currentStart;
                 previous = iv;
             }
         }
 
-        slog.info("Adding previous point at"+previous.getStartDate());
-        filteredValues.add(0,previous);
+        slog.info("Adding previous point at" + previous.getStartDate());
+        filteredValues.add(0, previous);
 
         return filteredValues;
     }
@@ -139,6 +143,25 @@ public class InternalValue {
                     }
                     amount = amount.convert(internalUnit);
                 }
+            }
+            return amount;
+        }
+    }
+
+    private Amount asInternalDecimal(ExternalNumberValue iv) {
+        if (!iv.hasUnit() && !iv.hasPerUnit()) {
+            return new Amount(iv.getValueAsDouble());
+        } else {
+            Amount amount = new Amount(iv.getValueAsDouble(), iv.getCompoundUnit());
+            AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
+            if (amount.hasDifferentUnits(internalUnit)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("asInternalDecimal() " +
+                            "label: " + iv.getLabel() + "," +
+                            "external: " + amount + " " + amount.getUnit() + "," +
+                            "internal: " + amount.convert(internalUnit) + " " + internalUnit);
+                }
+                amount = amount.convert(internalUnit);
             }
             return amount;
         }
