@@ -18,7 +18,7 @@
         <amee-persist.version>1.0.9-SNAPSHOT</amee-persist.version>
         <amee-messaging.version>1.0.7-SNAPSHOT</amee-messaging.version>
         <amee-restlet.version>1.0.12-SNAPSHOT</amee-restlet.version>
-        <amee-platform-science.version>1.0.12</amee-platform-science.version>
+        <amee-platform-science.version>1.0.13-SNAPSHOT</amee-platform-science.version>
         <amee-platform-domain.version>2.0.0-SNAPSHOT</amee-platform-domain.version>
         <amee-platform-service.version>2.0.0-SNAPSHOT</amee-platform-service.version>
         <amee-platform-resource.version>1.0.19-SNAPSHOT</amee-platform-resource.version>
@@ -227,6 +227,8 @@
                         <CACHE_MANAGER_CLASS>org.springframework.cache.ehcache.EhCacheManagerFactoryBean
                         </CACHE_MANAGER_CLASS>
                         <AMEE_TIME_ZONE>UTC</AMEE_TIME_ZONE>
+                        <TRAIN_ROUTE_SERVICE_URI>http://railservice.amee.com/route_finder/route_service.php
+                        </TRAIN_ROUTE_SERVICE_URI>
                     </environmentVariables>
                     <systemPropertyVariables>
 
