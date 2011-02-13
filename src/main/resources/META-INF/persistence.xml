@@ -46,8 +46,7 @@
             <property name="hibernate.cache.use_second_level_cache" value="${amee.useSecondLevelCache}"/>
             <property name="hibernate.cache.provider_class" value="${amee.cacheProviderClass}"/>
             <!--<property name="hibernate.cache.provider_class" value="com.googlecode.hibernate.memcached.MemcachedCacheProvider"/>-->
-            <property name="hibernate.bytecode.provider" value="cglib"/>
-            <property name="hibernate.generate_statistics" value="true"/>
+            <!--<property name="hibernate.generate_statistics" value="true"/>-->
             <!-- *** Schema Create & Update *** -->
             <!--<property name="hibernate.hbm2ddl.auto" value="create"/>-->
             <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
