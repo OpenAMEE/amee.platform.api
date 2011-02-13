@@ -249,4 +249,24 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'Forbidden', response.data.status.name;
         }
     }
+
+    /**
+     * The amount value below is not the same as an API result as the algorithm has been simplified for testing.
+     */
+    @Test
+    void getDataItemCalculationJson() {
+        client.contentType = JSON
+        def response = client.get(path: "/3.5/categories/Cooking/items/004CF30590A5/calculation;full");
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals 1, response.data.amounts.size();
+        def amount = response.data.amounts[0];
+        assertEquals 'year', amount.perUnit;
+        assertEquals 'kg', amount.unit;
+        assertEquals true, amount.default;
+        assertEquals("", 233.3, amount.value, 0.5);
+        assertEquals 'CO2', amount.type;
+    }
 }
