@@ -1,9 +1,6 @@
 package com.amee.platform.resource.itemdefinition;
 
-import com.amee.base.resource.MissingAttributeException;
-import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.*;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
@@ -20,6 +17,9 @@ public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
+
+    @Autowired
+    private ResourceBeanFinder resourceBeanFinder;
 
     @Override
     @AMEETransaction
@@ -42,6 +42,12 @@ public abstract class ItemDefinitionAcceptor implements ResourceAcceptor {
         } else {
             throw new MissingAttributeException("itemDefinitionIdentifier");
         }
+    }
+
+    protected ItemDefinitionResource.ItemDefinitionValidator getValidator(RequestWrapper requestWrapper) {
+        return (ItemDefinitionResource.ItemDefinitionValidator)
+                resourceBeanFinder.getValidationHelper(
+                        ItemDefinitionResource.ItemDefinitionValidator.class, requestWrapper);
     }
 
     protected abstract Object handle(RequestWrapper requestWrapper, ItemDefinition itemDefinition);

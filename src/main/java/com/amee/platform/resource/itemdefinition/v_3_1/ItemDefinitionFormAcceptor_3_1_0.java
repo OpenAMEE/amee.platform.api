@@ -7,8 +7,6 @@ import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionAcceptor;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
-import com.amee.platform.resource.itemdefinition.ItemDefinitionValidationHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +15,15 @@ import org.springframework.stereotype.Service;
 @Since("3.1.0")
 public class ItemDefinitionFormAcceptor_3_1_0 extends ItemDefinitionAcceptor implements ItemDefinitionResource.FormAcceptor {
 
-    @Autowired
-    private ItemDefinitionValidationHelper validationHelper;
-
+    @Override
     protected Object handle(RequestWrapper requestWrapper, ItemDefinition itemDefinition) {
-        validationHelper.setItemDefinition(itemDefinition);
-        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+        ItemDefinitionResource.ItemDefinitionValidator validator = getValidator(requestWrapper);
+        validator.setObject(itemDefinition);
+        if (validator.isValid(requestWrapper.getFormParameters())) {
             definitionService.invalidate(itemDefinition);
             return ResponseHelper.getOK(requestWrapper);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 }
