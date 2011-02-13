@@ -22,12 +22,10 @@
             <artifactId>amee-base</artifactId>
             <version>${amee-base.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.amee.platform</groupId>
             <artifactId>amee-platform-api-restlet</artifactId>
             <version>${amee-platform-api.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- Runtime Dependencies. -->
@@ -92,12 +90,12 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>${cglib.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>cglib</groupId>-->
+            <!--<artifactId>cglib</artifactId>-->
+            <!--<version>${cglib.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-ajp</artifactId>

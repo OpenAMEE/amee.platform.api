@@ -20,7 +20,6 @@
     </bean>
 
     <!-- Annotations and other stuff -->
-    <context:load-time-weaver/>
     <context:annotation-config/>
     <context:component-scan base-package="com"/>
     <tx:annotation-driven/>
@@ -46,9 +45,6 @@
     <!-- entityManagerFactory -->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="ameeDataSource"/>
-        <property name="loadTimeWeaver">
-            <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>
-        </property>
         <property name="jpaDialect" ref="jpaDialect"/>
     </bean>
 

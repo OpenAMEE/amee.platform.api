@@ -26,7 +26,6 @@
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
         <!-- Note: Check Restlet release notes and jetty dependencies. -->
-        <cglib.version>2.2</cglib.version>
         <commons-cli.version>1.2</commons-cli.version>
         <commons-collections.version>3.2</commons-collections.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
@@ -261,8 +260,6 @@
                         <amee.indexDataItems>true</amee.indexDataItems>
                         <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
                     </systemPropertyVariables>
-                    <argLine>-javaagent:${basedir}/../target/dependency/spring-instrument-${spring.version}.jar
-                    </argLine>
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
                         <element>${basedir}/conf</element>
