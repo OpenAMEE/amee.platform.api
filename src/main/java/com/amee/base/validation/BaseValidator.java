@@ -6,7 +6,13 @@ import org.springframework.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseValidator implements Validator {
+/**
+ * A base class for Validator implementations providing a mechanism to validate objects
+ * with {@link ValidationSpecification}s.
+ * <p/>
+ * TODO: Merge this with {@link ValidationHelper}.
+ */
+public abstract class BaseValidator extends ValidationHelper implements Validator {
 
     private List<ValidationSpecification> specifications = new ArrayList<ValidationSpecification>();
 
@@ -18,6 +24,7 @@ public abstract class BaseValidator implements Validator {
         getSpecifications().add(validationSpecification);
     }
 
+    @Override
     public void validate(Object o, Errors e) {
         for (ValidationSpecification validationSpecification : getSpecifications()) {
             if (validationSpecification.validate(o, e) == ValidationSpecification.STOP) {
@@ -35,5 +42,10 @@ public abstract class BaseValidator implements Validator {
         if (specifications != null) {
             this.specifications.addAll(specifications);
         }
+    }
+
+    @Override
+    protected Validator getValidator() {
+        return this;
     }
 }

@@ -14,6 +14,12 @@ import org.springframework.validation.Validator;
 
 import java.util.Map;
 
+/**
+ * A base class providing a number of utility functions to validate objects. A {@link MessageSource} and
+ * a {@link DataBinder} are used internally, integrating into the Spring validation framework.
+ * <p/>
+ * TODO: Merge this with {@link BaseValidator}.
+ */
 public abstract class ValidationHelper {
 
     private final Log log = LogFactory.getLog(getClass());
