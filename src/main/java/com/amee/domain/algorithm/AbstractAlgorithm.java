@@ -20,12 +20,13 @@ import javax.persistence.*;
 public abstract class AbstractAlgorithm extends AMEEEntity {
 
     public final static int NAME_SIZE = 255;
+    // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
+    public final static int CONTENT_MAX_SIZE = 32767;
 
-    @Column(name = "NAME", length = NAME_SIZE, nullable = false)
+    @Column(name = "NAME", nullable = false, length = NAME_SIZE)
     private String name = "";
 
-    @Lob
-    @Column(name = "CONTENT", nullable = true)
+    @Column(name = "CONTENT", nullable = true, length = CONTENT_MAX_SIZE)
     private String content = "";
 
     public AbstractAlgorithm() {
