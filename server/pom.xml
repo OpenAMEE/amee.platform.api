@@ -259,6 +259,7 @@
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                         <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
+                        <amee.resourceDefaultTimeout>15</amee.resourceDefaultTimeout>
                     </systemPropertyVariables>
                     <additionalClasspathElements>
                         <element>${basedir}/src/main/resources</element>
@@ -405,12 +406,6 @@
         </dependency>
 
         <!-- Runtime Dependencies. -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-instrument</artifactId>
-            <version>${spring.version}</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
