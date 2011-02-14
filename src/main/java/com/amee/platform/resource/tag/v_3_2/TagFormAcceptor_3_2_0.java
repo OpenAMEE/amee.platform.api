@@ -48,7 +48,7 @@ public class TagFormAcceptor_3_2_0 implements TagResource.FormAcceptor {
 
     @Override
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Never allow Tag to be updated via a tagged entity.
         if (tagResourceService.getEntity(requestWrapper) != null) {

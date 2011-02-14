@@ -30,7 +30,7 @@ public class DataCategoriesFormAcceptor_3_3_0 extends DataCategoryAcceptor imple
 
     @Override
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
         // Create new DataCategory.
         DataCategory dataCategory = new DataCategory();

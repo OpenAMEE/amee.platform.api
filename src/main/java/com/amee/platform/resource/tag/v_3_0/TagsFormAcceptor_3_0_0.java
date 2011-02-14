@@ -47,7 +47,7 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
 
     @Override
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         Tag tag;
         // Get existing tag if it exists.

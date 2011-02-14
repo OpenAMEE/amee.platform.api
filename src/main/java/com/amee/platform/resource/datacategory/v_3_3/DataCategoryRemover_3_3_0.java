@@ -6,7 +6,6 @@ import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
-import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.auth.ResourceAuthorizationService;
@@ -30,7 +29,7 @@ public class DataCategoryRemover_3_3_0 implements DataCategoryResource.Remover {
 
     @Override
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
         String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (dataCategoryIdentifier != null) {
