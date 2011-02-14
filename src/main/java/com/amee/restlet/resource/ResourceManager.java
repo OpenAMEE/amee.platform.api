@@ -24,6 +24,8 @@ public class ResourceManager {
 
     /**
      * This is how we tell if the request came via HTTPS as SSL is terminated at the load balancer.
+     *
+     * @return true if the current request has come through the secure connector
      */
     protected boolean isSecure() {
         return getActiveServer().isSecure();
@@ -43,6 +45,10 @@ public class ResourceManager {
 
     protected boolean isNotAuthorized(JSONObject result) {
         return isStatus(result, "NOT_AUTHORIZED");
+    }
+
+    protected boolean isInternalError(JSONObject result) {
+        return isStatus(result, "INTERNAL_ERROR");
     }
 
     protected boolean isInvalid(JSONObject result) {

@@ -57,6 +57,10 @@ public class ResourceRemoveManager extends ResourceManager {
                         getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                     } else if (isNotAuthorized((JSONObject) result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                    } else if (isTimedOut((JSONObject) result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+                    } else if (isInternalError((JSONObject) result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     } else {
                         getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     }
@@ -73,6 +77,10 @@ public class ResourceRemoveManager extends ResourceManager {
                             getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
                         } else if (status.equals("NOT_AUTHORIZED")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                        } else if (status.equals("TIMED_OUT")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+                        } else if (status.equals("INTERNAL_ERROR")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                         } else {
                             getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                         }

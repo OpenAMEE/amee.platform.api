@@ -122,6 +122,8 @@ public class ResourceBuildManager extends ResourceManager {
                         getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                     } else if (isMediaTypeNotSupported(result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                    } else if (isInternalError(result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                     } else {
                         log.warn("getJsonRepresentation() Status code not handled: " + result.getString("status"));
                     }
@@ -163,6 +165,8 @@ public class ResourceBuildManager extends ResourceManager {
                             getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
                         } else if (status.equals("MEDIA_TYPE_NOT_SUPPORTED")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                        } else if (status.equals("INTERNAL_ERROR")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                         } else {
                             log.warn("getDomRepresentation() Status code not handled: " + status);
                         }
