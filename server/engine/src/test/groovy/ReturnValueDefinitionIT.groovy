@@ -7,8 +7,10 @@ import static org.junit.Assert.*
  * Tests for the Return Value Definition API.
  *
  * TODO: Document Return Value Definition API fully here. See https://jira.amee.com/browse/PL-9550 to vote on this task.
+ * TODO: Some tests here fail sometimes. See: https://jira.amee.com/browse/PL-10428
  */
 class ReturnValueDefinitionIT extends BaseApiTest {
+
     static def versions = [3.1, 3.2, 3.3, 3.4]
 
     def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
@@ -26,10 +28,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Create a new RVD.
         def responsePost = client.post(
-            path: "/3.1/definitions/11D3548466F2/returnvalues",
-            body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: "/3.1/definitions/11D3548466F2/returnvalues",
+                body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePost.status;
         assertTrue responsePost.headers['Location'] != null;
         assertTrue responsePost.headers['Location'].value != null;
@@ -43,8 +45,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Get the new RVD.
         def responseGet = client.get(
-            path: location,
-            contentType: JSON);
+                path: location,
+                contentType: JSON);
         assertEquals 200, responseGet.status;
         assertEquals 'application/json', responseGet.contentType;
         assertTrue responseGet.data instanceof net.sf.json.JSON;
@@ -52,8 +54,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Find new RVD in list of RVDs.
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues',
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2/returnvalues',
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -84,10 +86,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         setAdminUser();
         // Create a new RVD.
         def responsePost = client.post(
-            path: "/3.1/definitions/11D3548466F2/returnvalues",
-            body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: "/3.1/definitions/11D3548466F2/returnvalues",
+                body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePost.status;
         assertTrue responsePost.headers['Location'] != null;
         assertTrue responsePost.headers['Location'].value != null;
@@ -111,8 +113,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     def getReturnValueDefinitionJson(version) {
         def response = client.get(
-            path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
-            contentType: JSON);
+                path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -145,8 +147,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     def getReturnValueDefinitionXml(version) {
         def response = client.get(
-            path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
-            contentType: XML);
+                path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
+                contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
@@ -174,8 +176,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     @Test
     void getReturnValueDefinitionsJson() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues;full',
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2/returnvalues;full',
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -190,8 +192,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     @Test
     void getReturnValueDefinitionsXml() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues;full',
-            contentType: XML);
+                path: '/3.1/definitions/11D3548466F2/returnvalues;full',
+                contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
@@ -208,17 +210,17 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         setAdminUser();
         // 1) Do the update.
         def responsePut = client.put(
-            path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
-            body: ['type': 'drink',
-                'unit': 'bbl',
-                'perUnit': 'day'],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
+                body: ['type': 'drink',
+                        'unit': 'bbl',
+                        'perUnit': 'day'],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePut.status;
         // 2) Check values have been updated.
         def responseGet = client.get(
-            path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20;full',
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20;full',
+                contentType: JSON);
         assertEquals 200, responseGet.status;
         assertEquals 'application/json', responseGet.contentType;
         assertTrue responseGet.data instanceof net.sf.json.JSON;
@@ -240,10 +242,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // 1. Handle POST
         // Add a new return value definition with default type true
         def responsePost = client.post(
-            path: "/3.2/definitions/11D3548466F2/returnvalues",
-            body: [type: 'new', unit: 'kg', perUnit: 'day', valueDefinition: '45433E48B39F', defaultType: true],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: "/3.2/definitions/11D3548466F2/returnvalues",
+                body: [type: 'new', unit: 'kg', perUnit: 'day', valueDefinition: '45433E48B39F', defaultType: true],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePost.status
 
         def location = responsePost.headers['Location'].value
@@ -265,10 +267,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // 2. Handle PUT
         // Update the old one to be the default again
         def responsePut = client.put(
-            path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C',
-            body: [type: 'co2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F', defaultType: true],
-            requestContentType: URLENC,
-            contentType: JSON)
+                path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C',
+                body: [type: 'co2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F', defaultType: true],
+                requestContentType: URLENC,
+                contentType: JSON)
         assertEquals 201, responsePut.status
 
         // Check it is now default
@@ -296,10 +298,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             def body = [:];
             body[field] = value;
             client.put(
-                path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
-                body: body,
-                requestContentType: URLENC,
-                contentType: JSON);
+                    path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
+                    body: body,
+                    requestContentType: URLENC,
+                    contentType: JSON);
             fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
         } catch (HttpResponseException e) {
             def response = e.response;
