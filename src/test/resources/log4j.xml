@@ -2,31 +2,31 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
-    <!-- Declare the ConsoleAppender -->
+    <!-- Declare the 'CONSOLE' ConsoleAppender. -->
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
-                   value="[%d] [%-5p] [%t] [${host.name}] [%X{ipAddress}] [%X{userUid}] [%c{6}] %m%n"/>
+                   value="[%d] [%p] [%t] [${server.name}] [%X{ipAddress}] [%X{userUid}] [%c] %m%n"/>
         </layout>
     </appender>
 
     <!-- ############### Spring ################# -->
 
-    <!--category name="org.springframework">
-        <priority value="DEBUG"/>
-    </category-->
+    <!--<category name="org.springframework">-->
+    <!--<priority value="DEBUG"/>-->
+    <!--</category>-->
 
     <!-- ############### AMEE ################### -->
 
     <category name="com.amee">
-        <priority value="${amee.logLevel}"/>
+        <priority value="DEBUG"/>
     </category>
 
     <!-- ############### Default ################### -->
 
     <root>
-        <priority value="${amee.defaultLogLevel}"/>
+        <priority value="INFO"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 
