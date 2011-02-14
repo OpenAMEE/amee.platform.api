@@ -48,4 +48,11 @@ public class DummyEntityDAOImpl_EntityManager implements DummyEntityDAO {
         Session session = (Session) entityManager.getDelegate();
         return session.isConnected();
     }
+
+    public double getResultSlowly() {
+        return (Double) entityManager
+                .createNativeQuery("select \"com.amee.persist.TransactionalTest.slow\"() from dual")
+                        // .setHint("javax.persistence.query.timeout", 2000)
+                .getSingleResult();
+    }
 }

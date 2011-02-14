@@ -1,6 +1,12 @@
 package com.amee.persist;
 
+import com.amee.base.resource.LocalResourceHandler;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceHandler;
+import com.amee.base.resource.TimedOutException;
 import com.amee.base.transaction.TransactionEventType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,11 +24,15 @@ import static junit.framework.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
 
+    private final Log log = LogFactory.getLog(getClass());
+
     @Autowired
     private DummyEntityService dummyEntityService;
 
     @Autowired
     private DummyAMEETransactionListener dummyAMEETransactionListener;
+
+    boolean slowResourceHandlerCompleted = false;
 
     @Before
     public void before() {
@@ -62,8 +72,7 @@ public class TransactionalTest extends BaseTest {
         // We do NOT expect a transaction here.
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         // Create an entity.
-        DummyEntity newDummyEntity = new DummyEntity();
-        newDummyEntity.setDummyText("Dummy Text.");
+        DummyEntity newDummyEntity = new DummyEntity("Dummy Text.");
         dummyEntityService.persist(newDummyEntity);
         // We still do NOT expect a transaction here.
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
@@ -78,8 +87,7 @@ public class TransactionalTest extends BaseTest {
         // We do expect a transaction here.
         assertTrue("Should have a transaction", dummyEntityService.isTransactionActive());
         // Create an entity.
-        DummyEntity newDummyEntity = new DummyEntity();
-        newDummyEntity.setDummyText("Dummy Text.");
+        DummyEntity newDummyEntity = new DummyEntity("Dummy Text.");
         dummyEntityService.persist(newDummyEntity);
         // Fetch the entity.
         DummyEntity fetchedDummyEntity = dummyEntityService.getDummyEntityByUid(newDummyEntity.getUid());
@@ -97,12 +105,10 @@ public class TransactionalTest extends BaseTest {
         assertFalse("Should not have a transaction", dummyEntityService.isTransactionActive());
         List<DummyEntity> dummyEntities = new ArrayList<DummyEntity>();
         // Create a new valid entity.
-        DummyEntity newDummyEntityOne = new DummyEntity();
-        newDummyEntityOne.setDummyText("An valid value.");
+        DummyEntity newDummyEntityOne = new DummyEntity("An valid value.");
         dummyEntities.add(newDummyEntityOne);
         // Create a new invalid entity.
-        DummyEntity newDummyEntityTwo = new DummyEntity();
-        newDummyEntityTwo.setDummyText("An illegal value.");
+        DummyEntity newDummyEntityTwo = new DummyEntity("An illegal value.");
         dummyEntities.add(newDummyEntityTwo);
         // Attempt to persist both entities.
         try {
@@ -153,5 +159,62 @@ public class TransactionalTest extends BaseTest {
         assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getTransactionEventTypes().get(0).equals(TransactionEventType.BEFORE_BEGIN));
         assertTrue("Should have ROLLBACK event.", dummyAMEETransactionListener.getTransactionEventTypes().get(1).equals(TransactionEventType.ROLLBACK));
         assertTrue("Should have END event.", dummyAMEETransactionListener.getTransactionEventTypes().get(2).equals(TransactionEventType.END));
+    }
+
+    /**
+     * Test that a slow running ResourceHandler which executes SQL can be stopped with a timeout.
+     */
+    @Test
+    public void willTrapSlowSQLInResourceHandler() throws InterruptedException {
+        String result = null;
+        // Create an entity.
+        final DummyEntity dummyEntity = new DummyEntity("Dummy Text.");
+        // Create a LocalResourceHandler that will cancel the ResourceHandler after 1 second.
+        LocalResourceHandler lrh = new LocalResourceHandler();
+        lrh.setTimeout(1);
+        try {
+            // Invoke a ResourceHandler which takes 2 seconds to complete.
+            result = (String) lrh.handleWithTimeout(new RequestWrapper(), new ResourceHandler() {
+                @Override
+                public Object handle(RequestWrapper requestWrapper) {
+                    // This method call takes a long time...
+                    double result = dummyEntityService.persistSlowly(dummyEntity);
+                    // Only return a result if the thread was not interrupted.
+                    if (!Thread.currentThread().isInterrupted()) {
+                        log.debug("Not interrupted, returning result.");
+                        slowResourceHandlerCompleted = true;
+                        return Double.toString(result);
+                    } else {
+                        log.debug("Interrupted, returning null.");
+                        return null;
+                    }
+                }
+            });
+            fail("Should have thrown a TimedOutException.");
+        } catch (TimedOutException e) {
+            // Let ten seconds pass before testing (to allow ResourceHandler to complete).
+            Thread.sleep(10 * 1000);
+            assertNull("Result should be null.", result);
+            assertFalse("Should not have completed.", slowResourceHandlerCompleted);
+        }
+        // Fetch the entity, but should be null.
+        DummyEntity removedDummyEntity = dummyEntityService.getDummyEntityByUid(dummyEntity.getUid());
+        assertTrue("Should NOT be able to fetch the DummyEntity.", removedDummyEntity == null);
+    }
+
+    /**
+     * A slow method that can be called from hsqldb SQL. See implementations of doSomethingSlowly in {@link DummyEntityDAO}.
+     * <p/>
+     * This seems to take about 3 seconds on a mac. This doesn't use the sleep technique because that
+     * can interfere with interrupt status.
+     *
+     * @return a silly value
+     */
+    public static double slow() {
+        double value = 0;
+        for (int i = Integer.MIN_VALUE; i < Integer.MAX_VALUE; i++) {
+            value += i;
+        }
+        return value;
     }
 }

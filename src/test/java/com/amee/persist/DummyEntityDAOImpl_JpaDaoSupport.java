@@ -43,4 +43,8 @@ public class DummyEntityDAOImpl_JpaDaoSupport extends JpaDaoSupport implements D
     public boolean isTransactionActive() {
         throw new UnsupportedOperationException();
     }
+
+    public double getResultSlowly() {
+        throw new UnsupportedOperationException();
+    }
 }

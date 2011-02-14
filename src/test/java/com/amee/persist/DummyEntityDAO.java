@@ -13,4 +13,6 @@ public interface DummyEntityDAO {
     public void remove(DummyEntity dummyEntity);
 
     public boolean isTransactionActive();
+
+    public double getResultSlowly();
 }

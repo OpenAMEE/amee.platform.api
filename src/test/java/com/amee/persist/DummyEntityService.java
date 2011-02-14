@@ -1,6 +1,9 @@
 package com.amee.persist;
 
+import com.amee.base.resource.TimedOutException;
 import com.amee.base.transaction.AMEETransaction;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -10,6 +13,8 @@ import java.util.List;
 
 @Service
 public class DummyEntityService {
+
+    private final Log log = LogFactory.getLog(getClass());
 
     @Autowired
     private DummyEntityDAO dao;
@@ -24,19 +29,19 @@ public class DummyEntityService {
         return dao.getDummyEntityByUid(uid);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void persist(DummyEntity dummyEntity) {
         dao.persist(dummyEntity);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void persist(List<DummyEntity> dummyEntities) {
         for (DummyEntity dummyEntity : dummyEntities) {
             dao.persist(dummyEntity);
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void remove(DummyEntity dummyEntity) {
         dao.remove(dummyEntity);
     }
@@ -58,9 +63,23 @@ public class DummyEntityService {
     }
 
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = IllegalStateException.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void doCauseRollbackWithinAMEETransactionAndDBTransaction() {
         persist(new DummyEntity("An illegal value."));
+    }
+
+    @AMEETransaction
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public double persistSlowly(DummyEntity dummyEntity) {
+        persist(dummyEntity);
+        double result = dao.getResultSlowly();
+        if (!Thread.currentThread().isInterrupted()) {
+            log.debug("Returning result normally.");
+            return result;
+        } else {
+            log.debug("Thread was interrupted, throw TimedOutException.");
+            throw new TimedOutException();
+        }
     }
 
     public boolean isTransactionActive() {
