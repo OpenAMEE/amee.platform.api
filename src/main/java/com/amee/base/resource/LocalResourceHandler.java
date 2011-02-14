@@ -27,9 +27,13 @@ public class LocalResourceHandler implements ResourceHandler {
     @Autowired
     private VersionBeanFinder versionBeanFinder;
 
+    // The name of the target spring bean, which should be a ResourceHandler.
     private String target = "";
 
+    // A timeout value (in seconds) that can be set per ResourceHandler.
     private int timeout = 0;
+
+    // A global default timeout value (in seconds).
     private int defaultTimeout = 0;
 
     public Object handle(RequestWrapper requestWrapper) {
@@ -63,7 +67,7 @@ public class LocalResourceHandler implements ResourceHandler {
      * @param handler        the ResourceHandler for this request
      * @return the response object
      */
-    protected Object handleWithTimeout(final RequestWrapper requestWrapper, final ResourceHandler handler) {
+    public Object handleWithTimeout(final RequestWrapper requestWrapper, final ResourceHandler handler) {
         Object response = null;
         // Wrap the ResourceHandler in a Callable so it can be invoked via a Future below.
         Callable<Object> task = new Callable<Object>() {
@@ -76,7 +80,7 @@ public class LocalResourceHandler implements ResourceHandler {
         Future<Object> future = executor.submit(task);
         try {
             // Get the result from the ResourceHandler. Will block until the result is available or
-            // the timeout is duration is reached.
+            // the timeout duration is reached.
             response = future.get(getTimeout(), TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             // The task took longer than the timeout seconds to complete so we gave up.
