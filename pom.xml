@@ -50,22 +50,43 @@
         </pluginManagement>
 
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeGroupIds>com.amee</excludeGroupIds>
+                            <stripVersion>false</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <parallel>methods</parallel>
+                    <additionalClasspathElements>
+                        <element>${basedir}/src/test/resources</element>
+                    </additionalClasspathElements>
                 </configuration>
             </plugin>
+
         </plugins>
 
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
-                <includes>
-                    <include>test-log4j.xml</include>
-                    <include>applicationContext.xml</include>
-                </includes>
             </testResource>
         </testResources>
 
