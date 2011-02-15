@@ -93,7 +93,7 @@
                 <entry key="/{categoryIdentifier}/items/{itemIdentifier}/calculation">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataItemCalculationResource"/>
-                        <property name="since" value="3.5.0"/>
+                        <property name="since" value="3.4.0"/>
                     </bean>
                 </entry>
                 <entry key="/{categoryIdentifier}/tags" value-ref="tagsRouter"/>
@@ -325,9 +325,12 @@
                 </entry>
             </map>
         </property>
-        <!--<property name="remover">-->
-        <!--<bean class="com.amee.platform.service.v3.definition.ItemDefinitionRemover"/>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.itemdefinition.ItemDefinitionResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="itemValueDefinitionsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
