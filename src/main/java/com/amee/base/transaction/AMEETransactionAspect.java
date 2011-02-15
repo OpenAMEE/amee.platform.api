@@ -32,7 +32,7 @@ public class AMEETransactionAspect implements ApplicationContextAware {
      */
     @Before("@annotation(com.amee.base.transaction.AMEETransaction)")
     public void before() {
-        log.debug("before()");
+        log.trace("before()");
         publishEvent(TransactionEventType.BEFORE_BEGIN);
     }
 
@@ -41,7 +41,7 @@ public class AMEETransactionAspect implements ApplicationContextAware {
      */
     @AfterThrowing("@annotation(com.amee.base.transaction.AMEETransaction)")
     public void afterThrowing() {
-        log.debug("afterThrowing()");
+        log.trace("afterThrowing()");
         publishEvent(TransactionEventType.ROLLBACK);
         publishEvent(TransactionEventType.END);
     }
@@ -51,7 +51,7 @@ public class AMEETransactionAspect implements ApplicationContextAware {
      */
     @AfterReturning("@annotation(com.amee.base.transaction.AMEETransaction)")
     public void afterReturning() {
-        log.debug("afterReturning()");
+        log.trace("afterReturning()");
         publishEvent(TransactionEventType.COMMIT);
         publishEvent(TransactionEventType.END);
     }
