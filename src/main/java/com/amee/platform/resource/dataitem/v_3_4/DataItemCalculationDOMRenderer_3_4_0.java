@@ -1,4 +1,4 @@
-package com.amee.platform.resource.dataitem.v_3_5;
+package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.item.data.DataItem;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.5.0")
-public class DataItemCalculationDOMRenderer_3_5_0 implements DataItemCalculationResource.Renderer {
+@Since("3.4.0")
+public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculationResource.Renderer {
 
     @Autowired
     protected DataItemService dataItemService;
