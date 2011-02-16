@@ -234,13 +234,11 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         Set<ItemValueDefinition> activeItemValueDefinitions = new TreeSet<ItemValueDefinition>(
                 new Comparator<ItemValueDefinition>() {
                     public int compare(ItemValueDefinition ivd1, ItemValueDefinition ivd2) {
-
                         // Comparing by name is incompatible with equals
                         int nameCompare = ivd1.getName().compareToIgnoreCase(ivd2.getName());
                         if (nameCompare != 0) {
                             return nameCompare;
                         } else {
-
                             // If the names are the same we need to fall back to the equals implementation.
                             return ivd1.getUid().compareTo(ivd2.getUid());
                         }
@@ -409,6 +407,20 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
             sb.deleteCharAt(sb.lastIndexOf(","));
             setUsages(sb.toString());
         }
+    }
+
+    /**
+     * Get the modified timestamp for this ItemDefinition and associated ItemValueDefinitions. Will deeply
+     * look for the most recent timestamp of either the ItemDefinition or any of the ItemValueDefinitions.
+     *
+     * @return the most recent modified timestamp.
+     */
+    public Date getModifiedDeep() {
+        Date modified = getModified();
+        for (ItemValueDefinition ivd : getActiveItemValueDefinitions()) {
+            modified = ivd.getModified().after(modified) ? ivd.getModified() : modified;
+        }
+        return modified;
     }
 
     public IDataService getDataService() {
