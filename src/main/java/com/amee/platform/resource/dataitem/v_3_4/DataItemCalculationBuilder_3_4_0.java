@@ -1,4 +1,4 @@
-package com.amee.platform.resource.dataitem.v_3_5;
+package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MissingAttributeException;
@@ -36,8 +36,8 @@ import java.util.Map;
  */
 @Service
 @Scope("prototype")
-@Since("3.5.0")
-public class DataItemCalculationBuilder_3_5_0 implements DataItemCalculationResource.Builder {
+@Since("3.4.0")
+public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationResource.Builder {
 
     @Autowired
     private DataService dataService;
