@@ -14,6 +14,7 @@ import com.amee.platform.resource.tag.TagValidationHelper;
 import com.amee.platform.resource.tag.TagsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
+import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.tag.TagService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
 
     private final Log log = LogFactory.getLog(getClass());
+
+    @Autowired
+    private InvalidationService invalidationService;
 
     @Autowired
     private DataService dataService;
@@ -95,7 +99,7 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
                     entityTag = new EntityTag(dataCategory, tag);
                     tagService.persist(entityTag);
                     // Need to invalidate the Data Category.
-                    dataService.invalidate(dataCategory);
+                    invalidationService.invalidate(dataCategory);
                 } else {
                     log.debug("handle() EntityTag already exists.");
                 }

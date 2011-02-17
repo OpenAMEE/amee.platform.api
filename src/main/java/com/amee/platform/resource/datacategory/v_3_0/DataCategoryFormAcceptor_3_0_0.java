@@ -12,6 +12,7 @@ import com.amee.platform.resource.datacategory.DataCategoryAcceptor;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
+import com.amee.service.invalidation.InvalidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.0.0")
 public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor implements DataCategoryResource.FormAcceptor {
+
+    @Autowired
+    private InvalidationService invalidationService;
 
     @Autowired
     private DataService dataService;
@@ -46,7 +50,7 @@ public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor impleme
                 DataCategoryResource.DataCategoryValidationHelper validationHelper = getValidationHelper(requestWrapper);
                 validationHelper.setDataCategory(dataCategory);
                 if (validationHelper.isValid(requestWrapper.getFormParameters())) {
-                    dataService.invalidate(dataCategory);
+                    invalidationService.invalidate(dataCategory);
                     return ResponseHelper.getOK(requestWrapper);
                 } else {
                     throw new ValidationException(validationHelper.getValidationResult());
