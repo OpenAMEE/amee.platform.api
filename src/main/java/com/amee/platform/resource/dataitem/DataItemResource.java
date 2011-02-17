@@ -1,14 +1,13 @@
 package com.amee.platform.resource.dataitem;
 
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceAcceptor;
-import com.amee.base.resource.ResourceBuilder;
-import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.*;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+
+import java.util.Map;
 
 public interface DataItemResource {
 
@@ -51,5 +50,16 @@ public interface DataItemResource {
     }
 
     interface FormAcceptor extends ResourceAcceptor {
+    }
+
+    public static interface DataItemValidator {
+
+        public boolean isValid(Map<String, String> queryParameters);
+
+        public DataItem getObject();
+
+        public void setObject(DataItem object);
+
+        public ValidationResult getValidationResult();
     }
 }

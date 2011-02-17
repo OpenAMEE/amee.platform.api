@@ -1,16 +1,12 @@
 package com.amee.platform.resource.dataitem.v_3_0;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.MissingAttributeException;
-import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResponseHelper;
+import com.amee.base.resource.*;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
-import com.amee.platform.resource.dataitem.DataItemValidationHelper;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.item.DataItemService;
@@ -35,7 +31,7 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
-    private DataItemValidationHelper validationHelper;
+    private ResourceBeanFinder resourceBeanFinder;
 
     @Override
     @AMEETransaction
@@ -57,11 +53,12 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
                         resourceAuthorizationService.ensureAuthorizedForModify(
                                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
                         // Handle the DataItem update (entity updated via validation binding).
-                        validationHelper.setDataItem(dataItem);
-                        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+                        DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
+                        validator.setObject(dataItem);
+                        if (validator.isValid(requestWrapper.getFormParameters())) {
                             return ResponseHelper.getOK(requestWrapper);
                         } else {
-                            throw new ValidationException(validationHelper.getValidationResult());
+                            throw new ValidationException(validator.getValidationResult());
                         }
                     } else {
                         throw new NotFoundException();
@@ -75,5 +72,11 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
         } else {
             throw new MissingAttributeException("categoryIdentifier");
         }
+    }
+
+    protected DataItemResource.DataItemValidator getValidator(RequestWrapper requestWrapper) {
+        return (DataItemResource.DataItemValidator)
+                resourceBeanFinder.getValidationHelper(
+                        DataItemResource.DataItemValidator.class, requestWrapper);
     }
 }
