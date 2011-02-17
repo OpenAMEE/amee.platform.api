@@ -14,6 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -33,6 +34,12 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Column(name = "VALUE", nullable = true)
     private Double value = 0.0;
+
+    /**
+    * This value can be used to override the persisted value.
+    */
+    @Transient
+    private transient Double valueOverride;
 
     public ProfileItemNumberValue() {
         super();
@@ -165,8 +172,20 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         this.perUnit = perUnit;
     }
 
+    public Double getValueOverride() {
+        return valueOverride;
+    }
+
+    public void setValueOverride(Double valueOverride) {
+        this.valueOverride = valueOverride;
+    }
+
     public double getValue() {
-        return value;
+        if (valueOverride != null) {
+            return valueOverride;
+        } else {
+            return value;
+        }
     }
 
     @Override
