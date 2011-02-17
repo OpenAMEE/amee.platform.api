@@ -99,7 +99,8 @@ public class LocalResourceHandlerTest extends BaseTest {
                 public Object handle(RequestWrapper requestWrapper) {
                     // Pretend something went wrong.
                     log.debug("Throwing a RuntimeException...");
-                    throw new RuntimeException("Bang!");
+                    throw new RuntimeException(
+                            "This RuntimeException is expected. The tests should still pass and the build should be OK.");
                 }
             });
             fail("Should have thrown an InternalErrorException.");

@@ -88,14 +88,14 @@ public class LocalResourceHandler implements ResourceHandler {
             throw new TimedOutException();
         } catch (InterruptedException e) {
             // Logic within a ResourceHandler should not allow an InterruptedException to escape.
-            log.error("handleWithTimeout() Caught InterruptedException: " + e.getMessage());
+            log.error("handleWithTimeout() Caught InterruptedException: " + e.getMessage(), e);
             throw new InternalErrorException();
         } catch (ExecutionException e) {
             // We expect ResourceExceptions sometimes.
             if ((e.getCause() != null) && ResourceException.class.isAssignableFrom(e.getCause().getClass())) {
                 throw (ResourceException) e.getCause();
             } else {
-                log.error("handleWithTimeout() Caught unexpected ExecutionException: " + e.getMessage());
+                log.error("handleWithTimeout() Caught unexpected ExecutionException: " + e.getMessage(), e);
                 throw new InternalErrorException();
             }
         } finally {
