@@ -85,5 +85,7 @@
         </property>
     </bean>
 
+    <!-- A service only used in V3 for managing values in ThreadLocals. -->
     <bean id="transactionThreadBeanManager" class="com.amee.service.TransactionThreadBeanManager"/>
+
 </beans>
