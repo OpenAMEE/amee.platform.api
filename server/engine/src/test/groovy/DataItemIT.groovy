@@ -13,37 +13,99 @@ class DataItemIT extends BaseApiTest {
     static def versions = [3.0, 3.1, 3.2]
 
     static def dataItemUids = [
-        'B6419AFB7114',
-        'B1EF6970E87C',
-        '004CF30590A5',
-        'E011530FFEDC',
-        '471F553DF10A',
-        '9DD165D3AFC9'
+            'B6419AFB7114',
+            'B1EF6970E87C',
+            '004CF30590A5',
+            'E011530FFEDC',
+            '471F553DF10A',
+            '9DD165D3AFC9'
     ].sort()
 
     static def oneGasItemValueValues = [
-        '1',
-        '188',
-        'BRE/MTP/dgen/defra 2007',
-        'Gas']
+            '1',
+            '188',
+            'BRE/MTP/dgen/defra 2007',
+            'Gas']
 
     static def oneGasItemValuePaths = [
-        'numberOfPeople',
-        'kgCO2PerYear',
-        'source',
-        'fuel']
+            'numberOfPeople',
+            'kgCO2PerYear',
+            'source',
+            'fuel']
 
     static def tenElectricItemValueValues = [
-        '10',
-        '620',
-        'BRE/MTP/dgen/defra 2007',
-        'Electric']
+            '10',
+            '620',
+            'BRE/MTP/dgen/defra 2007',
+            'Electric']
 
     static def tenElectricItemValuePaths = [
-        'numberOfPeople',
-        'kgCO2PerYear',
-        'source',
-        'fuel']
+            'numberOfPeople',
+            'kgCO2PerYear',
+            'source',
+            'fuel']
+
+    /**
+     * Tests for creation, fetch and deletion of a Data Item using JSON responses.
+     *
+     * Create a new Data Item by POSTing to '/categories/{UID|wikiName}' (since 3.4.0).
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>name
+     * <li>path
+     * <li>wikiDoc
+     * <li>provenance
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) a Data Item by sending a DELETE request to '/categories/{UID|wikiName}/items/{UID|path}' (since 3.4.0).
+     */
+    @Test
+    void createDataItemJson() {
+        setAdminUser();
+        // Create a DataItem.
+        def responsePost = client.post(
+                path: '/3.4/categories/Cooking/items',
+                body: [
+                        wikiDoc: 'Test WikiDoc.'],
+                requestContentType: URLENC,
+                contentType: JSON);
+        assertEquals 201, responsePost.status
+        // Is Location available?
+        assertTrue responsePost.headers['Location'] != null;
+        assertTrue responsePost.headers['Location'].value != null;
+        def location = responsePost.headers['Location'].value;
+        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+        // Get new DataItem UID.
+        def uid = location.split('/')[7];
+        assertTrue uid != null;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // Get the new DataItem.
+        def responseGet = client.get(
+                path: '/3.4/categories/Cooking/items/' + uid + ';full',
+                contentType: JSON);
+        assertEquals 200, responseGet.status;
+        assertEquals 'application/json', responseGet.contentType;
+        assertTrue responseGet.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', responseGet.data.status;
+        assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
+        // Then delete it.
+        def responseDelete = client.delete(path: '/3.4/categories/Cooking/items/' + uid);
+        assertEquals 200, responseDelete.status;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // We should get a 404 here.
+        try {
+            client.get(path: '/3.4/categories/Cooking/items/' + uid);
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
+        }
+    }
 
     @Test
     void getDataItemsJson() {
@@ -52,8 +114,9 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemsJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items;full",
-            query: ['resultLimit': '6'])
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items;full",
+                query: ['resultLimit': '6'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -76,8 +139,9 @@ class DataItemIT extends BaseApiTest {
 
     def getFilteredDataItemsJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items;full",
-            query: ['numberOfPeople': '1'])
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items;full",
+                query: ['numberOfPeople': '1'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -98,8 +162,9 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemsXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories/Cooking/items;full",
-            query: ['resultLimit': '6'])
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items;full",
+                query: ['resultLimit': '6'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -121,7 +186,8 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemOneGasJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full");
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items/004CF30590A5;full");
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -145,7 +211,8 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemOneGasXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full");
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items/004CF30590A5;full");
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
@@ -169,7 +236,8 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemTenElectricJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full");
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full");
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -193,7 +261,8 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemTenElectricXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full");
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full");
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
@@ -214,33 +283,35 @@ class DataItemIT extends BaseApiTest {
     void updateDataItemJson() {
         setAdminUser();
         def responsePut = client.put(
-            path: '/3.1/categories/Cooking/items/9DD165D3AFC9',
-            body: ['name': 'newName',
-                'wikiDoc': 'wd',
-                'path': 'np',
-                'provenance': 'prov'],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: '/3.1/categories/Cooking/items/9DD165D3AFC9',
+                body: ['name': 'newName',
+                        'wikiDoc': 'wd',
+                        'path': 'np',
+                        'provenance': 'prov'],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePut.status;
         def responseGet = client.get(
-            path: '/3.1/categories/Cooking/items/9DD165D3AFC9;full',
-            contentType: JSON);
+                path: '/3.1/categories/Cooking/items/9DD165D3AFC9;full',
+                contentType: JSON);
         assertEquals 200, responseGet.status;
         println responseGet.data;
         assertEquals 'newName', responseGet.data.item.name;
         assertEquals 'wd', responseGet.data.item.wikiDoc;
         assertEquals 'np', responseGet.data.item.path;
         assertEquals 'prov', responseGet.data.item.provenance;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
     }
 
     @Test
     void updateDataItemUnauthorizedJson() {
         try {
             client.put(
-                path: '/3.1/categories/Cooking/items/9DD165D3AFC9',
-                body: ['name': 'newName'],
-                requestContentType: URLENC,
-                contentType: JSON);
+                    path: '/3.1/categories/Cooking/items/9DD165D3AFC9',
+                    body: ['name': 'newName'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
             fail 'Expected 403'
         } catch (HttpResponseException e) {
             def response = e.response;
@@ -256,7 +327,8 @@ class DataItemIT extends BaseApiTest {
     @Test
     void getDataItemCalculationJson() {
         client.contentType = JSON
-        def response = client.get(path: "/3.5/categories/Cooking/items/004CF30590A5/calculation;full");
+        def response = client.get(
+                path: "/3.5/categories/Cooking/items/004CF30590A5/calculation;full");
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;

@@ -172,6 +172,7 @@
     <bean id="dataItemsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
         <property name="allowDelete" value="false"/>
+        <property name="allowPost" value="true"/>
         <property name="allowPut" value="false"/>
         <property name="lastSegment" value="items"/>
         <property name="attributeNames">
@@ -185,6 +186,16 @@
                 <property name="target"
                           value="com.amee.platform.resource.dataitem.DataItemsResource$Builder"/>
             </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.dataitem.DataItemsResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
         </property>
     </bean>
 
@@ -214,9 +225,12 @@
                 </entry>
             </map>
         </property>
-        <!--<property name="remover">-->
-        <!--<bean class="com.amee.platform.resource.item.DataItemRemover"/>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.dataitem.DataItemResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="dataItemCalculationResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
