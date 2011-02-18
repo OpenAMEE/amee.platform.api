@@ -22,8 +22,13 @@ public class ValidationResult implements Serializable {
     }
 
     public ValidationResult(MessageSource messageSource) {
-        super();
+        this();
         this.messageSource = messageSource;
+    }
+
+    public ValidationResult(MessageSource messageSource, String field, String code) {
+        this(messageSource);
+        addError(field, code);
     }
 
     public ValidationResult(JSONObject obj) {
@@ -42,14 +47,11 @@ public class ValidationResult implements Serializable {
             if (obj.has("errors")) {
                 JSONArray errorsArr = obj.getJSONArray("errors");
                 for (int i = 0; i < errorsArr.length(); i++) {
-                    Map<String, String> fieldAndCode = new HashMap<String, String>();
-                    fieldAndCode.put("field", errorsArr.getJSONObject(i).getString("field"));
-                    fieldAndCode.put("code", errorsArr.getJSONObject(i).getString("code"));
-                    fieldAndCode.put("message", errorsArr.getJSONObject(i).getString("message"));
-                    if (errorsArr.getJSONObject(i).has("value")) {
-                        fieldAndCode.put("value", errorsArr.getJSONObject(i).getString("value"));
-                    }
-                    errors.add(fieldAndCode);
+                    addError(
+                            errorsArr.getJSONObject(i).getString("field"),
+                            errorsArr.getJSONObject(i).getString("code"),
+                            errorsArr.getJSONObject(i).getString("message"),
+                            errorsArr.getJSONObject(i).has("value") ? errorsArr.getJSONObject(i).getString("value") : "");
                 }
             }
         } catch (JSONException e) {
@@ -74,14 +76,11 @@ public class ValidationResult implements Serializable {
         if (errorsElem != null) {
             for (Element errorElem : (List<Element>) errorsElem.getChildren()) {
                 if ((errorElem.getChild("Field") != null) && (errorElem.getChild("Code") != null)) {
-                    Map<String, String> fieldAndCode = new HashMap<String, String>();
-                    fieldAndCode.put("field", errorElem.getChild("Field").getValue());
-                    fieldAndCode.put("code", errorElem.getChild("Code").getValue());
-                    fieldAndCode.put("message", errorElem.getChild("Message").getValue());
-                    if (errorElem.getChild("Value") != null) {
-                        fieldAndCode.put("value", errorElem.getChild("Value").getValue());
-                    }
-                    getErrors().add(fieldAndCode);
+                    addError(
+                            errorElem.getChild("Field").getValue(),
+                            errorElem.getChild("Code").getValue(),
+                            errorElem.getChild("Message").getValue(),
+                            (errorElem.getChild("Value") != null) ? errorElem.getChild("Value").getValue() : "");
                 }
             }
         }
@@ -162,7 +161,7 @@ public class ValidationResult implements Serializable {
     }
 
     public void addError(String field, String code) {
-        addError(field, code, null, null);
+        addError(field, code, "", null);
     }
 
     public void addError(String field, String code, String message) {
