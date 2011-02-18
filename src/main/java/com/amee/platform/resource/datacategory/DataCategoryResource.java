@@ -13,14 +13,14 @@ import java.util.Map;
 
 public interface DataCategoryResource {
 
-    static interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, DataCategory dataCategory);
 
         public DataCategoryResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    static interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -49,7 +49,7 @@ public interface DataCategoryResource {
         public void newTag(Tag tag);
     }
 
-    static interface FormAcceptor extends ResourceAcceptor {
+    public static interface FormAcceptor extends ResourceAcceptor {
         public DataCategoryResource.DataCategoryValidationHelper getValidationHelper(RequestWrapper requestWrapper);
     }
 
@@ -70,6 +70,6 @@ public interface DataCategoryResource {
         public void setValidator(DataCategoryResource.DataCategoryValidator validator);
     }
 
-    interface Remover extends ResourceRemover {
+    public static interface Remover extends ResourceRemover {
     }
 }

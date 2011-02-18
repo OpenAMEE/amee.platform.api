@@ -9,6 +9,7 @@ import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
+import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.item.DataItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.0.0")
 public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor {
+
+    @Autowired
+    private InvalidationService invalidationService;
 
     @Autowired
     private DataService dataService;
@@ -56,6 +60,8 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
                         DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
                         validator.setObject(dataItem);
                         if (validator.isValid(requestWrapper.getFormParameters())) {
+                            // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
+                            invalidationService.add(dataItem.getDataCategory());
                             return ResponseHelper.getOK(requestWrapper);
                         } else {
                             throw new ValidationException(validator.getValidationResult());

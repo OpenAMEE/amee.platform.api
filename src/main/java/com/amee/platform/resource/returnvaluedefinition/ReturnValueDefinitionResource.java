@@ -12,14 +12,14 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public interface ReturnValueDefinitionResource {
 
-    interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, ReturnValueDefinition returnValueDefinition);
 
         public ReturnValueDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -42,9 +42,9 @@ public interface ReturnValueDefinitionResource {
         public Object getObject();
     }
 
-    interface FormAcceptor {
+    public static interface FormAcceptor {
     }
 
-    interface Remover extends ResourceRemover {
+    public static interface Remover extends ResourceRemover {
     }
 }

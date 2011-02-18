@@ -5,14 +5,14 @@ import com.amee.domain.tag.Tag;
 
 public interface TagResource {
 
-    interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, Tag tag);
 
         public TagResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public void newTag(Tag tag);
 
@@ -24,6 +24,6 @@ public interface TagResource {
     public static interface FormAcceptor extends ResourceAcceptor {
     }
 
-    interface Remover extends ResourceRemover {
+    public static interface Remover extends ResourceRemover {
     }
 }

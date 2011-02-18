@@ -8,10 +8,10 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public interface DrillResource {
 
-    static interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
     }
 
-    static interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 

@@ -7,10 +7,10 @@ import com.amee.base.resource.ResourceRenderer;
 
 public interface DataCategoriesResource {
 
-    interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
     }
 
-    interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public void newDataCategory(DataCategoryResource.Renderer renderer);
 

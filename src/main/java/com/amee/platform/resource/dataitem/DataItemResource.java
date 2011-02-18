@@ -11,14 +11,14 @@ import java.util.Map;
 
 public interface DataItemResource {
 
-    interface Builder extends ResourceBuilder {
+    public static interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, DataItem dataItem);
 
         public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    interface Renderer extends ResourceRenderer {
+    public static interface Renderer extends ResourceRenderer {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -49,7 +49,7 @@ public interface DataItemResource {
         public Object getObject();
     }
 
-    interface FormAcceptor extends ResourceAcceptor {
+    public static interface FormAcceptor extends ResourceAcceptor {
     }
 
     public static interface DataItemValidator {
@@ -61,5 +61,8 @@ public interface DataItemResource {
         public void setObject(DataItem object);
 
         public ValidationResult getValidationResult();
+    }
+
+    public static interface Remover extends ResourceRemover {
     }
 }

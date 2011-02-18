@@ -59,7 +59,7 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
                         resourceAuthorizationService.ensureAuthorizedForBuild(
                                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
                         // Handle the DataItem.
-                        this.handle(requestWrapper, dataItem);
+                        handle(requestWrapper, dataItem);
                         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
                         renderer.ok();
                         return renderer.getObject();

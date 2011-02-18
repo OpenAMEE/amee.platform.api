@@ -44,7 +44,7 @@ public class DataCategoryRemover_3_3_0 implements DataCategoryResource.Remover {
                         requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
                 // Handle DataCategory removal.
                 dataService.remove(dataCategory);
-                invalidationService.invalidate(dataCategory);
+                invalidationService.add(dataCategory);
                 return ResponseHelper.getOK(requestWrapper);
             } else {
                 throw new NotFoundException();

@@ -99,7 +99,7 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
                     entityTag = new EntityTag(dataCategory, tag);
                     tagService.persist(entityTag);
                     // Need to invalidate the Data Category.
-                    invalidationService.invalidate(dataCategory);
+                    invalidationService.add(dataCategory);
                 } else {
                     log.debug("handle() EntityTag already exists.");
                 }
