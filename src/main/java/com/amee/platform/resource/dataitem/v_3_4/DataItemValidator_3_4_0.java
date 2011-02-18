@@ -23,10 +23,10 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
     @Autowired
-    private DataItemService dataItemService;
+    protected DataItemService dataItemService;
 
-    private DataItem dataItem;
-    private Set<String> allowedFields;
+    protected DataItem dataItem;
+    protected Set<String> allowedFields;
 
     public DataItemValidator_3_4_0() {
         super();
@@ -36,14 +36,14 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
         addProvenance();
     }
 
-    private void addName() {
+    protected void addName() {
         add(new ValidationSpecification()
                 .setName("name")
                 .setMaxSize(DataItem.NAME_MAX_SIZE)
                 .setAllowEmpty(true));
     }
 
-    private void addPath() {
+    protected void addPath() {
         add(new ValidationSpecification()
                 .setName("path")
                 .setMaxSize(DataItem.PATH_MAX_SIZE)
@@ -66,14 +66,14 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
 
     }
 
-    private void addWikiDoc() {
+    protected void addWikiDoc() {
         add(new ValidationSpecification()
                 .setName("wikiDoc")
                 .setMaxSize(DataItem.WIKI_DOC_MAX_SIZE)
                 .setAllowEmpty(true));
     }
 
-    private void addProvenance() {
+    protected void addProvenance() {
         add(new ValidationSpecification()
                 .setName("provenance")
                 .setMaxSize(DataItem.PROVENANCE_MAX_SIZE)
