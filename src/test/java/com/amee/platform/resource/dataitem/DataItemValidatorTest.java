@@ -4,7 +4,7 @@ import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
 import com.amee.domain.item.data.DataItem;
-import com.amee.platform.resource.dataitem.v_3_0.DataItemValidator_3_0_0;
+import com.amee.platform.resource.dataitem.v_3_4.DataItemValidator_3_4_0;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testValid() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem good = new DataItem();
         when(mockService.getMetadataForEntity(good, "*"))
                 .thenReturn(new Metadata());
@@ -46,7 +46,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testNameGreaterThanMax() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem bad = new DataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
@@ -61,7 +61,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testPathGreaterThanMax() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem bad = new DataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
@@ -76,7 +76,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testPathBadChars() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem bad = new DataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
@@ -91,7 +91,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testWikiDocGreaterThanMax() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem bad = new DataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());
@@ -106,7 +106,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testProvenanceGreaterThanMax() {
-        DataItemValidator_3_0_0 validator = new DataItemValidator_3_0_0();
+        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
         DataItem bad = new DataItem();
         when(mockService.getMetadataForEntity(bad, "*"))
                 .thenReturn(new Metadata());

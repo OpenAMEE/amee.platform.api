@@ -1,4 +1,4 @@
-package com.amee.platform.resource.dataitem.v_3_0;
+package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
@@ -16,8 +16,8 @@ import java.util.Set;
 
 @Service
 @Scope("prototype")
-@Since("3.0.0")
-public class DataItemValidator_3_0_0 extends BaseValidator implements DataItemResource.DataItemValidator {
+@Since("3.4.0")
+public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemResource.DataItemValidator {
 
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
@@ -28,7 +28,7 @@ public class DataItemValidator_3_0_0 extends BaseValidator implements DataItemRe
     private DataItem dataItem;
     private Set<String> allowedFields;
 
-    public DataItemValidator_3_0_0() {
+    public DataItemValidator_3_4_0() {
         super();
         addName();
         addPath();
