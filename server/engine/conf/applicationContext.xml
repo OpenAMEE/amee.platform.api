@@ -85,4 +85,5 @@
         </property>
     </bean>
 
+    <bean id="transactionThreadBeanManager" class="com.amee.service.TransactionThreadBeanManager"/>
 </beans>
