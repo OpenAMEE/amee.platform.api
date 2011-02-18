@@ -59,7 +59,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
      * @param withTransaction specify whether a transaction should be used
      */
     public void beforeHandle(boolean withTransaction) {
-        logger.debug("beforeHandle() - >>> BEFORE HANDLE {withTransaction=" + withTransaction + "}");
+        logger.debug("beforeHandle() >>> BEFORE HANDLE {withTransaction=" + withTransaction + "}");
         // Callback hook.
         onBeforeBegin();
         // Ensure any EntityManager associated with this thread is closed before handling this new request.
@@ -78,7 +78,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
      * @param success true or false
      */
     public void afterHandle(boolean success) {
-        logger.debug("afterHandle() - <<< AFTER HANDLE");
+        logger.debug("afterHandle() <<< AFTER HANDLE");
         if (!success) {
             transactionRollback.set(true);
         }
@@ -89,12 +89,12 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
      * 3) Called by TransactionServerConverter after HttpServerConverter.commit
      */
     public void afterCommit() {
-        logger.debug("afterCommit() - <<< AFTER COMMIT");
+        logger.debug("afterCommit() <<< AFTER COMMIT");
         end();
     }
 
     public void begin(boolean withTransaction) {
-        logger.debug("begin() - >>> BEGIN");
+        logger.debug("begin() >>> BEGIN");
         openEntityManager();
         if (withTransaction && manageTransactions) {
             beginTransaction();
@@ -105,7 +105,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         onBeforeEnd();
         commitOrRollbackTransaction();
         ensureEntityManagerIsClosed();
-        logger.debug("end() - <<< END");
+        logger.debug("end() <<< END");
         onEnd();
     }
 
@@ -121,10 +121,9 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         if (manageTransactions && (transactionStatus.get() == null)) {
             transactionStatus.set(transactionManager.getTransaction(transactionAttribute));
             if (!transactionStatus.get().isNewTransaction()) {
-                logger.error("beginTransaction() - Transaction already open.");
-                throw new RuntimeException("Transaction already open.");
+                logger.debug("beginTransaction() Transaction already open.");
             }
-            logger.debug("beginTransaction() - >>> TRANSACTION OPENED");
+            logger.debug("beginTransaction() >>> TRANSACTION OPENED");
         }
     }
 
@@ -136,16 +135,16 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
                     transactionManager.rollback(transactionStatus.get());
                     // Callback hook.
                     onRollback();
-                    logger.warn("commitOrRollbackTransaction() - <<< TRANSACTION ROLLED BACK");
+                    logger.warn("commitOrRollbackTransaction() <<< TRANSACTION ROLLED BACK");
                 } else {
                     // Commit the transaction.
                     transactionManager.commit(transactionStatus.get());
                     // Callback hook.
                     onCommit();
-                    logger.debug("commitOrRollbackTransaction() - <<< TRANSACTION COMMITTED");
+                    logger.debug("commitOrRollbackTransaction() <<< TRANSACTION COMMITTED");
                 }
             } else {
-                logger.warn("commitOrRollbackTransaction() - <<< TRANSACTION ALREADY COMPLETED");
+                logger.warn("commitOrRollbackTransaction() <<< TRANSACTION ALREADY COMPLETED");
             }
             transactionStatus.set(null);
         }
@@ -165,7 +164,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         if (TransactionSynchronizationManager.hasResource(getEntityManagerFactory()))
             return;
 
-        logger.debug("openEntityManager() - Opening JPA EntityManager in TransactionController");
+        logger.debug("openEntityManager() Opening JPA EntityManager in TransactionController");
         try {
             EntityManager em = createEntityManager();
             TransactionSynchronizationManager.bindResource(getEntityManagerFactory(), new EntityManagerHolder(em));
@@ -179,7 +178,7 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         if (!TransactionSynchronizationManager.hasResource(getEntityManagerFactory()))
             return;
 
-        logger.debug("ensureEntityManagerIsClosed() - Closing JPA EntityManager in TransactionController");
+        logger.debug("ensureEntityManagerIsClosed() Closing JPA EntityManager in TransactionController");
         EntityManagerHolder emHolder =
                 (EntityManagerHolder) TransactionSynchronizationManager.unbindResourceIfPossible(getEntityManagerFactory());
         if (emHolder != null) {
