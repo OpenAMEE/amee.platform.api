@@ -5,8 +5,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 
 /**
- * Filter to manage {@link RequestContext}s and {@link com.amee.base.transaction.AMEETransaction}s. Will
- * create the {@link RequestContext} for the transaction log.
+ * Filter to manage {@link RequestContext}s. Will create the {@link RequestContext} for the transaction log.
  */
 public class AMEERequestFilter extends Filter {
 
