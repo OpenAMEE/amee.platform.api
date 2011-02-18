@@ -5,8 +5,11 @@ import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
+import com.amee.service.item.DataItemService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +21,9 @@ public class DataItemValidator_3_0_0 extends BaseValidator implements DataItemRe
 
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
+
+    @Autowired
+    private DataItemService dataItemService;
 
     private DataItem dataItem;
     private Set<String> allowedFields;
@@ -38,12 +44,26 @@ public class DataItemValidator_3_0_0 extends BaseValidator implements DataItemRe
     }
 
     private void addPath() {
-        // TODO: This must be unique amongst peers, if set.
         add(new ValidationSpecification()
                 .setName("path")
                 .setMaxSize(DataItem.PATH_MAX_SIZE)
                 .setFormat(PATH_PATTERN_STRING)
-                .setAllowEmpty(true));
+                .setAllowEmpty(true)
+                .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                // Ensure DataItem is unique on path.
+                                DataItem thisDI = (DataItem) object;
+                                if ((thisDI != null) && (thisDI.getDataCategory() != null)) {
+                                    if (!dataItemService.isDataItemUniqueByPath(thisDI)) {
+                                        errors.rejectValue("path", "duplicate");
+                                    }
+                                }
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        }));
+
     }
 
     private void addWikiDoc() {
