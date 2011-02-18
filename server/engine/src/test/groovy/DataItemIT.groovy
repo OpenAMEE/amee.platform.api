@@ -107,6 +107,36 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
+    // TODO: createDataItemXml
+
+    @Test
+    void createDuplicateDataItemJson() {
+        setAdminUser();
+        // Create a DataItem.
+        def responsePost = client.post(
+                path: '/3.4/categories/Cooking/items',
+                body: [path: 'testPath'],
+                requestContentType: URLENC,
+                contentType: JSON);
+        // Should have been created.
+        assertEquals 201, responsePost.status
+        try {
+            // Create a DataItem.
+            client.post(
+                    path: '/3.4/categories/Cooking/items',
+                    body: [path: 'testPath'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+        } catch (HttpResponseException e) {
+            // Should have been rejected.
+            assertEquals 400, e.response.status;
+        }
+        // Then delete it.
+        def responseDelete = client.delete(path: '/3.4/categories/Cooking/items/testPath');
+        // Should have been deleted.
+        assertEquals 200, responseDelete.status;
+    }
+
     @Test
     void getDataItemsJson() {
         versions.each { version -> getDataItemsJson(version) }
