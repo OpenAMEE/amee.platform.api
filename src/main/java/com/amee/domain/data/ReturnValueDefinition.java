@@ -42,6 +42,9 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
     @Column(name = "DEFAULT_TYPE")
     private boolean defaultType = false;
 
+    @Transient
+    private Boolean previousDefaultType;
+
     public ReturnValueDefinition() {
         super();
     }
@@ -80,8 +83,13 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
         return defaultType;
     }
 
-    public void setDefaultType(boolean isDefault) {
-        this.defaultType = isDefault;
+    public void setDefaultType(boolean defaultType) {
+        this.previousDefaultType = this.defaultType;
+        this.defaultType = defaultType;
+    }
+
+    public boolean hasDefaultTypeChanged() {
+        return (previousDefaultType != null) && (previousDefaultType != defaultType);
     }
 
     public ItemDefinition getItemDefinition() {
