@@ -1,4 +1,4 @@
-package com.amee.platform.resource.dataitem.v_3_0;
+package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.*;
@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
-@Since("3.0.0")
-public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor {
+@Since("3.4.0")
+public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor {
 
     @Autowired
     private InvalidationService invalidationService;
@@ -51,21 +51,13 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
                 String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
                 if (dataItemIdentifier != null) {
                     // Get DataItem.
-                    DataItem dataItem = dataItemService.getDataItemByUid(dataCategory, dataItemIdentifier);
+                    DataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
                     if (dataItem != null) {
                         // Authorized?
                         resourceAuthorizationService.ensureAuthorizedForModify(
                                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
-                        // Handle the DataItem update (entity updated via validation binding).
-                        DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
-                        validator.setObject(dataItem);
-                        if (validator.isValid(requestWrapper.getFormParameters())) {
-                            // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
-                            invalidationService.add(dataItem.getDataCategory());
-                            return ResponseHelper.getOK(requestWrapper);
-                        } else {
-                            throw new ValidationException(validator.getValidationResult());
-                        }
+                        // Handle the DataItem update.
+                        return handle(requestWrapper, dataItem);
                     } else {
                         throw new NotFoundException();
                     }
@@ -78,6 +70,29 @@ public class DataItemFormAcceptor_3_0_0 implements DataItemResource.FormAcceptor
         } else {
             throw new MissingAttributeException("categoryIdentifier");
         }
+    }
+
+    protected Object handle(RequestWrapper requestWrapper, DataItem dataItem) {
+        DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
+        validator.setObject(dataItem);
+        validator.init();
+        if (validator.isValid(requestWrapper.getFormParameters())) {
+            // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
+            updateDataItemValues(dataItem);
+            invalidationService.add(dataItem.getDataCategory());
+            return ResponseHelper.getOK(requestWrapper);
+        } else {
+            throw new ValidationException(validator.getValidationResult());
+        }
+    }
+
+    /**
+     * Update the Data Item Values for the supplied Data Item based on the values bean within the DataItem.
+     *
+     * @param dataItem to update
+     */
+    protected void updateDataItemValues(DataItem dataItem) {
+        dataItemService.updateDataItemValues(dataItem);
     }
 
     protected DataItemResource.DataItemValidator getValidator(RequestWrapper requestWrapper) {
