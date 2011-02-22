@@ -13,7 +13,7 @@ import java.util.*;
  * The keys will be the {@link BaseItemValue} paths. The entries will be a SortedSet of {@link BaseItemValue} instances. The Set will
  * consist of a single entry for single-valued {@link BaseItemValue} histories and a set of {@link BaseItemValue}s sorted in
  * descending order (most recent first) for multi-valued histories. The non-historical value is the last item in the set.
- *
+ * <p/>
  * Note: This class has a natural ordering that is inconsistent with equals.
  */
 public class ItemValueMap {
@@ -76,28 +76,28 @@ public class ItemValueMap {
         // Create TreeSet if it does not exist for this path.
         if (!map.containsKey(path)) {
             map.put(path, new TreeSet<BaseItemValue>(
-                Collections.reverseOrder(
-                    new Comparator<BaseItemValue>() {
-                        public int compare(BaseItemValue iv1, BaseItemValue iv2) {
-                            if (isHistoricValue(iv1) && isHistoricValue(iv2)) {
-                                // Both BaseItemValue are part of a history, compare their startDates.
-                                return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
-                            } else if (isHistoricValue(iv1)) {
-                                // The first BaseItemValue is historical, but the second is not, so it needs to
-                                // come after the second BaseItemValue.
-                                return 1;
-                            } else if (isHistoricValue(iv2)) {
-                                // The second BaseItemValue is historical, but the first is not, so it needs to
-                                // come after the first BaseItemValue.
-                                return -1;
-                            } else {
-                                // Both BaseItemValues are not historical. This should not happen but consider them equal.
-                                // The new BaseItemValue will not be added to the TreeSet (see class note about inconsistency with equals).
-                                log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
-                                return 0;
-                            }
-                        }
-                    })));
+                    Collections.reverseOrder(
+                            new Comparator<BaseItemValue>() {
+                                public int compare(BaseItemValue iv1, BaseItemValue iv2) {
+                                    if (isHistoricValue(iv1) && isHistoricValue(iv2)) {
+                                        // Both BaseItemValue are part of a history, compare their startDates.
+                                        return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
+                                    } else if (isHistoricValue(iv1)) {
+                                        // The first BaseItemValue is historical, but the second is not, so it needs to
+                                        // come after the second BaseItemValue.
+                                        return 1;
+                                    } else if (isHistoricValue(iv2)) {
+                                        // The second BaseItemValue is historical, but the first is not, so it needs to
+                                        // come after the first BaseItemValue.
+                                        return -1;
+                                    } else {
+                                        // Both BaseItemValues are not historical. This should not happen but consider them equal.
+                                        // The new BaseItemValue will not be added to the TreeSet (see class note about inconsistency with equals).
+                                        log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
+                                        return 0;
+                                    }
+                                }
+                            })));
         }
         // Add itemValue to the TreeSet for this path.
         SortedSet<BaseItemValue> itemValues = map.get(path);
@@ -149,7 +149,7 @@ public class ItemValueMap {
         return ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass());
     }
 
-    public Set keySet() {
+    public Set<String> keySet() {
         return map.keySet();
     }
 }

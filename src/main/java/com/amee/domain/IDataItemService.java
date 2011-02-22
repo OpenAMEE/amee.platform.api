@@ -42,6 +42,8 @@ public interface IDataItemService extends IItemService {
 
     public Date getDataItemsModified(DataCategory dataCategory);
 
+    public boolean isDataItemUniqueByPath(DataItem dataItem);
+
     public void persist(DataItem dataItem);
 
     public void persist(DataItem dataItem, boolean checkDataItem);
@@ -55,4 +57,6 @@ public interface IDataItemService extends IItemService {
     public StartEndDate getStartDate(DataItem dataItem);
 
     public StartEndDate getEndDate(DataItem dataItem);
+
+    public void updateDataItemValues(DataItem dataitem);
 }
