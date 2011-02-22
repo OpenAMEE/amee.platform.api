@@ -57,7 +57,10 @@ class DataItemIT extends BaseApiTest {
      * <li>path
      * <li>wikiDoc
      * <li>provenance
-     * </ul>
+     * <li>values.{path}* </ul>
+     *
+     * The 'values.{path}' parameter can be used to set Data Item Values that are drill downs
+     * or the first in a historical series.
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
@@ -70,7 +73,10 @@ class DataItemIT extends BaseApiTest {
         def responsePost = client.post(
                 path: '/3.4/categories/Cooking/items',
                 body: [
-                        wikiDoc: 'Test WikiDoc.'],
+                        'wikiDoc': 'Test WikiDoc.',
+                        'values.numberOfPeople': 10,
+                        'values.fuel': 'Methane',
+                        'values.kgCO2PerYear': 200],
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 201, responsePost.status
@@ -93,6 +99,9 @@ class DataItemIT extends BaseApiTest {
         assertTrue responseGet.data instanceof net.sf.json.JSON;
         assertEquals 'OK', responseGet.data.status;
         assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
+        assertEquals 4, responseGet.data.item.values.size();
+        assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
+        assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
         // Then delete it.
         def responseDelete = client.delete(path: '/3.4/categories/Cooking/items/' + uid);
         assertEquals 200, responseDelete.status;
@@ -109,13 +118,17 @@ class DataItemIT extends BaseApiTest {
 
     // TODO: createDataItemXml
 
+    /**
+     * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
+     * duplicate paths are not allowed.
+     */
     @Test
     void createDuplicateDataItemJson() {
         setAdminUser();
         // Create a DataItem.
         def responsePost = client.post(
                 path: '/3.4/categories/Cooking/items',
-                body: [path: 'testPath'],
+                body: ['path': 'testPath'],
                 requestContentType: URLENC,
                 contentType: JSON);
         // Should have been created.
@@ -124,7 +137,7 @@ class DataItemIT extends BaseApiTest {
             // Create a DataItem.
             client.post(
                     path: '/3.4/categories/Cooking/items',
-                    body: [path: 'testPath'],
+                    body: ['path': 'testPath'],
                     requestContentType: URLENC,
                     contentType: JSON);
         } catch (HttpResponseException e) {
@@ -137,6 +150,13 @@ class DataItemIT extends BaseApiTest {
         assertEquals 200, responseDelete.status;
     }
 
+    // TODO: createDuplicateDataItemXml
+
+    /**
+     * Test fetching a number of DataItems with JSON responses.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemsJson() {
         versions.each { version -> getDataItemsJson(version) }
@@ -162,6 +182,11 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a number of DataItems filtered to match a single value with JSON responses.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getFilteredDataItemsJson() {
         versions.each { version -> getFilteredDataItemsJson(version) }
@@ -185,6 +210,11 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a number of DataItems with JSON responses.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemsXml() {
         versions.each { version -> getDataItemsXml(version) }
@@ -208,6 +238,8 @@ class DataItemIT extends BaseApiTest {
             assertTrue allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
         }
     }
+
+    // TODO: getFilteredDataItemsXml
 
     @Test
     void getDataItemOneGasJson() {
@@ -309,31 +341,58 @@ class DataItemIT extends BaseApiTest {
         assertTrue(tenElectricItemValuePaths == allValues.Path*.text());
     }
 
+    /**
+     * Tests updating of a Data Item. Creates an empty Data Item, updates it then deletes it.
+     *
+     * The PUT parameters are the same as those for creating a Data Item (see above).
+     */
     @Test
     void updateDataItemJson() {
         setAdminUser();
-        def responsePut = client.put(
-                path: '/3.1/categories/Cooking/items/9DD165D3AFC9',
-                body: ['name': 'newName',
-                        'wikiDoc': 'wd',
-                        'path': 'np',
-                        'provenance': 'prov'],
+        // Create a DataItem.
+        def responsePost = client.post(
+                path: '/3.4/categories/Cooking/items',
+                body: ['path': 'aTestDataItem'],
                 requestContentType: URLENC,
                 contentType: JSON);
+        // Should have been created.
+        assertEquals 201, responsePost.status
+        // Update the DataItem.
+        def responsePut = client.put(
+                path: '/3.4/categories/Cooking/items/aTestDataItem',
+                body: ['name': 'Test Name',
+                        'wikiDoc': 'Test WikiDoc.',
+                        'provenance': 'Test Provenance',
+                        'values.numberOfPeople': 20,
+                        'values.fuel': 'Petrol',
+                        'values.kgCO2PerYear': '123'],
+                requestContentType: URLENC,
+                contentType: JSON);
+        // Should have been updated.
         assertEquals 201, responsePut.status;
+        // Get the DataItem and check values.
         def responseGet = client.get(
-                path: '/3.1/categories/Cooking/items/9DD165D3AFC9;full',
+                path: '/3.4/categories/Cooking/items/aTestDataItem;full',
                 contentType: JSON);
         assertEquals 200, responseGet.status;
         println responseGet.data;
-        assertEquals 'newName', responseGet.data.item.name;
-        assertEquals 'wd', responseGet.data.item.wikiDoc;
-        assertEquals 'np', responseGet.data.item.path;
-        assertEquals 'prov', responseGet.data.item.provenance;
+        assertEquals 'Test Name', responseGet.data.item.name;
+        assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc;
+        assertEquals 'Test Provenance', responseGet.data.item.provenance;
+        assertEquals 4, responseGet.data.item.values.size();
+        assertTrue(['20', 'Petrol', '', '123'].sort() == responseGet.data.item.values.collect {it.value}.sort());
+        assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+        // Then delete it.
+        def responseDelete = client.delete(path: '/3.4/categories/Cooking/items/aTestDataItem');
+        // Should have been deleted.
+        assertEquals 200, responseDelete.status;
         // Sleep a little to give the index a chance to be updated.
         sleep(1000);
     }
 
+    /**
+     * Test that a DataItem cannot be updated if the user is not authorized.
+     */
     @Test
     void updateDataItemUnauthorizedJson() {
         try {
@@ -351,14 +410,18 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
+    // TODO: updateDataItemXml
+
+    // TODO: updateDataItemUnauthorizedXml
+
     /**
-     * The amount value below is not the same as an API result as the algorithm has been simplified for testing.
+     * The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
      */
     @Test
     void getDataItemCalculationJson() {
         client.contentType = JSON
         def response = client.get(
-                path: "/3.5/categories/Cooking/items/004CF30590A5/calculation;full");
+                path: "/3.4/categories/Cooking/items/004CF30590A5/calculation;full");
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -370,5 +433,122 @@ class DataItemIT extends BaseApiTest {
         assertEquals true, amount.default;
         assertEquals("", 233.3, amount.value, 0.5);
         assertEquals 'CO2', amount.type;
+    }
+
+    // TODO: getDataItemCalculationXml
+
+    /**
+     * Tests the validation rules for the Data Item name field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Optional.
+     * <li>Duplicates are allowed.
+     * <li>No longer than 255 chars.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidName() {
+        setAdminUser();
+        updateDataItemFieldJson('name', 'long', String.randomString(256));
+    }
+
+    /**
+     * Tests the validation rules for the Data Item path field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Optional.
+     * <li>Unique on lower case of entire string amongst peer Data Items (those belonging to the same Data Category).
+     * <li>Intended to look like this: 'a_data_item_path' or 'apath' or 'anumberpath3'.
+     * <li>Must match this regular expression: "^[a-zA-Z0-9_\\-]*$"
+     * <li>Numbers and letters only, any case.
+     * <li>No special character except underscores ('_') and hyphens ('-').
+     * <li>No white space.
+     * <li>No longer than 255 characters.
+     * </ul>
+     *
+     * NOTE: The test for duplicates below depends on the DataItem with UID 'AE884BA62089' having the same path set.
+     */
+    @Test
+    void updateWithInvalidPath() {
+        setAdminUser();
+        updateDataItemFieldJson('path', 'long', String.randomString(256));
+        updateDataItemFieldJson('path', 'format', 'n o t v a l i d');
+        updateDataItemFieldJson('path', 'duplicate', 'pathForUniqueTest');
+    }
+
+    /**
+     * Tests the validation rules for the Data Item metadata field (wikiDoc, provenance).
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>All are optional.
+     * <li>wikiDoc must be no longer than 32767 characters.
+     * <li>provenance must be no longer than 255 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidMetadata() {
+        setAdminUser();
+        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(32768));
+        updateDataItemFieldJson('provenance', 'long', String.randomString(256));
+    }
+
+    /**
+     * Tests the validation rules for the Data Item values.
+     *
+     * The rules depend on the Item Value Definition for the value being updated.
+     *
+     * <ul>
+     * <li>integer values must not be empty and must be a Java integer.
+     * <li>double values must not be empty and must be a Java double.
+     * <li>text values are optional and must be no longer than 32767 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithValues() {
+        setAdminUser();
+        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', 'not_an_integer');
+        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '1.1'); // Not an integer either.
+        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '');
+        updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', 'not_a_double');
+        updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', '');
+        updateDataItemFieldJson('values.fuel', 'long', String.randomString(32768));
+        updateDataItemFieldJson('values.source', 'long', String.randomString(32768));
+    }
+
+    /**
+     * Submits a single Data Item field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     */
+    void updateDataItemFieldJson(field, code, value) {
+        try {
+            // Create form body.
+            def body = [:];
+            body[field] = value;
+            // Update DataItem.
+            client.put(
+                    path: '/3.4/categories/Cooking/items/AE884BA62089',
+                    body: body,
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+        } catch (HttpResponseException e) {
+            // Handle error response containing a ValidationResult.
+            def response = e.response;
+            assertEquals 400, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'INVALID', response.data.status;
+            assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+            assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+        }
     }
 }
