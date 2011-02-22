@@ -39,7 +39,7 @@ public class InternalValueTest {
     public void unfilteredTimeSeries() {
 
         // Create list of ItemValues.
-        List<ExternalValue> values = createItemValues();
+        List<ExternalGenericValue> values = createItemValues();
 
         // Filter with start and end date outside of value range.
         InternalValue internal = new InternalValue(values, now.toDate(), max.toDate());
@@ -59,7 +59,7 @@ public class InternalValueTest {
     public void filterTimeSeriesWithStartAndEndDatesA() {
 
         // Create list of ItemValues.
-        List<ExternalValue> values = createItemValues();
+        List<ExternalGenericValue> values = createItemValues();
 
         // Create start date co-incidental with value three.
         Date start = now.plusMinutes(3).toDate();
@@ -85,7 +85,7 @@ public class InternalValueTest {
     public void filterTimeSeriesWithStartAndEndDatesB() {
 
         // Create list of ItemValues.
-        List<ExternalValue> values = createItemValues();
+        List<ExternalGenericValue> values = createItemValues();
 
         // Create start date between values two & three.
         Date start = now.plusMinutes(2).plusSeconds(30).toDate();
@@ -111,7 +111,7 @@ public class InternalValueTest {
     public void filterTimeSeriesWithStartAndEndDatesC() {
 
         // Create list of ItemValues.
-        List<ExternalValue> values = createItemValues();
+        List<ExternalGenericValue> values = createItemValues();
 
         // Create start date between values two & three.
         Date start = now.plusMinutes(2).plusSeconds(30).toDate();
@@ -139,7 +139,7 @@ public class InternalValueTest {
     public void filterTimeSeriesWithStartDate() {
 
         // Create list of ItemValues.
-        List<ExternalValue> values = createItemValues();
+        List<ExternalGenericValue> values = createItemValues();
 
         InternalValue internal = new InternalValue(values, two.toDate(), max.toDate());
         DataSeries filteredValues = (DataSeries) internal.getValue();
@@ -154,8 +154,8 @@ public class InternalValueTest {
         assertTrue("Should contain expected ItemValues", filteredDates.contains(six));
     }
 
-    private List<ExternalValue> createItemValues() {
-        List<ExternalValue> values = new ArrayList<ExternalValue>();
+    private List<ExternalGenericValue> createItemValues() {
+        List<ExternalGenericValue> values = new ArrayList<ExternalGenericValue>();
         values.add(new MockExternalValue("1", one.toDate()));
         values.add(new MockExternalValue("2", two.toDate()));
         values.add(new MockExternalValue("3", three.toDate()));
