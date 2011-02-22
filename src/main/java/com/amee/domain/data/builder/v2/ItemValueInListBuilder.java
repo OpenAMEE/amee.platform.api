@@ -37,8 +37,9 @@ public class ItemValueInListBuilder implements Builder {
     private BaseItemValue itemValue;
     private IItemService itemService;
 
-    public ItemValueInListBuilder(BaseItemValue itemValue) {
+    public ItemValueInListBuilder(BaseItemValue itemValue, IItemService itemService) {
         this.itemValue = itemValue;
+        this.itemService = itemService;
     }
 
     @Override

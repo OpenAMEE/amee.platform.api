@@ -20,6 +20,7 @@
 package com.amee.domain.profile.builder.v1;
 
 import com.amee.base.utils.XMLUtils;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.IProfileItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
@@ -46,9 +47,12 @@ public class ProfileItemBuilder implements ItemBuilder {
 
     private ProfileItem item;
     private IProfileItemService profileItemService;
+    private IDataItemService dataItemService;
 
-    public ProfileItemBuilder(ProfileItem item) {
+    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
         this.item = item;
+        this.dataItemService = dataItemService;
+        this.profileItemService = profileItemService;
     }
 
     public void buildElement(JSONObject obj, boolean detailed) throws JSONException {
@@ -100,7 +104,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         }
         obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));
-        obj.put("dataItem", new DataItemBuilder(item.getDataItem()).getIdentityJSONObject());
+        obj.put("dataItem", new DataItemBuilder(item.getDataItem(), dataItemService).getIdentityJSONObject());
         if (detailed) {
             obj.put("profile", item.getProfile().getIdentityJSONObject());
         }
@@ -132,7 +136,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         element.appendChild(XMLUtils.getElement(document, "ValidFrom",
                 DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()))));
         element.appendChild(XMLUtils.getElement(document, "End", Boolean.toString(item.isEnd())));
-        element.appendChild(new DataItemBuilder(item.getDataItem()).getIdentityElement(document));
+        element.appendChild(new DataItemBuilder(item.getDataItem(), dataItemService).getIdentityElement(document));
         if (detailed) {
             element.appendChild(item.getProfile().getIdentityElement(document));
         }

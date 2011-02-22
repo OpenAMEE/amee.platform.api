@@ -180,7 +180,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         this.valueOverride = valueOverride;
     }
 
-    public double getValue() {
+    public Double getValue() {
         if (valueOverride != null) {
             return valueOverride;
         } else {
@@ -190,17 +190,17 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public double getValueAsDouble() {
-        return value;
+        return getValue();
     }
 
     @Override
     public String getValueAsString() {
-        if (value != null) {
+        if (getValue() != null) {
             NumberFormat f = NumberFormat.getInstance();
             if (f instanceof DecimalFormat) {
                 ((DecimalFormat) f).applyPattern("0.#################");
             }
-            return f.format(value);
+            return f.format(getValue());
         } else {
             return "";
         }

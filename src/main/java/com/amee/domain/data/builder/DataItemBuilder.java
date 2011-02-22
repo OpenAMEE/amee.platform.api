@@ -21,8 +21,9 @@ public class DataItemBuilder implements ItemBuilder {
     private DataItem item;
     private IDataItemService dataItemService;
 
-    public DataItemBuilder(DataItem item) {
+    public DataItemBuilder(DataItem item, IDataItemService dataItemService) {
         this.item = item;
+        this.dataItemService = dataItemService;
     }
 
     private void buildElement(Document document, Element element, boolean detailed, boolean showHistory) {
@@ -46,7 +47,7 @@ public class DataItemBuilder implements ItemBuilder {
 
     private void buildElementItemValues(Document document, Element itemValuesElem) {
         for (BaseItemValue itemValue : dataItemService.getItemValues(item)) {
-            itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this).getElement(document, false));
+            itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this, dataItemService).getElement(document, false));
         }
     }
 
@@ -57,7 +58,7 @@ public class DataItemBuilder implements ItemBuilder {
             itemValueSeries.setAttribute("path", path);
             for (Object o2 : dataItemService.getAllItemValues(item, path)) {
                 BaseDataItemValue itemValue = (BaseDataItemValue) o2;
-                itemValueSeries.appendChild(new ItemValueBuilder(itemValue).getElement(document, false));
+                itemValueSeries.appendChild(new ItemValueBuilder(itemValue, dataItemService).getElement(document, false));
             }
             itemValuesElem.appendChild(itemValueSeries);
         }
@@ -88,7 +89,7 @@ public class DataItemBuilder implements ItemBuilder {
 
     private void buildJSONItemValues(JSONArray itemValues) throws JSONException {
         for (BaseItemValue itemValue : dataItemService.getItemValues(item)) {
-            itemValues.put(new ItemValueBuilder(itemValue, this).getJSONObject(false));
+            itemValues.put(new ItemValueBuilder(itemValue, this, dataItemService).getJSONObject(false));
         }
     }
 
@@ -99,7 +100,7 @@ public class DataItemBuilder implements ItemBuilder {
             JSONArray valueSet = new JSONArray();
             for (Object o2 : dataItemService.getAllItemValues(item, path)) {
                 BaseItemValue itemValue = (BaseItemValue) o2;
-                valueSet.put(new ItemValueBuilder(itemValue).getJSONObject(false));
+                valueSet.put(new ItemValueBuilder(itemValue, dataItemService).getJSONObject(false));
             }
             values.put(path, valueSet);
             itemValues.put(values);
