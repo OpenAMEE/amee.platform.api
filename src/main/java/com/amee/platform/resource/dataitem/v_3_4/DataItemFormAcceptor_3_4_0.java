@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Update a DataItem from a 'form' submission.
+ */
 @Service
 @Scope("prototype")
 @Since("3.4.0")
@@ -75,7 +78,7 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
     protected Object handle(RequestWrapper requestWrapper, DataItem dataItem) {
         DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
         validator.setObject(dataItem);
-        validator.init();
+        validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
             updateDataItemValues(dataItem);
@@ -87,7 +90,9 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
     }
 
     /**
-     * Update the Data Item Values for the supplied Data Item based on the values bean within the DataItem.
+     * Update the DataItem Values for the supplied Data Item based on the values bean within the DataItem.
+     * <p/>
+     * Support for updating DataItem Values is since version 3.4.0.
      *
      * @param dataItem to update
      */
