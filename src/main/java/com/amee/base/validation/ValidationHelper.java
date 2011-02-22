@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.beans.PropertyEditor;
 import java.util.Map;
 
 /**
@@ -43,11 +44,11 @@ public abstract class ValidationHelper {
      */
     public boolean isValid(Map<String, String> values) {
         log.debug("isValid()");
-        dataBinder = createDataBinder();
+        DataBinder dataBinder = getDataBinder();
         prepareDataBinder(dataBinder);
         beforeBind(values);
         dataBinder.bind(createPropertyValues(values));
-        Errors errors = getErrors();
+        Errors errors = dataBinder.getBindingResult();
         ValidationUtils.invokeValidator(getValidator(), dataBinder.getTarget(), errors);
         if (!errors.hasErrors()) {
             log.debug("isValid() - No validation errors.");
@@ -80,6 +81,22 @@ public abstract class ValidationHelper {
         // do nothing
     }
 
+    /**
+     * Register a custom editor to the DataBinder.
+     *
+     * @param requiredType   the type of the property
+     * @param field          the field name of the property
+     * @param propertyEditor a {@link PropertyEditor} implementation
+     */
+    protected void add(Class requiredType, String field, PropertyEditor propertyEditor) {
+        getDataBinder().registerCustomEditor(requiredType, field, propertyEditor);
+    }
+
+    /**
+     * Create a new {@link DataBinder}.
+     *
+     * @return the new {@link DataBinder}
+     */
     protected DataBinder createDataBinder() {
         return new DataBinder(getObject(), getName());
     }
@@ -115,12 +132,26 @@ public abstract class ValidationHelper {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Get a DataBinder for the current validator. If a DataBinder has not already been created
+     * a new one will be created and cached for subsequent calls.
+     *
+     * @return the DataBinder
+     */
     public DataBinder getDataBinder() {
+        if (dataBinder == null) {
+            dataBinder = createDataBinder();
+        }
         return dataBinder;
     }
 
+    /**
+     * Convenience method to get the BindingResult (errors) from the current DataBinder.
+     *
+     * @return Errors object
+     */
     public Errors getErrors() {
-        return dataBinder.getBindingResult();
+        return getDataBinder().getBindingResult();
     }
 
     public Object getObject() {
