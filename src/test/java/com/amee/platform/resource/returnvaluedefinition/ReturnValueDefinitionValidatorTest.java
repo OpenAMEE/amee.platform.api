@@ -1,6 +1,7 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
 import com.amee.domain.data.ReturnValueDefinition;
+import com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionValidator_3_1_0;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
 import org.apache.commons.lang.RandomStringUtils;
@@ -14,7 +15,7 @@ public class ReturnValueDefinitionValidatorTest {
 
     @Test
     public void testValid() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition good = new ReturnValueDefinition();
         BindException errorsGood = new BindException(good, "good");
 
@@ -23,32 +24,38 @@ public class ReturnValueDefinitionValidatorTest {
         good.setPerUnit(AmountPerUnit.valueOf("month"));
         good.setDefaultType(true);
 
+        validator.setObject(good);
+        validator.initialise();
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());
     }
 
     @Test
     public void testTypeGreaterThanMax() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition bad = new ReturnValueDefinition();
         BindException errorsBad = new BindException(bad, "bad");
 
         String typeGreaterThanMax = RandomStringUtils.random(ReturnValueDefinition.TYPE_MAX_SIZE + 1);
         bad.setType(typeGreaterThanMax);
 
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
-        assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));        
+        assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));
     }
 
     @Test
     public void testEmptyType() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition bad = new ReturnValueDefinition();
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setType("");
 
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
         assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));
@@ -56,20 +63,22 @@ public class ReturnValueDefinitionValidatorTest {
 
     @Test
     public void testTypeBadChars() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition bad = new ReturnValueDefinition();
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setType("!!!!");
 
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
-        assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));        
+        assertTrue("'type' field should be in error", errorsBad.hasFieldErrors("type"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidUnit() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition bad = new ReturnValueDefinition();
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -77,12 +86,14 @@ public class ReturnValueDefinitionValidatorTest {
         bad.setUnit(AmountUnit.valueOf("NOT_A_UNIT"));
         bad.setPerUnit(AmountPerUnit.valueOf("month"));
 
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidPerUnit() {
-        ReturnValueDefinitionValidator validator = new ReturnValueDefinitionValidator();
+        ReturnValueDefinitionValidator_3_1_0 validator = new ReturnValueDefinitionValidator_3_1_0();
         ReturnValueDefinition bad = new ReturnValueDefinition();
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -90,6 +101,8 @@ public class ReturnValueDefinitionValidatorTest {
         bad.setUnit(AmountUnit.valueOf("kg"));
         bad.setPerUnit(AmountPerUnit.valueOf("NOT_A_PER_UNIT"));
 
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
     }
 }

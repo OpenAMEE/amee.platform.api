@@ -1,5 +1,6 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
+import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRenderer;
 
@@ -13,6 +14,6 @@ public interface ReturnValueDefinitionsResource {
         public void newReturnValueDefinition(ReturnValueDefinitionResource.Renderer renderer);
     }
 
-    public static interface FormAcceptor {
+    public static interface FormAcceptor extends ResourceAcceptor {
     }
 }
