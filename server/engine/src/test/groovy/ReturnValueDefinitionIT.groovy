@@ -286,19 +286,21 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     @Test
     void updateInvalidReturnValueDefinition() {
         setAdminUser();
-        updateReturnValueDefinitionFieldJson('type', 'empty', '');
-        updateReturnValueDefinitionFieldJson('type', 'long', String.randomString(256));
-        updateReturnValueDefinitionFieldJson('unit', 'typeMismatch', 'not_a_unit');
-        updateReturnValueDefinitionFieldJson('perUnit', 'typeMismatch', 'not_a_per_unit');
-        updateReturnValueDefinitionFieldJson('valueDefinition', 'typeMismatch', 'AAAAAAAAAAAA');
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'empty', '');
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'long', String.randomString(256));
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'duplicate', 'co2');
+        updateReturnValueDefinitionFieldJson('B0268549CD9C', 'defaultType', 'no_default_type', 'false');
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'unit', 'typeMismatch', 'not_a_unit');
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'perUnit', 'typeMismatch', 'not_a_per_unit');
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'valueDefinition', 'typeMismatch', 'AAAAAAAAAAAA');
     }
 
-    void updateReturnValueDefinitionFieldJson(field, code, value) {
+    void updateReturnValueDefinitionFieldJson(uid, field, code, value) {
         try {
             def body = [:];
             body[field] = value;
             client.put(
-                    path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
+                    path: '/3.1/definitions/11D3548466F2/returnvalues/' + uid,
                     body: body,
                     requestContentType: URLENC,
                     contentType: JSON);
