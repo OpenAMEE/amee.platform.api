@@ -86,7 +86,6 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
                                 return ValidationSpecification.CONTINUE;
                             }
                         }));
-
     }
 
     /**

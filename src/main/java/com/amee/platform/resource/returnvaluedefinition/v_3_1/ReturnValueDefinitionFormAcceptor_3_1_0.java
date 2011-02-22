@@ -43,7 +43,8 @@ public class ReturnValueDefinitionFormAcceptor_3_1_0 implements ReturnValueDefin
                 String returnValueDefinitionIdentifier = requestWrapper.getAttributes().get("returnValueDefinitionIdentifier");
                 if (returnValueDefinitionIdentifier != null) {
                     // Get ReturnValueDefinition.
-                    ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(returnValueDefinitionIdentifier);
+                    ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(
+                            itemDefinition, returnValueDefinitionIdentifier);
                     if (returnValueDefinition != null) {
                         // Authorized?
                         resourceAuthorizationService.ensureAuthorizedForModify(
