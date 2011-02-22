@@ -25,6 +25,10 @@ public class DataItemNumberValue extends BaseDataItemNumberValue {
         super(itemValueDefinition, dataItem, value);
     }
 
+    public DataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, Integer value) {
+        super(itemValueDefinition, dataItem, value);
+    }
+
     public DataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value) {
         super(itemValueDefinition, dataItem, value);
     }

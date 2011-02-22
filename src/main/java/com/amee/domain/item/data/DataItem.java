@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -49,6 +50,12 @@ public class DataItem extends BaseItem {
 
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
+
+    /**
+     * A temporary and transient object for use in validation. See the getValues() method below.
+     */
+    @Transient
+    private Object values;
 
     public DataItem() {
         super();
@@ -100,5 +107,20 @@ public class DataItem extends BaseItem {
     @Override
     public ObjectType getObjectType() {
         return ObjectType.NDI;
+    }
+
+    /**
+     * Returns a temporary and transient JavaBean related to the Item Values associated with this
+     * DataItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link ItemDefinition} getDataItemValuesBean() for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getValues() {
+        if (values == null) {
+            values = getItemDefinition().getDataItemValuesBean();
+        }
+        return values;
     }
 }

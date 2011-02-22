@@ -57,4 +57,6 @@ public interface IDataItemService extends IItemService {
     public StartEndDate getStartDate(DataItem dataItem);
 
     public StartEndDate getEndDate(DataItem dataItem);
+
+    public void updateDataItemValues(DataItem dataitem);
 }

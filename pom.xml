@@ -19,6 +19,7 @@
         <!-- External Versions. -->
         <commons-codec.version>1.3</commons-codec.version>
         <commons-lang.version>2.5</commons-lang.version>
+        <cglib.version>2.2</cglib.version>
         <ehcache.version>1.6.2</ehcache.version>
         <hibernate-core.version>3.6.0.Final</hibernate-core.version>
         <joda-time.version>1.6</joda-time.version>
@@ -110,6 +111,11 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->

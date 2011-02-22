@@ -41,6 +41,11 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         setValue(value);
     }
 
+    public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, Integer value) {
+        this(itemValueDefinition, dataItem);
+        setValue(value);
+    }
+
     public BaseDataItemNumberValue(ItemValueDefinition itemValueDefinition, DataItem dataItem, String value) {
         this(itemValueDefinition, dataItem);
         setValue(value);
@@ -163,6 +168,10 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value.doubleValue();
     }
 
     public void setValue(String value) {

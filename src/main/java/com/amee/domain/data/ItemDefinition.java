@@ -27,6 +27,7 @@ import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.InternalValue;
+import net.sf.cglib.beans.BeanGenerator;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;
@@ -168,6 +169,31 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
 
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, this);
+    }
+
+    /**
+     * Returns a JavaBean that contains fields and setter/getter methods conforming to
+     * the 'fromData' ItemValueDefinitions of this ItemDefinition. The returned object is temporary
+     * and transient. It is only intended for use with the validation logic for incoming POST and PUT
+     * requests. The bean does not have a permanent class and instead uses a dynamic class produced by
+     * a CGLIB {@link BeanGenerator}.
+     *
+     * @return A JavaBean matching the above description
+     */
+    public Object getDataItemValuesBean() {
+        BeanGenerator bg = new BeanGenerator();
+        for (ItemValueDefinition ivd : getActiveItemValueDefinitions()) {
+            if (ivd.isFromData()) {
+                if (ivd.isDouble()) {
+                    bg.addProperty(ivd.getPath(), Double.class);
+                } else if (ivd.isInteger()) {
+                    bg.addProperty(ivd.getPath(), Integer.class);
+                } else {
+                    bg.addProperty(ivd.getPath(), String.class);
+                }
+            }
+        }
+        return bg.create();
     }
 
     @Override
