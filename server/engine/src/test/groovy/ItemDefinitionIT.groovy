@@ -11,23 +11,18 @@ import static org.junit.Assert.*
  */
 class ItemDefinitionIT extends BaseApiTest {
 
-    // static def itemDefinitionUids = [
-    //        '11D3548466F2',
-    //        '1B3B44CAE90C',
-    //        'BB33FDB20228',
-    //        '001D2DF83D01',
-    //        '0A64D80D77CD',
-    //        '8B4B7C308D51',
-    //        '00F880E2B3AA']
+    // Page one when sorted by name, resultStart is 0 and resultLimit is 4.
+    static def itemDefinitionNames1 = [
+            'Computers Generic',
+            'Cooking',
+            'EcoSpold',
+            'Entertainment Generic'];
 
-    static def itemDefinitionNames = [
-        'Computers Generic',
-        'Cooking',
-        'Entertainment Generic',
-        'Kitchen Generic',
-        'GHGElectricity',
-        'GHGUSSubregion',
-        'EcoSpold']
+    // Page two when sorted by name, resultStart is 4 and resultLimit is 4.
+    static def itemDefinitionNames2 = [
+            'GHGElectricity',
+            'GHGUSSubregion',
+            'Kitchen Generic'];
 
     def static expectedUsageNames = ['usage1', 'usage2'];
     def static expectedUsagePresents = ['false', 'true'];
@@ -38,33 +33,48 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     @Test
-    void getItemDefinitionsJson() {
+    void getItemDefinitionsPageOneJson() {
         def response = client.get(
-            path: '/3.3/definitions;name',
-            contentType: JSON);
+                path: '/3.3/definitions;name',
+                query: ['resultStart': 0, 'resultLimit': 4],
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
         assertEquals 'OK', response.data.status;
-        assertEquals itemDefinitionNames.size(), response.data.itemDefinitions.size();
-        // assert itemDefinitionUids.sort() == response.data.itemDefinitions.collect {it.uid}.sort();
-        assert itemDefinitionNames.sort() == response.data.itemDefinitions.collect {it.name}.sort();
+        assertEquals itemDefinitionNames1.size(), response.data.itemDefinitions.size();
+        assert itemDefinitionNames1 == response.data.itemDefinitions.collect {it.name};
+    }
+
+    @Test
+    void getItemDefinitionsPageTwoJson() {
+        def response = client.get(
+                path: '/3.3/definitions;name',
+                query: ['resultStart': 4, 'resultLimit': 4],
+                contentType: JSON);
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertFalse response.data.resultsTruncated;
+        assertEquals itemDefinitionNames2.size(), response.data.itemDefinitions.size();
+        assert itemDefinitionNames2 == response.data.itemDefinitions.collect {it.name};
     }
 
     @Test
     void getItemDefinitionsByNameJson() {
         def response = client.get(
-            path: '/3.3/definitions;name',
-            query: ['name': 'cooking'],
-            contentType: JSON);
+                path: '/3.3/definitions;name',
+                query: ['name': 'cooking'],
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
         assertEquals 'OK', response.data.status;
         assertFalse response.data.resultsTruncated;
         assertEquals 1, response.data.itemDefinitions.size();
-        assert ['1B3B44CAE90C'] == response.data.itemDefinitions.collect {it.uid}.sort();
-        assert ['Cooking'] == response.data.itemDefinitions.collect {it.name}.sort();
+        assert ['1B3B44CAE90C'] == response.data.itemDefinitions.collect {it.uid};
+        assert ['Cooking'] == response.data.itemDefinitions.collect {it.name};
     }
 
     @Test
@@ -73,14 +83,14 @@ class ItemDefinitionIT extends BaseApiTest {
         getItemDefinitionsByNameJson('long', String.randomString(256));
     }
 
-    void getItemDefinitionsByNameJson(code, value) {
+    def getItemDefinitionsByNameJson(code, value) {
         try {
             def query = [:];
             query['name'] = value;
             client.get(
-                path: '/3.3/definitions;name',
-                query: query,
-                contentType: JSON);
+                    path: '/3.3/definitions;name',
+                    query: query,
+                    contentType: JSON);
             fail 'Response status code should have been 400 (' + code + ').';
         } catch (HttpResponseException e) {
             def response = e.response;
@@ -93,53 +103,40 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     @Test
-    void getItemDefinitionsPageOneJson() {
+    void getItemDefinitionsPageOneXml() {
         def response = client.get(
-            path: '/3.3/definitions;name',
-            query: ['resultLimit': 5],
-            contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertTrue response.data.resultsTruncated;
-        assertEquals 5, response.data.itemDefinitions.size();
-    }
-
-    @Test
-    void getItemDefinitionsPageTwoJson() {
-        def response = client.get(
-            path: '/3.3/definitions;name',
-            query: ['resultStart': 5, 'resultLimit': 5],
-            contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertFalse response.data.resultsTruncated;
-        assertEquals 2, response.data.itemDefinitions.size();
-    }
-
-    @Test
-    void getItemDefinitionsXml() {
-        def response = client.get(
-            path: '/3.3/definitions;name',
-            contentType: XML);
+                path: '/3.3/definitions;name',
+                query: ['resultStart': 0, 'resultLimit': 4],
+                contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
-        assertEquals 'false', response.data.ItemDefinitions.@truncated.text()
-        def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
-        assertEquals itemDefinitionNames.size(), allItemDefinitions.size()
-        // assert itemDefinitionUids.sort() == allItemDefinitions.@uid*.text().sort()
-        assert itemDefinitionNames.sort() == allItemDefinitions.Name*.text().sort()
+        assertEquals 'true', response.data.ItemDefinitions.@truncated.text();
+        def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition;
+        assertEquals itemDefinitionNames1.size(), allItemDefinitions.size();
+        assert itemDefinitionNames1 == allItemDefinitions.Name*.text();
+    }
+
+    @Test
+    void getItemDefinitionsPageTwoXml() {
+        def response = client.get(
+                path: '/3.3/definitions;name',
+                query: ['resultStart': 4, 'resultLimit': 4],
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        assertEquals 'false', response.data.ItemDefinitions.@truncated.text();
+        def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition;
+        assertEquals itemDefinitionNames2.size(), allItemDefinitions.size();
+        assert itemDefinitionNames2 == allItemDefinitions.Name*.text();
     }
 
     @Test
     void getItemDefinitionJson() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2;full',
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2;full',
+                contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
@@ -154,8 +151,8 @@ class ItemDefinitionIT extends BaseApiTest {
     @Test
     void getItemDefinitionXml() {
         def response = client.get(
-            path: '/3.1/definitions/11D3548466F2;full',
-            contentType: XML);
+                path: '/3.1/definitions/11D3548466F2;full',
+                contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
         assertEquals 'OK', response.data.Status.text();
@@ -172,20 +169,20 @@ class ItemDefinitionIT extends BaseApiTest {
         setAdminUser();
         // 1) Do the update.
         def responsePut = client.put(
-            path: '/3.1/definitions/11D3548466F2',
-            body: ['name': 'newName',
-                'drillDown': 'newDrillDownA,newDrillDownB',
-                'usages': 'usage1,usage2,usage3'],
-            requestContentType: URLENC,
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2',
+                body: ['name': 'newName',
+                        'drillDown': 'newDrillDownA,newDrillDownB',
+                        'usages': 'usage1,usage2,usage3'],
+                requestContentType: URLENC,
+                contentType: JSON);
         assertEquals 201, responsePut.status;
         // We added a usage.
         expectedUsageNames[2] = 'usage3';
         expectedUsagePresents[2] = 'true';
         // 2) Check values have been updated.
         def responseGet = client.get(
-            path: '/3.1/definitions/11D3548466F2;full',
-            contentType: JSON);
+                path: '/3.1/definitions/11D3548466F2;full',
+                contentType: JSON);
         assertEquals 200, responseGet.status;
         assertEquals 'application/json', responseGet.contentType;
         assertTrue responseGet.data instanceof net.sf.json.JSON;
@@ -207,15 +204,15 @@ class ItemDefinitionIT extends BaseApiTest {
         updateItemDefinitionFieldJson('usages', 'long', String.randomString(32768));
     }
 
-    void updateItemDefinitionFieldJson(field, code, value) {
+    def updateItemDefinitionFieldJson(field, code, value) {
         try {
             def body = [:];
             body[field] = value;
             client.put(
-                path: '/3.1/definitions/BB33FDB20228',
-                body: body,
-                requestContentType: URLENC,
-                contentType: JSON);
+                    path: '/3.1/definitions/BB33FDB20228',
+                    body: body,
+                    requestContentType: URLENC,
+                    contentType: JSON);
             fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
         } catch (HttpResponseException e) {
             def response = e.response;
