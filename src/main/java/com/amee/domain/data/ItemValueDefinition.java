@@ -90,7 +90,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     @Column(name = "ALLOWED_ROLES", length = ALLOWED_ROLES_MAX_SIZE, nullable = true)
     private String allowedRoles = "";
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "ITEM_VALUE_DEFINITION_API_VERSION",
             joinColumns = {@JoinColumn(name = "ITEM_VALUE_DEFINITION_ID")},
