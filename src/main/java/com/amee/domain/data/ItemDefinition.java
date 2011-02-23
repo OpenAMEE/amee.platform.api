@@ -58,12 +58,10 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
 
     @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderBy("name")
     private Set<Algorithm> algorithms = new HashSet<Algorithm>();
 
     @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @OrderBy("name")
     private Set<ItemValueDefinition> itemValueDefinitions = new HashSet<ItemValueDefinition>();
 
     @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
