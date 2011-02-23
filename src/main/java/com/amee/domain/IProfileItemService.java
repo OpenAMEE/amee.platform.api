@@ -3,6 +3,7 @@ package com.amee.domain;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.item.profile.ProfileItemNumberValue;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.science.StartEndDate;
 
@@ -16,6 +17,8 @@ public interface IProfileItemService extends IItemService {
     public ProfileItem getItemByUid(String uid);
 
     public boolean hasNonZeroPerTimeValues(ProfileItem profileItem);
+
+    public boolean isNonZeroPerTimeValue(ProfileItemNumberValue value);
 
     public boolean isSingleFlight(ProfileItem profileItem);
 
@@ -33,5 +36,9 @@ public interface IProfileItemService extends IItemService {
 
     public void persist(ProfileItem profileItem);
 
+    public void remove(ProfileItem profileItem);
+
     public void persist(BaseItemValue itemValue);
+
+    public void remove(BaseItemValue itemValue);
 }

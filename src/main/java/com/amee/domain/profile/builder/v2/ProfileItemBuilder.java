@@ -46,13 +46,17 @@ public class ProfileItemBuilder implements ItemBuilder {
     private IDataItemService dataItemService;
     private IProfileItemService profileItemService;
 
-    public ProfileItemBuilder(ProfileItem item, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService, AmountCompoundUnit returnUnit) {
         this.item = item;
+        this.dataItemService = dataItemService;
+        this.profileItemService = profileItemService;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(ProfileItem item) {
+    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
         this.item = item;
+        this.dataItemService = dataItemService;
+        this.profileItemService = profileItemService;
     }
 
     public void buildElement(JSONObject obj, boolean detailed) throws JSONException {
@@ -64,7 +68,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         JSONArray itemValues = new JSONArray();
         // Find all matching active ItemValues at the item startDate
         for (BaseItemValue itemValue : profileItemService.getItemValues(item)) {
-            itemValues.put(new ItemValueBuilder(itemValue, this).getJSONObject(false));
+            itemValues.put(new ItemValueBuilder(itemValue, this, profileItemService).getJSONObject(false));
         }
         obj.put("itemValues", itemValues);
         if (detailed) {
@@ -83,7 +87,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         Element itemValuesElem = document.createElement("ItemValues");
         // Find all matching active ItemValues at the item startDate
         for (BaseItemValue itemValue : profileItemService.getItemValues(item)) {
-            itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this).getElement(document, false));
+            itemValuesElem.appendChild(new ItemValueBuilder(itemValue, this, profileItemService).getElement(document, false));
         }
         element.appendChild(itemValuesElem);
         if (detailed) {
@@ -152,12 +156,12 @@ public class ProfileItemBuilder implements ItemBuilder {
         // Convert to user's time zone
         obj.put("startDate", StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()).toString());
         obj.put("endDate", (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
-        obj.put("dataItem", new DataItemBuilder(item.getDataItem()).getIdentityJSONObject());
+        obj.put("dataItem", new DataItemBuilder(item.getDataItem(), dataItemService).getIdentityJSONObject());
 
         // DataItem
-        DataItem bDataItem = item.getDataItem();
-        JSONObject dataItemObj = new DataItemBuilder(bDataItem).getIdentityJSONObject();
-        dataItemObj.put("Label", dataItemService.getLabel(bDataItem));
+        DataItem dataItem = item.getDataItem();
+        JSONObject dataItemObj = new DataItemBuilder(dataItem, dataItemService).getIdentityJSONObject();
+        dataItemObj.put("Label", dataItemService.getLabel(dataItem));
         obj.put("dataItem", dataItemObj);
 
         if (detailed) {
@@ -216,9 +220,9 @@ public class ProfileItemBuilder implements ItemBuilder {
                 (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
 
         // DataItem
-        DataItem bDataItem = item.getDataItem();
-        Element dataItemElement = new DataItemBuilder(bDataItem).getIdentityElement(document);
-        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(bDataItem)));
+        DataItem dataItem = item.getDataItem();
+        Element dataItemElement = new DataItemBuilder(dataItem, dataItemService).getIdentityElement(document);
+        dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(dataItem)));
 
         element.appendChild(dataItemElement);
 

@@ -38,12 +38,13 @@ public class ItemValueBuilder implements Builder {
     private ItemBuilder itemBuilder;
     private IItemService itemService;
 
-    public ItemValueBuilder(BaseItemValue itemValue) {
+    public ItemValueBuilder(BaseItemValue itemValue, IItemService itemService) {
         this.itemValue = itemValue;
+        this.itemService = itemService;
     }
 
-    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder) {
-        this(itemValue);
+    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder, IItemService itemService) {
+        this(itemValue, itemService);
         this.itemBuilder = itemBuilder;
     }
 
