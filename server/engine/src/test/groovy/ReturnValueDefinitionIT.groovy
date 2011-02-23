@@ -29,7 +29,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // Create a new RVD.
         def responsePost = client.post(
                 path: "/3.1/definitions/11D3548466F2/returnvalues",
-                body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
+                body: ['type': 'CO2',
+                        'unit': 'kg',
+                        'perUnit': 'month',
+                        'valueDefinition': '45433E48B39F'],
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 201, responsePost.status;
@@ -87,7 +90,10 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // Create a new RVD.
         def responsePost = client.post(
                 path: "/3.1/definitions/11D3548466F2/returnvalues",
-                body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F'],
+                body: ['type': 'CO2',
+                        'unit': 'kg',
+                        'perUnit': 'month',
+                        'valueDefinition': '45433E48B39F'],
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 201, responsePost.status;
@@ -243,7 +249,11 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // Add a new return value definition with default type true
         def responsePost = client.post(
                 path: "/3.2/definitions/11D3548466F2/returnvalues",
-                body: [type: 'new', unit: 'kg', perUnit: 'day', valueDefinition: '45433E48B39F', defaultType: true],
+                body: ['type': 'new',
+                        'unit': 'kg',
+                        'perUnit': 'day',
+                        'valueDefinition': '45433E48B39F',
+                        'defaultType': true],
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 201, responsePost.status
@@ -268,7 +278,11 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         // Update the old one to be the default again
         def responsePut = client.put(
                 path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C',
-                body: [type: 'co2', unit: 'kg', perUnit: 'month', valueDefinition: '45433E48B39F', defaultType: true],
+                body: ['type': 'co2',
+                        'unit': 'kg',
+                        'perUnit': 'month',
+                        'valueDefinition': '45433E48B39F',
+                        'defaultType': true],
                 requestContentType: URLENC,
                 contentType: JSON)
         assertEquals 201, responsePut.status
