@@ -69,7 +69,7 @@ class CategoryIT extends BaseApiTest {
             setAdminUser();
             // Create a DataCategory.
             def responsePost = client.post(
-                    path: '/' + version + '/categories',
+                    path: "/${version}/categories",
                     body: [
                             dataCategory: 'Root',
                             path: 'testPath',
@@ -80,7 +80,7 @@ class CategoryIT extends BaseApiTest {
             assertEquals 201, responsePost.status
             // Get the new DataCategory.
             def responseGet = client.get(
-                    path: '/' + version + '/categories/Test_Wiki_Name',
+                    path: "/${version}/categories/Test_Wiki_Name",
                     contentType: JSON);
             assertEquals 200, responseGet.status;
             assertEquals 'application/json', responseGet.contentType;
@@ -89,11 +89,11 @@ class CategoryIT extends BaseApiTest {
             assertEquals "Test Name", responseGet.data.category.name
             assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
             // Then delete it.
-            def responseDelete = client.delete(path: '/' + version + '/categories/Test_Wiki_Name');
+            def responseDelete = client.delete(path: "/${version}/categories/Test_Wiki_Name");
             assertEquals 200, responseDelete.status;
             // We should get a 404 here.
             try {
-                client.get(path: '/' + version + '/categories/Test_Wiki_Name');
+                client.get(path: "/${version}/categories/Test_Wiki_Name");
                 fail 'Should have thrown an exception';
             } catch (HttpResponseException e) {
                 assertEquals 404, e.response.status;
@@ -145,7 +145,7 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoryByWikiNameJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories/Kitchen_generic;audit')
+        def response = client.get(path: "/${version}/categories/Kitchen_generic;audit")
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -166,7 +166,7 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoryByUidJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories/3C03A03B5F3A;audit')
+        def response = client.get(path: "/${version}/categories/3C03A03B5F3A;audit")
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -188,7 +188,8 @@ class CategoryIT extends BaseApiTest {
     def getTrashedCategoryByWikiNameJson(version) {
         setRootUser();
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories/Kitchen_generic;audit',
+        def response = client.get(
+                path: "/${version}/categories/Kitchen_generic;audit",
                 query: ['status': 'trash'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -211,7 +212,8 @@ class CategoryIT extends BaseApiTest {
     def getTrashedCategoryByUidJson(version) {
         setRootUser();
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories/3C03A03B5F1A;audit',
+        def response = client.get(
+                path: "/${version}/categories/3C03A03B5F1A;audit",
                 query: ['status': 'trash'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -234,7 +236,8 @@ class CategoryIT extends BaseApiTest {
     def getInferredTrashedCategoryByUidJson(version) {
         setRootUser();
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories/3C03A03B5F4A;audit',
+        def response = client.get(
+                path: "/${version}/categories/3C03A03B5F4A;audit",
                 query: ['status': 'trash'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -256,7 +259,7 @@ class CategoryIT extends BaseApiTest {
 
     def getMissingCategoryByWikiName(version) {
         try {
-            client.get(path: '/' + version + '/categories/Wibble')
+            client.get(path: "/${version}/categories/Wibble")
             fail 'Should have thrown an exception';
         } catch (HttpResponseException e) {
             assertEquals 404, e.response.status;
@@ -275,7 +278,7 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoriesJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories')
+        def response = client.get(path: "/${version}/categories")
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -299,7 +302,9 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoriesWithTagsExcludedJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories', query: ['excTags': 'ecoinvent'])
+        def response = client.get(
+                path: "/${version}/categories",
+                query: ['excTags': 'ecoinvent'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -323,7 +328,7 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoriesXml(version) {
         client.contentType = XML
-        def response = client.get(path: '/' + version + '/categories')
+        def response = client.get(path: "/${version}/categories");
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -346,7 +351,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByAuthorityJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['authority': 'enterprise'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -367,7 +373,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByAuthorityXml(version) {
         client.contentType = XML
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['authority': 'enterprise'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
@@ -388,7 +395,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByTagsJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['tags': 'electrical'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -409,7 +417,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByTagsXml(version) {
         client.contentType = XML
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['tags': 'electrical'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
@@ -430,7 +439,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByFullPathJson(version) {
         client.contentType = JSON
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['fullPath': '/home/appliances/*'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
@@ -452,7 +462,8 @@ class CategoryIT extends BaseApiTest {
 
     def filterByPathXml(version) {
         client.contentType = XML
-        def response = client.get(path: '/' + version + '/categories',
+        def response = client.get(
+                path: "/${version}/categories",
                 query: ['fullPath': '/home/appliances/*'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
@@ -479,7 +490,7 @@ class CategoryIT extends BaseApiTest {
         setAdminUser();
         // 1) Do the update (CO2_Benchmark).
         def responsePut = client.put(
-                path: '/' + version + '/categories/245CBD734418',
+                path: "/${version}/categories/245CBD734418",
                 body: [
                         'path': 'newPath',
                         'name': 'New Name',
@@ -493,7 +504,7 @@ class CategoryIT extends BaseApiTest {
         assertEquals 201, responsePut.status;
         // 2) Check values have been updated (CO2_Benchmark).
         def responseGet = client.get(
-                path: '/' + version + '/categories/245CBD734418;full',
+                path: "/${version}/categories/245CBD734418;full",
                 contentType: JSON);
         assertEquals 200, responseGet.status;
         assertEquals 'application/json', responseGet.contentType;
@@ -524,7 +535,7 @@ class CategoryIT extends BaseApiTest {
         try {
             // 1) Do the update (CO2_Benchmark).
             client.put(
-                    path: '/' + version + '/categories/245CBD734418',
+                    path: "/${version}/categories/245CBD734418",
                     body: [
                             'wikiName': 'CLM_food_life_cycle_database', // duplicate
                             'provenance': String.randomString(256), // too long
@@ -697,7 +708,7 @@ class CategoryIT extends BaseApiTest {
                 body[field] = value;
                 // Update Category (CO2_Benchmark).
                 client.put(
-                        path: '/' + version + '/categories/245CBD734418',
+                        path: "/${version}/categories/245CBD734418",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON);
