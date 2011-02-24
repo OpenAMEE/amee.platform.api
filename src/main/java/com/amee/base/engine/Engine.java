@@ -22,7 +22,7 @@ public class Engine implements WrapperListener {
 
     private final Log log = LogFactory.getLog(getClass());
 
-    private ApplicationContext springContext;
+    private ClassPathXmlApplicationContext springContext;
     private TransactionController transactionController;
 
     // These are used to determine the PID of the instance in the init script.
@@ -161,7 +161,22 @@ public class Engine implements WrapperListener {
     }
 
     protected boolean onShutdown() {
-        // Do nothing.
+        // Stop Spring. Wait 500ms.
+        if (springContext != null) {
+            try {
+                springContext.stop();
+                springContext = null;
+                Thread.sleep(500);
+            } catch (Exception e) {
+                log.fatal("onStart() Caught Exception: " + e);
+                e.printStackTrace();
+                return false;
+            } catch (Throwable e) {
+                log.fatal("onStart() Caught Throwable: " + e);
+                e.printStackTrace();
+                return false;
+            }
+        }
         return true;
     }
 
