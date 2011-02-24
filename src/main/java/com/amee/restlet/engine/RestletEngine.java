@@ -66,6 +66,27 @@ public class RestletEngine extends Engine {
         }
     }
 
+    protected boolean onShutdown() {
+        // Stop Restlet Container. Wait 500ms.
+        if (container != null) {
+            try {
+                container.stop();
+                container = null;
+                Thread.sleep(500);
+            } catch (Exception e) {
+                log.fatal("onStart() Caught Exception: " + e);
+                e.printStackTrace();
+                return false;
+            } catch (Throwable e) {
+                log.fatal("onStart() Caught Throwable: " + e);
+                e.printStackTrace();
+                return false;
+            }
+        }
+        // Stop Spring.
+        return super.onShutdown();
+    }
+
     public Component getContainer() {
         return container;
     }
