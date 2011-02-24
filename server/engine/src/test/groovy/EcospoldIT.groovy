@@ -9,15 +9,21 @@ import static org.junit.Assert.fail
  */
 class EcospoldIT extends BaseApiTest {
 
+    static def versions = [3.2]
+
     @Test
     void getEcospoldCategory() {
+        versions.each { version -> getEcospoldCategory(version) };
+    }
+
+    def getEcospoldCategory(version) {
 
         setEcoinventUser();
 
         // We parse the response as XML but request x.ecospold+xml
-        def response = client.get(path: '/3/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
-            contentType: XML,
-            headers: [Accept: 'application/x.ecospold+xml'])
+        def response = client.get(path: "/${version}/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg",
+                contentType: XML,
+                headers: [Accept: 'application/x.ecospold+xml'])
 
         assertEquals 200, response.status
         assertEquals 'application/x.ecospold+xml', response.contentType
@@ -28,18 +34,18 @@ class EcospoldIT extends BaseApiTest {
         assertEquals 'chemicals', response.data.dataset.metaInformation.processInformation.referenceFunction.@category.text()
         assertEquals 'inorganics', response.data.dataset.metaInformation.processInformation.referenceFunction.@subCategory.text()
         assertEquals 'chlorine, gaseous, diaphragm cell, at plant',
-            response.data.dataset.metaInformation.processInformation.referenceFunction.@name.text()
+                response.data.dataset.metaInformation.processInformation.referenceFunction.@name.text()
         assertEquals 'kg', response.data.dataset.metaInformation.processInformation.referenceFunction.@unit.text()
 
         assertEquals '2000-01', response.data.dataset.metaInformation.processInformation.timePeriod.startYearMonth.text()
         assertEquals 'de', response.data.dataset.metaInformation.processInformation.dataSetInformation.@localLanguageCode.text()
 
         assertEquals 'unknown',
-            response.data.dataset.metaInformation.modellingAndValidation.representativeness.@productionVolume.text()
+                response.data.dataset.metaInformation.modellingAndValidation.representativeness.@productionVolume.text()
         assertEquals 'Life Cycle Inventories of Chemicals',
-            response.data.dataset.metaInformation.modellingAndValidation.source.@title.text()
+                response.data.dataset.metaInformation.modellingAndValidation.source.@title.text()
         assertEquals 'Passed',
-            response.data.dataset.metaInformation.modellingAndValidation.validation.@proofReadingDetails.text()
+                response.data.dataset.metaInformation.modellingAndValidation.validation.@proofReadingDetails.text()
 
         assertEquals 2, response.data.dataset.metaInformation.administrativeInformation.person.size()
 
@@ -57,10 +63,14 @@ class EcospoldIT extends BaseApiTest {
 
     @Test
     void getNonEcospoldCategory() {
+        versions.each { version -> getNonEcospoldCategory(version) };
+    }
+
+    def getNonEcospoldCategory(version) {
         try {
-            client.get(path: '/3/categories/F27BF795BB04',
-                contentType: XML,
-                headers: [Accept: 'application/x.ecospold+xml'])
+            client.get(path: "/${version}/categories/F27BF795BB04",
+                    contentType: XML,
+                    headers: [Accept: 'application/x.ecospold+xml'])
             fail 'Expected 415'
         } catch (HttpResponseException e) {
             def response = e.response;
@@ -70,10 +80,14 @@ class EcospoldIT extends BaseApiTest {
 
     @Test
     void getEcospoldCategoryNotAuthorized() {
+        versions.each { version -> getEcospoldCategoryNotAuthorized(version) };
+    }
+
+    def getEcospoldCategoryNotAuthorized(version) {
         try {
-            client.get(path: '/3/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
-                contentType: XML,
-                headers: [Accept: 'application/x.ecospold+xml'])
+            client.get(path: "/${version}/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg",
+                    contentType: XML,
+                    headers: [Accept: 'application/x.ecospold+xml'])
             fail 'Expected 403'
         } catch (HttpResponseException e) {
             def response = e.response;
