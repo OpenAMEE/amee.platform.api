@@ -300,7 +300,7 @@
 
     <bean id="itemDefinitionsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
-        <property name="allowPost" value="false"/>
+        <property name="allowPost" value="true"/>
         <property name="attributeNames">
             <set>
                 <value>activeUserUid</value>
@@ -311,6 +311,16 @@
                 <property name="target"
                           value="com.amee.platform.resource.itemdefinition.ItemDefinitionsResource$Builder"/>
             </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.itemdefinition.ItemDefinitionsResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
         </property>
     </bean>
 
