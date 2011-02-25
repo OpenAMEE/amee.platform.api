@@ -7,26 +7,23 @@ import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
-import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.item.DataItemService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Update a DataItem from a 'form' submission.
+ */
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAcceptor {
-
-    private final Log log = LogFactory.getLog(getClass());
+public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor {
 
     @Autowired
     private InvalidationService invalidationService;
@@ -43,31 +40,32 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
-    @Autowired
-    private MessageSource messageSource;
-
     @Override
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         // Get DataCategory identifier.
-        String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (categoryIdentifier != null) {
+        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
+        if (dataCategoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(categoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
             if (dataCategory != null) {
-                // Authorized?
-                resourceAuthorizationService.ensureAuthorizedForModify(
-                        requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
-                // DataCategory must have an ItemDefinition.
-                if (dataCategory.isItemDefinitionPresent()) {
-                    // Handle the DataItem submission.
-                    DataItem dataItem = new DataItem(dataCategory, dataCategory.getItemDefinition());
-                    dataItemService.persist(dataItem);
-                    return handle(requestWrapper, dataItem);
+                // Get DataItem identifier.
+                String dataItemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
+                if (dataItemIdentifier != null) {
+                    // Get DataItem.
+                    DataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, dataItemIdentifier);
+                    if (dataItem != null) {
+                        // Authorized?
+                        resourceAuthorizationService.ensureAuthorizedForModify(
+                                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+                        // Handle the DataItem update.
+                        return handle(requestWrapper, dataItem);
+                    } else {
+                        throw new NotFoundException();
+                    }
                 } else {
-                    // Validation failure as there is no ItemDefinition.
-                    throw new ValidationException(new ValidationResult(messageSource, "dataItem", "noItemDefinition"));
+                    throw new MissingAttributeException("itemIdentifier");
                 }
             } else {
                 throw new NotFoundException();
@@ -83,21 +81,28 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
-            dataItemService.updateDataItemValues(dataItem);
+            updateDataItemValues(dataItem);
             invalidationService.add(dataItem.getDataCategory());
-            return ResponseHelper.getOK(
-                    requestWrapper,
-                    "/" + requestWrapper.getVersion() +
-                            "/categories/" + requestWrapper.getAttributes().get("categoryIdentifier") +
-                            "/items/" + dataItem.getUid());
+            return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validator.getValidationResult());
         }
     }
 
+    /**
+     * Update the DataItem Values for the supplied Data Item based on the values bean within the DataItem.
+     * <p/>
+     * Support for updating DataItem Values is since version 3.4.0.
+     *
+     * @param dataItem to update
+     */
+    protected void updateDataItemValues(DataItem dataItem) {
+        dataItemService.updateDataItemValues(dataItem);
+    }
+
     protected DataItemResource.DataItemValidator getValidator(RequestWrapper requestWrapper) {
         return (DataItemResource.DataItemValidator)
-                resourceBeanFinder.getValidator(
+                resourceBeanFinder.getValidationHelper(
                         DataItemResource.DataItemValidator.class, requestWrapper);
     }
 }

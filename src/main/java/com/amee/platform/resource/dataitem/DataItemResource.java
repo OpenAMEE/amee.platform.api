@@ -54,6 +54,8 @@ public interface DataItemResource {
 
     public static interface DataItemValidator {
 
+        public void initialise();
+
         public boolean isValid(Map<String, String> queryParameters);
 
         public DataItem getObject();
