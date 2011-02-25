@@ -11,7 +11,7 @@ import static org.junit.Assert.*
  */
 class ItemDefinitionIT extends BaseApiTest {
 
-    static def versions = [3.1, 3.3]
+    static def versions = [3.1, 3.3, 3.4]
 
     // Page one when sorted by name, resultStart is 0 and resultLimit is 4.
     static def itemDefinitionNames1 = [
@@ -31,46 +31,52 @@ class ItemDefinitionIT extends BaseApiTest {
 
     @Test
     void createDeleteItemDefinition() {
-        setAdminUser()
+        versions.each { version -> createDeleteItemDefinition(version) }
+    }
 
-        // Create a new ItemDefinition
-        def responsePost = client.post(
-            path: '/3.4/definitions',
-            body: ['name': 'test',
-                'drillDown' : 'foo,bar',
-                'usages' : 'baz,quux'],
-            requestContentType: URLENC,
-            contentType: JSON)
-        assertEquals 201, responsePost.status
-        def location = responsePost.headers['Location'].value;
-        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+    def createDeleteItemDefinition(version) {
+        if (version >= 3.4) {
+            setAdminUser()
 
-        def uid = location.split('/')[5]
+            // Create a new ItemDefinition
+            def responsePost = client.post(
+                path: '/3.4/definitions',
+                body: ['name': 'test',
+                    'drillDown' : 'foo,bar',
+                    'usages' : 'baz,quux'],
+                requestContentType: URLENC,
+                contentType: JSON)
+            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
-        // Get the new ItemDefinition
-        def responseGet = client.get(
-            path: "${location};full",
-            contentType: JSON)
-        assertEquals 200, responseGet.status
-        assertEquals 'application/json', responseGet.contentType
-        assertTrue responseGet.data instanceof net.sf.json.JSON
-        assertEquals 'OK', responseGet.data.status
-        assertEquals 'test', responseGet.data.itemDefinition.name
-        assertEquals 'foo,bar', responseGet.data.itemDefinition.drillDown
-        assertEquals 2, responseGet.data.itemDefinition.usages.size();
-        assertEquals(['baz', 'quux'], responseGet.data.itemDefinition.usages.collect {it.name});
-        assertEquals(['false', 'false'], responseGet.data.itemDefinition.usages.collect {it.present});
+            def uid = location.split('/')[5]
 
-        // Delete it
-        def responseDelete = client.delete(path: location)
-        assertEquals 200, responseDelete.status
+            // Get the new ItemDefinition
+            def responseGet = client.get(
+                path: "${location};full",
+                contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'test', responseGet.data.itemDefinition.name
+            assertEquals 'foo,bar', responseGet.data.itemDefinition.drillDown
+            assertEquals 2, responseGet.data.itemDefinition.usages.size();
+            assertEquals(['baz', 'quux'], responseGet.data.itemDefinition.usages.collect {it.name});
+            assertEquals(['false', 'false'], responseGet.data.itemDefinition.usages.collect {it.present});
 
-        // Should get a 404 here
-        try {
-            client.get(path: location)
-            fail 'Should have thrown an exception'
-        } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            // Delete it
+            def responseDelete = client.delete(path: location)
+            assertEquals 200, responseDelete.status
+
+            // Should get a 404 here
+            try {
+                client.get(path: location)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
         }
     }
 
