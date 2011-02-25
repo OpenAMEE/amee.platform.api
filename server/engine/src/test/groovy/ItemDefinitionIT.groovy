@@ -28,8 +28,48 @@ class ItemDefinitionIT extends BaseApiTest {
     def static expectedUsagePresents = ['false', 'true'];
 
     @Test
-    @Ignore("Item Definition POST not implemented in API")
-    void createItemDefinition() {
+    void createDeleteItemDefinition() {
+        setAdminUser()
+
+        // Create a new ItemDefinition
+        def responsePost = client.post(
+            path: '/3.4/definitions',
+            body: ['name': 'test',
+                'drillDown' : 'foo,bar',
+                'usages' : 'baz,quux'],
+            requestContentType: URLENC,
+            contentType: JSON)
+        assertEquals 201, responsePost.status
+        def location = responsePost.headers['Location'].value;
+        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
+        def uid = location.split('/')[5]
+
+        // Get the new ItemDefinition
+        def responseGet = client.get(
+            path: "${location};full",
+            contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'application/json', responseGet.contentType
+        assertTrue responseGet.data instanceof net.sf.json.JSON
+        assertEquals 'OK', responseGet.data.status
+        assertEquals 'test', responseGet.data.itemDefinition.name
+        assertEquals 'foo,bar', responseGet.data.itemDefinition.drillDown
+        assertEquals 2, responseGet.data.itemDefinition.usages.size();
+        assertEquals(['baz', 'quux'], responseGet.data.itemDefinition.usages.collect {it.name});
+        assertEquals(['false', 'false'], responseGet.data.itemDefinition.usages.collect {it.present});
+
+        // Delete it
+        def responseDelete = client.delete(path: location)
+        assertEquals 200, responseDelete.status
+
+        // Should get a 404 here
+        try {
+            client.get(path: location)
+            fail 'Should have thrown an exception'
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status
+        }
     }
 
     @Test
@@ -206,23 +246,27 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def updateItemDefinitionFieldJson(field, code, value) {
         try {
-            def body = [:];
-            body[field] = value;
+            def body = [(field): value]
             client.put(
                     path: '/3.1/definitions/BB33FDB20228',
                     body: body,
                     requestContentType: URLENC,
-                    contentType: JSON);
-            fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+                    contentType: JSON)
+            fail "Response status code should have been 400 (${field}, ${code})."
         } catch (HttpResponseException e) {
-            def response = e.response;
-            assertEquals 400, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'INVALID', response.data.status;
-            // NOTE: This is commented out as 'usages' becomes 'usagesString' on the server-side causing this check to fail.
-            // assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-            assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+            def response = e.response
+            assertEquals 400, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'INVALID', response.data.status
+
+            // NOTE: 'usages' becomes 'usagesString' on the server-side.
+            def fieldErrors = response.data.validationResult.errors.collect {it.field};
+            if (field == 'usages') {
+                field = 'usagesString'
+            }
+            assertEquals([field], fieldErrors)
+            assertEquals([code], response.data.validationResult.errors.collect {it.code})
         }
     }
 }
