@@ -11,7 +11,7 @@ import static org.junit.Assert.*
  */
 class ReturnValueDefinitionIT extends BaseApiTest {
 
-    static def versions = [3.1, 3.2, 3.3, 3.4]
+    static def versions = [3.1, 3.2, 3.4]
 
     def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20'];
     def static returnValueDefinitionTypes = ['co2', 'co2e'];
@@ -21,6 +21,11 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void createReturnValueDefinition() {
+        versions.each { version -> createReturnValueDefinition(version) }
+    }
+
+    def createReturnValueDefinition(version) {
+
         setAdminUser();
 
         // Check RVD list is as expected, pre-update.
@@ -28,7 +33,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Create a new RVD.
         def responsePost = client.post(
-                path: "/3.1/definitions/11D3548466F2/returnvalues",
+                path: "/${version}/definitions/11D3548466F2/returnvalues",
                 body: ['type': 'CO2',
                         'unit': 'kg',
                         'perUnit': 'month',
@@ -43,8 +48,6 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Add new RVD to local state.
         def uid = location.split('/')[7];
-        returnValueDefinitionUids << uid;
-        returnValueDefinitionTypes << 'CO2';
 
         // Get the new RVD.
         def responseGet = client.get(
@@ -57,14 +60,13 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
         // Find new RVD in list of RVDs.
         def response = client.get(
-                path: '/3.1/definitions/11D3548466F2/returnvalues',
+                path: "/${version}/definitions/11D3548466F2/returnvalues",
                 contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
         assertEquals 'OK', response.data.status;
         def uids = response.data.returnValueDefinitions.collect {it.uid};
-        assertEquals returnValueDefinitionUids.sort(), uids.sort()
         assertTrue uids.contains(uid);
 
         // Then delete it.
@@ -78,18 +80,18 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         } catch (HttpResponseException e) {
             assertEquals 404, e.response.status;
         }
-
-        // Remove it from the collection.
-        returnValueDefinitionUids.remove(returnValueDefinitionUids.size() - 1);
-        returnValueDefinitionTypes.remove(returnValueDefinitionTypes.size() - 1);
     }
 
     @Test
     void removeReturnValueDefinitionJson() {
+        versions.each { version -> removeReturnValueDefinitionJson(version) }
+    }
+
+    def removeReturnValueDefinitionJson(version) {
         setAdminUser();
         // Create a new RVD.
         def responsePost = client.post(
-                path: "/3.1/definitions/11D3548466F2/returnvalues",
+                path: "/${version}/definitions/11D3548466F2/returnvalues",
                 body: ['type': 'CO2',
                         'unit': 'kg',
                         'perUnit': 'month',
@@ -181,8 +183,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     @Test
     void getReturnValueDefinitionsJson() {
+        versions.each { version -> getReturnValueDefinitionsJson(version) }
+    }
+
+    def getReturnValueDefinitionsJson(version) {
         def response = client.get(
-                path: '/3.1/definitions/11D3548466F2/returnvalues;full',
+                path: "/${version}/definitions/11D3548466F2/returnvalues;full",
                 contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
@@ -197,8 +203,12 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     @Test
     void getReturnValueDefinitionsXml() {
+        versions.each { version -> getReturnValueDefinitionsXml(version) }
+    }
+
+    def getReturnValueDefinitionsXml(version) {
         def response = client.get(
-                path: '/3.1/definitions/11D3548466F2/returnvalues;full',
+                path: "/${version}/definitions/11D3548466F2/returnvalues;full",
                 contentType: XML);
         assertEquals 200, response.status;
         assertEquals 'application/xml', response.contentType;
@@ -213,10 +223,14 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     @Test
     void updateReturnValueDefinitionJson() {
+        versions.each { version -> updateReturnValueDefinitionJson(version) }
+    }
+
+    def updateReturnValueDefinitionJson(version) {
         setAdminUser();
         // 1) Do the update.
         def responsePut = client.put(
-                path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20',
+                path: "/${version}/definitions/11D3548466F2/returnvalues/6008F958CE20",
                 body: ['type': 'drink',
                         'unit': 'bbl',
                         'perUnit': 'day'],
@@ -238,17 +252,22 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
     @Test
     void defaultType() {
+        versions.each { version -> defaultType(version) }
+    }
+
+    def defaultType(version) {
+
         setAdminUser()
 
-        // Get the current default type
-        def responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        // Get the current default type.
+        def responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'true', responseGet.data.returnValueDefinition['default']
 
-        // 1. Handle POST
-        // Add a new return value definition with default type true
+        // 1. Handle POST.
+        // Add a new return value definition with default type true.
         def responsePost = client.post(
-                path: "/3.2/definitions/11D3548466F2/returnvalues",
+                path: "/${version}/definitions/11D3548466F2/returnvalues",
                 body: ['type': 'new',
                         'unit': 'kg',
                         'perUnit': 'day',
@@ -257,27 +276,22 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 201, responsePost.status
-
         def location = responsePost.headers['Location'].value
-
-        // Add new RVD to local state.
-        returnValueDefinitionUids << location.split('/')[7]
-        returnValueDefinitionTypes << 'new'
 
         // Check the new one is default.
         responseGet = client.get(path: location + ';full', contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'true', responseGet.data.returnValueDefinition['default']
 
-        // Check the old one is no longer default
-        responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        // Check the old one is no longer default.
+        responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'false', responseGet.data.returnValueDefinition['default']
 
-        // 2. Handle PUT
-        // Update the old one to be the default again
+        // 2. Handle PUT.
+        // Update the old one to be the default again.
         def responsePut = client.put(
-                path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C',
+                path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C",
                 body: ['type': 'co2',
                         'unit': 'kg',
                         'perUnit': 'month',
@@ -287,14 +301,27 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                 contentType: JSON)
         assertEquals 201, responsePut.status
 
-        // Check it is now default
+        // Check new one is now not the default.
         responseGet = client.get(path: location + ';full', contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'false', responseGet.data.returnValueDefinition['default']
 
-        responseGet = client.get(path: '/3.2/definitions/11D3548466F2/returnvalues/B0268549CD9C;full', contentType: JSON)
+        // Check old one is now the default.
+        responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
         assertEquals 200, responseGet.status
         assertEquals 'true', responseGet.data.returnValueDefinition['default']
+
+        // 3. Handle DELETE.
+        // Then delete the new one.
+        def responseDelete = client.delete(path: location);
+        assertEquals 200, responseDelete.status;
+        // We should get a 404 here.
+        try {
+            client.get(path: location);
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
+        }
     }
 
     @Test
@@ -309,24 +336,58 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         updateReturnValueDefinitionFieldJson('6008F958CE20', 'valueDefinition', 'typeMismatch', 'AAAAAAAAAAAA');
     }
 
-    void updateReturnValueDefinitionFieldJson(uid, field, code, value) {
-        try {
-            def body = [:];
-            body[field] = value;
-            client.put(
-                    path: '/3.1/definitions/11D3548466F2/returnvalues/' + uid,
-                    body: body,
-                    requestContentType: URLENC,
-                    contentType: JSON);
-            fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
-        } catch (HttpResponseException e) {
-            def response = e.response;
-            assertEquals 400, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'INVALID', response.data.status;
-            assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-            assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+    /**
+     * Submits a single Return Value Definition field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     */
+    def updateReturnValueDefinitionFieldJson(uid, field, code, value) {
+        updateReturnValueDefinitionFieldJson(uid, field, code, value, 3.0)
+    }
+
+    /**
+     * Submits a single Return Value Definition field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     */
+    def updateReturnValueDefinitionFieldJson(uid, field, code, value, since) {
+        versions.each { version -> updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) };
+    }
+
+    /**
+     * Submits a single Return Value Definition field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     * @param version version to test
+     */
+    def updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) {
+        if (version >= since) {
+            try {
+                def body = [:];
+                body[field] = value;
+                client.put(
+                        path: "/${version}/definitions/11D3548466F2/returnvalues/${uid}",
+                        body: body,
+                        requestContentType: URLENC,
+                        contentType: JSON);
+                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+            } catch (HttpResponseException e) {
+                def response = e.response;
+                assertEquals 400, response.status;
+                assertEquals 'application/json', response.contentType;
+                assertTrue response.data instanceof net.sf.json.JSON;
+                assertEquals 'INVALID', response.data.status;
+                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+            }
         }
     }
 }
