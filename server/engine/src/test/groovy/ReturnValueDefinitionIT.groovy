@@ -7,7 +7,6 @@ import static org.junit.Assert.*
  * Tests for the Return Value Definition API.
  *
  * TODO: Document Return Value Definition API fully here. See https://jira.amee.com/browse/PL-9550 to vote on this task.
- * TODO: Some tests here fail sometimes. See: https://jira.amee.com/browse/PL-10428
  */
 class ReturnValueDefinitionIT extends BaseApiTest {
 
