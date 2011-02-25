@@ -34,8 +34,15 @@ public class SearchFilterValidationHelper_3_2_0 extends ValidationHelper impleme
     @Override
     protected void registerCustomEditors(DataBinder dataBinder) {
         String[] fields = {
-                "name", "wikiName", "path", "provenance", "authority", "wikiDoc",
-                "itemDefinitionName", "label", "tags"};
+                "name",
+                "wikiName",
+                "path",
+                "provenance",
+                "authority",
+                "wikiDoc",
+                "itemDefinitionName",
+                "label",
+                "tags"};
         Map<String, Float> boosts = new HashMap<String, Float>();
         boosts.put("wikiName", 10.0f);
         boosts.put("tags", 10.0f);
