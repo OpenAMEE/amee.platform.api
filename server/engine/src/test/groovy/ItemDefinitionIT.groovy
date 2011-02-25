@@ -312,7 +312,7 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     /**
-     * Submits a single  Item Definition field value and tests the result. An error is expected.
+     * Submits a single Item Definition field value and tests the result. An error is expected.
      *
      * @param field that is being updated
      * @param code expected upon error
@@ -324,7 +324,7 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     /**
-     * Submits a single  Item Definition field value and tests the result. An error is expected.
+     * Submits a single Item Definition field value and tests the result. An error is expected.
      *
      * @param field that is being updated
      * @param code expected upon error
@@ -333,28 +333,30 @@ class ItemDefinitionIT extends BaseApiTest {
      * @param version version to test
      */
     def updateItemDefinitionFieldJson(field, code, value, since, version) {
-        try {
-            def body = [(field): value]
-            client.put(
-                    path: "/${version}/definitions/BB33FDB20228",
-                    body: body,
-                    requestContentType: URLENC,
-                    contentType: JSON)
-            fail "Response status code should have been 400 (${field}, ${code})."
-        } catch (HttpResponseException e) {
-            def response = e.response
-            assertEquals 400, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'INVALID', response.data.status
-
-            // NOTE: 'usages' becomes 'usagesString' on the server-side.
-            def fieldErrors = response.data.validationResult.errors.collect {it.field};
-            if (field == 'usages') {
-                field = 'usagesString'
+        if (version >= since) {
+            try {
+                def body = [(field): value]
+                client.put(
+                        path: "/${version}/definitions/BB33FDB20228",
+                        body: body,
+                        requestContentType: URLENC,
+                        contentType: JSON)
+                fail "Response status code should have been 400 (${field}, ${code})."
+            } catch (HttpResponseException e) {
+                def response = e.response
+                assertEquals 400, response.status
+                assertEquals 'application/json', response.contentType
+                assertTrue response.data instanceof net.sf.json.JSON
+                assertEquals 'INVALID', response.data.status
+    
+                // NOTE: 'usages' becomes 'usagesString' on the server-side.
+                def fieldErrors = response.data.validationResult.errors.collect {it.field};
+                if (field == 'usages') {
+                    field = 'usagesString'
+                }
+                assertEquals([field], fieldErrors)
+                assertEquals([code], response.data.validationResult.errors.collect {it.code})
             }
-            assertEquals([field], fieldErrors)
-            assertEquals([code], response.data.validationResult.errors.collect {it.code})
         }
     }
 }
