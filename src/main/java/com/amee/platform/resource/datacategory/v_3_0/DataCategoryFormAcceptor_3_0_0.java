@@ -1,10 +1,7 @@
 package com.amee.platform.resource.datacategory.v_3_0;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.MissingAttributeException;
-import com.amee.base.resource.NotFoundException;
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResponseHelper;
+import com.amee.base.resource.*;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
@@ -46,6 +43,8 @@ public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor impleme
                 // Authorized?
                 resourceAuthorizationService.ensureAuthorizedForModify(
                         requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+                // Nobody is allowed to modify the root DataCategory.
+                checkDataCategoryIsNotRoot(dataCategory);
                 // Handle the DataCategory update (entity updated via validation binding).
                 DataCategoryResource.DataCategoryValidationHelper validationHelper = getValidationHelper(requestWrapper);
                 validationHelper.setDataCategory(dataCategory);
@@ -60,6 +59,17 @@ public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor impleme
             }
         } else {
             throw new MissingAttributeException("categoryIdentifier");
+        }
+    }
+
+    /**
+     * Check that the {@link DataCategory} is not the root (has an empty path).
+     *
+     * @param dataCategory to check
+     */
+    private void checkDataCategoryIsNotRoot(DataCategory dataCategory) {
+        if (dataCategory.getPath().isEmpty()) {
+            throw new NotAuthorizedException("Not authorized to modify root DataCategory.");
         }
     }
 }
