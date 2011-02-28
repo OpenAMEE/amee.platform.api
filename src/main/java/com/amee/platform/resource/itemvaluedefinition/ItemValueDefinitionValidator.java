@@ -26,6 +26,14 @@ public class ItemValueDefinitionValidator extends BaseValidator {
         return ItemValueDefinition.class.isAssignableFrom(clazz);
     }
 
+    // TODO: should not be empty
+    private void addValueDefintion() {
+        add(new ValidationSpecification()
+            .setName("valueDefinition")
+            .setAllowEmpty(true)
+        );
+    }
+
     private void addName() {
         add(new ValidationSpecification()
                 .setName("name")
