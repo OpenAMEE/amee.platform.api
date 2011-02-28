@@ -1,15 +1,18 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.resource.ResponseHelper;
+import com.amee.base.resource.ValidationResult;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
+import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
-import com.amee.service.data.DataService;
 import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.item.DataItemService;
 import org.apache.commons.logging.Log;
@@ -32,7 +35,7 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
     private InvalidationService invalidationService;
 
     @Autowired
-    private DataService dataService;
+    private ResourceService resourceService;
 
     @Autowired
     private DataItemService dataItemService;
@@ -50,30 +53,20 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
-        // Get DataCategory identifier.
-        String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (categoryIdentifier != null) {
-            // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(categoryIdentifier);
-            if (dataCategory != null) {
-                // Authorized?
-                resourceAuthorizationService.ensureAuthorizedForModify(
-                        requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
-                // DataCategory must have an ItemDefinition.
-                if (dataCategory.isItemDefinitionPresent()) {
-                    // Handle the DataItem submission.
-                    DataItem dataItem = new DataItem(dataCategory, dataCategory.getItemDefinition());
-                    dataItemService.persist(dataItem);
-                    return handle(requestWrapper, dataItem);
-                } else {
-                    // Validation failure as there is no ItemDefinition.
-                    throw new ValidationException(new ValidationResult(messageSource, "dataItem", "noItemDefinition"));
-                }
-            } else {
-                throw new NotFoundException();
-            }
+        // Get entities.
+        DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
+        // Authorized?
+        resourceAuthorizationService.ensureAuthorizedForModify(
+                requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+        // DataCategory must have an ItemDefinition.
+        if (dataCategory.isItemDefinitionPresent()) {
+            // Handle the DataItem submission.
+            DataItem dataItem = new DataItem(dataCategory, dataCategory.getItemDefinition());
+            dataItemService.persist(dataItem);
+            return handle(requestWrapper, dataItem);
         } else {
-            throw new MissingAttributeException("categoryIdentifier");
+            // Validation failure as there is no ItemDefinition.
+            throw new ValidationException(new ValidationResult(messageSource, "dataItem", "noItemDefinition"));
         }
     }
 
