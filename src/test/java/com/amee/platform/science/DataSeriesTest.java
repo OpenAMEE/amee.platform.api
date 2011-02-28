@@ -1,11 +1,13 @@
 package com.amee.platform.science;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,10 +20,18 @@ public class DataSeriesTest {
     DataPoint rhp;
     float rhf;
 
+    /**
+     * The original DELTA value for test accuracy.
+     */
     private static final double DELTA = 0.000001;
 
     @Before
     public void init() {
+
+        // Force time zone to UTC.
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        TimeZone.setDefault(timeZone);
+        DateTimeZone.setDefault(DateTimeZone.forTimeZone(timeZone));
 
         now = new DateTime();
 
