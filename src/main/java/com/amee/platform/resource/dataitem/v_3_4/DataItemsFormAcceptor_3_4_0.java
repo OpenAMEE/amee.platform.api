@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemsAcceptor_3_4_0 implements DataItemsResource.FormAcceptor {
+public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAcceptor {
 
     private final Log log = LogFactory.getLog(getClass());
 

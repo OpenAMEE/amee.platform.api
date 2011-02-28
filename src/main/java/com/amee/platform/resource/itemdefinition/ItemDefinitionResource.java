@@ -9,14 +9,14 @@ import java.util.Map;
 
 public interface ItemDefinitionResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
         public void handle(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
 
         public ItemDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
         public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -35,10 +35,11 @@ public interface ItemDefinitionResource {
         public Object getObject();
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
-    }
+    interface FormAcceptor extends ResourceAcceptor {}
 
-    public static interface ItemDefinitionValidator {
+    interface Remover extends ResourceRemover {}
+
+    interface ItemDefinitionValidator {
 
         public boolean isValid(Map<String, String> queryParameters);
 
