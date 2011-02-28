@@ -554,6 +554,34 @@ class CategoryIT extends BaseApiTest {
     }
 
     /**
+     * Tests that the root Data Category cannot be updated via the API.
+     */
+    @Test
+    void updateRootCategoryJson() {
+        versions.each { version -> updateRootCategoryJson(version) };
+    }
+
+    def updateRootCategoryJson(version) {
+        setAdminUser();
+        try {
+            // Should not be allowed to update the root Data Category.
+            client.put(
+                    path: "/${version}/categories/Root",
+                    body: [
+                            'path': 'bad',
+                            'provenance': 'bad',
+                            'wikiDoc': 'bad'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            fail 'Response status code should have been 403';
+        } catch (HttpResponseException e) {
+            // Expect a 403.
+            def response = e.response;
+            assertEquals 403, response.status;
+        }
+    }
+
+    /**
      * Tests the validation rules for the Data Category name field.
      *
      * The rules are as follows:
