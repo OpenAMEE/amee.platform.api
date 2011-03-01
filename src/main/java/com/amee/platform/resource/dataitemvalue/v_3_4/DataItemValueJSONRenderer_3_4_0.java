@@ -2,6 +2,7 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
@@ -47,22 +48,24 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
     @Override
     public void addBasic() {
         ResponseHelper.put(dataItemValueObj, "uid", dataItemValue.getUid());
+        ResponseHelper.put(dataItemValueObj, "history", dataItemValue.isHistoryAvailable());
         ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
         if (NumberValue.class.isAssignableFrom(dataItemValue.getClass())) {
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
                 ResponseHelper.put(dataItemValueObj, "unit", nv.getUnit().toString());
-            }
-            if (nv.hasPerUnit()) {
-                ResponseHelper.put(dataItemValueObj, "perUnit", nv.getPerUnit().toString());
-                ResponseHelper.put(dataItemValueObj, "compoundUnit", nv.getCompoundUnit().toString());
+                if (nv.hasPerUnit()) {
+                    ResponseHelper.put(dataItemValueObj, "perUnit", nv.getPerUnit().toString());
+                    ResponseHelper.put(dataItemValueObj, "compoundUnit", nv.getCompoundUnit().toString());
+                }
             }
         }
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
             HistoryValue hv = (HistoryValue) dataItemValue;
             ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(hv.getStartDate().getTime()));
+        } else {
+            ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(IDataItemService.EPOCH.getTime()));
         }
-        ResponseHelper.put(dataItemValueObj, "history", dataItemValue.isHistoryAvailable());
     }
 
     @Override

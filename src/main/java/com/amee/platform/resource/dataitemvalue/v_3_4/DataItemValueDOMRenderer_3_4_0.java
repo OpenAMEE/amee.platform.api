@@ -1,6 +1,7 @@
 package com.amee.platform.resource.dataitemvalue.v_3_4;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
@@ -49,15 +50,17 @@ public class DataItemValueDOMRenderer_3_4_0 implements DataItemValueResource.Ren
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
                 dataItemValueElem.addContent(new Element("Unit").setText(nv.getUnit().toString()));
-            }
-            if (nv.hasPerUnit()) {
-                dataItemValueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
-                dataItemValueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
+                if (nv.hasPerUnit()) {
+                    dataItemValueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
+                    dataItemValueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
+                }
             }
         }
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
             HistoryValue hv = (HistoryValue) dataItemValue;
             dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(hv.getStartDate().getTime())));
+        } else {
+            dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(IDataItemService.EPOCH.getTime())));
         }
     }
 

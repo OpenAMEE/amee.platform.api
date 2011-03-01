@@ -25,10 +25,10 @@ public class DataItemJSONRenderer_3_0_0 extends DataItemJSONRenderer_3_1_0 {
             NumberValue nv = (NumberValue) itemValue;
             if (nv.hasUnit()) {
                 ResponseHelper.put(valueObj, "unit", nv.getUnit().toString());
-            }
-            if (nv.hasPerUnit()) {
-                ResponseHelper.put(valueObj, "perUnit", nv.getPerUnit().toString());
-                ResponseHelper.put(valueObj, "compoundUnit", nv.getCompoundUnit().toString());
+                if (nv.hasPerUnit()) {
+                    ResponseHelper.put(valueObj, "perUnit", nv.getPerUnit().toString());
+                    ResponseHelper.put(valueObj, "compoundUnit", nv.getCompoundUnit().toString());
+                }
             }
         }
         valuesArr.put(valueObj);
