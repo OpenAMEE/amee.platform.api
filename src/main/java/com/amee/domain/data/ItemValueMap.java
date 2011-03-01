@@ -120,7 +120,7 @@ public class ItemValueMap {
      * immediately before startDate.
      *
      * @param itemValues the item values sorted by startDate, most recent first (descending).
-     * @param startDate
+     * @param startDate - the active {@link BaseItemValue} will be that starting immediately prior-to or on this date.
      * @return the discovered BaseItemValue, or null if not found
      */
     private static BaseItemValue find(SortedSet<BaseItemValue> itemValues, Date startDate) {
@@ -141,7 +141,9 @@ public class ItemValueMap {
                 selected = itemValue;
             }
         }
-        selected.setHistoryAvailable(itemValues.size() > 1);
+        if (selected != null) {
+            selected.setHistoryAvailable(itemValues.size() > 1);
+        }
         return selected;
     }
 
