@@ -3,8 +3,10 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
+import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesFilter;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
+import com.amee.platform.science.StartEndDate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addStartDate() {
         allowedFields.add("startDate");
+        add(StartEndDate.class, "startDate", new StartEndDateEditor());
         add(new ValidationSpecification()
                 .setName("startDate")
                 .setAllowEmpty(true));
