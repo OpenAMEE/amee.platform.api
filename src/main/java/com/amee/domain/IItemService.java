@@ -27,6 +27,8 @@ public interface IItemService {
 
     public BaseItemValue getItemValue(BaseItem item, String identifier, Date startDate);
 
+    public BaseItemValue getByUid(BaseItem item, final String uid);
+
     public BaseItemValue getItemValue(BaseItem item, String identifier);
 
     public ItemValueMap getItemValuesMap(BaseItem item);
