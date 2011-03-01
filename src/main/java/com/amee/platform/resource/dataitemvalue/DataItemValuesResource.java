@@ -10,6 +10,9 @@ public interface DataItemValuesResource {
     public static interface Builder extends ResourceBuilder {
     }
 
+    /**
+     * Note that this Renderer is also used by DataItemValueHistoryResource.
+     */
     public static interface Renderer extends ResourceRenderer {
 
         public void newDataItemValue(DataItemValueResource.Renderer renderer);

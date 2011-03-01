@@ -5,6 +5,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
@@ -39,10 +40,11 @@ public class DataItemValueBuilder_3_4_0 implements DataItemValueResource.Builder
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
-        BaseDataItemValue dataItemValue = resourceService.getDataItemValue(requestWrapper, dataItem);
-        // Authorized?
+        ItemValueDefinition itemValueDefinition = resourceService.getItemValueDefinition(requestWrapper, dataItem);
+        BaseDataItemValue dataItemValue = resourceService.getDataItemValue(requestWrapper, dataItem, itemValueDefinition);
+        // Authorized for DataItem?
         resourceAuthorizationService.ensureAuthorizedForBuild(
-                requestWrapper.getAttributes().get("activeUserUid"), dataItemValue);
+                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
         // Handle the DataItem.
         handle(requestWrapper, dataItemValue);
         DataItemValueResource.Renderer renderer = getRenderer(requestWrapper);
