@@ -218,7 +218,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForFirstDateJson() {
-        getDataItemValueJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
+        getDataItemValueJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST');
     }
 
     /**
@@ -226,9 +226,16 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForLastDateJson() {
-        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
+        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST');
     }
 
+    /**
+     * Test fetching DataItemValue by UID.
+     */
+    @Test
+    void getDataItemValueByUidJson() {
+        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', '289CCD5394AC');
+    }
 
     def getDataItemValueJson(uid, value, startDate, path) {
         versions.each { version -> getDataItemValueJson(version, uid, value, startDate, path) }
