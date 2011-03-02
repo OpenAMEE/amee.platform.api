@@ -100,16 +100,17 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
     @Override
     public void handle(RequestWrapper requestWrapper, DataItemValuesFilter filter) {
 
+        // Get the item values.
+        ResultsWrapper<BaseDataItemValue> resultsWrapper = dataItemService.getAllItemValues(filter);
+
         // Setup Renderer.
         DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
-
-        // Get the item values.
-        ResultsWrapper<BaseDataItemValue> results = dataItemService.getAllItemValues(filter);
+        renderer.setTruncated(resultsWrapper.isTruncated());
 
         // Add Data Item Values to Renderer and build.
         DataItemValueResource.Builder dataItemValueBuilder = getDataItemValueBuilder(requestWrapper);
-        for (BaseDataItemValue itemValue : results.getResults()) {
+        for (BaseDataItemValue itemValue : resultsWrapper.getResults()) {
             dataItemValueBuilder.handle(requestWrapper, itemValue);
             renderer.newDataItemValue(dataItemValueBuilder.getRenderer(requestWrapper));
         }

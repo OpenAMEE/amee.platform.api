@@ -40,6 +40,11 @@ public class DataItemValuesJSONRenderer_3_4_0 implements DataItemValuesResource.
     }
 
     @Override
+    public void setTruncated(boolean truncated) {
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
+    }
+
+    @Override
     public String getMediaType() {
         return "application/json";
     }

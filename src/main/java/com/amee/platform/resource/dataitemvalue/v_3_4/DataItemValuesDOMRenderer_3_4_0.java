@@ -34,6 +34,11 @@ public class DataItemValuesDOMRenderer_3_4_0 implements DataItemValuesResource.R
     }
 
     @Override
+    public void setTruncated(boolean truncated) {
+        valuesElem.setAttribute("truncated", "" + truncated);
+    }
+
+    @Override
     public String getMediaType() {
         return "application/xml";
     }

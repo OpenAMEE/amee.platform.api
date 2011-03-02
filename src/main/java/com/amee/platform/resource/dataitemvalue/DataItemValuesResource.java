@@ -26,6 +26,8 @@ public interface DataItemValuesResource {
     public static interface Renderer extends ResourceRenderer {
 
         public void newDataItemValue(DataItemValueResource.Renderer renderer);
+
+        public void setTruncated(boolean truncated);
     }
 
     public static interface DataItemValuesFilterValidator {
