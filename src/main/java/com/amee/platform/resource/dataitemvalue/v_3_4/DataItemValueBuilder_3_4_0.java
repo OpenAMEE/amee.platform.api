@@ -37,14 +37,17 @@ public class DataItemValueBuilder_3_4_0 implements DataItemValueResource.Builder
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get entities.
+
+        // Get resource entities for this request.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
         ItemValueDefinition itemValueDefinition = resourceService.getItemValueDefinition(requestWrapper, dataItem);
         BaseDataItemValue dataItemValue = resourceService.getDataItemValue(requestWrapper, dataItem, itemValueDefinition);
+
         // Authorized for DataItem?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+
         // Handle the DataItem.
         handle(requestWrapper, dataItemValue);
         DataItemValueResource.Renderer renderer = getRenderer(requestWrapper);
