@@ -3,6 +3,7 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
+import com.amee.domain.IDataItemService;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.platform.science.StartEndDate;
@@ -10,6 +11,7 @@ import com.amee.service.item.DataItemValuesFilter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +22,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
 
     protected DataItemValuesFilter object;
     protected Set<String> allowedFields = new HashSet<String>();
+    private Date defaultStartDate = new Date();
 
     public DataItemValuesFilterValidator_3_4_0() {
         super();
@@ -38,7 +41,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addStartDate() {
         allowedFields.add("startDate");
-        add(StartEndDate.class, "startDate", new StartEndDateEditor());
+        add(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
         add(new ValidationSpecification()
                 .setName("startDate")
                 .setAllowEmpty(true));
@@ -49,7 +52,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        add(StartEndDate.class, "endDate", new StartEndDateEditor());
+        add(StartEndDate.class, "endDate", new StartEndDateEditor(IDataItemService.Y2038));
         add(new ValidationSpecification()
                 .setName("endDate")
                 .setAllowEmpty(true));
@@ -78,5 +81,15 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
     @Override
     public void setObject(DataItemValuesFilter object) {
         this.object = object;
+    }
+
+    @Override
+    public Date getDefaultStartDate() {
+        return defaultStartDate;
+    }
+
+    @Override
+    public void setDefaultStartDate(Date defaultStartDate) {
+        this.defaultStartDate = defaultStartDate;
     }
 }

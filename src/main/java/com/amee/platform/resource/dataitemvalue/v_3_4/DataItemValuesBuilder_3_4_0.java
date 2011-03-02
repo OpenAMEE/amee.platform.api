@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
 @Scope("prototype")
 @Since("3.4.0")
@@ -44,18 +46,26 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        // Get entities.
+
+        // Get resource entities for this request.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
         // Authorized for DataItem?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
-        // Create filter and validator.
+
+        // Create filter.
         DataItemValuesFilter filter = new DataItemValuesFilter();
+        filter.setStartDate(new Date());
+
+        // Create validator.
         DataItemValuesResource.DataItemValuesFilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
+        validator.setDefaultStartDate(new Date());
         validator.initialise();
-        // Do the validation.
+
+        // Is the filter valid?
         if (validator.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, dataItem, filter);
             DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);

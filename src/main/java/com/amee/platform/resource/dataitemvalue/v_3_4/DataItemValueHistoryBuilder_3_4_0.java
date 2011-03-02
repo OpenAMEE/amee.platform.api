@@ -6,6 +6,7 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -71,10 +72,12 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
         DataItemValuesFilter filter = new DataItemValuesFilter();
         filter.setDataItem(dataItem);
         filter.setItemValueDefinition(itemValueDefinition);
+        filter.setStartDate(IDataItemService.EPOCH);
 
-        // Crate validator.
+        // Create validator.
         DataItemValuesResource.DataItemValuesFilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
+        validator.setDefaultStartDate(IDataItemService.EPOCH);
         validator.initialise();
 
         // Is the filter valid?

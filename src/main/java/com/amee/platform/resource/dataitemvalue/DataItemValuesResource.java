@@ -5,6 +5,7 @@ import com.amee.base.validation.ValidationException;
 import com.amee.domain.item.data.DataItem;
 import com.amee.service.item.DataItemValuesFilter;
 
+import java.util.Date;
 import java.util.Map;
 
 public interface DataItemValuesResource {
@@ -39,6 +40,10 @@ public interface DataItemValuesResource {
         public DataItemValuesFilter getObject();
 
         public void setObject(DataItemValuesFilter object);
+
+        public Date getDefaultStartDate();
+
+        public void setDefaultStartDate(Date defaultStartDate);
 
         public ValidationResult getValidationResult();
     }

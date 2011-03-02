@@ -4,8 +4,20 @@ import com.amee.domain.IDataItemService;
 import com.amee.platform.science.StartEndDate;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Date;
 
 public class StartEndDateEditor extends PropertyEditorSupport {
+
+    private Date defaultDate = null;
+
+    private StartEndDateEditor() {
+        super();
+    }
+
+    public StartEndDateEditor(Date defaultDate) {
+        this();
+        this.defaultDate = defaultDate;
+    }
 
     @Override
     public void setAsText(String text) {
@@ -20,7 +32,7 @@ public class StartEndDateEditor extends PropertyEditorSupport {
                 setValue(new StartEndDate(text));
             }
         } else {
-            setValue(null);
+            setValue(defaultDate);
         }
     }
 }
