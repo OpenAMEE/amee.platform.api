@@ -16,8 +16,118 @@ class ItemValueDefinitionIT extends BaseApiTest {
     static def versions = [3.0, 3.1, 3.4]
 
     @Test
-    @Ignore("Item Value Definition POST not implemented in API")
-    void createItemValueDefinition() {
+    void createDeleteItemValueDefinition() {
+        versions.each { version -> createDeleteItemValueDefinition(version) }
+    }
+
+    def createDeleteItemValueDefinition(version) {
+        if (version >= 3.4) {
+            setAdminUser()
+
+            // Create a new ItemValueDefinition
+            def responsePost = client.post(
+                path: '/3.4/definitions/11D3548466F2/values',
+                body: ['valueDefinition': '45433E48B39F',
+                    'name': 'test',
+                    'path': 'foo',
+                    'value': 'true',
+                    'choices': 'true,false',
+                    'fromProfile': 'true',
+                    'fromData': 'true',
+                    'unit': 'kg',
+                    'perUnit': 'month',
+                    'apiVersions': '1.0,2.0'],
+                requestContentType: URLENC,
+                contentType: JSON)
+            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
+            // Get the new ItemValueDefinition
+            def responseGet = client.get(
+                path: "${location};full",
+                contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'test', responseGet.data.itemValueDefinition.name
+            assertEquals 'foo', responseGet.data.itemValueDefinition.path
+            assertEquals 'true', responseGet.data.itemValueDefinition.value
+            assertEquals 'true,false', responseGet.data.itemValueDefinition.choices
+            assertTrue responseGet.data.itemValueDefinition.fromProfile
+            assertTrue responseGet.data.itemValueDefinition.fromData
+            assertEquals 'kg', responseGet.data.itemValueDefinition.unit
+            assertEquals 'month', responseGet.data.itemValueDefinition.perUnit
+            assertEquals 2, responseGet.data.itemValueDefinition.versions.size()
+            assertEquals '1.0', responseGet.data.itemValueDefinition.versions[0].version
+            assertEquals '2.0', responseGet.data.itemValueDefinition.versions[1].version
+
+            // Delete it
+            def responseDelete = client.delete(path: location)
+            assertEquals 200, responseDelete.status
+
+            // Should get a 404 here
+            try {
+                client.get(path: location)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
+        }
+    }
+
+    def createDeleteItemValueDefinitionXml(version) {
+        if (version >= 3.4) {
+            setAdminUser()
+
+            // Create a new ItemValueDefinition
+            def responsePost = client.post(
+                path: '/3.4/definitions/11D3548466F2/values',
+                body: itemValueDefinitionNewXml(),
+                requestContentType: XML,
+                contentType: XML)
+            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
+            // Get the new ItemValueDefinition
+            def responseGet = client.get(
+                path: "${location};full",
+                contentType: XML)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text()
+            assertEquals 'foo', responseGet.data.ItemValueDefinition.Path.text()
+            assertEquals '11D3548466F2', responseGet.data.ItemValueDefinition.ItemDefinition.@uid.text();
+            assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text()
+            assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text()
+            assertTrue responseGet.data.ItemValueDefinition.FromProfile.text()
+            assertTrue responseGet.data.ItemValueDefinition.FromData.text()
+            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text()
+            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text()
+            assertEquals 2, responseGet.data.ItemValueDefinition.Versions.Version.size()
+            assertEquals '1.0', responseGet.data.ItemValueDefinition.Versions.Version[0].text()
+            assertEquals '2.0', responseGet.data.ItemValueDefinition.Versions.Version[1].text()
+            def allUsages = responseGet.data.ItemValueDefinition.Usages.Usage;
+            assertEquals 2, allUsages.size();
+            assert ['usage2', 'usage3'] == allUsages.Name*.text();
+            assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
+            assert ['true', 'false'] == allUsages.@active*.text();
+
+            // Delete it
+            def responseDelete = client.delete(path: location)
+            assertEquals 200, responseDelete.status
+
+            // Should get a 404 here
+            try {
+                client.get(path: location)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
+        }
     }
 
     @Test
@@ -160,6 +270,34 @@ class ItemValueDefinitionIT extends BaseApiTest {
     }
 
     @Test
+    void updateItemValueDefinitionXml() {
+        versions.each { version -> updateItemValueDefinitionXml(version) }
+    }
+    
+    def updateItemValueDefinitionXml(version) {
+        if (version >= 3.1) {
+            setAdminUser()
+
+            def responsePut = client.put(
+                path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
+                body: itemValueDefinitionUpdateXml(),
+                requestContentType: XML,
+                contentType: XML)
+            assertEquals 201, responsePut.status
+
+            def responseGet = client.get(
+                path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
+                contentType: XML)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'New Name XML', responseGet.data.ItemValueDefinition.Name.text()
+            assertEquals 'newPathXml', responseGet.data.ItemValueDefinition.Path.text()
+            assertEquals 'New WikiDoc XML', responseGet.data.ItemValueDefinition.WikiDoc.text()
+        }
+    }
+
+    @Test
     void updateInvalidItemValueDefinition() {
         setAdminUser();
         updateItemValueDefinitionFieldJson('name', 'empty', '');
@@ -171,6 +309,10 @@ class ItemValueDefinitionIT extends BaseApiTest {
         updateItemValueDefinitionFieldJson('path', 'format', 'n o t v a l i d');
         updateItemValueDefinitionFieldJson('path', 'duplicate', 'onStandby');
         updateItemValueDefinitionFieldJson('wikiDoc', 'long', String.randomString(32768));
+        updateItemValueDefinitionFieldJson('unit', 'long', String.randomString(256));
+        updateItemValueDefinitionFieldJson('perUnit', 'long', String.randomString(256));
+        updateItemValueDefinitionFieldJson('value', 'long', String.randomString(256));
+        updateItemValueDefinitionFieldJson('choices', 'long', String.randomString(256));
     }
 
     /**
@@ -209,25 +351,62 @@ class ItemValueDefinitionIT extends BaseApiTest {
         if (version >= since) {
             try {
                 // Create form body.
-                def body = [:];
-                body[field] = value;
+                def body = [(field):value]
                 // Update IVD (64BC7A490F41 / 'Number Owned' / 'numberOwned').
                 client.put(
                         path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
                         body: body,
                         requestContentType: URLENC,
-                        contentType: JSON);
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+                        contentType: JSON)
+                fail "Response status code should have been 400 (${field}, ${code})."
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
-                def response = e.response;
-                assertEquals 400, response.status;
-                assertEquals 'application/json', response.contentType;
-                assertTrue response.data instanceof net.sf.json.JSON;
-                assertEquals 'INVALID', response.data.status;
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+                def response = e.response
+                assertEquals 400, response.status
+                assertEquals 'application/json', response.contentType
+                assertTrue response.data instanceof net.sf.json.JSON
+                assertEquals 'INVALID', response.data.status
+                assertTrue([field] == response.data.validationResult.errors.collect {it.field})
+                assertTrue([code] == response.data.validationResult.errors.collect {it.code})
             }
         }
+    }
+
+    def itemValueDefinitionUpdateXml() {
+        def ivd = '''\
+            <ItemValueDefinition>
+                <Name>New Name XML</Name>
+                <Path>newPathXml</Path>
+                <WikiDoc>New WikiDoc XML</WikiDoc>
+            </ItemValueDefinition>
+        '''
+    }
+
+    def itemValueDefinitionNewXml() {
+        def ivd = '''\
+        <ItemValueDefinition>
+            <Name>test</Name>
+            <Path>foo</Path>
+            <Value>true</Value>
+            <ValueDefinition>45433E48B39F</ValueDefinition>
+            <Usages>
+              <Usage active="true">
+                <Name>byResponsibleArea</Name>
+                <Type>COMPULSORY</Type>
+              </Usage>
+              <Usage active="true">
+                <Name>totalEmissions</Name>
+                <Type>COMPULSORY</Type>
+              </Usage>
+            </Usages>
+            <Choices>true,false</Choices>
+            <Unit>kg</Unit>
+            <PerUnit>month</PerUnit>
+            <FromData>true</FromData>
+            <FromProfile>true</FromProfile>
+            <Versions>1.0,2.0</Versions>
+          </ItemValueDefinition>
+        </ItemValueDefinition>
+        '''
     }
 }
