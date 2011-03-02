@@ -1,5 +1,4 @@
 import groovyx.net.http.HttpResponseException
-import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -23,6 +22,7 @@ class ItemDefinitionIT extends BaseApiTest {
     // Page two when sorted by name, resultStart is 4 and resultLimit is 4.
     static def itemDefinitionNames2 = [
             'GHGElectricity',
+            'GHGP international grid electricity',
             'GHGUSSubregion',
             'Kitchen Generic'];
 

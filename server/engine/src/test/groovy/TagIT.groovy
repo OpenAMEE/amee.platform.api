@@ -26,6 +26,7 @@ class TagIT extends BaseApiTest {
             'DE5E8C70DB60',
             'ZBDV9V20SI2C',
             '5CECA47185F8',
+            '1B29E8DC98F0',
             '000FD23CD3A2',
             '001FD23CD3A2']
 
@@ -43,10 +44,11 @@ class TagIT extends BaseApiTest {
             'electricity',
             'Ecoinvent',
             'LCA',
+            'grid',
             'inc_tag_1',
             'inc_tag_2'];
 
-    def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 4, 6, 7];
+    def tagCounts = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 6, 7];
 
     def incTagUids = [
             '932FD23CD3A2',
@@ -78,6 +80,7 @@ class TagIT extends BaseApiTest {
             'DE5E8C70DB60',
             'ZBDV9V20SI2C',
             '5CECA47185F8',
+            '1B29E8DC98F0',
             '001FD23CD3A2']
 
     def excTagNames = [
@@ -90,9 +93,10 @@ class TagIT extends BaseApiTest {
             'electricity',
             'Ecoinvent',
             'LCA',
+            'grid',
             'inc_tag_2'];
 
-    def excTagCounts = [1, 1, 1, 1, 1, 2, 2, 2, 6, 7];
+    def excTagCounts = [1, 1, 1, 1, 1, 2, 2, 3, 3, 6, 7];
 
     @Test
     void getAllTagsJson() {
@@ -506,8 +510,8 @@ class TagIT extends BaseApiTest {
                     ['computer', 'electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
                     [1, 3, 1, 1, 1, 2, 1, 2], version);
             testTags(['excTags': 'test_tag_1'],
-                    ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'Ecoinvent', 'LCA', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste'],
-                    [1, 1, 1, 1, 1, 6, 7, 2, 2, 2, 2, 1, 1, 1, 1], version);
+                    ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'Ecoinvent', 'LCA', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste', 'grid'],
+                    [1, 1, 2, 1, 1, 6, 2, 3, 3, 1, 2, 1, 7, 1, 1, 1], version);
         }
         // Now delete the Tags.
         // NOTE: For < 3.2 this leaves database in odd state.

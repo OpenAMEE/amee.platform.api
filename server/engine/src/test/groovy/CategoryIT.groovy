@@ -14,13 +14,15 @@ class CategoryIT extends BaseApiTest {
             'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment',
             'Generic', 'Kitchen', 'Generic', 'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
             'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant',
-            'chlorine, gaseous, diaphragm cell, at plant', 'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm']
+            'chlorine, gaseous, diaphragm cell, at plant', 'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two',
+            'CO2 Benchmark Child', 'Embodied', 'Clm', 'Grid']
 
     static def categoryNamesExcEcoinvent = [
             'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking',
             'Entertainment', 'Generic', 'Kitchen', 'Generic', 'Business', 'Energy',
             'Electricity', 'US', 'Subregion', 'Waste',
-            'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm', 'LCA']
+            'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child', 'Embodied', 'Clm', 'LCA',
+            'Grid']
 
     static def categoryWikiNames = [
             'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment',
@@ -29,13 +31,15 @@ class CategoryIT extends BaseApiTest {
             'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics',
             'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant',
             'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
-            'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database']
+            'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied',
+            'CLM_food_life_cycle_database', 'Greenhouse_Gas_Protocol_international_electricity']
 
     static def categoryWikiNamesExcEcoinvent = [
             'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking',
             'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
             'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-            'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied', 'CLM_food_life_cycle_database', 'LCA']
+            'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child', 'Embodied',
+            'CLM_food_life_cycle_database', 'LCA', 'Greenhouse_Gas_Protocol_international_electricity']
 
     /**
      * Tests for creation, fetch and deletion of a Data Category using JSON responses.
@@ -358,7 +362,7 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
-        assertEquals 8, response.data.categories.size()
+        assertEquals 9, response.data.categories.size()
         // Should NOT be sorted
         assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) > 0
     }
@@ -380,7 +384,7 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         def allCategories = response.data.Categories.Category
-        assertEquals 8, allCategories.size()
+        assertEquals 9, allCategories.size()
         // Should NOT be sorted
         assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) > 0
     }
