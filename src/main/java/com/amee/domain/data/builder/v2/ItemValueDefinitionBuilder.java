@@ -97,11 +97,11 @@ public class ItemValueDefinitionBuilder implements Builder {
         element.appendChild(itemValueDefinition.getValueDefinition().getElement(document));
 
         if (itemValueDefinition.hasUnit()) {
-            element.appendChild(XMLUtils.getElement(document, "Unit", itemValueDefinition.getUnit()));
+            element.appendChild(XMLUtils.getElement(document, "Unit", itemValueDefinition.getUnit().toString()));
         }
 
         if (itemValueDefinition.hasPerUnit()) {
-            element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValueDefinition.getPerUnit()));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValueDefinition.getPerUnit().toString()));
         }
 
         element.appendChild(XMLUtils.getElement(document, "FromProfile", Boolean.toString(itemValueDefinition.isFromProfile())));

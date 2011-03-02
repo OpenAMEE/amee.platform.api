@@ -301,11 +301,19 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
         this.allowedRoles = allowedRoles;
     }
 
+    public void setPerUnit(AmountPerUnit perUnit) {
+        this.perUnit = perUnit.toString();
+    }
+
     public void setPerUnit(String perUnit) {
         if (perUnit == null) {
             perUnit = "";
         }
         this.perUnit = perUnit;
+    }
+
+    public void setUnit(AmountUnit unit) {
+        this.unit = unit.toString();
     }
 
     public void setUnit(String unit) {
@@ -316,33 +324,23 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     @Override
-    public String getUnit() {
-        return unit;
-    }
-
-    @Override
-    public AmountUnit getUnitAsAmountUnit() {
+    public AmountUnit getUnit() {
         return hasUnit() ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
     @Override
     public AmountUnit getCanonicalUnit() {
-        return getUnitAsAmountUnit();
+        return getUnit();
     }
 
     @Override
-    public String getPerUnit() {
-        return perUnit;
-    }
-
-    @Override
-    public AmountPerUnit getPerUnitAsAmountPerUnit() {
+    public AmountPerUnit getPerUnit() {
         return hasPerUnit() ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
-        return getPerUnitAsAmountPerUnit();
+        return getPerUnit();
     }
 
     @Override
@@ -364,16 +362,16 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public boolean isValidUnit(String unit) {
-        return isAnyUnit() || getUnitAsAmountUnit().isCompatibleWith(unit);
+        return isAnyUnit() || getUnit().isCompatibleWith(unit);
     }
 
     public boolean isValidPerUnit(String perUnit) {
-        return isAnyPerUnit() || getPerUnitAsAmountPerUnit().isCompatibleWith(perUnit);
+        return isAnyPerUnit() || getPerUnit().isCompatibleWith(perUnit);
     }
 
     @Override
     public AmountCompoundUnit getCompoundUnit() {
-        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
+        return getUnit().with(getPerUnit());
     }
 
     @Override

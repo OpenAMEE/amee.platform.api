@@ -102,7 +102,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public AmountUnit getCanonicalUnit() {
-        return getItemValueDefinition().getUnitAsAmountUnit();
+        return getItemValueDefinition().getUnit();
     }
 
     @Override
@@ -116,17 +116,17 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     public boolean hasPerTimeUnit() {
-        return hasPerUnit() && getPerUnitAsAmountPerUnit().isTime();
+        return hasPerUnit() && getPerUnit().isTime();
     }
 
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
-        return getItemValueDefinition().getPerUnitAsAmountPerUnit();
+        return getItemValueDefinition().getPerUnit();
     }
 
     @Override
     public AmountCompoundUnit getCompoundUnit() {
-        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
+        return getUnit().with(getPerUnit());
     }
 
     @Override
@@ -135,13 +135,8 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     @Override
-    public String getUnit() {
-        return unit;
-    }
-
-    @Override
-    public AmountUnit getUnitAsAmountUnit() {
-        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnitAsAmountUnit();
+    public AmountUnit getUnit() {
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnit();
     }
 
     public void setUnit(String unit) throws IllegalArgumentException {
@@ -155,12 +150,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     @Override
-    public String getPerUnit() {
-        return perUnit;
-    }
-
-    @Override
-    public AmountPerUnit getPerUnitAsAmountPerUnit() {
+    public AmountPerUnit getPerUnit() {
         if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
                 return AmountPerUnit.valueOf(getProfileItem().getDuration());
@@ -168,7 +158,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
                 return AmountPerUnit.valueOf(perUnit);
             }
         } else {
-            return getItemValueDefinition().getPerUnitAsAmountPerUnit();
+            return getItemValueDefinition().getPerUnit();
         }
     }
 

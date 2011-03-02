@@ -91,8 +91,8 @@ public class ItemValueBuilder implements Builder {
         element.appendChild(XMLUtils.getElement(document, "Value", itemValue.getValueAsString()));
         if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
             NumberValue numberValue = (NumberValue) itemValue;
-            element.appendChild(XMLUtils.getElement(document, "Unit", numberValue.getUnit()));
-            element.appendChild(XMLUtils.getElement(document, "PerUnit", numberValue.getPerUnit()));
+            element.appendChild(XMLUtils.getElement(document, "Unit", numberValue.getUnit().toString()));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", numberValue.getPerUnit().toString()));
         } else {
             element.appendChild(XMLUtils.getElement(document, "Unit", ""));
             element.appendChild(XMLUtils.getElement(document, "PerUnit", ""));
