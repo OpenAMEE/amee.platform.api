@@ -77,6 +77,17 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
+    /**
+     * Gets the {@link BaseDataItemValue} for the current resource.
+     * <p/>
+     * TODO: This method is not designed for large amounts of DIVHs.
+     * TODO: See https://jira.amee.com/browse/PL-2685.
+     *
+     * @param requestWrapper      the current {@link RequestWrapper}
+     * @param dataItem            the current {@link DataItem}
+     * @param itemValueDefinition the current {@link ItemValueDefinition}
+     * @return
+     */
     @Override
     public BaseDataItemValue getDataItemValue(RequestWrapper requestWrapper, DataItem dataItem, ItemValueDefinition itemValueDefinition) {
         BaseDataItemValue dataItemValue;
@@ -87,28 +98,35 @@ public class ResourceServiceImpl implements ResourceService {
             ItemValueMap itemValueMap = dataItemService.getItemValuesMap(dataItem);
             if (itemValueIdentifier.equals("CURRENT")) {
                 // Current date.
-                dataItemValue = (BaseDataItemValue) itemValueMap.get(
-                        itemValueDefinition.getPath(),
-                        new Date());
+                dataItemValue =
+                        (BaseDataItemValue) itemValueMap.get(
+                                itemValueDefinition.getPath(),
+                                new Date());
             } else if (itemValueIdentifier.equals("FIRST")) {
                 // First possible date.
-                dataItemValue = (BaseDataItemValue) itemValueMap.get(
-                        itemValueDefinition.getPath(),
-                        IDataItemService.EPOCH);
+                dataItemValue =
+                        (BaseDataItemValue) itemValueMap.get(
+                                itemValueDefinition.getPath(),
+                                IDataItemService.EPOCH);
             } else if (itemValueIdentifier.equals("LAST")) {
                 // Use the last possible date.
-                dataItemValue = (BaseDataItemValue) itemValueMap.get(
-                        itemValueDefinition.getPath(),
-                        IDataItemService.Y2038);
+                dataItemValue =
+                        (BaseDataItemValue) itemValueMap.get(
+                                itemValueDefinition.getPath(),
+                                IDataItemService.Y2038);
             } else if (UidGen.INSTANCE_12.isValid(itemValueIdentifier)) {
                 // Treat identifier as a UID.
                 dataItemValue = (BaseDataItemValue) dataItemService.getByUid(dataItem, itemValueIdentifier);
+                if (dataItemValue != null) {
+                    dataItemValue.setHistoryAvailable(itemValueMap.getAll(itemValueDefinition.getPath()).size() > 1);
+                }
             } else {
                 // Try to parse identifier as a date.
                 try {
-                    dataItemValue = (BaseDataItemValue) itemValueMap.get(
-                            itemValueDefinition.getPath(),
-                            new StartEndDate(itemValueIdentifier));
+                    dataItemValue =
+                            (BaseDataItemValue) itemValueMap.get(
+                                    itemValueDefinition.getPath(),
+                                    new StartEndDate(itemValueIdentifier));
                 } catch (IllegalArgumentException e) {
                     // Could not parse date.
                     throw new ValidationException(new ValidationResult(messageSource, "itemValueIdentifier", "typeMismatch"));
