@@ -309,8 +309,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
         updateItemValueDefinitionFieldJson('path', 'format', 'n o t v a l i d');
         updateItemValueDefinitionFieldJson('path', 'duplicate', 'onStandby');
         updateItemValueDefinitionFieldJson('wikiDoc', 'long', String.randomString(32768));
-        updateItemValueDefinitionFieldJson('unit', 'long', String.randomString(256));
-        updateItemValueDefinitionFieldJson('perUnit', 'long', String.randomString(256));
         updateItemValueDefinitionFieldJson('value', 'long', String.randomString(256));
         updateItemValueDefinitionFieldJson('choices', 'long', String.randomString(256));
     }
