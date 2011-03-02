@@ -1,11 +1,14 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.validation.ValidationHelper;
-import com.amee.domain.APIVersion;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.ApiVersionSetEditor;
+import com.amee.platform.resource.PerUnitEditor;
+import com.amee.platform.resource.UnitEditor;
 import com.amee.platform.resource.ValueDefinitionEditor;
+import com.amee.platform.science.AmountPerUnit;
+import com.amee.platform.science.AmountUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -78,5 +81,7 @@ public class ItemValueDefinitionValidationHelper extends ValidationHelper {
     protected void registerCustomEditors(DataBinder dataBinder) {
         dataBinder.registerCustomEditor(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
         dataBinder.registerCustomEditor(Set.class, "apiVersions", apiVersionSetEditor);
+        dataBinder.registerCustomEditor(AmountUnit.class, "unit", new UnitEditor());
+        dataBinder.registerCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
     }
 }

@@ -5,6 +5,10 @@ import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.platform.resource.PerUnitEditor;
+import com.amee.platform.resource.UnitEditor;
+import com.amee.platform.science.AmountPerUnit;
+import com.amee.platform.science.AmountUnit;
 import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
@@ -68,18 +72,17 @@ public class ItemValueDefinitionValidatorTest {
     @Test
     public void testPathBadChars() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
+        ItemValueDefinition bad = getItemValueDefinition("test");
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
+        when(mockLocaleService.getLocaleNameValue(bad, "test"))
+                .thenReturn("test");
 
         BindException errorsBad = new BindException(bad, "bad");
-
-        bad.setName("name");
         bad.setPath("!!!!!");
 
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
+        assertEquals("Got unexpected field error", "path", errorsBad.getFieldError().getField());
     }
 
     @Test
@@ -88,13 +91,40 @@ public class ItemValueDefinitionValidatorTest {
     }
 
     @Test
-    public void testUnitGreaterThanMax() throws Exception {
-        greaterThanMax("unit", ItemValueDefinition.UNIT_MAX_SIZE);
+    public void testBadUnit() throws Exception {
+        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinition bad = getItemValueDefinition("test");
+
+        when(mockLocaleService.getLocaleNameValue(bad, "test"))
+                .thenReturn("test");
+
+        BindException errorsBad = new BindException(bad, "bad");
+        bad.setUnit("Not a real unit");
+
+        try {
+            validator.validate(bad, errorsBad);
+            fail("Should have thrown exception");
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     @Test
-    public void testPerUnitGreaterThanMax() throws Exception {
-        greaterThanMax("perUnit", ItemValueDefinition.UNIT_MAX_SIZE);
+    public void testBadPerUnit() throws Exception {
+        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinition bad = getItemValueDefinition("test");
+
+        when(mockLocaleService.getLocaleNameValue(bad, "test"))
+                .thenReturn("test");
+
+        BindException errorsBad = new BindException(bad, "good");
+        bad.setUnit("Not a real perUnit");
+        try {
+            validator.validate(bad, errorsBad);
+            fail("Should have thrown exception");
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     @Test
@@ -127,6 +157,8 @@ public class ItemValueDefinitionValidatorTest {
 
         // Set the field under test
         BeanWrapper bean = new BeanWrapperImpl(bad);
+        bean.registerCustomEditor(AmountUnit.class, "unit", new UnitEditor());
+        bean.registerCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
         bean.setPropertyValue(field, lessThanMin);
 
         // Validate the object
@@ -156,6 +188,8 @@ public class ItemValueDefinitionValidatorTest {
 
         // Set the field under test
         BeanWrapper bean = new BeanWrapperImpl(bad);
+        bean.registerCustomEditor(AmountUnit.class, "unit", new UnitEditor());
+        bean.registerCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
         bean.setPropertyValue(field, greaterThanMax);
 
         // Validate the object
