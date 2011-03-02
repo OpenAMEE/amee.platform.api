@@ -115,10 +115,10 @@ public class ItemValueDefinitionDOMRenderer_3_4_0 implements ItemValueDefinition
     @Override
     public void addUnits() {
         if (itemValueDefinition.hasUnit()) {
-            itemValueDefinitionElem.addContent(new Element("Unit").setText(itemValueDefinition.getUnit().toString()));
+            itemValueDefinitionElem.addContent(new Element("Unit").setText(itemValueDefinition.getUnitAsAmountUnit().toString()));
         }
         if (itemValueDefinition.hasPerUnit()) {
-            itemValueDefinitionElem.addContent(new Element("PerUnit").setText(itemValueDefinition.getPerUnit().toString()));
+            itemValueDefinitionElem.addContent(new Element("PerUnit").setText(itemValueDefinition.getPerUnitAsAmountPerUnit().toString()));
         }
     }
 

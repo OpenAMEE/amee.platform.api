@@ -116,10 +116,10 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
     @Override
     public void addUnits() {
         if (itemValueDefinition.hasUnit()) {
-            ResponseHelper.put(itemValueDefinitionObj, "unit", itemValueDefinition.getUnit().toString());
+            ResponseHelper.put(itemValueDefinitionObj, "unit", itemValueDefinition.getUnitAsAmountUnit().toString());
         }
         if (itemValueDefinition.hasPerUnit()) {
-            ResponseHelper.put(itemValueDefinitionObj, "perUnit", itemValueDefinition.getPerUnit().toString());
+            ResponseHelper.put(itemValueDefinitionObj, "perUnit", itemValueDefinition.getPerUnitAsAmountPerUnit().toString());
         }
     }
 

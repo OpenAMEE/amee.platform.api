@@ -98,10 +98,10 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
         if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
             NumberValue nv = (NumberValue) itemValue;
             if (nv.hasUnit()) {
-                ResponseHelper.put(valueObj, "unit", nv.getUnit().toString());
+                ResponseHelper.put(valueObj, "unit", nv.getUnitAsAmountUnit().toString());
             }
             if (nv.hasPerUnit()) {
-                ResponseHelper.put(valueObj, "perUnit", nv.getPerUnit().toString());
+                ResponseHelper.put(valueObj, "perUnit", nv.getPerUnitAsAmountPerUnit().toString());
                 ResponseHelper.put(valueObj, "compoundUnit", nv.getCompoundUnit().toString());
             }
         }
