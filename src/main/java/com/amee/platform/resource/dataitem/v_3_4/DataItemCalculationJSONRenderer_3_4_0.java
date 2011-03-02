@@ -102,9 +102,9 @@ public class DataItemCalculationJSONRenderer_3_4_0 implements DataItemCalculatio
             if (itemValueDefinition != null) {
                 if (itemValueDefinition.hasUnit()) {
                     ResponseHelper.put(valueObj, "unit", itemValueDefinition.getUnit());
-                }
-                if (itemValueDefinition.hasPerUnit()) {
-                    ResponseHelper.put(valueObj, "perUnit", itemValueDefinition.getPerUnit());
+                    if (itemValueDefinition.hasPerUnit()) {
+                        ResponseHelper.put(valueObj, "perUnit", itemValueDefinition.getPerUnit());
+                    }
                 }
             }
             // Add the object to the amounts array

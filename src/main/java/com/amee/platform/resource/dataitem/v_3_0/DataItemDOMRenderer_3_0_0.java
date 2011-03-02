@@ -24,10 +24,10 @@ public class DataItemDOMRenderer_3_0_0 extends DataItemDOMRenderer_3_1_0 {
             NumberValue nv = (NumberValue) itemValue;
             if (nv.hasUnit()) {
                 valueElem.addContent(new Element("Unit").setText(nv.getUnit().toString()));
-            }
-            if (nv.hasPerUnit()) {
-                valueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
-                valueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
+                if (nv.hasPerUnit()) {
+                    valueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
+                    valueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
+                }
             }
         }
         valuesElem.addContent(valueElem);
