@@ -11,10 +11,10 @@ import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
-import com.amee.platform.resource.dataitemvalue.DataItemValuesFilter;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.item.DataItemService;
+import com.amee.service.item.DataItemValuesFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -66,10 +66,8 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
         }
     }
 
-    protected void handle(
-            RequestWrapper requestWrapper,
-            DataItem dataItem,
-            DataItemValuesFilter filter) {
+    @Override
+    public void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter) {
         // Update DataItem effective startDate.
         dataItem.setEffectiveStartDate(filter.getStartDate());
         // Setup Renderer.
@@ -84,6 +82,7 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
         }
     }
 
+    @Override
     public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (renderer == null) {
             renderer = (DataItemValuesResource.Renderer) resourceBeanFinder.getRenderer(DataItemValuesResource.Renderer.class, requestWrapper);
@@ -91,11 +90,13 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
         return renderer;
     }
 
+    @Override
     public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper) {
         return (DataItemValueResource.Builder)
                 resourceBeanFinder.getBuilder(DataItemValueResource.Builder.class, requestWrapper);
     }
 
+    @Override
     public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper) {
         return (DataItemValuesResource.DataItemValuesFilterValidator)
                 resourceBeanFinder.getValidator(

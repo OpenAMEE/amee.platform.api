@@ -2,12 +2,22 @@ package com.amee.platform.resource.dataitemvalue;
 
 import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.item.data.DataItem;
+import com.amee.service.item.DataItemValuesFilter;
 
 import java.util.Map;
 
 public interface DataItemValuesResource {
 
     public static interface Builder extends ResourceBuilder {
+
+        public void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter);
+
+        public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+
+        public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
+
+        public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     /**
