@@ -26,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.4.0")
 public class ItemValueDefinitionsFormAcceptor_3_4_0 implements ItemValueDefinitionsResource.FormAcceptor {
 
-    private final Log log = LogFactory.getLog(getClass());
-
     @Autowired
     DefinitionService definitionService;
 
