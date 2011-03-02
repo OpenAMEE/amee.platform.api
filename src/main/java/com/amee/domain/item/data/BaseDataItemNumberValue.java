@@ -82,7 +82,7 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
 
     @Override
     public AmountUnit getCanonicalUnit() {
-        return getItemValueDefinition().getUnit();
+        return getItemValueDefinition().getUnitAsAmountUnit();
     }
 
     @Override
@@ -96,17 +96,17 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     }
 
     public boolean hasPerTimeUnit() {
-        return hasPerUnit() && getPerUnit().isTime();
+        return hasPerUnit() && getPerUnitAsAmountPerUnit().isTime();
     }
 
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
-        return getItemValueDefinition().getPerUnit();
+        return getItemValueDefinition().getPerUnitAsAmountPerUnit();
     }
 
     @Override
     public AmountCompoundUnit getCompoundUnit() {
-        return getUnit().with(getPerUnit());
+        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
     }
 
     @Override
@@ -115,8 +115,13 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     }
 
     @Override
-    public AmountUnit getUnit() {
-        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnit();
+    public String getUnit() {
+        return unit;
+    }
+
+    @Override
+    public AmountUnit getUnitAsAmountUnit() {
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnitAsAmountUnit();
     }
 
     public void setUnit(String unit) throws IllegalArgumentException {
@@ -130,8 +135,13 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     }
 
     @Override
-    public AmountPerUnit getPerUnit() {
-        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : getItemValueDefinition().getPerUnit();
+    public String getPerUnit() {
+        return perUnit;
+    }
+
+    @Override
+    public AmountPerUnit getPerUnitAsAmountPerUnit() {
+        return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : getItemValueDefinition().getPerUnitAsAmountPerUnit();
     }
 
     public void setPerUnit(String perUnit) throws IllegalArgumentException {

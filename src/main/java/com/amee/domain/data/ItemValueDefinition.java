@@ -44,15 +44,16 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pathable {
 
-    public final static int NAME_MIN_SIZE = 2;
-    public final static int NAME_MAX_SIZE = 255;
-    public final static int PATH_MIN_SIZE = 2;
-    public final static int PATH_MAX_SIZE = 255;
-    public final static int VALUE_MAX_SIZE = 255;
-    public final static int CHOICES_MAX_SIZE = 255;
-    public final static int ALLOWED_ROLES_MAX_SIZE = 255;
-    public final static int WIKI_DOC_MIN_SIZE = 0;
-    public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
+    public static final int NAME_MIN_SIZE = 2;
+    public static final int NAME_MAX_SIZE = 255;
+    public static final int PATH_MIN_SIZE = 2;
+    public static final int PATH_MAX_SIZE = 255;
+    public static final int VALUE_MAX_SIZE = 255;
+    public static final int ALLOWED_ROLES_MAX_SIZE = 255;
+    public static final int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
+    public static final int UNIT_MAX_SIZE = 255;
+    public static final int PER_UNIT_MAX_SIZE = 255;
+    public static final int CHOICES_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "ITEM_DEFINITION_ID")
@@ -315,23 +316,33 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     @Override
-    public AmountUnit getUnit() {
+    public String getUnit() {
+        return unit;
+    }
+
+    @Override
+    public AmountUnit getUnitAsAmountUnit() {
         return hasUnit() ? AmountUnit.valueOf(unit) : AmountUnit.ONE;
     }
 
     @Override
     public AmountUnit getCanonicalUnit() {
-        return getUnit();
+        return getUnitAsAmountUnit();
     }
 
     @Override
-    public AmountPerUnit getPerUnit() {
+    public String getPerUnit() {
+        return perUnit;
+    }
+
+    @Override
+    public AmountPerUnit getPerUnitAsAmountPerUnit() {
         return hasPerUnit() ? AmountPerUnit.valueOf(perUnit) : AmountPerUnit.ONE;
     }
 
     @Override
     public AmountPerUnit getCanonicalPerUnit() {
-        return getPerUnit();
+        return getPerUnitAsAmountPerUnit();
     }
 
     @Override
@@ -353,16 +364,16 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public boolean isValidUnit(String unit) {
-        return isAnyUnit() || getUnit().isCompatibleWith(unit);
+        return isAnyUnit() || getUnitAsAmountUnit().isCompatibleWith(unit);
     }
 
     public boolean isValidPerUnit(String perUnit) {
-        return isAnyPerUnit() || getPerUnit().isCompatibleWith(perUnit);
+        return isAnyPerUnit() || getPerUnitAsAmountPerUnit().isCompatibleWith(perUnit);
     }
 
     @Override
     public AmountCompoundUnit getCompoundUnit() {
-        return getUnit().with(getPerUnit());
+        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
     }
 
     @Override
@@ -374,11 +385,11 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
         }
     }
 
-    public Set<APIVersion> getAPIVersions() {
+    public Set<APIVersion> getApiVersions() {
         return apiVersions;
     }
 
-    public void setAPIVersions(Set<APIVersion> apiVersions) {
+    public void setApiVersions(Set<APIVersion> apiVersions) {
         this.apiVersions = apiVersions;
     }
 

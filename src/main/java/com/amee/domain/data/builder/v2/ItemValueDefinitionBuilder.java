@@ -75,7 +75,7 @@ public class ItemValueDefinitionBuilder implements Builder {
             obj.put("itemDefinition", itemValueDefinition.getItemDefinition().getIdentityJSONObject());
             obj.put("aliasedTo", itemValueDefinition.getAliasedTo() == null ? JSONObject.NULL : itemValueDefinition.getAliasedTo().getIdentityJSONObject());
             JSONArray apiVersions = new JSONArray();
-            for (APIVersion v : itemValueDefinition.getAPIVersions()) {
+            for (APIVersion v : itemValueDefinition.getApiVersions()) {
                 apiVersions.put(v.getJSONObject(false));
             }
             obj.put("apiVersions", apiVersions);
@@ -97,11 +97,11 @@ public class ItemValueDefinitionBuilder implements Builder {
         element.appendChild(itemValueDefinition.getValueDefinition().getElement(document));
 
         if (itemValueDefinition.hasUnit()) {
-            element.appendChild(XMLUtils.getElement(document, "Unit", itemValueDefinition.getUnit().toString()));
+            element.appendChild(XMLUtils.getElement(document, "Unit", itemValueDefinition.getUnit()));
         }
 
         if (itemValueDefinition.hasPerUnit()) {
-            element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValueDefinition.getPerUnit().toString()));
+            element.appendChild(XMLUtils.getElement(document, "PerUnit", itemValueDefinition.getPerUnit()));
         }
 
         element.appendChild(XMLUtils.getElement(document, "FromProfile", Boolean.toString(itemValueDefinition.isFromProfile())));
@@ -122,7 +122,7 @@ public class ItemValueDefinitionBuilder implements Builder {
                 element.appendChild(XMLUtils.getElement(document, "AliasedTo", ""));
             }
             Element apiVersions = document.createElement("APIVersions");
-            for (APIVersion v : itemValueDefinition.getAPIVersions()) {
+            for (APIVersion v : itemValueDefinition.getApiVersions()) {
                 apiVersions.appendChild(v.getElement(document, false));
             }
             element.appendChild(apiVersions);
