@@ -4,13 +4,9 @@ public interface ExternalNumberValue {
 
     public double getValueAsDouble();
 
-    public String getUnit();
+    public AmountUnit getUnit();
 
-    public AmountUnit getUnitAsAmountUnit();
-
-    public String getPerUnit();
-
-    public AmountPerUnit getPerUnitAsAmountPerUnit();
+    public AmountPerUnit getPerUnit();
 
     public AmountUnit getCanonicalUnit();
 
