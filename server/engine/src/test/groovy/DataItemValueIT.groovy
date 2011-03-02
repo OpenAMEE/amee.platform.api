@@ -114,7 +114,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartAndEndDateJson() {
-        getDataItemValueHistoryJson(2, false, 1.66354, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
+        getDataItemValueHistoryJson(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
     }
 
     /**
@@ -122,7 +122,31 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartDateAndResultLimitJson() {
-        getDataItemValueHistoryJson(3, false, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
+        getDataItemValueHistoryJson(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
+    }
+
+    /**
+     * Test fetching item value history with a result start & result limit for filtering.
+     */
+    @Test
+    void getDataItemValueHistoryWithResultStartAndResultLimitJson() {
+        getDataItemValueHistoryJson(4, true, 3.22881, null, null, 2, 4);
+    }
+
+    /**
+     * Test fetching item value history with a result start for filtering.
+     */
+    @Test
+    void getDataItemValueHistoryWithJustResultStartJson() {
+        getDataItemValueHistoryJson(6, false, 4.89235, null, null, 2, null);
+    }
+
+    /**
+     * Test fetching item value history with a result limit for filtering.
+     */
+    @Test
+    void getDataItemValueHistoryWithJustResultLimitJson() {
+        getDataItemValueHistoryJson(4, true, 3.0590656, null, null, 0, 4);
     }
 
     def getDataItemValueHistoryJson(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
@@ -135,7 +159,7 @@ class DataItemValueIT extends BaseApiTest {
             query['startDate'] = queryStartDate;
         }
         if (queryEndDate) {
-            query['startDate'] = queryEndDate;
+            query['endDate'] = queryEndDate;
         }
         if (resultStart) {
             query['resultStart'] = resultStart;
