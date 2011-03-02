@@ -38,12 +38,22 @@ public class MockExternalValue implements ExternalValue {
     }
 
     @Override
-    public AmountUnit getUnit() {
+    public String getUnit() {
+        return unit;
+    }
+
+    @Override
+    public AmountUnit getUnitAsAmountUnit() {
         return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getCanonicalUnit();
     }
 
     @Override
-    public AmountPerUnit getPerUnit() {
+    public String getPerUnit() {
+        return perUnit;
+    }
+
+    @Override
+    public AmountPerUnit getPerUnitAsAmountPerUnit() {
         return StringUtils.isNotBlank(perUnit) ? AmountPerUnit.valueOf(perUnit) : getCanonicalPerUnit();
     }
 
@@ -59,12 +69,12 @@ public class MockExternalValue implements ExternalValue {
 
     @Override
     public AmountCompoundUnit getCompoundUnit() {
-        return getUnit().with(getPerUnit());
+        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
     }
 
     @Override
     public AmountCompoundUnit getCanonicalCompoundUnit() {
-        return getUnit().with(getPerUnit());
+        return getUnitAsAmountUnit().with(getPerUnitAsAmountPerUnit());
     }
 
     @Override
