@@ -16,8 +16,13 @@ public class ItemValueDefinitionValidator extends BaseValidator {
 
     public ItemValueDefinitionValidator() {
         super();
+        addValueDefintion();
         addName();
         addPath();
+        addValue();
+        addChoices();
+        addUnit();
+        addPerUnit();
         addWikiDoc();
     }
 
@@ -26,11 +31,11 @@ public class ItemValueDefinitionValidator extends BaseValidator {
         return ItemValueDefinition.class.isAssignableFrom(clazz);
     }
 
-    // TODO: should not be empty
     private void addValueDefintion() {
         add(new ValidationSpecification()
             .setName("valueDefinition")
-            .setAllowEmpty(true)
+            .setUid(true)
+            .setAllowEmpty(false)
         );
     }
 
@@ -74,5 +79,33 @@ public class ItemValueDefinitionValidator extends BaseValidator {
                 .setMaxSize(ItemValueDefinition.WIKI_DOC_MAX_SIZE)
                 .setAllowEmpty(true)
         );
+    }
+
+    private void addUnit() {
+        add(new ValidationSpecification()
+            .setName("unit")
+            .setMaxSize(ItemValueDefinition.UNIT_MAX_SIZE)
+            .setAllowEmpty(true));
+    }
+
+    private void addPerUnit() {
+        add(new ValidationSpecification()
+            .setName("perUnit")
+            .setMaxSize(ItemValueDefinition.PER_UNIT_MAX_SIZE)
+            .setAllowEmpty(true));
+    }
+
+    private void addChoices() {
+        add(new ValidationSpecification()
+            .setName("choices")
+            .setMaxSize(ItemValueDefinition.CHOICES_MAX_SIZE)
+            .setAllowEmpty(true));
+    }
+
+    private void addValue() {
+        add(new ValidationSpecification()
+            .setName("value")
+            .setMaxSize(ItemValueDefinition.VALUE_MAX_SIZE)
+            .setAllowEmpty(true));
     }
 }

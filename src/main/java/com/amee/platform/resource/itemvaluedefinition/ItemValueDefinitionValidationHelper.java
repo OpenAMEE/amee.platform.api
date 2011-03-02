@@ -1,8 +1,10 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.validation.ValidationHelper;
+import com.amee.domain.APIVersion;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.platform.resource.ApiVersionSetEditor;
 import com.amee.platform.resource.ValueDefinitionEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -25,6 +27,9 @@ public class ItemValueDefinitionValidationHelper extends ValidationHelper {
 
     @Autowired
     private ValueDefinitionEditor valueDefinitionEditor;
+
+    @Autowired
+    private ApiVersionSetEditor apiVersionSetEditor;
 
     @Override
     public Object getObject() {
@@ -55,8 +60,8 @@ public class ItemValueDefinitionValidationHelper extends ValidationHelper {
             allowedFields.add("allowedRoles");
             allowedFields.add("unit");
             allowedFields.add("perUnit");
-            allowedFields.add("forceTimeSeries");
             allowedFields.add("valueDefinition");
+            allowedFields.add("apiVersions");
         }
         return allowedFields.toArray(new String[]{});
     }
@@ -72,5 +77,6 @@ public class ItemValueDefinitionValidationHelper extends ValidationHelper {
     @Override
     protected void registerCustomEditors(DataBinder dataBinder) {
         dataBinder.registerCustomEditor(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
+        dataBinder.registerCustomEditor(Set.class, "apiVersions", apiVersionSetEditor);
     }
 }

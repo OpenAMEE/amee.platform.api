@@ -133,7 +133,7 @@ public class ItemValueDefinitionDOMRenderer_3_4_0 implements ItemValueDefinition
     public void addVersions() {
         Element versionsElem = new Element("Versions");
         itemValueDefinitionElem.addContent(versionsElem);
-        for (APIVersion apiVersion : itemValueDefinition.getAPIVersions()) {
+        for (APIVersion apiVersion : itemValueDefinition.getApiVersions()) {
             Element versionElem = new Element("Version");
             versionElem.addContent(new Element("Version").setText(apiVersion.getVersion()));
             versionsElem.addContent(versionElem);

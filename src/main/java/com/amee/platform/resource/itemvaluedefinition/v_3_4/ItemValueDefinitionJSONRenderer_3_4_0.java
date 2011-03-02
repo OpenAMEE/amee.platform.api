@@ -134,7 +134,7 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
     public void addVersions() {
         JSONArray versionsArr = new JSONArray();
         ResponseHelper.put(itemValueDefinitionObj, "versions", versionsArr);
-        for (APIVersion apiVersion : itemValueDefinition.getAPIVersions()) {
+        for (APIVersion apiVersion : itemValueDefinition.getApiVersions()) {
             JSONObject versionObj = new JSONObject();
             ResponseHelper.put(versionObj, "version", apiVersion.getVersion());
             versionsArr.put(versionObj);

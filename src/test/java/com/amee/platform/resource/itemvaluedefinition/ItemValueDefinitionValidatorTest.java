@@ -3,15 +3,17 @@ package com.amee.platform.resource.itemvaluedefinition;
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.ILocaleService;
 import com.amee.domain.IMetadataService;
+import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.BindException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,89 +34,35 @@ public class ItemValueDefinitionValidatorTest {
     @Test
     public void testValid() {
         ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition good = new ItemValueDefinition();
+        ItemValueDefinition good = getItemValueDefinition("test");
 
-        when(mockLocaleService.getLocaleNameValue(good, "name"))
-                .thenReturn("name");
+        when(mockLocaleService.getLocaleNameValue(good, "test"))
+                .thenReturn("test");
 
         BindException errorsGood = new BindException(good, "good");
-
-        good.setName("name");
-        good.setPath(RandomStringUtils.randomAlphanumeric(10));
-        good.setWikiDoc(RandomStringUtils.random(10));
 
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());
     }
 
     @Test
-    public void testNameGreaterThanMax() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
-
-        String nameGreaterThanMax = RandomStringUtils.random(ItemValueDefinition.NAME_MAX_SIZE + 1);
-
-        when(mockLocaleService.getLocaleNameValue(bad, nameGreaterThanMax))
-                .thenReturn(nameGreaterThanMax);
-
-        BindException errorsBad = new BindException(bad, "bad");
-
-        bad.setName(nameGreaterThanMax);
-
-        validator.validate(bad, errorsBad);
-        assertTrue("Object should fail validation", errorsBad.hasErrors());
+    public void testNameLessThanMin() throws Exception {
+        lessThanMin("name", ItemValueDefinition.NAME_MIN_SIZE);
     }
 
     @Test
-    public void testNameLessThanMin() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
-
-        String nameLessThanMin = RandomStringUtils.random(ItemValueDefinition.NAME_MIN_SIZE - 1);
-
-        when(mockLocaleService.getLocaleNameValue(bad, nameLessThanMin))
-                .thenReturn(nameLessThanMin);
-
-        BindException errorsBad = new BindException(bad, "bad");
-
-        bad.setName(nameLessThanMin);
-
-        validator.validate(bad, errorsBad);
-        assertTrue("Object should fail validation", errorsBad.hasErrors());
+    public void testNameGreaterThanMax() throws Exception {
+        greaterThanMax("name", ItemValueDefinition.NAME_MAX_SIZE + 1);
     }
 
     @Test
-    public void testPathGreaterThanMax() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
-        BindException errorsBad = new BindException(bad, "bad");
-
-        bad.setName("name");
-        bad.setPath(RandomStringUtils.random(ItemValueDefinition.PATH_MAX_SIZE + 1));
-
-        validator.validate(bad, errorsBad);
-        assertTrue("Object should fail validation", errorsBad.hasErrors());
+    public void testPathLessThanMin() throws Exception {
+        lessThanMin("path", ItemValueDefinition.PATH_MIN_SIZE);
     }
 
     @Test
-    public void testPathLessThanMin() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
-        BindException errorsBad = new BindException(bad, "bad");
-
-        bad.setName("name");
-        bad.setPath(RandomStringUtils.random(ItemValueDefinition.PATH_MIN_SIZE - 1));
-
-        validator.validate(bad, errorsBad);
-        assertTrue("Object should fail validation", errorsBad.hasErrors());
+    public void testPathGreaterThanMax() throws Exception {
+        greaterThanMax("path", ItemValueDefinition.PATH_MAX_SIZE);
     }
 
     @Test
@@ -135,19 +83,93 @@ public class ItemValueDefinitionValidatorTest {
     }
 
     @Test
-    public void testWikiDocGreaterThanMax() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
-        ItemValueDefinition bad = new ItemValueDefinition();
+    public void testWikiDocGreaterThanMax() throws Exception {
+        greaterThanMax("wikiDoc", ItemValueDefinition.WIKI_DOC_MAX_SIZE);
+    }
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
+    @Test
+    public void testUnitGreaterThanMax() throws Exception {
+        greaterThanMax("unit", ItemValueDefinition.UNIT_MAX_SIZE);
+    }
+
+    @Test
+    public void testPerUnitGreaterThanMax() throws Exception {
+        greaterThanMax("perUnit", ItemValueDefinition.UNIT_MAX_SIZE);
+    }
+
+    @Test
+    public void testChoicesGreaterThanMax() throws Exception {
+        greaterThanMax("choices", ItemValueDefinition.CHOICES_MAX_SIZE);
+    }
+
+    @Test
+    public void testValueGreaterThanMax() throws Exception {
+        greaterThanMax("value", ItemValueDefinition.VALUE_MAX_SIZE);
+    }
+
+    private void lessThanMin(String field, int minLength) throws Exception {
+
+        // The dodgy string to set
+        String lessThanMin = RandomStringUtils.random(minLength - 1);
+
+        // Set up the mock LocaleService
+        String name;
+        if (field.equals("name")) {
+            name = lessThanMin;
+        } else {
+            name = "test";
+        }
+        ItemValueDefinition bad = getItemValueDefinition(name);
+        when(mockLocaleService.getLocaleNameValue(bad, name))
+            .thenReturn(name);
 
         BindException errorsBad = new BindException(bad, "bad");
 
-        bad.setName("name");
-        bad.setWikiDoc(RandomStringUtils.random(ItemValueDefinition.WIKI_DOC_MAX_SIZE + 1));
+        // Set the field under test
+        BeanWrapper bean = new BeanWrapperImpl(bad);
+        bean.setPropertyValue(field, lessThanMin);
 
+        // Validate the object
+        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
+        assertEquals("Got unexpected field error", field, errorsBad.getFieldError().getField());
+    }
+
+    private void greaterThanMax(String field, int maxLength) throws Exception {
+
+        // The dodgy string to set
+        String greaterThanMax = RandomStringUtils.random(maxLength + 1);
+
+        // Set up the mock LocaleService
+        String name;
+        if (field.equals("name")) {
+            name = greaterThanMax;
+        } else {
+            name = "test";
+        }
+        ItemValueDefinition bad = getItemValueDefinition(name);
+        when(mockLocaleService.getLocaleNameValue(bad, name))
+            .thenReturn(name);
+
+        BindException errorsBad = new BindException(bad, "bad");
+
+        // Set the field under test
+        BeanWrapper bean = new BeanWrapperImpl(bad);
+        bean.setPropertyValue(field, greaterThanMax);
+
+        // Validate the object
+        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        validator.validate(bad, errorsBad);
+        assertTrue("Object should fail validation", errorsBad.hasErrors());
+        assertEquals("Got unexpected field error", field, errorsBad.getFieldError().getField());
+    }
+
+    private ItemValueDefinition getItemValueDefinition(String name) {
+        ItemValueDefinition ivd = new ItemValueDefinition();
+        ivd.setName(name);
+        ivd.setPath(RandomStringUtils.randomAlphanumeric(10));
+        ivd.setValueDefinition(new ValueDefinition());
+        return ivd;
     }
 }
