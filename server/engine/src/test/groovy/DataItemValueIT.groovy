@@ -180,4 +180,77 @@ class DataItemValueIT extends BaseApiTest {
         assertEquals count, values.size();
         assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001);
     }
+
+    /**
+     * Test fetching DataItemValues with 'CURRENT' (now) as the item value identifier.
+     */
+    @Test
+    void getDataItemValueForCurrentJson() {
+        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
+    }
+
+    /**
+     * Test fetching DataItemValue with an item value identifier start date just before an actual start date.
+     */
+    @Test
+    void getDataItemValueWithStartDateJustBeforeNextStartDateJson() {
+        getDataItemValueJson('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
+    }
+
+    /**
+     * Test fetching DataItemValue with an item value identifier start date that has an exact match.
+     */
+    @Test
+    void getDataItemValueWithExactStartDateJson() {
+        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
+    }
+
+    /**
+     * Test fetching DataItemValue with an item value identifier start date at some point between actual start dates
+     */
+    @Test
+    void getDataItemValueWithInBetweenStartDateJson() {
+        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
+    }
+
+    /**
+     * Test fetching DataItemValue with 'FIRST' (epoch) as the item value identifier.
+     */
+    @Test
+    void getDataItemValueForFirstDateJson() {
+        getDataItemValueJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
+    }
+
+    /**
+     * Test fetching DataItemValue with 'LAST' (end of epoch) as the item value identifier.
+     */
+    @Test
+    void getDataItemValueForLastDateJson() {
+        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
+    }
+
+
+    def getDataItemValueJson(uid, value, startDate, path) {
+        versions.each { version -> getDataItemValueJson(version, uid, value, startDate, path) }
+    }
+
+    def getDataItemValueJson(version, uid, value, startDate, path) {
+        def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
+                contentType: JSON);
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        def itemValue = response.data.value;
+        assert 'massCO2PerEnergy' == itemValue.path;
+        assert itemValue.history;
+        assert uid == itemValue.uid;
+        assert value == itemValue.value;
+        assert startDate == itemValue.startDate;
+        assert 'kg' == itemValue.unit;
+        assert 'kWh' == itemValue.perUnit;
+        // TODO: Test below doesn't seem to work.
+        // assert 'kg/(kW·h)' == itemValue.compoundUnit;
+    }
 }

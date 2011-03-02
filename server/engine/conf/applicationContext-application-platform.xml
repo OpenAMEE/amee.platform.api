@@ -289,16 +289,16 @@
                           value="com.amee.platform.resource.dataitemvalue.DataItemValuesResource$Builder"/>
             </bean>
         </property>
-        <property name="acceptors">
-            <map>
-                <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
-                        <property name="target"
-                                  value="com.amee.platform.resource.dataitemvalue.DataItemValuesResource$FormAcceptor"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
+        <!--<property name="acceptors">-->
+        <!--<map>-->
+        <!--<entry key="application/x-www-form-urlencoded">-->
+        <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+        <!--<property name="target"-->
+        <!--value="com.amee.platform.resource.dataitemvalue.DataItemValuesResource$FormAcceptor"/>-->
+        <!--</bean>-->
+        <!--</entry>-->
+        <!--</map>-->
+        <!--</property>-->
     </bean>
 
     <bean id="dataItemValueHistoryResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
@@ -320,16 +320,16 @@
                           value="com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource$Builder"/>
             </bean>
         </property>
-        <property name="acceptors">
-            <map>
-                <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
-                        <property name="target"
-                                  value="com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource$FormAcceptor"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
+        <!--<property name="acceptors">-->
+        <!--<map>-->
+        <!--<entry key="application/x-www-form-urlencoded">-->
+        <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+        <!--<property name="target"-->
+        <!--value="com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource$FormAcceptor"/>-->
+        <!--</bean>-->
+        <!--</entry>-->
+        <!--</map>-->
+        <!--</property>-->
     </bean>
 
     <bean id="dataItemValueResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
@@ -350,22 +350,22 @@
                           value="com.amee.platform.resource.dataitemvalue.DataItemValueResource$Builder"/>
             </bean>
         </property>
-        <property name="acceptors">
-            <map>
-                <entry key="application/x-www-form-urlencoded">
-                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
-                        <property name="target"
-                                  value="com.amee.platform.resource.dataitemvalue.DataItemValueResource$FormAcceptor"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-        <property name="remover">
-            <bean class="com.amee.base.resource.LocalResourceRemover">
-                <property name="target"
-                          value="com.amee.platform.resource.dataitemvalue.DataItemValueResource$Remover"/>
-            </bean>
-        </property>
+        <!--<property name="acceptors">-->
+        <!--<map>-->
+        <!--<entry key="application/x-www-form-urlencoded">-->
+        <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+        <!--<property name="target"-->
+        <!--value="com.amee.platform.resource.dataitemvalue.DataItemValueResource$FormAcceptor"/>-->
+        <!--</bean>-->
+        <!--</entry>-->
+        <!--</map>-->
+        <!--</property>-->
+        <!--<property name="remover">-->
+        <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
+        <!--<property name="target"-->
+        <!--value="com.amee.platform.resource.dataitemvalue.DataItemValueResource$Remover"/>-->
+        <!--</bean>-->
+        <!--</property>-->
     </bean>
 
     <bean id="definitionsRouter" class="com.amee.restlet.version.VersionSpringRouter">
