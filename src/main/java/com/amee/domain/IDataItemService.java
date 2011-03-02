@@ -5,6 +5,7 @@ import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,9 @@ public interface IDataItemService extends IItemService {
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);
+
+    // The last unix time, which is 2038-01-19 03:14:07. See: http://en.wikipedia.org/wiki/Year_2038_problem
+    public final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 7, 0).toDate();
 
     public long getDataItemCount(IDataCategoryReference dataCategory);
 

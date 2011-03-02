@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class ItemValueMap {
 
-    Log log = LogFactory.getLog(getClass());
+    private final Log log = LogFactory.getLog(getClass());
 
     private Map<String, SortedSet<BaseItemValue>> map = new HashMap<String, SortedSet<BaseItemValue>>();
 
@@ -75,29 +75,7 @@ public class ItemValueMap {
     public void put(String path, BaseItemValue itemValue) {
         // Create TreeSet if it does not exist for this path.
         if (!map.containsKey(path)) {
-            map.put(path, new TreeSet<BaseItemValue>(
-                    Collections.reverseOrder(
-                            new Comparator<BaseItemValue>() {
-                                public int compare(BaseItemValue iv1, BaseItemValue iv2) {
-                                    if (isHistoricValue(iv1) && isHistoricValue(iv2)) {
-                                        // Both BaseItemValue are part of a history, compare their startDates.
-                                        return ((ExternalHistoryValue) iv1).getStartDate().compareTo(((ExternalHistoryValue) iv2).getStartDate());
-                                    } else if (isHistoricValue(iv1)) {
-                                        // The first BaseItemValue is historical, but the second is not, so it needs to
-                                        // come after the second BaseItemValue.
-                                        return 1;
-                                    } else if (isHistoricValue(iv2)) {
-                                        // The second BaseItemValue is historical, but the first is not, so it needs to
-                                        // come after the first BaseItemValue.
-                                        return -1;
-                                    } else {
-                                        // Both BaseItemValues are not historical. This should not happen but consider them equal.
-                                        // The new BaseItemValue will not be added to the TreeSet (see class note about inconsistency with equals).
-                                        log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
-                                        return 0;
-                                    }
-                                }
-                            })));
+            map.put(path, new TreeSet<BaseItemValue>(Collections.reverseOrder(new BaseItemValueStartDateComparator())));
         }
         // Add itemValue to the TreeSet for this path.
         SortedSet<BaseItemValue> itemValues = map.get(path);
@@ -120,7 +98,7 @@ public class ItemValueMap {
      * immediately before startDate.
      *
      * @param itemValues the item values sorted by startDate, most recent first (descending).
-     * @param startDate
+     * @param startDate  - the active {@link BaseItemValue} will be that starting immediately prior-to or on this date.
      * @return the discovered BaseItemValue, or null if not found
      */
     private static BaseItemValue find(SortedSet<BaseItemValue> itemValues, Date startDate) {
@@ -131,7 +109,7 @@ public class ItemValueMap {
         // Find active BaseItemValue.
         BaseItemValue selected = null;
         for (BaseItemValue itemValue : itemValues) {
-            if (isHistoricValue(itemValue)) {
+            if (BaseItemValueStartDateComparator.isHistoricValue(itemValue)) {
                 if (!((ExternalHistoryValue) itemValue).getStartDate().after(startDate)) {
                     selected = itemValue;
                     break;
@@ -141,12 +119,10 @@ public class ItemValueMap {
                 selected = itemValue;
             }
         }
-        selected.setHistoryAvailable(itemValues.size() > 1);
+        if (selected != null) {
+            selected.setHistoryAvailable(itemValues.size() > 1);
+        }
         return selected;
-    }
-
-    private static boolean isHistoricValue(BaseItemValue itemValue) {
-        return ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass());
     }
 
     public Set<String> keySet() {
