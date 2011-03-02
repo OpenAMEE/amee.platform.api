@@ -234,7 +234,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueByUidJson() {
-        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', '289CCD5394AC');
+        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4');
     }
 
     def getDataItemValueJson(uid, value, startDate, path) {
