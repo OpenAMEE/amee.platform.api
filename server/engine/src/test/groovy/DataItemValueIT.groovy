@@ -322,6 +322,12 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     @Test
+    void updateWithBadStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date');
+    }
+
+    @Test
     void updateWithDuplicateStartDate() {
         setAdminUser();
         updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'duplicate', '2002-01-01T00:00:00Z');
@@ -331,6 +337,36 @@ class DataItemValueIT extends BaseApiTest {
     void updateWithEpochStartDate() {
         setAdminUser();
         updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', '1970-01-01T00:00:00Z');
+    }
+
+    @Test
+    void updateWithBeforeEpochStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', '1969-01-01T00:00:00Z');
+    }
+
+    @Test
+    void updateWithFirstStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', 'FIRST');
+    }
+
+    @Test
+    void updateWithLastStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', 'LAST');
+    }
+
+    @Test
+    void updateWithEndOfEpochStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', '2038-01-19T03:14:00Z');
+    }
+
+    @Test
+    void updateWithAfterEndOfEpochStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', '2039-01-01T00:00:00Z');
     }
 
     /**
