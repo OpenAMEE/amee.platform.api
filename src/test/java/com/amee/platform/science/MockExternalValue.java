@@ -33,7 +33,7 @@ public class MockExternalValue implements ExternalValue {
     }
 
     @Override
-    public double getValueAsDouble() {
+    public Double getValueAsDouble() {
         return Double.valueOf(value);
     }
 

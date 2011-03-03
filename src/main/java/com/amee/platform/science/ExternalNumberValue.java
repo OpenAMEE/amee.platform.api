@@ -2,7 +2,7 @@ package com.amee.platform.science;
 
 public interface ExternalNumberValue {
 
-    public double getValueAsDouble();
+    public Double getValueAsDouble();
 
     public AmountUnit getUnit();
 
