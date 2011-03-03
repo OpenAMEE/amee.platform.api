@@ -108,8 +108,10 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                                     if (thisDIV != null) {
                                         if (HistoryValue.class.isAssignableFrom(thisDIV.getClass())) {
                                             HistoryValue hv = (HistoryValue) thisDIV;
-                                            if (hv.getStartDate().equals(IDataItemService.EPOCH)) {
+                                            if (hv.getStartDate().compareTo(IDataItemService.EPOCH) <= 0) {
                                                 errors.rejectValue("startDate", "epoch");
+                                            } else if (hv.getStartDate().compareTo(IDataItemService.Y2038) >= 0) {
+                                                errors.rejectValue("startDate", "end_of_epoch");
                                             } else if (!dataItemService.isDataItemValueUniqueByStartDate(thisDIV)) {
                                                 errors.rejectValue("startDate", "duplicate");
                                             }
