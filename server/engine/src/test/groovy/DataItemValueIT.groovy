@@ -308,4 +308,89 @@ class DataItemValueIT extends BaseApiTest {
         // TODO: Test below doesn't seem to work.
         // assert 'kg/(kW·h)' == itemValue.compoundUnit;
     }
+
+    @Test
+    void updateWithNoValue() {
+        setAdminUser();
+        updateDataItemValueFieldJson('387C597FF2C4', 'value', 'typeMismatch', '');
+    }
+
+    @Test
+    void updateWithSomethingThatIsNotANumber() {
+        setAdminUser();
+        updateDataItemValueFieldJson('387C597FF2C4', 'value', 'typeMismatch', 'not_a_number');
+    }
+
+    @Test
+    void updateWithDuplicateStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'duplicate', '2002-01-01T00:00:00Z');
+    }
+
+    @Test
+    void updateWithEpochStartDate() {
+        setAdminUser();
+        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', '1970-01-01T00:00:00Z');
+    }
+
+    /**
+     * Submits a single Data Item Value field value and tests the result. An error is expected.
+     *
+     * @param path of the Data Item Value that is being updated
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     */
+    def updateDataItemValueFieldJson(path, field, code, value) {
+        updateDataItemValueFieldJson(path, field, code, value, 3.4)
+    }
+
+    /**
+     * Submits a single Data Item Value field value and tests the result. An error is expected.
+     *
+     * @param path of the Data Item Value that is being updated
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     */
+    def updateDataItemValueFieldJson(path, field, code, value, since) {
+        versions.each { version -> updateDataItemValueFieldJson(path, field, code, value, since, version) };
+    }
+
+    /**
+     * Submits a single Data Item Value field value and tests the result. An error is expected.
+     *
+     * @param path of the Data Item Value that is being updated
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     * @param version version to test
+     */
+    void updateDataItemValueFieldJson(path, field, code, value, since, version) {
+        if (version >= since) {
+            try {
+                // Create form body.
+                def body = [:];
+                body[field] = value;
+                // Update Data Item Value.
+                client.put(
+                        path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                        body: body,
+                        requestContentType: URLENC,
+                        contentType: JSON);
+                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+            } catch (HttpResponseException e) {
+                // Handle error response containing a ValidationResult.
+                def response = e.response;
+                assertEquals 400, response.status;
+                assertEquals 'application/json', response.contentType;
+                assertTrue response.data instanceof net.sf.json.JSON;
+                assertEquals 'INVALID', response.data.status;
+                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+            }
+        }
+    }
 }
