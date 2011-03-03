@@ -39,6 +39,8 @@ public interface DataItemValueResource {
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {
+
+        public Object handle(RequestWrapper requestWrapper, BaseDataItemValue dataItemValue);
     }
 
     public static interface DataItemValueValidator {
@@ -52,5 +54,11 @@ public interface DataItemValueResource {
         public void setObject(BaseDataItemValue object);
 
         public ValidationResult getValidationResult();
+    }
+
+    /**
+     * A {@link ResourceRemover} implementation for this resource.
+     */
+    public static interface Remover extends ResourceRemover {
     }
 }

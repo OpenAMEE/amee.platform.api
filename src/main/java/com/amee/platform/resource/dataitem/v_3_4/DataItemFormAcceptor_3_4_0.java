@@ -57,9 +57,13 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
     }
 
     protected Object handle(RequestWrapper requestWrapper, DataItem dataItem) {
+
+        // Create validator.
         DataItemResource.DataItemValidator validator = getValidator(requestWrapper);
         validator.setObject(dataItem);
         validator.initialise();
+
+        // Is the DataItem valid?
         if (validator.isValid(requestWrapper.getFormParameters())) {
             // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
             updateDataItemValues(dataItem);

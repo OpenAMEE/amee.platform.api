@@ -3,7 +3,6 @@ package com.amee.platform.resource.dataitemvalue;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
-import com.amee.base.resource.ResourceRemover;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.DataItem;
@@ -71,11 +70,5 @@ public interface DataItemValueHistoryResource {
          * @throws ValidationException encapsulates {@link com.amee.base.resource.ValidationResult}s
          */
         public Object handle(RequestWrapper requestWrapper) throws ValidationException;
-    }
-
-    /**
-     * A {@link ResourceRemover} implementation for this resource.
-     */
-    public static interface Remover extends ResourceRemover {
     }
 }

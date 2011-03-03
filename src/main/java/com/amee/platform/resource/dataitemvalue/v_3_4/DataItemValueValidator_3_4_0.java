@@ -3,6 +3,7 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.data.BaseDataItemTextValue;
@@ -17,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -96,7 +98,28 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
             add(StartEndDate.class, "startDate", new StartEndDateEditor(new Date()));
             add(new ValidationSpecification()
                     .setName("startDate")
-                    .setAllowEmpty(true));
+                    .setAllowEmpty(true)
+                    .setCustomValidation(
+                            new ValidationSpecification.CustomValidation() {
+                                @Override
+                                public int validate(Object object, Object value, Errors errors) {
+                                    // Ensure historical Data Item Value is unique on startDate.
+                                    BaseDataItemValue thisDIV = (BaseDataItemValue) object;
+                                    if (thisDIV != null) {
+                                        if (HistoryValue.class.isAssignableFrom(thisDIV.getClass())) {
+                                            HistoryValue hv = (HistoryValue) thisDIV;
+                                            if (hv.getStartDate().equals(IDataItemService.EPOCH)) {
+                                                errors.rejectValue("startDate", "epoch");
+                                            } else if (!dataItemService.isDataItemValueUniqueByStartDate(thisDIV)) {
+                                                errors.rejectValue("startDate", "duplicate");
+                                            }
+                                        } else {
+                                            throw new IllegalStateException("Should not be checking a non-historical DataItemValue.");
+                                        }
+                                    }
+                                    return ValidationSpecification.CONTINUE;
+                                }
+                            }));
         }
     }
 
