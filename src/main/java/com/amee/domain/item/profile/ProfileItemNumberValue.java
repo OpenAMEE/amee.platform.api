@@ -36,8 +36,8 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     private Double value = 0.0;
 
     /**
-    * This value can be used to override the persisted value.
-    */
+     * This value can be used to override the persisted value.
+     */
     @Transient
     private transient Double valueOverride;
 
@@ -189,7 +189,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     }
 
     @Override
-    public double getValueAsDouble() {
+    public Double getValueAsDouble() {
         return getValue();
     }
 

@@ -144,12 +144,12 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
         this.perUnit = perUnit;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
-    public double getValueAsDouble() {
+    public Double getValueAsDouble() {
         return value;
     }
 

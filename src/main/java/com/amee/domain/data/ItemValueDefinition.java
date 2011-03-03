@@ -234,7 +234,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     @Override
-    public double getValueAsDouble() {
+    public Double getValueAsDouble() {
         try {
             return Double.valueOf(value);
         } catch (NumberFormatException e) {

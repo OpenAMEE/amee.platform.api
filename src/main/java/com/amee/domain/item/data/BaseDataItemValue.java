@@ -6,7 +6,10 @@ import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.path.Pathable;
 
-import javax.persistence.*;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class BaseDataItemValue extends BaseItemValue implements Pathable {
@@ -14,9 +17,6 @@ public abstract class BaseDataItemValue extends BaseItemValue implements Pathabl
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "DATA_ITEM_ID")
     private DataItem dataItem;
-
-    @Transient
-    private transient String fullPath;
 
     public BaseDataItemValue() {
         super();
