@@ -38,6 +38,7 @@ public class DataItemTextValueHistory extends BaseDataItemTextValue implements H
         setStartDate(startDate);
     }
 
+    @Override
     protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
         DataItemTextValueHistory v = (DataItemTextValueHistory) o;
@@ -49,7 +50,12 @@ public class DataItemTextValueHistory extends BaseDataItemTextValue implements H
         return new StartEndDate(startDate);
     }
 
+    @Override
     public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStartDate(StartEndDate startDate) {
         this.startDate = startDate;
     }
 

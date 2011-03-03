@@ -38,6 +38,7 @@ public class DataItemNumberValueHistory extends BaseDataItemNumberValue implemen
         setStartDate(startDate);
     }
 
+    @Override
     protected void copyTo(BaseItemValue o) {
         super.copyTo(o);
         DataItemNumberValueHistory v = (DataItemNumberValueHistory) o;
@@ -49,7 +50,12 @@ public class DataItemNumberValueHistory extends BaseDataItemNumberValue implemen
         return new StartEndDate(startDate);
     }
 
+    @Override
     public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStartDate(StartEndDate startDate) {
         this.startDate = startDate;
     }
 
