@@ -1,11 +1,59 @@
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
+import static groovyx.net.http.ContentType.URLENC
+import static org.junit.Assert.*
 
 class DataItemValueIT extends BaseApiTest {
 
     static def versions = [3.4]
+
+    @Test
+    void createDataItemJson() {
+        versions.each { version -> createDataItemJson(version) }
+    }
+
+    def createDataItemJson(version) {
+        setAdminUser();
+        // Create a DataItem.
+        def responsePost = client.post(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                body: ['value': 10],
+                requestContentType: URLENC,
+                contentType: JSON);
+        assertEquals 201, responsePost.status
+        // Is Location available?
+        assertTrue responsePost.headers['Location'] != null;
+        assertTrue responsePost.headers['Location'].value != null;
+        def location = responsePost.headers['Location'].value;
+        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+        // Get new DataItemValue UID.
+        def uid = location.split('/')[10];
+        assertTrue uid != null;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // Get the new DataItem.
+        def responseGet = client.get(
+                path: "${location};full",
+                contentType: JSON);
+        assertEquals 200, responseGet.status;
+        assertEquals 'application/json', responseGet.contentType;
+        assertTrue responseGet.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', responseGet.data.status;
+        assertEquals "10", responseGet.data.value.value;
+        // Then delete it.
+        def responseDelete = client.delete(path: location);
+        assertEquals 200, responseDelete.status;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // We should get a 404 here.
+        try {
+            client.get(path: location);
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
+        }
+    }
 
     /**
      * Test fetching DataItemValues with the default (now) query start date.

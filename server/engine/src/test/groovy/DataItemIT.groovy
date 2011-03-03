@@ -108,7 +108,7 @@ class DataItemIT extends BaseApiTest {
             assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
             // Then delete it.
-            def responseDelete = client.delete(path: '/3.4/categories/Cooking/items/' + uid);
+            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}");
             assertEquals 200, responseDelete.status;
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
