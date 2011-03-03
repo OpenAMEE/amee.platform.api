@@ -2,7 +2,6 @@ package com.amee.platform.resource.dataitemvalue;
 
 import com.amee.base.resource.*;
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -48,13 +47,10 @@ public interface DataItemValueResource {
 
         public boolean isValid(Map<String, String> queryParameters);
 
-        public BaseItemValue getObject();
+        public BaseDataItemValue getObject();
 
-        public void setObject(BaseItemValue object);
+        public void setObject(BaseDataItemValue object);
 
         public ValidationResult getValidationResult();
-    }
-
-    public static interface Remover extends ResourceRemover {
     }
 }

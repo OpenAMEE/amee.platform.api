@@ -41,12 +41,17 @@ public class DataItemBuilder_3_0_0 implements DataItemResource.Builder {
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+
+        // TODO: Use DataItemValuesFilter here for the startDate param.
+
         // Handle the DataItem.
         handle(requestWrapper, dataItem);
         DataItemResource.Renderer renderer = getRenderer(requestWrapper);
