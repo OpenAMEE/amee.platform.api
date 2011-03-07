@@ -65,7 +65,7 @@ public class ResourceBeanFinder {
     public Validator getValidator(final String className, final RequestWrapper requestWrapper) {
         // Get the Validator with the supplied class name.
         Validator validator = (Validator) versionBeanFinder.getBeanForVersion(className, requestWrapper.getVersion());
-        // A Validator must exist or we shall throw a IllegalStateException.
+        // A Validator must exist or we shall throw an IllegalStateException.
         if (validator != null) {
             return validator;
         } else {
