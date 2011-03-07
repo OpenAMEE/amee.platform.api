@@ -1,4 +1,4 @@
-package com.amee.platform.resource.dataitemvalue.v_3_4;
+package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
@@ -6,11 +6,11 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
-import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
+import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.item.DataItemService;
@@ -26,7 +26,7 @@ import java.util.Date;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Builder {
+public class DataItemBuilder_3_4_0 implements DataItemResource.Builder {
 
     @Autowired
     private DataItemService dataItemService;
@@ -40,7 +40,7 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
-    private DataItemValuesResource.Renderer renderer;
+    private DataItemResource.Renderer renderer;
 
     @Override
     @AMEETransaction
@@ -67,8 +67,11 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
 
         // Is the filter valid?
         if (validator.isValid(requestWrapper.getQueryParameters())) {
-            handle(requestWrapper, dataItem, filter);
-            DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
+            // Update DataItem effective startDate.
+            dataItem.setEffectiveStartDate(filter.getStartDate());
+            // Handle the DataItem.
+            handle(requestWrapper, dataItem);
+            DataItemResource.Renderer renderer = getRenderer(requestWrapper);
             renderer.ok();
             return renderer.getObject();
         } else {
@@ -76,37 +79,65 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
         }
     }
 
-    @Override
-    public void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter) {
+    public void handle(RequestWrapper requestWrapper, DataItem dataItem) {
 
-        // Update DataItem effective startDate.
-        dataItem.setEffectiveStartDate(filter.getStartDate());
-
-        // Setup Renderer.
-        DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
+        DataItemResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
 
-        // Add Data Item Values to Renderer and build.
-        DataItemValueResource.Builder dataItemValueBuilder = getDataItemValueBuilder(requestWrapper);
-        for (BaseItemValue itemValue : dataItemService.getItemValues(dataItem)) {
-            BaseDataItemValue dataItemValue = (BaseDataItemValue) itemValue;
-            dataItemValueBuilder.handle(requestWrapper, dataItemValue);
-            renderer.newDataItemValue(dataItemValueBuilder.getRenderer(requestWrapper));
+        boolean full = requestWrapper.getMatrixParameters().containsKey("full");
+        boolean name = requestWrapper.getMatrixParameters().containsKey("name");
+        boolean label = requestWrapper.getMatrixParameters().containsKey("label");
+        boolean path = requestWrapper.getMatrixParameters().containsKey("path");
+        boolean parent = requestWrapper.getMatrixParameters().containsKey("parent");
+        boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
+        boolean wikiDoc = requestWrapper.getMatrixParameters().containsKey("wikiDoc");
+        boolean provenance = requestWrapper.getMatrixParameters().containsKey("provenance");
+        boolean itemDefinition = requestWrapper.getMatrixParameters().containsKey("itemDefinition");
+        boolean values = requestWrapper.getMatrixParameters().containsKey("values");
+
+        // New DataItem & basic.
+        renderer.newDataItem(dataItem);
+        renderer.addBasic();
+
+        // Optionals.
+        if (name || full) {
+            renderer.addName();
+        }
+        if (label || full) {
+            renderer.addLabel();
+        }
+        if (path || full) {
+            renderer.addPath();
+        }
+        if (parent || full) {
+            renderer.addParent();
+        }
+        if (audit || full) {
+            renderer.addAudit();
+        }
+        if (wikiDoc || full) {
+            renderer.addWikiDoc();
+        }
+        if (provenance || full) {
+            renderer.addProvenance();
+        }
+        if ((itemDefinition || full) && (dataItem.getItemDefinition() != null)) {
+            ItemDefinition id = dataItem.getItemDefinition();
+            renderer.addItemDefinition(id);
+        }
+        if (values || full) {
+            renderer.startValues();
+            for (BaseItemValue itemValue : dataItemService.getItemValues(dataItem)) {
+                renderer.newValue(itemValue);
+            }
         }
     }
 
-    @Override
-    public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper) {
+    public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (renderer == null) {
-            renderer = (DataItemValuesResource.Renderer) resourceBeanFinder.getRenderer(DataItemValuesResource.Renderer.class, requestWrapper);
+            renderer = (DataItemResource.Renderer) resourceBeanFinder.getRenderer(DataItemResource.Renderer.class, requestWrapper);
         }
         return renderer;
-    }
-
-    @Override
-    public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper) {
-        return (DataItemValueResource.Builder)
-                resourceBeanFinder.getBuilder(DataItemValueResource.Builder.class, requestWrapper);
     }
 
     @Override
