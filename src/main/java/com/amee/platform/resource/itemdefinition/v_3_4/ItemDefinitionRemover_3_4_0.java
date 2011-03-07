@@ -6,12 +6,10 @@ import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
-import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
-import com.amee.service.invalidation.InvalidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ public class ItemDefinitionRemover_3_4_0 implements ItemDefinitionResource.Remov
 
     @Override
     @AMEETransaction
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ValidationException.class})
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class})
     public Object handle(RequestWrapper requestWrapper) {
 
         // Get ItemDefinition identifier
@@ -40,7 +38,7 @@ public class ItemDefinitionRemover_3_4_0 implements ItemDefinitionResource.Remov
             ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
             if (itemDefinition != null) {
                 resourceAuthorizationService.ensureAuthorizedForRemove(
-                    requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
+                        requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
 
                 definitionService.remove(itemDefinition);
                 definitionService.invalidate(itemDefinition);
