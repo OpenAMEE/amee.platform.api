@@ -111,30 +111,45 @@ class DataItemValueIT extends BaseApiTest {
         getDataItemValuesJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
     }
 
+    /**
+     * Tests fetching DataItemValues from the DataItem and DataItem values resource.
+     *
+     * @param uid of the expected historical DataItemValue
+     * @param value of the expected historical DataItemValue
+     * @param actualStartDate of the expected historical DataItemValue
+     * @param queryStartDate the start date to match DataItemValues in a history against
+     */
     def getDataItemValuesJson(uid, value, actualStartDate, queryStartDate) {
-        versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate) }
+        // Test the values within the DataItem values resource.
+        versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, true) }
+        // Test the values embedded within the DataItem resource itself.
+        versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, false) }
     }
 
-    def getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate) {
+    def getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, testValuesResource) {
         def query = [:];
         if (queryStartDate) {
             query['startDate'] = queryStartDate;
         }
         def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values;full",
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
                 query: query,
                 contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
         assertTrue response.data instanceof net.sf.json.JSON;
         assertEquals 'OK', response.data.status;
-        def values = response.data.values;
+        def values = testValuesResource ? response.data.values : response.data.item.values;
         assertEquals 3, values.size();
         assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.collect { it.path }.sort();
         assert [true, false, false].sort() == values.collect { it.history }.sort();
-        assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.collect { it.uid }.sort();
+        if (testValuesResource) {
+            assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.collect { it.uid }.sort();
+        }
         assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.collect { it.value }.sort();
-        assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort();
+        if (testValuesResource) {
+            assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort();
+        }
         assert ['kg', null, null] == values.collect { it?.unit };
         assert ['kWh', null, null] == values.collect { it?.perUnit };
         // TODO: Test below doesn't seem to work.

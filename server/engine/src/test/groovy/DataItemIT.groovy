@@ -167,6 +167,9 @@ class DataItemIT extends BaseApiTest {
     /**
      * Test fetching a number of DataItems with JSON responses.
      *
+     * This resource supports the 'startDate' parameter which behaves identically to the
+     * DataItem values resource detailed and tested in DataItemValueIT.
+     *
      * The DataItem label field is only supported since version 3.2.
      */
     @Test
