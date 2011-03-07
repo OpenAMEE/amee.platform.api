@@ -9,13 +9,13 @@ class DataItemValueIT extends BaseApiTest {
     static def versions = [3.4]
 
     @Test
-    void createDataItemJson() {
-        versions.each { version -> createDataItemJson(version) }
+    void createDataItemValueJson() {
+        versions.each { version -> createDataItemValueJson(version) }
     }
 
-    def createDataItemJson(version) {
+    def createDataItemValueJson(version) {
         setAdminUser();
-        // Create a DataItem.
+        // Create a DataItemValue.
         def responsePost = client.post(
                 path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                 body: ['value': 10],
@@ -327,6 +327,10 @@ class DataItemValueIT extends BaseApiTest {
         updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date');
     }
 
+    /**
+     * TODO: Fails sometimes. "Response status code should have been 400 (startDate, duplicate)."
+     * TODO: See https://jira.amee.com/browse/PL-10466.
+     */
     @Test
     void updateWithDuplicateStartDate() {
         setAdminUser();
@@ -406,6 +410,12 @@ class DataItemValueIT extends BaseApiTest {
      */
     void updateDataItemValueFieldJson(path, field, code, value, since, version) {
         if (version >= since) {
+            // Get value before update.
+            def responseBefore = client.get(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                    contentType: JSON);
+            assertEquals 200, responseBefore.status;
+            def valueBefore = responseBefore.data.value.value;
             try {
                 // Create form body.
                 def body = [:];
@@ -427,6 +437,13 @@ class DataItemValueIT extends BaseApiTest {
                 assertTrue([field] == response.data.validationResult.errors.collect {it.field});
                 assertTrue([code] == response.data.validationResult.errors.collect {it.code});
             }
+            // Get value after update.
+            def responseAfter = client.get(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                    contentType: JSON);
+            assertEquals 200, responseAfter.status;
+            def valueAfter = responseAfter.data.value.value;
+            assertEquals valueAfter, valueBefore;
         }
     }
 }
