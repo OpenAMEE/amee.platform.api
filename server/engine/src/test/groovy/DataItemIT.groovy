@@ -107,6 +107,8 @@ class DataItemIT extends BaseApiTest {
             assertEquals 4, responseGet.data.item.values.size();
             assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}");
             assertEquals 200, responseDelete.status;
@@ -144,6 +146,8 @@ class DataItemIT extends BaseApiTest {
                     contentType: JSON);
             // Should have been created.
             assertEquals 201, responsePost.status
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
             try {
                 // Create a DataItem.
                 client.post(
@@ -159,6 +163,8 @@ class DataItemIT extends BaseApiTest {
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/testPath");
             // Should have been deleted.
             assertEquals 200, responseDelete.status;
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
         }
     }
 
@@ -376,6 +382,8 @@ class DataItemIT extends BaseApiTest {
                     contentType: JSON);
             // Should have been created.
             assertEquals 201, responsePost.status
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
             // Update the DataItem.
             def responsePut = client.put(
                     path: "/${version}/categories/Cooking/items/aTestDataItem",
@@ -389,6 +397,8 @@ class DataItemIT extends BaseApiTest {
                     contentType: JSON);
             // Should have been updated.
             assertEquals 201, responsePut.status;
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
             // Get the DataItem and check values.
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/aTestDataItem;full",
