@@ -1,12 +1,15 @@
 package com.amee.platform.resource.itemvaluedefinition.v_3_4;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResponseHelper;
+import com.amee.base.resource.ValidationResult;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
+import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionValidationHelper;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueUsageValidationHelper;
@@ -34,6 +37,9 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
     ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
+    private ResourceService resourceService;
+
+    @Autowired
     private ItemValueDefinitionValidationHelper validationHelper;
 
     @Autowired
@@ -43,43 +49,34 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
-        // Get ItemDefinition identifier.
-        String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
-        if (itemDefinitionIdentifier != null) {
 
-            // Get ItemDefinition.
-            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
-            if (itemDefinition != null) {
+        // Get ItemDefinition.
+        ItemDefinition itemDefinition = resourceService.getItemDefinition(requestWrapper);
 
-                // Authorized?
-                resourceAuthorizationService.ensureAuthorizedForModify(
-                    requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
+        // Authorized?
+        resourceAuthorizationService.ensureAuthorizedForModify(
+                requestWrapper.getAttributes().get("activeUserUid"), itemDefinition);
 
-                // Handle the ItemDefinition submission.
-                Element rootElem = requestWrapper.getBodyAsDocument().getRootElement();
-                if (rootElem.getName().equals("ItemValueDefinition")) {
+        // Handle the ItemValueDefinition submission.
+        Element rootElem = requestWrapper.getBodyAsDocument().getRootElement();
+        if (rootElem.getName().equals("ItemValueDefinition")) {
 
-                    // Create parameters map containing all name / value pairs.
-                    Map<String, String> parameters = new HashMap<String, String>();
-                    for (Object o : rootElem.getChildren()) {
-                        Element childElem = (Element) o;
-                        if (childElem.getChildren().isEmpty()) {
-                            parameters.put(StringUtils.uncapitalize(childElem.getName()), childElem.getText());
-                        }
-                    }
-
-                    ItemValueDefinition itemValueDefinition = new ItemValueDefinition(itemDefinition);
-                    return handle(requestWrapper, itemValueDefinition, parameters);
-                } else {
-
-                    // Unexpected node
-                    throw new ValidationException();
+            // Create parameters map containing all name / value pairs.
+            Map<String, String> parameters = new HashMap<String, String>();
+            for (Object o : rootElem.getChildren()) {
+                Element childElem = (Element) o;
+                if (childElem.getChildren().isEmpty()) {
+                    parameters.put(StringUtils.uncapitalize(childElem.getName()), childElem.getText());
                 }
-            } else {
-                throw new NotFoundException();
             }
+
+            ItemValueDefinition itemValueDefinition = new ItemValueDefinition(itemDefinition);
+            return handle(requestWrapper, itemValueDefinition, parameters);
         } else {
-            throw new MissingAttributeException("itemDefinitionIdentifier");
+
+            // Unexpected node.
+            // TODO: Be more precise with a ValidationResult.
+            throw new ValidationException();
         }
     }
 
@@ -100,8 +97,8 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
             definitionService.invalidate(itemValueDefinition.getItemDefinition());
 
             String location = "/" + requestWrapper.getVersion() +
-                "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
-                "/values/" + itemValueDefinition.getUid();
+                    "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
+                    "/values/" + itemValueDefinition.getUid();
             return ResponseHelper.getOK(requestWrapper, location);
         } else {
             throw new ValidationException(validationHelper.getValidationResult());

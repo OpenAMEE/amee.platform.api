@@ -7,13 +7,12 @@ import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.UidGen;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IDataItemService;
-import com.amee.domain.data.DataCategory;
-import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.data.ItemValueMap;
+import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.data.DataService;
+import com.amee.service.definition.DefinitionService;
 import com.amee.service.item.DataItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -26,6 +25,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private DefinitionService definitionService;
 
     @Autowired
     private DataItemService dataItemService;
@@ -144,6 +146,40 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public ItemDefinition getItemDefinition(RequestWrapper requestWrapper) {
+        // Get ItemDefinition identifier.
+        String itemDefinitionIdentifier = requestWrapper.getAttributes().get("itemDefinitionIdentifier");
+        if (itemDefinitionIdentifier != null) {
+            // Get ItemDefinition.
+            ItemDefinition itemDefinition = definitionService.getItemDefinitionByUid(itemDefinitionIdentifier);
+            if (itemDefinition != null) {
+                return itemDefinition;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("itemDefinitionIdentifier");
+        }
+    }
+
+    @Override
+    public ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition) {
+        // Get ItemValueDefinition identifier.
+        String itemValueDefinitionIdentifier = requestWrapper.getAttributes().get("itemValueDefinitionIdentifier");
+        if (itemValueDefinitionIdentifier != null) {
+            // Get ItemValueDefinition.
+            ItemValueDefinition itemValueDefinition = definitionService.getItemValueDefinitionByUid(itemDefinition, itemValueDefinitionIdentifier);
+            if (itemValueDefinition != null) {
+                return itemValueDefinition;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("itemValueDefinitionIdentifier");
+        }
+    }
+
+    @Override
     public ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, DataItem dataItem) {
         // Get ItemValueDefinition path.
         String valuePath = requestWrapper.getAttributes().get("valuePath");
@@ -159,4 +195,22 @@ public class ResourceServiceImpl implements ResourceService {
             throw new MissingAttributeException("valuePath");
         }
     }
+
+    @Override
+    public ReturnValueDefinition getReturnValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition) {
+        // Get ReturnValueDefinition identifier.
+        String returnValueDefinitionIdentifier = requestWrapper.getAttributes().get("returnValueDefinitionIdentifier");
+        if (returnValueDefinitionIdentifier != null) {
+            // Get ReturnValueDefinition.
+            ReturnValueDefinition returnValueDefinition = definitionService.getReturnValueDefinitionByUid(itemDefinition, returnValueDefinitionIdentifier);
+            if (returnValueDefinition != null) {
+                return returnValueDefinition;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("returnValueDefinitionIdentifier");
+        }
+    }
+
 }
