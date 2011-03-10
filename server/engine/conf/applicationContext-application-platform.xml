@@ -402,6 +402,18 @@
                         <property name="since" value="3.1.0"/>
                     </bean>
                 </entry>
+                <entry key="/{itemDefinitionIdentifier}/algorithms">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="algorithmsResource"/>
+                        <property name="since" value="3.1.0"/>
+                    </bean>
+                </entry>
+                <entry key="/{itemDefinitionIdentifier}/algorithms/{algorithmIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="algorithmResource"/>
+                        <property name="since" value="3.0.0"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
@@ -589,6 +601,67 @@
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
                           value="com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource$Remover"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="algorithmsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="true"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>itemDefinitionIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.algorithm.AlgorithmsResource$Builder"/>
+            </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.algorithm.AlgorithmsResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="algorithmResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>itemDefinitionIdentifier</value>
+                <value>algorithmIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.algorithm.AlgorithmResource$Builder"/>
+            </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.algorithm.AlgorithmResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.algorithm.AlgorithmResource$Remover"/>
             </bean>
         </property>
     </bean>

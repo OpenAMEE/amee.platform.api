@@ -1,5 +1,4 @@
 import groovyx.net.http.HttpResponseException
-import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -26,27 +25,27 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
             // Create a new ItemValueDefinition
             def responsePost = client.post(
-                path: '/3.4/definitions/11D3548466F2/values',
-                body: ['valueDefinition': '45433E48B39F',
-                    'name': 'test',
-                    'path': 'foo',
-                    'value': 'true',
-                    'choices': 'true,false',
-                    'fromProfile': 'true',
-                    'fromData': 'true',
-                    'unit': 'kg',
-                    'perUnit': 'month',
-                    'apiVersions': '1.0,2.0'],
-                requestContentType: URLENC,
-                contentType: JSON)
+                    path: "/${version}/definitions/11D3548466F2/values",
+                    body: ['valueDefinition': '45433E48B39F',
+                            'name': 'test',
+                            'path': 'foo',
+                            'value': 'true',
+                            'choices': 'true,false',
+                            'fromProfile': 'true',
+                            'fromData': 'true',
+                            'unit': 'kg',
+                            'perUnit': 'month',
+                            'apiVersions': '1.0,2.0'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
             assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value;
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
-                path: "${location};full",
-                contentType: JSON)
+                    path: "${location};full",
+                    contentType: JSON)
             assertEquals 200, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
@@ -83,18 +82,18 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
             // Create a new ItemValueDefinition
             def responsePost = client.post(
-                path: '/3.4/definitions/11D3548466F2/values',
-                body: itemValueDefinitionNewXml(),
-                requestContentType: XML,
-                contentType: XML)
+                    path: "/${version}/definitions/11D3548466F2/values",
+                    body: itemValueDefinitionNewXml(),
+                    requestContentType: XML,
+                    contentType: XML)
             assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value;
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
-                path: "${location};full",
-                contentType: XML)
+                    path: "${location};full",
+                    contentType: XML)
             assertEquals 200, responseGet.status
             assertEquals 'application/xml', responseGet.contentType
             assertEquals 'OK', responseGet.data.Status.text()
@@ -273,21 +272,21 @@ class ItemValueDefinitionIT extends BaseApiTest {
     void updateItemValueDefinitionXml() {
         versions.each { version -> updateItemValueDefinitionXml(version) }
     }
-    
+
     def updateItemValueDefinitionXml(version) {
         if (version >= 3.1) {
             setAdminUser()
 
             def responsePut = client.put(
-                path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
-                body: itemValueDefinitionUpdateXml(),
-                requestContentType: XML,
-                contentType: XML)
+                    path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
+                    body: itemValueDefinitionUpdateXml(),
+                    requestContentType: XML,
+                    contentType: XML)
             assertEquals 201, responsePut.status
 
             def responseGet = client.get(
-                path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
-                contentType: XML)
+                    path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
+                    contentType: XML)
             assertEquals 200, responseGet.status
             assertEquals 'application/xml', responseGet.contentType
             assertEquals 'OK', responseGet.data.Status.text()
@@ -349,7 +348,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
         if (version >= since) {
             try {
                 // Create form body.
-                def body = [(field):value]
+                def body = [(field): value]
                 // Update IVD (64BC7A490F41 / 'Number Owned' / 'numberOwned').
                 client.put(
                         path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
