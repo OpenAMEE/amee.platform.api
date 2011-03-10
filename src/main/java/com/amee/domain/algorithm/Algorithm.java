@@ -21,8 +21,10 @@ package com.amee.domain.algorithm;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.path.Pathable;
 import com.amee.platform.science.AlgorithmException;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -35,10 +37,11 @@ import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("AL")
-public class Algorithm extends AbstractAlgorithm implements com.amee.platform.science.Algorithm {
+public class Algorithm extends AbstractAlgorithm implements com.amee.platform.science.Algorithm, Pathable {
 
     // Default Algorithm name to use in calculations
     public final static String DEFAULT = "default";
@@ -53,11 +56,6 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
 
     public Algorithm() {
         super();
-    }
-
-    @Override
-    public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
     }
 
     public Algorithm(ItemDefinition itemDefinition, String content) {
@@ -127,6 +125,26 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
         return outContent.toString();
     }
 
+    @Override
+    public String getPath() {
+        return getUid();
+    }
+
+    @Override
+    public String getDisplayName() {
+        return getName();
+    }
+
+    @Override
+    public String getDisplayPath() {
+        return getPath();
+    }
+
+    @Override
+    public String getFullPath() {
+        return getItemDefinition().getFullPath() + "/" + getPath();
+    }
+
     public ObjectType getObjectType() {
         return ObjectType.AL;
     }
@@ -146,5 +164,17 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
 
     public String getLabel() {
         return getItemDefinition() + "/" + getName();
+    }
+
+    @Override
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = getItemDefinition().getHierarchy();
+        entities.add(this);
+        return entities;
+    }
+
+    @Override
+    public boolean isTrash() {
+        return status.equals(AMEEStatus.TRASH) || itemDefinition.isTrash();
     }
 }

@@ -241,7 +241,20 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
     }
 
     public Set<Algorithm> getActiveAlgorithms() {
-        Set<Algorithm> activeAlgorithms = new HashSet<Algorithm>();
+        Set<Algorithm> activeAlgorithms = new TreeSet<Algorithm>(
+                new Comparator<Algorithm>() {
+                    public int compare(Algorithm algorithm1, Algorithm algorithm2) {
+                        // Comparing by name is incompatible with equals
+                        int nameCompare = algorithm1.getName().compareToIgnoreCase(algorithm2.getName());
+                        if (nameCompare != 0) {
+                            return nameCompare;
+                        } else {
+                            // If the names are the same we need to fall back to the equals implementation.
+                            return algorithm1.getUid().compareTo(algorithm2.getUid());
+                        }
+                    }
+                }
+        );
         for (Algorithm algorithm : algorithms) {
             if (!algorithm.isTrash()) {
                 activeAlgorithms.add(algorithm);
