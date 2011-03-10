@@ -7,6 +7,7 @@ import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.UidGen;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.IDataItemService;
+import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
@@ -213,4 +214,20 @@ public class ResourceServiceImpl implements ResourceService {
         }
     }
 
+    @Override
+    public Algorithm getAlgorithm(RequestWrapper requestWrapper, ItemDefinition itemDefinition) {
+        // Get Algorithm identifier.
+        String algorithmIdentifier = requestWrapper.getAttributes().get("algorithmIdentifier");
+        if (algorithmIdentifier != null) {
+            // Get Algorithm.
+            Algorithm algorithm = definitionService.getAlgorithmByUid(itemDefinition, algorithmIdentifier);
+            if (algorithm != null) {
+                return algorithm;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("algorithmIdentifier");
+        }
+    }
 }

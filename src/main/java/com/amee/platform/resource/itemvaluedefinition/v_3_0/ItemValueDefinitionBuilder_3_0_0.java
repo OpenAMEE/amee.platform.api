@@ -33,7 +33,7 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
     @Autowired
     private ResourceService resourceService;
 
-    private ItemValueDefinitionResource.Renderer itemValueDefinitionRenderer;
+    private ItemValueDefinitionResource.Renderer renderer;
 
     @Override
     @AMEETransaction
@@ -49,6 +49,7 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), itemValueDefinition);
+
         // Handle the ItemValueDefinition.
         handle(requestWrapper, itemValueDefinition);
         ItemValueDefinitionResource.Renderer renderer = getRenderer(requestWrapper);
@@ -119,9 +120,9 @@ public class ItemValueDefinitionBuilder_3_0_0 implements ItemValueDefinitionReso
     }
 
     public ItemValueDefinitionResource.Renderer getRenderer(RequestWrapper requestWrapper) {
-        if (itemValueDefinitionRenderer == null) {
-            itemValueDefinitionRenderer = (ItemValueDefinitionResource.Renderer) resourceBeanFinder.getRenderer(ItemValueDefinitionResource.Renderer.class, requestWrapper);
+        if (renderer == null) {
+            renderer = (ItemValueDefinitionResource.Renderer) resourceBeanFinder.getRenderer(ItemValueDefinitionResource.Renderer.class, requestWrapper);
         }
-        return itemValueDefinitionRenderer;
+        return renderer;
     }
 }
