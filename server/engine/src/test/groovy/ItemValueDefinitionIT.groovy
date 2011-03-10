@@ -254,7 +254,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 201, responsePut.status;
+        assertEquals 204, responsePut.status;
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
@@ -282,7 +282,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     body: itemValueDefinitionUpdateXml(),
                     requestContentType: XML,
                     contentType: XML)
-            assertEquals 201, responsePut.status
+            assertEquals 204, responsePut.status
 
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",

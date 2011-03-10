@@ -396,7 +396,7 @@ class DataItemIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON);
             // Should have been updated.
-            assertEquals 201, responsePut.status;
+            assertEquals 204, responsePut.status;
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
             // Get the DataItem and check values.

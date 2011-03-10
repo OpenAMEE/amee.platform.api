@@ -505,7 +505,7 @@ class CategoryIT extends BaseApiTest {
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 201, responsePut.status;
+        assertEquals 204, responsePut.status;
         // 2) Check values have been updated (CO2_Benchmark).
         def responseGet = client.get(
                 path: "/${version}/categories/245CBD734418;full",

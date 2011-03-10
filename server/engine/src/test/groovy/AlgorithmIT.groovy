@@ -248,7 +248,7 @@ class AlgorithmIT extends BaseApiTest {
                         'content': 'New content JSON.'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 201, responsePut.status;
+        assertEquals 204, responsePut.status;
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
@@ -280,7 +280,7 @@ class AlgorithmIT extends BaseApiTest {
                         'content': 'New content XML.'],
                 requestContentType: URLENC,
                 contentType: XML)
-        assertEquals 201, responsePut.status
+        assertEquals 204, responsePut.status
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",

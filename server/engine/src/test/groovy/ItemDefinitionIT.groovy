@@ -271,7 +271,7 @@ class ItemDefinitionIT extends BaseApiTest {
                         'usages': 'usage1,usage2,usage3'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 201, responsePut.status;
+        assertEquals 204, responsePut.status;
         // We added a usage.
         expectedUsageNames[2] = 'usage3';
         expectedUsagePresents[2] = 'true';

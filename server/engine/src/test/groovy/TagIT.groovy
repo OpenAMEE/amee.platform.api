@@ -580,7 +580,7 @@ class TagIT extends BaseApiTest {
                     body: ['tag': 'tag_updated'],
                     requestContentType: URLENC,
                     contentType: JSON);
-            assertEquals 201, responsePut.status;
+            assertEquals 204, responsePut.status;
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: "/${version}/tags/002FD23CD3A2",
