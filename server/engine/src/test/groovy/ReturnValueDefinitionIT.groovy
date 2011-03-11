@@ -235,7 +235,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                         'perUnit': 'day'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 201, responsePut.status;
+        assertEquals 204, responsePut.status;
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20;full',
@@ -298,7 +298,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                         'defaultType': true],
                 requestContentType: URLENC,
                 contentType: JSON)
-        assertEquals 201, responsePut.status
+        assertEquals 204, responsePut.status
 
         // Check new one is now not the default.
         responseGet = client.get(path: location + ';full', contentType: JSON)
