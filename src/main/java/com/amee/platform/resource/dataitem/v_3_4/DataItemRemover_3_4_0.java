@@ -38,12 +38,15 @@ public class DataItemRemover_3_4_0 implements DataItemResource.Remover {
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForRemove(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+
         // Handle DataItem removal.
         dataItemService.remove(dataItem);
         invalidationService.add(dataItem.getDataCategory());

@@ -47,11 +47,14 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+
         // Create filter.
         DataItemsFilter filter = new DataItemsFilter(dataCategory.getItemDefinition());
         filter.setLoadDataItemValues(
@@ -62,6 +65,7 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
                         requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
                         requestWrapper.getMatrixParameters().containsKey("provenance"));
         validationHelper.setDataItemFilter(filter);
+
         // Do validation.
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, dataCategory, filter);
@@ -77,9 +81,11 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
             RequestWrapper requestWrapper,
             DataCategory dataCategory,
             DataItemsFilter filter) {
+
         // Setup Renderer.
         DataItemsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
+
         // Add Data Items to Renderer and build.
         ResultsWrapper<DataItem> resultsWrapper = searchService.getDataItems(dataCategory, filter);
         renderer.setTruncated(resultsWrapper.isTruncated());

@@ -62,12 +62,15 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
         DataItem dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+
         // Handle the DataItem.
         this.handle(requestWrapper, dataItem);
         DataItemCalculationResource.Renderer renderer = getRenderer(requestWrapper);

@@ -6,15 +6,18 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.UidGen;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.AMEEStatus;
 import com.amee.domain.IDataItemService;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.tag.Tag;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
 import com.amee.service.item.DataItemService;
+import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -34,15 +37,23 @@ public class ResourceServiceImpl implements ResourceService {
     private DataItemService dataItemService;
 
     @Autowired
+    private TagService tagService;
+
+    @Autowired
     private MessageSource messageSource;
 
     @Override
     public DataCategory getDataCategory(RequestWrapper requestWrapper) {
+        return getDataCategory(requestWrapper, AMEEStatus.ACTIVE);
+    }
+
+    @Override
+    public DataCategory getDataCategory(RequestWrapper requestWrapper, AMEEStatus status) {
         // Get DataCategory identifier.
         String categoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
         if (categoryIdentifier != null) {
             // Get DataCategory.
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(categoryIdentifier);
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(categoryIdentifier, status);
             if (dataCategory != null) {
                 return dataCategory;
             } else {
@@ -228,6 +239,23 @@ public class ResourceServiceImpl implements ResourceService {
             }
         } else {
             throw new MissingAttributeException("algorithmIdentifier");
+        }
+    }
+
+    @Override
+    public Tag getTag(RequestWrapper requestWrapper) {
+        // Get Tag identifier.
+        String tagIdentifier = requestWrapper.getAttributes().get("tagIdentifier");
+        if (tagIdentifier != null) {
+            // Get Tag.
+            Tag tag = tagService.getTagByIdentifier(tagIdentifier);
+            if (tag != null) {
+                return tag;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("tagIdentifier");
         }
     }
 }

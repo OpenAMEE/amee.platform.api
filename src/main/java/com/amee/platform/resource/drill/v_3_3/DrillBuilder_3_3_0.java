@@ -1,14 +1,13 @@
 package com.amee.platform.resource.drill.v_3_3;
 
 import com.amee.base.domain.Since;
-import com.amee.base.resource.MissingAttributeException;
-import com.amee.base.resource.NotFoundException;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
+import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.drill.DrillResource;
 import com.amee.platform.search.SearchDrillDownService;
 import com.amee.service.auth.ResourceAuthorizationService;
@@ -39,30 +38,28 @@ public class DrillBuilder_3_3_0 implements DrillResource.Builder {
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
+    @Autowired
+    private ResourceService resourceService;
+
     private DrillResource.Renderer renderer;
 
     @Override
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
-        String dataCategoryIdentifier = requestWrapper.getAttributes().get("categoryIdentifier");
-        if (dataCategoryIdentifier != null) {
-            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(dataCategoryIdentifier);
-            if ((dataCategory != null) && dataCategory.isItemDefinitionPresent()) {
-                // Authorized?
-                resourceAuthorizationService.ensureAuthorizedForBuild(
-                        requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
-                // Handle the DataCategory.
-                this.handle(requestWrapper, dataCategory);
-                DrillResource.Renderer renderer = getRenderer(requestWrapper);
-                renderer.ok();
-                return renderer.getObject();
-            } else {
-                throw new NotFoundException();
-            }
-        } else {
-            throw new MissingAttributeException("dataCategoryIdentifier");
-        }
+
+        // Get entities.
+        DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
+
+        // Authorized?
+        resourceAuthorizationService.ensureAuthorizedForBuild(
+                requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+
+        // Handle the DataCategory.
+        this.handle(requestWrapper, dataCategory);
+        DrillResource.Renderer renderer = getRenderer(requestWrapper);
+        renderer.ok();
+        return renderer.getObject();
     }
 
     protected void handle(RequestWrapper requestWrapper, DataCategory dataCategory) {

@@ -53,11 +53,14 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForModify(
                 requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+
         // DataCategory must have an ItemDefinition.
         if (dataCategory.isItemDefinitionPresent()) {
             // Handle the DataItem submission.

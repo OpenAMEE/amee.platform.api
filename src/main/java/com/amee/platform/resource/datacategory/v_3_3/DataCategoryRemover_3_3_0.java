@@ -37,11 +37,14 @@ public class DataCategoryRemover_3_3_0 implements DataCategoryResource.Remover {
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
+
         // Get entities.
         DataCategory dataCategory = resourceService.getDataCategory(requestWrapper);
+
         // Authorized?
         resourceAuthorizationService.ensureAuthorizedForRemove(
                 requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+
         // Handle DataCategory removal.
         dataService.remove(dataCategory);
         invalidationService.add(dataCategory);
