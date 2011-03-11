@@ -32,12 +32,16 @@ public interface ItemDefinitionResource {
 
         public void addUsages();
 
+        public void addAlgorithms();
+
         public Object getObject();
     }
 
-    interface FormAcceptor extends ResourceAcceptor {}
+    interface FormAcceptor extends ResourceAcceptor {
+    }
 
-    interface Remover extends ResourceRemover {}
+    interface Remover extends ResourceRemover {
+    }
 
     interface ItemDefinitionValidator {
 

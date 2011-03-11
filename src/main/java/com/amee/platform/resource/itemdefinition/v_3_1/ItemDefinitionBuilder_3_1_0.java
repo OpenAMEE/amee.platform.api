@@ -65,6 +65,7 @@ public class ItemDefinitionBuilder_3_1_0 implements ItemDefinitionResource.Build
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
         boolean drillDown = requestWrapper.getMatrixParameters().containsKey("drillDown");
         boolean usages = requestWrapper.getMatrixParameters().containsKey("usages");
+        boolean algorithms = requestWrapper.getMatrixParameters().containsKey("algorithms");
 
         // New ItemValueDefinition & basic.
         renderer.newItemDefinition(itemDefinition);
@@ -82,6 +83,9 @@ public class ItemDefinitionBuilder_3_1_0 implements ItemDefinitionResource.Build
         }
         if (usages || full) {
             renderer.addUsages();
+        }
+        if (algorithms || full) {
+            renderer.addAlgorihtms();
         }
     }
 

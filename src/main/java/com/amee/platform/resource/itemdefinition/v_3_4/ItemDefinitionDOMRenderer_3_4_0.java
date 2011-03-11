@@ -1,4 +1,4 @@
-package com.amee.platform.resource.itemdefinition.v_3_1;
+package com.amee.platform.resource.itemdefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemDefinition;
@@ -13,8 +13,8 @@ import java.util.Set;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ItemDefinitionDOMRenderer_3_1_0 implements ItemDefinitionResource.Renderer {
+@Since("3.4.0")
+public class ItemDefinitionDOMRenderer_3_4_0 implements ItemDefinitionResource.Renderer {
 
     private ItemDefinition itemDefinition;
     private Element rootElem;
@@ -72,6 +72,11 @@ public class ItemDefinitionDOMRenderer_3_1_0 implements ItemDefinitionResource.R
             valueElem.setAttribute("present", Boolean.toString(allItemValueUsages.contains(itemValueUsage)));
             itemValueUsagesElem.addContent(valueElem);
         }
+    }
+
+    @Override
+    public void addAlgorithms() {
+
     }
 
     public String getMediaType() {

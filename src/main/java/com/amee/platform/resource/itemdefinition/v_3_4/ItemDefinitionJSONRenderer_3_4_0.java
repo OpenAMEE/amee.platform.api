@@ -1,4 +1,4 @@
-package com.amee.platform.resource.itemdefinition.v_3_1;
+package com.amee.platform.resource.itemdefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
@@ -14,8 +14,8 @@ import java.util.Set;
 
 @Service
 @Scope("prototype")
-@Since("3.1.0")
-public class ItemDefinitionJSONRenderer_3_1_0 implements ItemDefinitionResource.Renderer {
+@Since("3.4.0")
+public class ItemDefinitionJSONRenderer_3_4_0 implements ItemDefinitionResource.Renderer {
 
     private ItemDefinition itemDefinition;
     private JSONObject rootObj;
@@ -73,6 +73,11 @@ public class ItemDefinitionJSONRenderer_3_1_0 implements ItemDefinitionResource.
             ResponseHelper.put(itemValueUsageObj, "present", Boolean.toString(allItemValueUsages.contains(itemValueUsage)));
             itemValueUsagesArr.put(itemValueUsageObj);
         }
+    }
+
+    @Override
+    public void addAlgorithms() {
+
     }
 
     public String getMediaType() {
