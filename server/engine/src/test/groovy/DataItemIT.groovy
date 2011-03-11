@@ -205,6 +205,7 @@ class DataItemIT extends BaseApiTest {
         assertEquals dataItemUids.size(), response.data.items.size()
         def responseUids = response.data.items.collect { it.uid }.sort()
         assert dataItemUids == responseUids
+
         // Should  be sorted by label
         if (version >= 3.2) {
             assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) < 0
@@ -232,6 +233,7 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
         assertEquals 5, response.data.items.size()
+
         // Should not be sorted by label
         if (version >= 3.2) {
             assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) > 0
@@ -239,7 +241,7 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
-     * Test fetching a number of DataItems with JSON responses.
+     * Test fetching a number of DataItems with XML responses.
      *
      * The DataItem label field is only supported since version 3.2.
      */
@@ -260,14 +262,45 @@ class DataItemIT extends BaseApiTest {
         def allDataItems = response.data.Items.Item
         assertEquals dataItemUids.size(), allDataItems.size()
         assert dataItemUids == allDataItems.@uid*.text().sort()
+
         // Should  be sorted by label
         if (version >= 3.2) {
             assertTrue allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
         }
     }
 
-    // TODO: getFilteredDataItemsXml
+    /**
+     * Test fetching a number of DataItems filtered to match a single value with XML responses.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
+    @Test
+    void getFilteredDataItemsXml() {
+        versions.each { version -> getFilteredDataItemsXml(version) }
+    }
 
+    def getFilteredDataItemsXml(version) {
+        client.contentType = XML
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items;full",
+                query: ['numberOfPeople': '1'])
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals 'false', response.data.Items.@truncated.text()
+        assertEquals 5, response.data.Items.Item.size()
+
+        // Should not be sorted by label
+        if (version >= 3.2) {
+            assertTrue response.data.Items.Item[0].Label.text().compareToIgnoreCase(response.data.Items.Item[-1].Label.text()) > 0
+        }
+    }
+
+    /**
+     * Tests fetching a single DataItem with JSON response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemOneGasJson() {
         versions.each { version -> getDataItemOneGasJson(version) }
@@ -292,6 +325,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path});
     }
 
+    /**
+     * Tests fetching a single DataItem with XML response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemOneGasXml() {
         versions.each { version -> getDataItemOneGasXml(version) }
@@ -316,6 +354,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(oneGasItemValuePaths == allValues.Path*.text());
     }
 
+    /**
+     * Tests fetching a single DataItem with JSON response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemTenElectricJson() {
         versions.each { version -> getDataItemTenElectricJson(version) }
@@ -340,6 +383,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(tenElectricItemValuePaths == response.data.item.values.collect {it.path});
     }
 
+    /**
+     * Tests fetching a single DataItem with XML response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemTenElectricXml() {
         versions.each { version -> getDataItemTenElectricXml(version) }
@@ -453,12 +501,10 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
-    // TODO: updateDataItemXml
-
-    // TODO: updateDataItemUnauthorizedXml
-
     /**
-     * The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * Tests an algorithm is applied to calculate a result with JSON response.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
      */
     @Test
     void getDataItemCalculationJson() {
@@ -468,22 +514,61 @@ class DataItemIT extends BaseApiTest {
     def getDataItemCalculationJson(version) {
         if (version >= 3.4) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full");
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 1, response.data.amounts.size();
-            def amount = response.data.amounts[0];
-            assertEquals 'year', amount.perUnit;
-            assertEquals 'kg', amount.unit;
-            assertEquals true, amount.default;
-            assertEquals("", 233.3, amount.value, 0.5);
-            assertEquals 'CO2', amount.type;
+            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
+                query: [foo: 'bar'])
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 1, response.data.amounts.size()
+            def amount = response.data.amounts[0]
+            assertEquals 'year', amount.perUnit
+            assertEquals 'kg', amount.unit
+            assertEquals true, amount.default
+            assertEquals("", 233.3, amount.value, 0.5)
+            assertEquals 'CO2', amount.type
+            assertEquals 1, response.data.notes.size()
+            assertEquals 'comment', response.data.notes[0].type
+            assertEquals 'This is a comment', response.data.notes[0].value
+            assertEquals 1, response.data.values.size()
+            assertEquals 'foo', response.data.values[0].name
+            assertEquals 'bar', response.data.values[0].value
         }
     }
 
-    // TODO: getDataItemCalculationXml
+    /**
+     * Tests an algorithm is applied to calculate a result with XML response.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     */
+    @Test
+    void getDataItemCalculationXml() {
+        versions.each { version -> getDataItemCalculationXml(version) }
+    }
+
+    def getDataItemCalculationXml(version) {
+        if (version >= 3.4) {
+            client.contentType = XML
+            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
+                query: [foo: 'bar'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            assertEquals 1, response.data.Amounts.Amount.size()
+            def amount = response.data.Amounts.Amount[0]
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals("", 233.3D, Double.parseDouble(amount.text()), 0.5D)
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 1, response.data.Notes.size()
+            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
+            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+            assertEquals 1, response.data.Values.size()
+            assertEquals 'foo', response.data.Values.Value[0].@name.text()
+            assertEquals 'bar', response.data.Values.Value[0].text()
+        }
+    }
 
     /**
      * Tests the validation rules for the Data Item name field.
