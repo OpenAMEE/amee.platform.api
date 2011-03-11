@@ -6,52 +6,52 @@ import static org.junit.Assert.*
 
 class DataItemValueIT extends BaseApiTest {
 
-    static def versions = [3.4]
-
     @Test
     void createDataItemValueJson() {
         versions.each { version -> createDataItemValueJson(version) }
     }
 
     def createDataItemValueJson(version) {
-        setAdminUser();
-        // Create a DataItemValue.
-        def responsePost = client.post(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
-                body: ['value': 10],
-                requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 201, responsePost.status
-        // Is Location available?
-        assertTrue responsePost.headers['Location'] != null;
-        assertTrue responsePost.headers['Location'].value != null;
-        def location = responsePost.headers['Location'].value;
-        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
-        // Get new DataItemValue UID.
-        def uid = location.split('/')[10];
-        assertTrue uid != null;
-        // Sleep a little to give the index a chance to be updated.
-        sleep(1000);
-        // Get the new DataItem.
-        def responseGet = client.get(
-                path: "${location};full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals "10", responseGet.data.value.value;
-        // Then delete it.
-        def responseDelete = client.delete(path: location);
-        assertEquals 200, responseDelete.status;
-        // Sleep a little to give the index a chance to be updated.
-        sleep(1000);
-        // We should get a 404 here.
-        try {
-            client.get(path: location);
-            fail 'Should have thrown an exception';
-        } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status;
+        if (version >= 3.4) {
+            setAdminUser();
+            // Create a DataItemValue.
+            def responsePost = client.post(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                    body: ['value': 10],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, responsePost.status
+            // Is Location available?
+            assertTrue responsePost.headers['Location'] != null;
+            assertTrue responsePost.headers['Location'].value != null;
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            // Get new DataItemValue UID.
+            def uid = location.split('/')[10];
+            assertTrue uid != null;
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+            // Get the new DataItem.
+            def responseGet = client.get(
+                    path: "${location};full",
+                    contentType: JSON);
+            assertEquals 200, responseGet.status;
+            assertEquals 'application/json', responseGet.contentType;
+            assertTrue responseGet.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', responseGet.data.status;
+            assertEquals "10", responseGet.data.value.value;
+            // Then delete it.
+            def responseDelete = client.delete(path: location);
+            assertEquals 200, responseDelete.status;
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+            // We should get a 404 here.
+            try {
+                client.get(path: location);
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
         }
     }
 
@@ -127,33 +127,35 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     def getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, testValuesResource) {
-        def query = [:];
-        if (queryStartDate) {
-            query['startDate'] = queryStartDate;
+        if (version >= 3.4) {
+            def query = [:];
+            if (queryStartDate) {
+                query['startDate'] = queryStartDate;
+            }
+            def response = client.get(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
+                    query: query,
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            def values = testValuesResource ? response.data.values : response.data.item.values;
+            assertEquals 3, values.size();
+            assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.collect { it.path }.sort();
+            assert [true, false, false].sort() == values.collect { it.history }.sort();
+            if (testValuesResource) {
+                assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.collect { it.uid }.sort();
+            }
+            assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.collect { it.value }.sort();
+            if (testValuesResource) {
+                assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort();
+            }
+            assert ['kg', null, null] == values.collect { it?.unit };
+            assert ['kWh', null, null] == values.collect { it?.perUnit };
+            // TODO: Test below doesn't seem to work.
+            // assert ['kg/(kW·h)', null, null] == values.collect { it?.compoundUnit };
         }
-        def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
-                query: query,
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        def values = testValuesResource ? response.data.values : response.data.item.values;
-        assertEquals 3, values.size();
-        assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.collect { it.path }.sort();
-        assert [true, false, false].sort() == values.collect { it.history }.sort();
-        if (testValuesResource) {
-            assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.collect { it.uid }.sort();
-        }
-        assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.collect { it.value }.sort();
-        if (testValuesResource) {
-            assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort();
-        }
-        assert ['kg', null, null] == values.collect { it?.unit };
-        assert ['kWh', null, null] == values.collect { it?.perUnit };
-        // TODO: Test below doesn't seem to work.
-        // assert ['kg/(kW·h)', null, null] == values.collect { it?.compoundUnit };
     }
 
     /**
@@ -217,31 +219,33 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     def getDataItemValueHistoryJson(version, count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
-        def query = [:];
-        if (queryStartDate) {
-            query['startDate'] = queryStartDate;
+        if (version >= 3.4) {
+            def query = [:];
+            if (queryStartDate) {
+                query['startDate'] = queryStartDate;
+            }
+            if (queryEndDate) {
+                query['endDate'] = queryEndDate;
+            }
+            if (resultStart) {
+                query['resultStart'] = resultStart;
+            }
+            if (resultLimit) {
+                query['resultLimit'] = resultLimit;
+            }
+            def response = client.get(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                    query: query,
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals truncated, response.data.resultsTruncated;
+            def values = response.data.values;
+            assertEquals count, values.size();
+            assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001);
         }
-        if (queryEndDate) {
-            query['endDate'] = queryEndDate;
-        }
-        if (resultStart) {
-            query['resultStart'] = resultStart;
-        }
-        if (resultLimit) {
-            query['resultLimit'] = resultLimit;
-        }
-        def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
-                query: query,
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertEquals truncated, response.data.resultsTruncated;
-        def values = response.data.values;
-        assertEquals count, values.size();
-        assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001);
     }
 
     /**
@@ -305,23 +309,25 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     def getDataItemValueJson(version, uid, value, startDate, path) {
-        def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        def itemValue = response.data.value;
-        assert 'massCO2PerEnergy' == itemValue.path;
-        assert itemValue.history;
-        assert uid == itemValue.uid;
-        assert value == itemValue.value;
-        assert startDate == itemValue.startDate;
-        assert 'kg' == itemValue.unit;
-        assert 'kWh' == itemValue.perUnit;
-        // TODO: Test below doesn't seem to work.
-        // assert 'kg/(kW·h)' == itemValue.compoundUnit;
+        if (version >= 3.4) {
+            def response = client.get(
+                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            def itemValue = response.data.value;
+            assert 'massCO2PerEnergy' == itemValue.path;
+            assert itemValue.history;
+            assert uid == itemValue.uid;
+            assert value == itemValue.value;
+            assert startDate == itemValue.startDate;
+            assert 'kg' == itemValue.unit;
+            assert 'kWh' == itemValue.perUnit;
+            // TODO: Test below doesn't seem to work.
+            // assert 'kg/(kW·h)' == itemValue.compoundUnit;
+        }
     }
 
     @Test

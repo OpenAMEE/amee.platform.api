@@ -12,8 +12,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
     // TODO: 3.0 tests.
 
-    static def versions = [3.0, 3.1, 3.4]
-
     @Test
     void createDeleteItemValueDefinition() {
         versions.each { version -> createDeleteItemValueDefinition(version) }

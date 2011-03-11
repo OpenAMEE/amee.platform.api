@@ -10,8 +10,6 @@ import static org.junit.Assert.*
  */
 class ItemDefinitionIT extends BaseApiTest {
 
-    static def versions = [3.1, 3.3, 3.4]
-
     // Page one when sorted by name, resultStart is 0 and resultLimit is 4.
     static def itemDefinitionNames1 = [
             'Computers Generic',
@@ -220,18 +218,20 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     def getItemDefinitionJson(version) {
-        def response = client.get(
-                path: "/${version}/definitions/11D3548466F2;full",
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertEquals 'Computers Generic', response.data.itemDefinition.name;
-        assertEquals 'device,rating', response.data.itemDefinition.drillDown;
-        assertEquals expectedUsageNames.size(), response.data.itemDefinition.usages.size();
-        assert expectedUsageNames == response.data.itemDefinition.usages.collect {it.name};
-        assert expectedUsagePresents == response.data.itemDefinition.usages.collect {it.present};
+        if (version >= 3.1) {
+            def response = client.get(
+                    path: "/${version}/definitions/11D3548466F2;full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals 'Computers Generic', response.data.itemDefinition.name;
+            assertEquals 'device,rating', response.data.itemDefinition.drillDown;
+            assertEquals expectedUsageNames.size(), response.data.itemDefinition.usages.size();
+            assert expectedUsageNames == response.data.itemDefinition.usages.collect {it.name};
+            assert expectedUsagePresents == response.data.itemDefinition.usages.collect {it.present};
+        }
     }
 
     @Test
@@ -240,18 +240,20 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     def getItemDefinitionXml(version) {
-        def response = client.get(
-                path: "/${version}/definitions/11D3548466F2;full",
-                contentType: XML);
-        assertEquals 200, response.status;
-        assertEquals 'application/xml', response.contentType;
-        assertEquals 'OK', response.data.Status.text();
-        assertEquals 'Computers Generic', response.data.ItemDefinition.Name.text();
-        assertEquals 'device,rating', response.data.ItemDefinition.DrillDown.text();
-        def allUsages = response.data.ItemDefinition.Usages.Usage;
-        assertEquals expectedUsageNames.size(), allUsages.size();
-        assertTrue(expectedUsageNames == allUsages.Name*.text());
-        assertTrue(expectedUsagePresents == allUsages.@present*.text());
+        if (version >= 3.1) {
+            def response = client.get(
+                    path: "/${version}/definitions/11D3548466F2;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals 'Computers Generic', response.data.ItemDefinition.Name.text();
+            assertEquals 'device,rating', response.data.ItemDefinition.DrillDown.text();
+            def allUsages = response.data.ItemDefinition.Usages.Usage;
+            assertEquals expectedUsageNames.size(), allUsages.size();
+            assertTrue(expectedUsageNames == allUsages.Name*.text());
+            assertTrue(expectedUsagePresents == allUsages.@present*.text());
+        }
     }
 
     @Test
@@ -260,18 +262,21 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     def getItemDefinitionWithAlgorithmsJson(version) {
-        def response = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C;full",
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertEquals 'Cooking', response.data.itemDefinition.name;
-        assertEquals 'numberOfPeople,fuel', response.data.itemDefinition.drillDown;
-        if (version > 3.4) {
-            assertEquals 2, response.data.itemDefinition.algorithms.size();
-            assert ['default', 'ZZZ Name'].sort() == response.data.itemDefinition.algorithms.collect {it.name}.sort();
+        if (version >= 3.1) {
+            def response = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C;full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals 'Cooking', response.data.itemDefinition.name;
+            assertEquals 'numberOfPeople,fuel', response.data.itemDefinition.drillDown;
+
+            if (version > 3.4) {
+                assertEquals 2, response.data.itemDefinition.algorithms.size();
+                assert ['default', 'ZZZ Name'].sort() == response.data.itemDefinition.algorithms.collect {it.name}.sort();
+            }
         }
     }
 
@@ -281,18 +286,21 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     def getItemDefinitionWithAlgorithmsXml(version) {
-        def response = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C;full",
-                contentType: XML);
-        assertEquals 200, response.status;
-        assertEquals 'application/xml', response.contentType;
-        assertEquals 'OK', response.data.Status.text();
-        assertEquals 'Cooking', response.data.ItemDefinition.Name.text();
-        assertEquals 'numberOfPeople,fuel', response.data.ItemDefinition.DrillDown.text();
-        if (version > 3.4) {
-            def allAlgorithms = response.data.ItemDefinition.Algorithms.Algorithm;
-            assertEquals 2, allAlgorithms.size();
-            assertTrue(['default', 'ZZZ Name'].sort() == allAlgorithms.Name*.text().sort());
+        if (version >= 3.1) {
+            def response = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals 'Cooking', response.data.ItemDefinition.Name.text();
+            assertEquals 'numberOfPeople,fuel', response.data.ItemDefinition.DrillDown.text();
+
+            if (version > 3.4) {
+                def allAlgorithms = response.data.ItemDefinition.Algorithms.Algorithm;
+                assertEquals 2, allAlgorithms.size();
+                assertTrue(['default', 'ZZZ Name'].sort() == allAlgorithms.Name*.text().sort());
+            }
         }
     }
 
@@ -302,32 +310,37 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     def updateItemDefinitionJson(version) {
-        setAdminUser();
-        // 1) Do the update.
-        def responsePut = client.put(
-                path: "/${version}/definitions/11D3548466F2",
-                body: ['name': 'newName',
-                        'drillDown': 'newDrillDownA,newDrillDownB',
-                        'usages': 'usage1,usage2,usage3'],
-                requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 204, responsePut.status;
-        // We added a usage.
-        expectedUsageNames[2] = 'usage3';
-        expectedUsagePresents[2] = 'true';
-        // 2) Check values have been updated.
-        def responseGet = client.get(
-                path: "/${version}/definitions/11D3548466F2;full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'newName', responseGet.data.itemDefinition.name;
-        assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown;
-        assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size();
-        assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name});
-        assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present});
+        if (version >= 3.1) {
+            setAdminUser();
+
+            // 1) Do the update.
+            def responsePut = client.put(
+                    path: "/${version}/definitions/11D3548466F2",
+                    body: ['name': 'newName',
+                            'drillDown': 'newDrillDownA,newDrillDownB',
+                            'usages': 'usage1,usage2,usage3'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 204, responsePut.status;
+
+            // We added a usage.
+            expectedUsageNames[2] = 'usage3';
+            expectedUsagePresents[2] = 'true';
+
+            // 2) Check values have been updated.
+            def responseGet = client.get(
+                    path: "/${version}/definitions/11D3548466F2;full",
+                    contentType: JSON);
+            assertEquals 200, responseGet.status;
+            assertEquals 'application/json', responseGet.contentType;
+            assertTrue responseGet.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', responseGet.data.status;
+            assertEquals 'newName', responseGet.data.itemDefinition.name;
+            assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown;
+            assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size();
+            assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name});
+            assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present});
+        }
     }
 
     @Test
@@ -348,7 +361,7 @@ class ItemDefinitionIT extends BaseApiTest {
      * @param value to submit
      */
     def updateItemDefinitionFieldJson(field, code, value) {
-        updateItemDefinitionFieldJson(field, code, value, 3.0)
+        updateItemDefinitionFieldJson(field, code, value, 3.1)
     }
 
     /**

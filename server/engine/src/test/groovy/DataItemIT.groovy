@@ -5,12 +5,8 @@ import static org.junit.Assert.*
 
 /**
  * Tests for the Data Item API.
- *
- * TODO: Document Data Item API fully here. See https://jira.amee.com/browse/PL-9547 to vote on this task.
  */
 class DataItemIT extends BaseApiTest {
-
-    static def versions = [3.0, 3.1, 3.2, 3.4]
 
     static def dataItemUids = [
             'B6419AFB7114',
@@ -74,6 +70,7 @@ class DataItemIT extends BaseApiTest {
     def createDataItemJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+
             // Create a DataItem.
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
@@ -85,16 +82,20 @@ class DataItemIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 201, responsePost.status
+
             // Is Location available?
             assertTrue responsePost.headers['Location'] != null;
             assertTrue responsePost.headers['Location'].value != null;
             def location = responsePost.headers['Location'].value;
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
             // Get new DataItem UID.
             def uid = location.split('/')[7];
             assertTrue uid != null;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // Get the new DataItem.
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/${uid};full",
@@ -107,13 +108,17 @@ class DataItemIT extends BaseApiTest {
             assertEquals 4, responseGet.data.item.values.size();
             assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}");
             assertEquals 200, responseDelete.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/categories/Cooking/items/${uid}");
@@ -123,8 +128,6 @@ class DataItemIT extends BaseApiTest {
             }
         }
     }
-
-    // TODO: createDataItemXml
 
     /**
      * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
@@ -138,17 +141,21 @@ class DataItemIT extends BaseApiTest {
     def createDuplicateDataItemJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+
             // Create a DataItem.
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
                     body: ['path': 'testPath'],
                     requestContentType: URLENC,
                     contentType: JSON);
+
             // Should have been created.
             assertEquals 201, responsePost.status
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
             try {
+
                 // Create a DataItem.
                 client.post(
                         path: "/${version}/categories/Cooking/items",
@@ -156,19 +163,21 @@ class DataItemIT extends BaseApiTest {
                         requestContentType: URLENC,
                         contentType: JSON);
             } catch (HttpResponseException e) {
+
                 // Should have been rejected.
                 assertEquals 400, e.response.status;
             }
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/testPath");
+
             // Should have been deleted.
             assertEquals 200, responseDelete.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
         }
     }
-
-    // TODO: createDuplicateDataItemXml
 
     /**
      * Test fetching a number of DataItems with JSON responses.

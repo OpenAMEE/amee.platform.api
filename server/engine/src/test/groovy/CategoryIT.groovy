@@ -8,8 +8,6 @@ import static org.junit.Assert.*
  */
 class CategoryIT extends BaseApiTest {
 
-    static def versions = [3.0, 3.2, 3.3]
-
     static def categoryNames = [
             'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment',
             'Generic', 'Kitchen', 'Generic', 'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
