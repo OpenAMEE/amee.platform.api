@@ -40,22 +40,20 @@ class ItemDefinitionIT extends BaseApiTest {
 
             // Create a new ItemDefinition
             def responsePost = client.post(
-                path: '/3.4/definitions',
-                body: ['name': 'test',
-                    'drillDown' : 'foo,bar',
-                    'usages' : 'baz,quux'],
-                requestContentType: URLENC,
-                contentType: JSON)
+                    path: '/3.4/definitions',
+                    body: ['name': 'test',
+                            'drillDown': 'foo,bar',
+                            'usages': 'baz,quux'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
             assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value;
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
-            def uid = location.split('/')[5]
-
             // Get the new ItemDefinition
             def responseGet = client.get(
-                path: "${location};full",
-                contentType: JSON)
+                    path: "${location};full",
+                    contentType: JSON)
             assertEquals 200, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
@@ -257,6 +255,48 @@ class ItemDefinitionIT extends BaseApiTest {
     }
 
     @Test
+    void getItemDefinitionWithAlgorithmsJson() {
+        versions.each { version -> getItemDefinitionWithAlgorithmsJson(version) };
+    }
+
+    def getItemDefinitionWithAlgorithmsJson(version) {
+        def response = client.get(
+                path: "/${version}/definitions/1B3B44CAE90C;full",
+                contentType: JSON);
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals 'Cooking', response.data.itemDefinition.name;
+        assertEquals 'numberOfPeople,fuel', response.data.itemDefinition.drillDown;
+        if (version > 3.4) {
+            assertEquals 2, response.data.itemDefinition.algorithms.size();
+            assert ['default', 'ZZZ Name'].sort() == response.data.itemDefinition.algorithms.collect {it.name}.sort();
+        }
+    }
+
+    @Test
+    void getItemDefinitionWithAlgorithmsXml() {
+        versions.each { version -> getItemDefinitionWithAlgorithmsXml(version) };
+    }
+
+    def getItemDefinitionWithAlgorithmsXml(version) {
+        def response = client.get(
+                path: "/${version}/definitions/1B3B44CAE90C;full",
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        assertEquals 'Cooking', response.data.ItemDefinition.Name.text();
+        assertEquals 'numberOfPeople,fuel', response.data.ItemDefinition.DrillDown.text();
+        if (version > 3.4) {
+            def allAlgorithms = response.data.ItemDefinition.Algorithms.Algorithm;
+            assertEquals 2, allAlgorithms.size();
+            assertTrue(['default', 'ZZZ Name'].sort() == allAlgorithms.Name*.text().sort());
+        }
+    }
+
+    @Test
     void updateItemDefinitionJson() {
         versions.each { version -> updateItemDefinitionJson(version) };
     }
@@ -348,7 +388,7 @@ class ItemDefinitionIT extends BaseApiTest {
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
-    
+
                 // NOTE: 'usages' becomes 'usagesString' on the server-side.
                 def fieldErrors = response.data.validationResult.errors.collect {it.field};
                 if (field == 'usages') {
