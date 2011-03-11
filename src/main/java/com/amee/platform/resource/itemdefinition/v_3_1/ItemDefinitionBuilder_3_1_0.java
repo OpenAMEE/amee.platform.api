@@ -85,7 +85,7 @@ public class ItemDefinitionBuilder_3_1_0 implements ItemDefinitionResource.Build
             renderer.addUsages();
         }
         if (algorithms || full) {
-            renderer.addAlgorihtms();
+            renderer.addAlgorithms();
         }
     }
 

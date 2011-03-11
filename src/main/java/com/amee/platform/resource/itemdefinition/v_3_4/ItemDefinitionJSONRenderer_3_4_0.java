@@ -2,6 +2,7 @@ package com.amee.platform.resource.itemdefinition.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueUsage;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
@@ -77,7 +78,14 @@ public class ItemDefinitionJSONRenderer_3_4_0 implements ItemDefinitionResource.
 
     @Override
     public void addAlgorithms() {
-
+        JSONArray algorithmsArr = new JSONArray();
+        ResponseHelper.put(itemDefinitionObj, "algorithms", algorithmsArr);
+        for (Algorithm algorithm : itemDefinition.getAlgorithms()) {
+            JSONObject algorithmObj = new JSONObject();
+            ResponseHelper.put(algorithmObj, "name", algorithm.getName());
+            ResponseHelper.put(algorithmObj, "uid", algorithm.getUid());
+            algorithmsArr.put(algorithmObj);
+        }
     }
 
     public String getMediaType() {

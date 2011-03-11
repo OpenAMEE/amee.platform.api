@@ -1,6 +1,7 @@
 package com.amee.platform.resource.itemdefinition.v_3_4;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueUsage;
 import com.amee.platform.resource.itemdefinition.ItemDefinitionResource;
@@ -76,7 +77,14 @@ public class ItemDefinitionDOMRenderer_3_4_0 implements ItemDefinitionResource.R
 
     @Override
     public void addAlgorithms() {
-
+        Element algorithmsElem = new Element("Algorithms");
+        itemDefinitionElem.addContent(algorithmsElem);
+        for (Algorithm algorithm : itemDefinition.getAlgorithms()) {
+            Element algorithmElem = new Element("Algorithm");
+            algorithmElem.addContent(new Element("Name").setText(algorithm.getName()));
+            algorithmElem.setAttribute("uid", algorithm.getUid());
+            algorithmsElem.addContent(algorithmElem);
+        }
     }
 
     public String getMediaType() {
