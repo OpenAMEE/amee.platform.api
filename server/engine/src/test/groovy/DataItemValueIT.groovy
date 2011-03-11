@@ -1,7 +1,6 @@
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.URLENC
+import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
 class DataItemValueIT extends BaseApiTest {
@@ -55,60 +54,106 @@ class DataItemValueIT extends BaseApiTest {
         }
     }
 
+    @Test
+    void createDataItemValueXml() {
+        versions.each { version -> createDataItemValueXml(version) }
+    }
+
+    def createDataItemValueXml(version) {
+        setAdminUser();
+        // Create a DataItemValue.
+        def responsePost = client.post(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                body: ['value': 10],
+                requestContentType: URLENC,
+                contentType: XML);
+        assertEquals 201, responsePost.status
+        // Is Location available?
+        assertTrue responsePost.headers['Location'] != null;
+        assertTrue responsePost.headers['Location'].value != null;
+        def location = responsePost.headers['Location'].value;
+        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+        // Get new DataItemValue UID.
+        def uid = location.split('/')[10];
+        assertTrue uid != null;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // Get the new DataItem.
+        def responseGet = client.get(
+                path: "${location};full",
+                contentType: XML);
+        assertEquals 200, responseGet.status;
+        assertEquals 'application/xml', responseGet.contentType
+        assertEquals 'OK', responseGet.data.Status.text();
+        assertEquals "10", responseGet.data.Value.Value.text();
+        // Then delete it.
+        def responseDelete = client.delete(path: location);
+        assertEquals 200, responseDelete.status;
+        // Sleep a little to give the index a chance to be updated.
+        sleep(1000);
+        // We should get a 404 here.
+        try {
+            client.get(path: location);
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
+        }
+    }
+
     /**
      * Test fetching DataItemValues with the default (now) query start date.
      */
     @Test
-    void getDataItemValuesForDefaultJson() {
-        getDataItemValuesJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', null);
+    void getDataItemValuesForDefault() {
+        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', null);
     }
 
     /**
      * Test fetching DataItemValues with 'CURRENT' (now) as the query start date.
      */
     @Test
-    void getDataItemValuesForCurrentJson() {
-        getDataItemValuesJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
+    void getDataItemValuesForCurrent() {
+        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
     }
 
     /**
      * Test fetching DataItemValues with a query start date just before an actual start date.
      */
     @Test
-    void getDataItemValuesWithStartDateJustBeforeNextStartDateJson() {
-        getDataItemValuesJson('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
+    void getDataItemValuesWithStartDateJustBeforeNextStartDate() {
+        getDataItemValues('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
     }
 
     /**
      * Test fetching DataItemValues with a query start date that has an exact match.
      */
     @Test
-    void getDataItemValuesWithExactStartDateJson() {
-        getDataItemValuesJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
+    void getDataItemValuesWithExactStartDate() {
+        getDataItemValues('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
     }
 
     /**
      * Test fetching DataItemValues with a query start date at some point between actual start dates
      */
     @Test
-    void getDataItemValuesWithInBetweenStartDateJson() {
-        getDataItemValuesJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
+    void getDataItemValuesWithInBetweenStartDate() {
+        getDataItemValues('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
     }
 
     /**
      * Test fetching DataItemValues with 'FIRST' (epoch) as the query start date.
      */
     @Test
-    void getDataItemValuesForFirstDateJson() {
-        getDataItemValuesJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
+    void getDataItemValuesForFirstDate() {
+        getDataItemValues('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
     }
 
     /**
      * Test fetching DataItemValues with 'LAST' (end of epoch) as the query start date.
      */
     @Test
-    void getDataItemValuesForLastDateJson() {
-        getDataItemValuesJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
+    void getDataItemValuesForLastDate() {
+        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
     }
 
     /**
@@ -119,11 +164,13 @@ class DataItemValueIT extends BaseApiTest {
      * @param actualStartDate of the expected historical DataItemValue
      * @param queryStartDate the start date to match DataItemValues in a history against
      */
-    def getDataItemValuesJson(uid, value, actualStartDate, queryStartDate) {
+    def getDataItemValues(uid, value, actualStartDate, queryStartDate) {
         // Test the values within the DataItem values resource.
         versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, true) }
+        versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, true) }
         // Test the values embedded within the DataItem resource itself.
         versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, false) }
+        versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, false) }
     }
 
     def getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, testValuesResource) {
@@ -154,6 +201,35 @@ class DataItemValueIT extends BaseApiTest {
         assert ['kWh', null, null] == values.collect { it?.perUnit };
         // TODO: Test below doesn't seem to work.
         // assert ['kg/(kW·h)', null, null] == values.collect { it?.compoundUnit };
+    }
+
+    def getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, testValuesResource) {
+        def query = [:];
+        if (queryStartDate) {
+            query['startDate'] = queryStartDate;
+        }
+        def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
+                query: query,
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        def values = testValuesResource ? response.data.Values.Value : response.data.Item.Values.Value;
+        assertEquals 3, values.size();
+        assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.Path*.text().sort();
+        assert ['true', 'false', 'false'].sort() == values.@history*.text().sort();
+        if (testValuesResource) {
+            assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.@uid*.text().sort();
+        }
+        assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.Value*.text().sort();
+        if (testValuesResource) {
+            assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort();
+        }
+        assert ['kg'] == values.Unit*.text().sort();
+        assert ['kWh'] == values.PerUnit*.text().sort();
+        // TODO: Test below doesn't seem to work.
+        // assert ['kg/(kW·h)'] == values.CompoundUnit*.text().sort();
     }
 
     /**
@@ -244,6 +320,8 @@ class DataItemValueIT extends BaseApiTest {
         assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001);
     }
 
+    // TODO: getDataItemValueHistoryXml
+
     /**
      * Test fetching DataItemValues with 'CURRENT' (now) as the item value identifier.
      */
@@ -324,6 +402,8 @@ class DataItemValueIT extends BaseApiTest {
         // assert 'kg/(kW·h)' == itemValue.compoundUnit;
     }
 
+    // TODO: getDataItemValueXml
+
     @Test
     void updateWithNoValue() {
         setAdminUser();
@@ -342,10 +422,6 @@ class DataItemValueIT extends BaseApiTest {
         updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date');
     }
 
-    /**
-     * TODO: Fails sometimes. "Response status code should have been 400 (startDate, duplicate)."
-     * TODO: See https://jira.amee.com/browse/PL-10466.
-     */
     @Test
     void updateWithDuplicateStartDate() {
         setAdminUser();
@@ -461,4 +537,6 @@ class DataItemValueIT extends BaseApiTest {
             assertEquals valueAfter, valueBefore;
         }
     }
+
+    // TODO: updateDataItemValueFieldXml
 }
