@@ -6,12 +6,8 @@ import static org.junit.Assert.*
 
 /**
  * Tests for the Search API.
- *
- * TODO: Document Search API fully here. See https://jira.amee.com/browse/PL-9551 to vote on this task.
  */
 class SearchIT extends BaseApiTest {
-
-    static def versions = [3.0, 3.2]
 
     @Test
     void searchJson() {
