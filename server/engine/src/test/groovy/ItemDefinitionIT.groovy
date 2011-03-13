@@ -6,7 +6,6 @@ import static org.junit.Assert.*
 /**
  * Tests for the Item Definition API.
  *
- * TODO: Document Item Definition API fully here. See https://jira.amee.com/browse/PL-9548 to vote on this task.
  */
 class ItemDefinitionIT extends BaseApiTest {
 
@@ -27,6 +26,23 @@ class ItemDefinitionIT extends BaseApiTest {
     def static expectedUsageNames = ['usage1', 'usage2'];
     def static expectedUsagePresents = ['false', 'true'];
 
+    /**
+     * Tests for creation, fetch and deletion of an Item Definition using JSON responses.
+     *
+     * Create a new Item Definition by POSTing to '/definitions' (since 3.4.0).
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>name
+     * <li>drillDown
+     * <li>usages
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) an Item Definition by sending a DELETE request to '/definitions/{UID}' (since 3.4.0).
+     */
     @Test
     void createDeleteItemDefinition() {
         versions.each { version -> createDeleteItemDefinition(version) }
@@ -39,9 +55,10 @@ class ItemDefinitionIT extends BaseApiTest {
             // Create a new ItemDefinition
             def responsePost = client.post(
                     path: '/3.4/definitions',
-                    body: ['name': 'test',
-                            'drillDown': 'foo,bar',
-                            'usages': 'baz,quux'],
+                    body: [
+                        'name': 'test',
+                        'drillDown': 'foo,bar',
+                        'usages': 'baz,quux'],
                     requestContentType: URLENC,
                     contentType: JSON)
             assertEquals 201, responsePost.status
@@ -76,6 +93,26 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a list of ItemDefinitions with a JSON response.
+     *
+     * Pagination may be used by setting the following query parameters:
+     * <ul>
+     * <li>resultStart - Zero-based starting index offset to support result-set 'pagination'. Defaults to 0.
+     * <li>resultLimit - Limit the number of entries in the result-set. Defaults to 50 with a max of 100.
+     * </ul>
+     *
+     * Item Definition GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>audit - include the status, created and modified values.
+     * <li>name - include the Item Definition name.
+     * <li>drillDown - include the Item Definition drillDown values.
+     * <li>usages - include the Item Definition usages values.
+     * <li>algorithms - include the Item Definition algorithm UID and name values.
+     * </ul>
+     */
     @Test
     void getItemDefinitionsPageOneJson() {
         versions.each { version -> getItemDefinitionsPageOneJson(version) };
@@ -117,6 +154,11 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a list of Item Definitions with the given name using JSON.
+     *
+     * Names do not have to be unique and this request may return more than one result.
+     */
     @Test
     void getItemDefinitionsByNameJson() {
         versions.each { version -> getItemDefinitionsByNameJson(version) };
@@ -139,6 +181,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests trying to fetch Item Definitions using invalid name strings.
+     */
     @Test
     void getItemDefinitionsByNameInvalidJson() {
         getItemDefinitionsByNameJson('short', '12');
@@ -170,6 +215,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a list of ItemDefinitions with an XML response.
+     */
     @Test
     void getItemDefinitionsPageOneXml() {
         versions.each { version -> getItemDefinitionsPageOneXml(version) };
@@ -212,6 +260,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a single Item Definition by UID using a JSON response.
+     */
     @Test
     void getItemDefinitionJson() {
         versions.each { version -> getItemDefinitionJson(version) };
@@ -234,6 +285,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a single Item Definition by UID using an XML response.
+     */
     @Test
     void getItemDefinitionXml() {
         versions.each { version -> getItemDefinitionXml(version) };
@@ -256,6 +310,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a single Item Definition with algorithms using a JSON response.
+     */
     @Test
     void getItemDefinitionWithAlgorithmsJson() {
         versions.each { version -> getItemDefinitionWithAlgorithmsJson(version) };
@@ -280,6 +337,9 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a single Item Definition with algorithms using an XML response.
+     */
     @Test
     void getItemDefinitionWithAlgorithmsXml() {
         versions.each { version -> getItemDefinitionWithAlgorithmsXml(version) };
@@ -304,6 +364,13 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests that an Item Definition can be updated with valid values.
+     *
+     * Update an Item Definition by sending a PUT request to '/definitions/{UID}'.
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     */
     @Test
     void updateItemDefinitionJson() {
         versions.each { version -> updateItemDefinitionJson(version) };
@@ -316,9 +383,10 @@ class ItemDefinitionIT extends BaseApiTest {
             // 1) Do the update.
             def responsePut = client.put(
                     path: "/${version}/definitions/11D3548466F2",
-                    body: ['name': 'newName',
-                            'drillDown': 'newDrillDownA,newDrillDownB',
-                            'usages': 'usage1,usage2,usage3'],
+                    body: [
+                        'name': 'newName',
+                        'drillDown': 'newDrillDownA,newDrillDownB',
+                        'usages': 'usage1,usage2,usage3'],
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 204, responsePut.status;
@@ -343,6 +411,15 @@ class ItemDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests validation rules.
+     *
+     * <ul>
+     *    <li>name - nonempty, min: 3, max: 255
+     *    <li>drillDown - max: 255
+     *    <li>usages - max: 255
+     * <ul>
+     */
     @Test
     void updateInvalidItemDefinition() {
         setAdminUser();
