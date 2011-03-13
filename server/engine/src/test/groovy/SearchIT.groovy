@@ -9,6 +9,30 @@ import static org.junit.Assert.*
  */
 class SearchIT extends BaseApiTest {
 
+    /**
+     * Search using JSON response.
+     *
+     * Supported URL parameters are:
+     * <ul>
+     *     <li>q: the lucene query string (see searchable fields below)</li>
+     *     <li>types: comma separated list of the types of entity to return. [DC, DI]</li>
+     *     <li>tags: only include results with the given tags</li>
+     *     <li>excTags: do not include results with the given tags</li>
+     * </ul>
+     *
+     * Searchable fields are:
+     * <ul>
+     *     <li>name</li>
+     *     <li>wikiName</li>
+     *     <li>path</li>
+     *     <li>provenance</li>
+     *     <li>authority</li>
+     *     <li>wikiDoc</li>
+     *     <li>itemDefinitionName</li>
+     *     <li>label</li>
+     *     <li>tags</li>
+     * </ul>
+     */
     @Test
     void searchJson() {
         versions.each { version -> searchJson(version) }
@@ -26,6 +50,9 @@ class SearchIT extends BaseApiTest {
         assertEquals 2, response.data.results.size()
     }
 
+    /**
+     * Search using JSON response, excluding a tag.
+     */
     @Test
     void searchJsonWithExcTags() {
         versions.each { version -> searchJsonWithExcTags(version) }
@@ -42,9 +69,36 @@ class SearchIT extends BaseApiTest {
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.results.size()
+            assertFalse response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
         }
     }
 
+    /**
+     * Search using JSON response for a particular tag.
+     */
+    @Test
+    void searchJsonWithTags() {
+        versions.each { version -> searchJsonWithTags(version) }
+    }
+
+    def searchJsonWithTags(version) {
+        if (version >= 3.2) {
+            client.contentType = JSON
+            def response = client.get(
+                    path: "/${version}/search",
+                    query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 1, response.data.results.size()
+            assertTrue response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
+        }
+    }
+
+    /**
+     * Search (for DataItems only) using XML response.
+     */
     @Test
     void searchXml() {
         versions.each { version -> searchXml(version) }
@@ -54,16 +108,63 @@ class SearchIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/search",
-                query: ['q': 'water', 'types': 'DC'])
+                query: ['q': 'water', 'types': 'DI'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
-        def allResults = response.data.Results.children()
-        assertEquals 2, allResults.size()
+        def allResults = response.data.Results.Item
+        assertEquals 10, allResults.size()
+    }
+
+    /**
+     * Search using XML response, excluding a tag.
+     */
+    @Test
+    void searchXmlWithExcTags() {
+        versions.each { version -> searchXmlWithExcTags(version) }
+    }
+
+    def searchXmlWithExcTags(version) {
+        if (version >= 3.2) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/search",
+                query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def allResults = response.data.Results.Category
+            assertEquals 1, allResults.size()
+            assertFalse allResults[0].WikiName.text().startsWith('Ecoinvent')
+        }
+    }
+
+    /**
+     * Search using XML response for a particular tag.
+     */
+    @Test
+    void searchXmlWithTags() {
+        versions.each { version -> searchXmlWithTags(version) }
+    }
+
+    def searchXmlWithTags(version) {
+        if (version >= 3.2) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/search",
+                query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def allResults = response.data.Results.Category
+            assertEquals 1, allResults.size()
+            assertTrue allResults[0].WikiName.text().startsWith('Ecoinvent')
+        }
     }
 
     /**
      * See: https://jira.amee.com/browse/PL-5516
+     * Platform assumes query string is valid lucene syntax.
      */
     @Test
     void searchWithInvalidQueryJson() {
