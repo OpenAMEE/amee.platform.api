@@ -185,7 +185,22 @@ class DataItemIT extends BaseApiTest {
      * This resource supports the 'startDate' parameter which behaves identically to the
      * DataItem values resource detailed and tested in DataItemValueIT.
      *
-     * The DataItem label field is only supported since version 3.2.
+     * Data Item GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>audit - include the status, created and modified values.
+     * <li>name - include the Data Item name.
+     * <li>label - include the Data Item label.
+     * <li>path - include the full Data Item path.
+     * <li>parent - include the parent Category UID and wikiName values.
+     * <li>wikiDoc - include the Data Item wikiDoc.
+     * <li>provenance - include the Data Item provenance value.
+     * <li>itemDefinition - include the ItemDefinition UID and name values;
+     * <li>values - include the Data Item Values' path and value.
+     * </ul>
+     *
+     * The label field is only supported since version 3.2.
      */
     @Test
     void getDataItemsJson() {
