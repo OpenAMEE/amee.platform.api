@@ -6,7 +6,6 @@ import static org.junit.Assert.*
 /**
  * Tests for the Return Value Definition API.
  *
- * TODO: Document Return Value Definition API fully here. See https://jira.amee.com/browse/PL-9550 to vote on this task.
  */
 class ReturnValueDefinitionIT extends BaseApiTest {
 
@@ -14,6 +13,24 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def static returnValueDefinitionTypes = ['co2', 'co2e'];
 
     /**
+     * Tests for creation, fetch and deletion of a Return Value Definition using JSON responses.
+     *
+     * Create a new Return Value Definition by POSTing to '/definitions/{UID}/returnvalues'
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>type
+     * <li>unit
+     * <li>perUnit
+     * <li>defaultType
+     * <li>valueDefinition
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) a Return Value Definition by sending a DELETE request to '/definitions/{UID}/returnvalues/{UID}'.
+     *
      * This test also checks for the case described in: https://jira.amee.com/browse/PL-3692
      */
     @Test
@@ -80,40 +97,73 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a list of Return Value Definitions for an Item Definition with JSON response.
+     *
+     * Return Value Definition GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>itemDefinition - include the ItemDefinition UID and name values
+     * <li>valueDefinition - include the ValueDefinition UID, name and type values
+     * <li>audit - include the status, created and modified values.
+     * <li>type - include the return value type, eg 'CO2'.
+     * <li>units - include the unit and perUnit values.
+     * <li>flags - include the default flag. True if the return value is the default type.
+     * </ul>
+     *
+     * Return Value Definitions are sorted by type.
+     */
     @Test
-    void removeReturnValueDefinitionJson() {
-        versions.each { version -> removeReturnValueDefinitionJson(version) }
+    void getReturnValueDefinitionsJson() {
+        versions.each { version -> getReturnValueDefinitionsJson(version) }
     }
 
-    def removeReturnValueDefinitionJson(version) {
+    def getReturnValueDefinitionsJson(version) {
         if (version >= 3.1) {
-            setAdminUser();
-            // Create a new RVD.
-            def responsePost = client.post(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues",
-                    body: ['type': 'CO2',
-                            'unit': 'kg',
-                            'perUnit': 'month',
-                            'valueDefinition': '45433E48B39F'],
-                    requestContentType: URLENC,
+            def response = client.get(
+                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
                     contentType: JSON);
-            assertEquals 201, responsePost.status;
-            assertTrue responsePost.headers['Location'] != null;
-            assertTrue responsePost.headers['Location'].value != null;
-            def location = responsePost.headers['Location'].value;
-            // Then delete it
-            def responseDelete = client.delete(path: location);
-            assertEquals 200, responseDelete.status;
-            // We should get a 404 here
-            try {
-                client.get(path: location);
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals returnValueDefinitionUids.size(), response.data.returnValueDefinitions.size();
+            assertEquals returnValueDefinitionUids.sort(), response.data.returnValueDefinitions.collect {it.uid}.sort();
+
+            // Should  be sorted by type
+            assertTrue response.data.returnValueDefinitions.first().type.compareToIgnoreCase(response.data.returnValueDefinitions.last().type) < 0
         }
     }
 
+    /**
+     * Test fetching a number of Return Value Definitions with XML response.
+     */
+    @Test
+    void getReturnValueDefinitionsXml() {
+        versions.each { version -> getReturnValueDefinitionsXml(version) }
+    }
+
+    def getReturnValueDefinitionsXml(version) {
+        if (version >= 3.1) {
+            def response = client.get(
+                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            def allReturnValueDefinitions = response.data.ReturnValueDefinitions.ReturnValueDefinition;
+            assertEquals returnValueDefinitionUids.size(), allReturnValueDefinitions.size();
+            assertEquals returnValueDefinitionUids.sort(), allReturnValueDefinitions.@uid*.text().sort();
+
+            // Should  be sorted by type
+            assertTrue allReturnValueDefinitions[0].Type.text().compareToIgnoreCase(allReturnValueDefinitions[-1].Type.text()) < 0
+        }
+    }
+
+    /**
+     * Tests fetching a single Return Value Definition using JSON.
+     */
     @Test
     void getReturnValueDefinitionJson() {
         versions.each { version -> getReturnValueDefinitionJson(version) }
@@ -150,6 +200,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a single Return Value Definition using XML.
+     */
     @Test
     void getReturnValueDefinitionXml() {
         versions.each { version -> getReturnValueDefinitionXml(version) }
@@ -185,50 +238,9 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         }
     }
 
-    @Test
-    void getReturnValueDefinitionsJson() {
-        versions.each { version -> getReturnValueDefinitionsJson(version) }
-    }
-
-    def getReturnValueDefinitionsJson(version) {
-        if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals returnValueDefinitionUids.size(), response.data.returnValueDefinitions.size();
-            assertEquals returnValueDefinitionUids.sort(), response.data.returnValueDefinitions.collect {it.uid}.sort();
-
-            // Should  be sorted by type
-            assertTrue response.data.returnValueDefinitions.first().type.compareToIgnoreCase(response.data.returnValueDefinitions.last().type) < 0
-        }
-    }
-
-    @Test
-    void getReturnValueDefinitionsXml() {
-        versions.each { version -> getReturnValueDefinitionsXml(version) }
-    }
-
-    def getReturnValueDefinitionsXml(version) {
-        if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            def allReturnValueDefinitions = response.data.ReturnValueDefinitions.ReturnValueDefinition;
-            assertEquals returnValueDefinitionUids.size(), allReturnValueDefinitions.size();
-            assertEquals returnValueDefinitionUids.sort(), allReturnValueDefinitions.@uid*.text().sort();
-
-            // Should  be sorted by type
-            assertTrue allReturnValueDefinitions[0].Type.text().compareToIgnoreCase(allReturnValueDefinitions[-1].Type.text()) < 0
-        }
-    }
-
+    /**
+     * Tests updating a ReturnValueDefinition.
+     */
     @Test
     void updateReturnValueDefinitionJson() {
         versions.each { version -> updateReturnValueDefinitionJson(version) }
@@ -237,6 +249,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     def updateReturnValueDefinitionJson(version) {
         if (version >= 3.1) {
             setAdminUser();
+
             // 1) Do the update.
             def responsePut = client.put(
                     path: "/${version}/definitions/11D3548466F2/returnvalues/6008F958CE20",
@@ -246,6 +259,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 204, responsePut.status;
+
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20;full',
@@ -260,6 +274,13 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests handling of the default type.
+     *
+     * There can be only one return value definition for a particular item definition with default set to true.
+     *
+     * Updating a return value definition by setting the default type to true will set any other existing default type to false.
+     */
     @Test
     void defaultType() {
         versions.each { version -> defaultType(version) }
@@ -335,6 +356,17 @@ class ReturnValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests the validation rules.
+     *
+     * <ul>
+     *     <li>type - non-empty, unique, min: 1, max: 255</li>
+     *     <li>defaultType - must be one with default set to true</li>
+     *     <li>unit - valid unit, max: 255</li>
+     *     <li>perUnit - value perUnit, max: 255</li>
+     *     <li>valueDefinition - valid UID</li>
+     * </ul>
+     */
     @Test
     void updateInvalidReturnValueDefinition() {
         setAdminUser();
