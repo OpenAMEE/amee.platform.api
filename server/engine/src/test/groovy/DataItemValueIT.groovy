@@ -289,10 +289,7 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     def getDataItemValueHistoryJson(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
-        versions.each { version -> getDataItemValueHistoryJson(version, count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) }
-    }
-
-    def getDataItemValueHistoryJson(version, count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
+        // Create query.
         def query = [:];
         if (queryStartDate) {
             query['startDate'] = queryStartDate;
@@ -306,6 +303,12 @@ class DataItemValueIT extends BaseApiTest {
         if (resultLimit) {
             query['resultLimit'] = resultLimit;
         }
+        // Run tests for JSON & XML.
+        versions.each { version -> getDataItemValueHistoryJson(version, count, truncated, sum, query) }
+        versions.each { version -> getDataItemValueHistoryXml(version, count, truncated, sum, query) }
+    }
+
+    def getDataItemValueHistoryJson(version, count, truncated, sum, query) {
         def response = client.get(
                 path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                 query: query,
@@ -320,7 +323,20 @@ class DataItemValueIT extends BaseApiTest {
         assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001);
     }
 
-    // TODO: getDataItemValueHistoryXml
+    def getDataItemValueHistoryXml(version, count, truncated, sum, query) {
+        def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                query: query,
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        assertEquals truncated, new Boolean(response.data.Values.@truncated.text());
+        def values = response.data.Values.Value.Value*.text();
+        values = values.collect {new Double(it)};
+        assertEquals count, values.size();
+        assertEquals("", sum, values.sum(), 0.0001);
+    }
 
     /**
      * Test fetching DataItemValues with 'CURRENT' (now) as the item value identifier.
@@ -380,6 +396,7 @@ class DataItemValueIT extends BaseApiTest {
 
     def getDataItemValueJson(uid, value, startDate, path) {
         versions.each { version -> getDataItemValueJson(version, uid, value, startDate, path) }
+        versions.each { version -> getDataItemValueXml(version, uid, value, startDate, path) }
     }
 
     def getDataItemValueJson(version, uid, value, startDate, path) {
@@ -398,6 +415,25 @@ class DataItemValueIT extends BaseApiTest {
         assert startDate == itemValue.startDate;
         assert 'kg' == itemValue.unit;
         assert 'kWh' == itemValue.perUnit;
+        // TODO: Test below doesn't seem to work.
+        // assert 'kg/(kW·h)' == itemValue.compoundUnit;
+    }
+
+    def getDataItemValueXml(version, uid, value, startDate, path) {
+        def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text();
+        def itemValue = response.data.Value;
+        assert 'massCO2PerEnergy' == itemValue.Path.text();
+        assert itemValue.@history.text();
+        assert uid == itemValue.@uid.text();
+        assert value == itemValue.Value.text();
+        assert startDate == itemValue.StartDate.text();
+        assert 'kg' == itemValue.Unit.text();
+        assert 'kWh' == itemValue.PerUnit.text();
         // TODO: Test below doesn't seem to work.
         // assert 'kg/(kW·h)' == itemValue.compoundUnit;
     }
@@ -537,6 +573,4 @@ class DataItemValueIT extends BaseApiTest {
             assertEquals valueAfter, valueBefore;
         }
     }
-
-    // TODO: updateDataItemValueFieldXml
 }
