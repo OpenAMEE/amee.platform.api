@@ -4,9 +4,8 @@ import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
 /**
- * Tests for the Data Category API.
+ * Tests for the Tag API.
  *
- * TODO: Document Tags API fully here. See https://jira.amee.com/browse/PL-9546 to vote on this task.
  */
 class TagIT extends BaseApiTest {
 
@@ -98,6 +97,217 @@ class TagIT extends BaseApiTest {
 
     def excTagCounts = [1, 1, 1, 1, 1, 2, 2, 3, 3, 6, 7];
 
+    /**
+     * Tests for creation, fetch and deletion of a Tag using JSON responses.
+     *
+     * Create a new Tag by POSTing to '/tags'
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>tag
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) a Tag by sending a DELETE request to '/tags/{UID|tag}'.
+     *
+     */
+    @Test
+    void createAndRemoveTagJson() {
+        versions.each { version -> createAndRemoveTagJson(version) }
+    }
+
+    def createAndRemoveTagJson(version) {
+        if (version >= 3.2) {
+            setAdminUser();
+            client.contentType = JSON;
+
+            // Create a new Tag.
+            def responsePost = client.post(
+                    path: "/${version}/tags",
+                    body: [tag: 'tagtobedeleted'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, responsePost.status;
+
+            // Then delete the Tag.
+            def responseDelete = client.delete(path: "/${version}/tags/tagtobedeleted");
+            assertEquals 200, responseDelete.status;
+
+            // We should get a 404 here.
+            try {
+                client.get(path: "/${version}/tags/tagtobedeleted");
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+        }
+    }
+
+    /**
+     * Tests for creation, fetch and deletion of an Entity-Tag association using JSON responses.
+     *
+     * Add a new tag to a Category by POSTing to '/categories/{category}/tags'
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     *     <li>tag</li>
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Remove a Tag from a category by sending a DELETE request to '/categories/{category}/tags/{UID|tag}'.
+     * Note this does not delete the actual tag itself, just the association.
+     *
+     */
+    @Test
+    void createAndRemoveEntityTagJson() {
+        versions.each { version -> createAndRemoveEntityTagJson(version) }
+    }
+
+    def createAndRemoveEntityTagJson(version) {
+        if (version >= 3.2) {
+            setAdminUser();
+            client.contentType = JSON;
+
+            // Check the category cannot be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
+
+            // Create a new Tag & EntityTag on a DataCategory.
+            postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version);
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // The EntityTag should exist.
+            def responseGet = client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseGet.status;
+            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
+
+            // Check the category can be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic'], version);
+
+            // Then delete the EntityTag.
+            def responseDelete = client.delete(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseDelete.status;
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // We should get a 404 here for the EntityTag.
+            try {
+                client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+
+            // Check the category cannot be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
+
+            // Create another EntityTag on another DataCategory.
+            postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version);
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // The EntityTag should exist.
+            responseGet = client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseGet.status;
+            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
+
+            // Check the category can be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Entertainment_generic'], version);
+
+            // Then delete the EntityTag.
+            responseDelete = client.delete(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseDelete.status;
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // We should get a 404 here for the EntityTag.
+            try {
+                client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+
+            // Check the category cannot be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
+
+            // The Tag should still exist.
+            responseGet = client.get(path: "/${version}/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseGet.status;
+            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
+
+            // Now delete the Tag.
+            responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseDelete.status;
+
+            // We should get a 404 here for the Tag.
+            try {
+                client.get(path: "/${version}/tags/entity_tag_to_be_deleted");
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+        }
+    }
+
+    @Test
+    void createAndRemoveMultipleEntityTagsJson() {
+        versions.each { version -> createAndRemoveMultipleEntityTagsJson(version) }
+    }
+
+    def createAndRemoveMultipleEntityTagsJson(version) {
+        if (version >= 3.2) {
+            setAdminUser();
+
+            // Check categories cannot be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
+
+            // Create a new Tag & EntityTag on a DataCategory.
+            postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version);
+
+            // Create a new EntityTag on another DataCategory.
+            postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version);
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // Check the categories can be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic', 'Entertainment_generic'], version);
+
+            // Now delete the Tag.
+            def responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted");
+            assertEquals 200, responseDelete.status;
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(1000);
+
+            // Check categories cannot be discovered via the tag.
+            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
+        }
+    }
+
+    /**
+     * Tests fetching a list of all tags using JSON.
+     *
+     * Tag GET requests support the following query parameters to filter the results.
+     *
+     * <ul>
+     * <li>incTags - A comma separated list of tags. The tags in the response will be limited to tags for Data Categories that ARE tagged with at least one of the supplied tags.
+     * <li>excTags - A comma separated list of tags. The tags in the response will be limited to tags for Data Categories that ARE NOT tagged with any of the supplied tags.
+     * </ul>
+     *
+     * Tag GET requests have NO matrix parameters to alter the response.
+     *
+     * Tags are sorted by tag (the name).
+     */
     @Test
     void getAllTagsJson() {
         versions.each { version -> getAllTagsJson(version) }
@@ -120,6 +330,9 @@ class TagIT extends BaseApiTest {
         assertEquals tagCounts.sort(), response.data.tags.collect {it.count}.sort();
     }
 
+    /**
+     * Tests fetching a list of all tags using XML.
+     */
     @Test
     void getAllTagsXml() {
         versions.each { version -> getAllTagsXml(version) }
@@ -142,6 +355,9 @@ class TagIT extends BaseApiTest {
         assertEquals tagCounts.sort(), allTags.Count*.text().collect {it.toInteger()}.sort();
     }
 
+    /**
+     * Tests getting a list of tags for Data Categories that ARE tagged with at least one of the supplied tags (JSON).
+     */
     @Test
     void getAllIncTagsJson() {
         versions.each { version -> getAllIncTagsJson(version) }
@@ -164,6 +380,33 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests getting a list of tags for Data Categories that ARE tagged with at least one of the supplied tags (XML).
+     */
+    @Test
+    void getAllIncTagsXml() {
+        versions.each { version -> getAllIncTagsXml(version) }
+    }
+
+    def getAllIncTagsXml(version) {
+        if (version >= 3.2) {
+            client.contentType = XML
+            def response = client.get(
+                    path: "/${version}/tags",
+                    query: ['incTags': 'inc_tag_1,inc_tag_2'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals incTagUids.size(), response.data.Tags.Tag.size()
+            assertEquals incTagUids.sort(), response.data.Tags.Tag.collect {it.@uid.text()}.sort();
+            assertEquals incTagNames.sort(), response.data.Tags.Tag.collect {it.Tag.text()};
+            assertEquals incTagCounts.sort(), response.data.Tags.Tag.collect {Integer.parseInt(it.Count.text())}.sort();
+        }
+    }
+
+    /**
+     * Tests getting a list of tags for Data Categories that ARE NOT tagged with any of the supplied tags (JSON).
+     */
     @Test
     void getAllExcTagsJson() {
         versions.each { version -> getAllExcTagsJson(version) }
@@ -186,6 +429,40 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests getting a list of tags for Data Categories that ARE NOT tagged with any of the supplied tags (XML).
+     */
+    @Test
+    void getAllExcTagsXml() {
+        versions.each { version -> getAllExcTagsXml(version) }
+    }
+
+    def getAllExcTagsXml(version) {
+        if (version >= 3.2) {
+            client.contentType = XML
+            def response = client.get(
+                    path: "/${version}/tags",
+                    query: ['excTags': 'inc_tag_1'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals excTagUids.size(), response.data.Tags.Tag.size()
+            assertEquals excTagUids.sort(), response.data.Tags.Tag.collect {it.@uid.text()}.sort();
+            assertEquals excTagNames.sort { a, b ->a.compareToIgnoreCase(b) }, response.data.Tags.Tag.collect {it.Tag.text()};
+            assertEquals excTagCounts.sort(), response.data.Tags.Tag.collect {Integer.parseInt(it.Count.text())}.sort();
+        }
+    }
+
+    /**
+     * Tests the validation rules.
+     *
+     * Values supplied to incTags and excTags must be valid tag names.
+     *
+     * <ul>
+     *     <li>incTags - alphanumerics & underscore, min: 2, max: 255</li>
+     *     <li>excTags - alphanumerics & underscore, min: 2, max: 255</li>
+     * </ul>
+     */
     @Test
     void getInvalidTagsJson() {
         setAdminUser();
@@ -254,11 +531,17 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests getting a tag by tag name using JSON.
+     */
     @Test
     void getTagByTagJson() {
         getTagByPathJson('Ecoinvent');
     }
 
+    /**
+     * Tests getting a tag by tag UID using JSON.
+     */
     @Test
     void getTagByUidJson() {
         getTagByPathJson('ZBDV9V20SI2C');
@@ -282,11 +565,17 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests getting a tag by tag name using XML.
+     */
     @Test
     void getTagByTagXml() {
         getTagByPathXml('Ecoinvent');
     }
 
+    /**
+     * Tests getting a tag by tag UID using XML.
+     */
     @Test
     void getTagByUidXml() {
         getTagByPathXml('ZBDV9V20SI2C');
@@ -309,6 +598,12 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests getting the tags for a category using JSON.
+     *
+     * You can fetch all tags for a category by making a GET request to /categories/{CATEGORY_PATH}/tags
+     *
+     */
     @Test
     void getTagsForCategoryJson() {
         versions.each { version -> getTagsForCategoryJson(version) }
@@ -331,139 +626,40 @@ class TagIT extends BaseApiTest {
         assertEquals names.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.tags.collect {it.tag};
     }
 
+    /**
+     * Tests getting the tags for a category using XML.
+     */
     @Test
-    void createAndRemoveTagJson() {
-        versions.each { version -> createAndRemoveTagJson(version) }
+    void getTagsForCategoryXml() {
+        versions.each { version -> getTagsForCategoryXml(version) }
     }
 
-    def createAndRemoveTagJson(version) {
+    def getTagsForCategoryXml(version) {
+        def uids = ['932FD23CD3A2', 'D75DB884855F', '3A38136735C6', '000FD23CD3A2'];
+        def names = ['actonco2', 'electrical', 'domestic', 'inc_tag_1'];
+        client.contentType = XML
+        def response = client.get(
+                path: "/${version}/categories/Appliances/tags")
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
         if (version >= 3.2) {
-            setAdminUser();
-            client.contentType = JSON;
-            // Create a new Tag.
-            def responsePost = client.post(
-                    path: "/${version}/tags",
-                    body: [tag: 'tagtobedeleted'],
-                    requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, responsePost.status;
-            // Then delete the Tag.
-            def responseDelete = client.delete(path: "/${version}/tags/tagtobedeleted");
-            assertEquals 200, responseDelete.status;
-            // We should get a 404 here.
-            try {
-                client.get(path: "/${version}/tags/tagtobedeleted");
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
+            assertEquals uids.size(), response.data.Tags.Tag.size()
+            assertEquals uids.sort(), response.data.Tags.Tag.collect {it.@uid.text()}.sort();
         }
+        assertEquals names.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.Tags.Tag.collect {it.Tag.text()};
     }
 
-    @Test
-    void createAndRemoveEntityTagJson() {
-        versions.each { version -> createAndRemoveEntityTagJson(version) }
-    }
-
-    def createAndRemoveEntityTagJson(version) {
-        if (version >= 3.2) {
-            setAdminUser();
-            client.contentType = JSON;
-            // Check the category cannot be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
-            // Create a new Tag & EntityTag on a DataCategory.
-            postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version);
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // The EntityTag should exist.
-            def responseGet = client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseGet.status;
-            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
-            // Check the category can be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic'], version);
-            // Then delete the EntityTag.
-            def responseDelete = client.delete(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseDelete.status;
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // We should get a 404 here for the EntityTag.
-            try {
-                client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted");
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
-            // Check the category cannot be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
-            // Create another EntityTag on another DataCategory.
-            postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version);
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // The EntityTag should exist.
-            responseGet = client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseGet.status;
-            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
-            // Check the category can be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Entertainment_generic'], version);
-            // Then delete the EntityTag.
-            responseDelete = client.delete(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseDelete.status;
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // We should get a 404 here for the EntityTag.
-            try {
-                client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted");
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
-            // Check the category cannot be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
-            // The Tag should still exist.
-            responseGet = client.get(path: "/${version}/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseGet.status;
-            assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag;
-            // Now delete the Tag.
-            responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseDelete.status;
-            // We should get a 404 here for the Tag.
-            try {
-                client.get(path: "/${version}/tags/entity_tag_to_be_deleted");
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
-        }
-    }
-
-    @Test
-    void createAndRemoveMultipleEntityTagsJson() {
-        versions.each { version -> createAndRemoveMultipleEntityTagsJson(version) }
-    }
-
-    def createAndRemoveMultipleEntityTagsJson(version) {
-        if (version >= 3.2) {
-            setAdminUser();
-            // Check categories cannot be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
-            // Create a new Tag & EntityTag on a DataCategory.
-            postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version);
-            // Create a new EntityTag on another DataCategory.
-            postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version);
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // Check the categories can be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic', 'Entertainment_generic'], version);
-            // Now delete the Tag.
-            def responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted");
-            assertEquals 200, responseDelete.status;
-            // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
-            // Check categories cannot be discovered via the tag.
-            testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version);
-        }
-    }
-
+    /**
+     * Tests fetching categories with the given tags.
+     *
+     * Get a list of categories with the given tags by sending a GET request to: 'categories?tags={lucene query}'
+     * Eg: '/categories?tags=about or acid'
+     *
+     * Tests searching for categories with (and without) the given tags.
+     * Eg: '/search?q=kitchen&tags=energy_star
+     * 
+     */
     @Test
     void filterOnMultipleTagsJson() {
         versions.each { version -> filterOnMultipleTagsJson(version) }
@@ -566,6 +762,9 @@ class TagIT extends BaseApiTest {
         assert expectedCounts.sort() == responseGet.data.tags.collect {it.count}.sort();
     }
 
+    /**
+     * Tests updating a tag.
+     */
     @Test
     void updateTagJson() {
         versions.each { version -> updateTagJson(version) }
@@ -593,6 +792,13 @@ class TagIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests the validation rules.
+     *
+     * <ul>
+     *     <li>tag - non-empty, unique, alphanumerics & underscore, min: 2, max: 255</li>
+     * </ul>
+     */
     @Test
     void updateInvalidTagJson() {
         setAdminUser();
