@@ -236,7 +236,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with no constraints.
      */
     @Test
-    void getDataItemValueHistoryNoConstraintsJson() {
+    void getDataItemValueHistoryNoConstraints() {
         getDataItemValueHistoryJson(8, false, 6.4407656, null, null, null, null);
     }
 
@@ -244,7 +244,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with a start date for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithStartDateJson() {
+    void getDataItemValueHistoryWithStartDate() {
         getDataItemValueHistoryJson(7, false, 5.62078, '2000-01-01T00:00:00Z', null, null, null);
     }
 
@@ -252,7 +252,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with start and end dates for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithStartAndEndDateJson() {
+    void getDataItemValueHistoryWithStartAndEndDate() {
         getDataItemValueHistoryJson(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
     }
 
@@ -260,7 +260,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with start date & result limit for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithStartDateAndResultLimitJson() {
+    void getDataItemValueHistoryWithStartDateAndResultLimit() {
         getDataItemValueHistoryJson(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
     }
 
@@ -268,7 +268,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with a result start & result limit for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithResultStartAndResultLimitJson() {
+    void getDataItemValueHistoryWithResultStartAndResultLimit() {
         getDataItemValueHistoryJson(4, true, 3.22881, null, null, 2, 4);
     }
 
@@ -276,7 +276,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with a result start for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithJustResultStartJson() {
+    void getDataItemValueHistoryWithJustResultStart() {
         getDataItemValueHistoryJson(6, false, 4.89235, null, null, 2, null);
     }
 
@@ -284,7 +284,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching item value history with a result limit for filtering.
      */
     @Test
-    void getDataItemValueHistoryWithJustResultLimitJson() {
+    void getDataItemValueHistoryWithJustResultLimit() {
         getDataItemValueHistoryJson(4, true, 3.0590656, null, null, 0, 4);
     }
 
@@ -342,7 +342,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValues with 'CURRENT' (now) as the item value identifier.
      */
     @Test
-    void getDataItemValueForCurrentJson() {
+    void getDataItemValueForCurrent() {
         getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
     }
 
@@ -350,7 +350,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue with an item value identifier start date just before an actual start date.
      */
     @Test
-    void getDataItemValueWithStartDateJustBeforeNextStartDateJson() {
+    void getDataItemValueWithStartDateJustBeforeNextStartDate() {
         getDataItemValueJson('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
     }
 
@@ -358,7 +358,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue with an item value identifier start date that has an exact match.
      */
     @Test
-    void getDataItemValueWithExactStartDateJson() {
+    void getDataItemValueWithExactStartDate() {
         getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
     }
 
@@ -366,7 +366,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue with an item value identifier start date at some point between actual start dates
      */
     @Test
-    void getDataItemValueWithInBetweenStartDateJson() {
+    void getDataItemValueWithInBetweenStartDate() {
         getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
     }
 
@@ -374,7 +374,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue with 'FIRST' (epoch) as the item value identifier.
      */
     @Test
-    void getDataItemValueForFirstDateJson() {
+    void getDataItemValueForFirstDate() {
         getDataItemValueJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST');
     }
 
@@ -382,7 +382,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue with 'LAST' (end of epoch) as the item value identifier.
      */
     @Test
-    void getDataItemValueForLastDateJson() {
+    void getDataItemValueForLastDate() {
         getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST');
     }
 
@@ -390,7 +390,7 @@ class DataItemValueIT extends BaseApiTest {
      * Test fetching DataItemValue by UID.
      */
     @Test
-    void getDataItemValueByUidJson() {
+    void getDataItemValueByUid() {
         getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4');
     }
 
