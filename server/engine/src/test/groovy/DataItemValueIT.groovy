@@ -1,4 +1,5 @@
 import groovyx.net.http.HttpResponseException
+import org.joda.time.DateTime
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -13,6 +14,8 @@ class DataItemValueIT extends BaseApiTest {
     def createDataItemValueJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+            // Sleep a little to ensure the isNear calculation below will be accurate.
+            sleep(1000);
             // Create a DataItemValue.
             def responsePost = client.post(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
@@ -44,7 +47,9 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
                     contentType: JSON);
             assertEquals 200, responseGetDI.status;
-            assertEquals responseGetDIV.data.value.modified, responseGetDI.data.item.modified;
+            def modifiedDI = new DateTime(responseGetDI.data.item.modified);
+            def modifiedDIV = new DateTime(responseGetDIV.data.value.modified);
+            assertTrue isNear(modifiedDIV, modifiedDI);
             // Then delete the DIV.
             def responseDelete = client.delete(path: location);
             assertEquals 200, responseDelete.status;
@@ -68,6 +73,8 @@ class DataItemValueIT extends BaseApiTest {
     def createDataItemValueXml(version) {
         if (version >= 3.4) {
             setAdminUser();
+            // Sleep a little to ensure the isNear calculation below will be accurate.
+            sleep(1000);
             // Create a DataItemValue.
             def responsePost = client.post(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
@@ -98,7 +105,9 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
                     contentType: XML);
             assertEquals 200, responseGetDI.status;
-            assertEquals responseGetDIV.data.Value.@modified.text(), responseGetDI.data.Item.@modified.text();
+            def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text());
+            def modifiedDIV = new DateTime(responseGetDIV.data.Value.@modified.text());
+            assertTrue isNear(modifiedDIV, modifiedDI);
             // Then delete the DIV.
             def responseDelete = client.delete(path: location);
             assertEquals 200, responseDelete.status;

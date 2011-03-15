@@ -1,5 +1,6 @@
 import com.amee.platform.search.SearchIndexerImpl
 import groovyx.net.http.RESTClient
+import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.junit.AfterClass
 import org.junit.Before
@@ -117,5 +118,28 @@ abstract class BaseApiTest {
             Collections.shuffle(list);
             length > 0 ? list[0..length - 1].join() : '';
         }
+    }
+
+    /**
+     * Returns true if d2 is near d1. Uses a delta of 500 milliseconds.
+     *
+     * @param d1 base date
+     * @param d2 date to compare
+     * @return true if d2 is near d1
+     */
+    boolean isNear(DateTime d1, DateTime d2) {
+        return isNear(d1, d2, 500);
+    }
+
+    /**
+     * Returns true if d2 is near d1.
+     *
+     * @param d1 base date
+     * @param d2 date to compare
+     * @param delta in milliseconds
+     * @return true if d2 is near d1
+     */
+    boolean isNear(DateTime d1, DateTime d2, int delta) {
+        return Math.abs(d2.millis - d1.millis) <= delta;
     }
 }
