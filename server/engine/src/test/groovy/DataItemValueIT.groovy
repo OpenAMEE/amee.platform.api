@@ -32,15 +32,21 @@ class DataItemValueIT extends BaseApiTest {
         // Sleep a little to give the index a chance to be updated.
         sleep(1000);
         // Get the new DataItemValue.
-        def responseGet = client.get(
+        def responseGetDIV = client.get(
                 path: "${location};full",
                 contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals "10", responseGet.data.value.value;
-        // Then delete it.
+        assertEquals 200, responseGetDIV.status;
+        assertEquals 'application/json', responseGetDIV.contentType;
+        assertTrue responseGetDIV.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', responseGetDIV.data.status;
+        assertEquals "10", responseGetDIV.data.value.value;
+        // Get the DataItem, check it has same modified time-stamp as the DIV.
+        def responseGetDI = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
+                contentType: JSON);
+        assertEquals 200, responseGetDI.status;
+        assertEquals responseGetDIV.data.value.modified, responseGetDI.data.item.modified;
+        // Then delete the DIV.
         def responseDelete = client.delete(path: location);
         assertEquals 200, responseDelete.status;
         // Sleep a little to give the index a chance to be updated.
@@ -86,7 +92,7 @@ class DataItemValueIT extends BaseApiTest {
         assertEquals 'application/xml', responseGetDIV.contentType
         assertEquals 'OK', responseGetDIV.data.Status.text();
         assertEquals "10", responseGetDIV.data.Value.Value.text();
-        // Get new DataItem, check it has same modified time-stamp as the DIV.
+        // Get the DataItem, check it has same modified time-stamp as the DIV.
         def responseGetDI = client.get(
                 path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
                 contentType: XML);
