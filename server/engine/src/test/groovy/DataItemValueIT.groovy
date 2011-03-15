@@ -31,7 +31,7 @@ class DataItemValueIT extends BaseApiTest {
         assertTrue uid != null;
         // Sleep a little to give the index a chance to be updated.
         sleep(1000);
-        // Get the new DataItem.
+        // Get the new DataItemValue.
         def responseGet = client.get(
                 path: "${location};full",
                 contentType: JSON);
@@ -78,15 +78,21 @@ class DataItemValueIT extends BaseApiTest {
         assertTrue uid != null;
         // Sleep a little to give the index a chance to be updated.
         sleep(1000);
-        // Get the new DataItem.
-        def responseGet = client.get(
+        // Get the new DataItemValue.
+        def responseGetDIV = client.get(
                 path: "${location};full",
                 contentType: XML);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/xml', responseGet.contentType
-        assertEquals 'OK', responseGet.data.Status.text();
-        assertEquals "10", responseGet.data.Value.Value.text();
-        // Then delete it.
+        assertEquals 200, responseGetDIV.status;
+        assertEquals 'application/xml', responseGetDIV.contentType
+        assertEquals 'OK', responseGetDIV.data.Status.text();
+        assertEquals "10", responseGetDIV.data.Value.Value.text();
+        // Get new DataItem, check it has same modified time-stamp as the DIV.
+        def responseGetDI = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
+                contentType: XML);
+        assertEquals 200, responseGetDI.status;
+        assertEquals responseGetDIV.data.Value.@modified.text(), responseGetDI.data.Item.@modified.text();
+        // Then delete the DIV.
         def responseDelete = client.delete(path: location);
         assertEquals 200, responseDelete.status;
         // Sleep a little to give the index a chance to be updated.
@@ -237,7 +243,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryNoConstraints() {
-        getDataItemValueHistoryJson(8, false, 6.4407656, null, null, null, null);
+        getDataItemValueHistory(8, false, 6.4407656, null, null, null, null);
     }
 
     /**
@@ -245,7 +251,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartDate() {
-        getDataItemValueHistoryJson(7, false, 5.62078, '2000-01-01T00:00:00Z', null, null, null);
+        getDataItemValueHistory(7, false, 5.62078, '2000-01-01T00:00:00Z', null, null, null);
     }
 
     /**
@@ -253,7 +259,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartAndEndDate() {
-        getDataItemValueHistoryJson(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
+        getDataItemValueHistory(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
     }
 
     /**
@@ -261,7 +267,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartDateAndResultLimit() {
-        getDataItemValueHistoryJson(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
+        getDataItemValueHistory(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
     }
 
     /**
@@ -269,7 +275,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithResultStartAndResultLimit() {
-        getDataItemValueHistoryJson(4, true, 3.22881, null, null, 2, 4);
+        getDataItemValueHistory(4, true, 3.22881, null, null, 2, 4);
     }
 
     /**
@@ -277,7 +283,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithJustResultStart() {
-        getDataItemValueHistoryJson(6, false, 4.89235, null, null, 2, null);
+        getDataItemValueHistory(6, false, 4.89235, null, null, 2, null);
     }
 
     /**
@@ -285,10 +291,10 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithJustResultLimit() {
-        getDataItemValueHistoryJson(4, true, 3.0590656, null, null, 0, 4);
+        getDataItemValueHistory(4, true, 3.0590656, null, null, 0, 4);
     }
 
-    def getDataItemValueHistoryJson(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
+    def getDataItemValueHistory(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
         // Create query.
         def query = [:];
         if (queryStartDate) {
@@ -343,7 +349,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForCurrent() {
-        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
+        getDataItemValue('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT');
     }
 
     /**
@@ -351,7 +357,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithStartDateJustBeforeNextStartDate() {
-        getDataItemValueJson('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
+        getDataItemValue('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z');
     }
 
     /**
@@ -359,7 +365,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithExactStartDate() {
-        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
+        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z');
     }
 
     /**
@@ -367,7 +373,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithInBetweenStartDate() {
-        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
+        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z');
     }
 
     /**
@@ -375,7 +381,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForFirstDate() {
-        getDataItemValueJson('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST');
+        getDataItemValue('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST');
     }
 
     /**
@@ -383,7 +389,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForLastDate() {
-        getDataItemValueJson('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST');
+        getDataItemValue('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST');
     }
 
     /**
@@ -391,10 +397,10 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueByUid() {
-        getDataItemValueJson('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4');
+        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4');
     }
 
-    def getDataItemValueJson(uid, value, startDate, path) {
+    def getDataItemValue(uid, value, startDate, path) {
         versions.each { version -> getDataItemValueJson(version, uid, value, startDate, path) }
         versions.each { version -> getDataItemValueXml(version, uid, value, startDate, path) }
     }
@@ -443,61 +449,61 @@ class DataItemValueIT extends BaseApiTest {
     @Test
     void updateWithNoValue() {
         setAdminUser();
-        updateDataItemValueFieldJson('387C597FF2C4', 'value', 'typeMismatch', '');
+        updateDataItemValueField('387C597FF2C4', 'value', 'typeMismatch', '');
     }
 
     @Test
     void updateWithSomethingThatIsNotANumber() {
         setAdminUser();
-        updateDataItemValueFieldJson('387C597FF2C4', 'value', 'typeMismatch', 'not_a_number');
+        updateDataItemValueField('387C597FF2C4', 'value', 'typeMismatch', 'not_a_number');
     }
 
     @Test
     void updateWithBadStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date');
     }
 
     @Test
     void updateWithDuplicateStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'duplicate', '2002-01-01T00:00:00Z');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'duplicate', '2002-01-01T00:00:00Z');
     }
 
     @Test
     void updateWithEpochStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', '1970-01-01T00:00:00Z');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'epoch', '1970-01-01T00:00:00Z');
     }
 
     @Test
     void updateWithBeforeEpochStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', '1969-01-01T00:00:00Z');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'epoch', '1969-01-01T00:00:00Z');
     }
 
     @Test
     void updateWithFirstStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'epoch', 'FIRST');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'epoch', 'FIRST');
     }
 
     @Test
     void updateWithLastStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', 'LAST');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', 'LAST');
     }
 
     @Test
     void updateWithEndOfEpochStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', '2038-01-19T03:14:00Z');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', '2038-01-19T03:14:00Z');
     }
 
     @Test
     void updateWithAfterEndOfEpochStartDate() {
         setAdminUser();
-        updateDataItemValueFieldJson('289CCD5394AC', 'startDate', 'end_of_epoch', '2039-01-01T00:00:00Z');
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', '2039-01-01T00:00:00Z');
     }
 
     /**
@@ -508,8 +514,8 @@ class DataItemValueIT extends BaseApiTest {
      * @param code expected upon error
      * @param value to submit
      */
-    def updateDataItemValueFieldJson(path, field, code, value) {
-        updateDataItemValueFieldJson(path, field, code, value, 3.4)
+    def updateDataItemValueField(path, field, code, value) {
+        updateDataItemValueField(path, field, code, value, 3.4)
     }
 
     /**
@@ -521,7 +527,7 @@ class DataItemValueIT extends BaseApiTest {
      * @param value to submit
      * @param since only to versions on or after this since value
      */
-    def updateDataItemValueFieldJson(path, field, code, value, since) {
+    def updateDataItemValueField(path, field, code, value, since) {
         versions.each { version -> updateDataItemValueFieldJson(path, field, code, value, since, version) };
     }
 
