@@ -500,6 +500,12 @@
                                   value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource$FormAcceptor"/>
                     </bean>
                 </entry>
+                <entry key="application/xml">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource$DOMAcceptor"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
