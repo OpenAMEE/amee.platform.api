@@ -239,7 +239,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryNoConstraints() {
-        getDataItemValueHistoryJson(8, false, 6.4407656, null, null, null, null);
+        getDataItemValueHistory(8, false, 6.4407656, null, null, null, null);
     }
 
     /**
@@ -247,7 +247,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartDate() {
-        getDataItemValueHistoryJson(7, false, 5.62078, '2000-01-01T00:00:00Z', null, null, null);
+        getDataItemValueHistory(7, false, 5.62078, '2000-01-01T00:00:00Z', null, null, null);
     }
 
     /**
@@ -255,7 +255,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartAndEndDate() {
-        getDataItemValueHistoryJson(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
+        getDataItemValueHistory(2, false, 1.75677, '2003-02-01T00:00:00Z', '2005-02-01T00:00:00Z', null, null);
     }
 
     /**
@@ -263,7 +263,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithStartDateAndResultLimit() {
-        getDataItemValueHistoryJson(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
+        getDataItemValueHistory(3, true, 2.23908, '2000-01-01T00:00:00Z', null, null, 3);
     }
 
     /**
@@ -271,7 +271,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithResultStartAndResultLimit() {
-        getDataItemValueHistoryJson(4, true, 3.22881, null, null, 2, 4);
+        getDataItemValueHistory(4, true, 3.22881, null, null, 2, 4);
     }
 
     /**
@@ -279,7 +279,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithJustResultStart() {
-        getDataItemValueHistoryJson(6, false, 4.89235, null, null, 2, null);
+        getDataItemValueHistory(6, false, 4.89235, null, null, 2, null);
     }
 
     /**
@@ -287,10 +287,10 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueHistoryWithJustResultLimit() {
-        getDataItemValueHistoryJson(4, true, 3.0590656, null, null, 0, 4);
+        getDataItemValueHistory(4, true, 3.0590656, null, null, 0, 4);
     }
 
-    def getDataItemValueHistoryJson(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
+    def getDataItemValueHistory(count, truncated, sum, queryStartDate, queryEndDate, resultStart, resultLimit) {
         // Create query.
         def query = [:];
         if (queryStartDate) {
