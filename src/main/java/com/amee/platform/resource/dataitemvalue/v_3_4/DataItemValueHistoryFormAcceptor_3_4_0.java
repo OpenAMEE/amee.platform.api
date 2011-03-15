@@ -81,9 +81,14 @@ public class DataItemValueHistoryFormAcceptor_3_4_0 implements DataItemValueHist
 
         // Validate the BaseDataItemValue.
         if (validator.isValid(requestWrapper.getFormParameters())) {
+
             // BaseDataItemValue was valid, we'll allow it to persist and invalidate the DataCategory.
             dataItemService.persist(dataItemValue);
             invalidationService.add(dataItemValue.getDataItem().getDataCategory());
+
+            // Mark the DataItem as modified.
+            dataItemValue.getDataItem().onModify();
+
             // Respond with the URI of the new item value.
             return ResponseHelper.getOK(
                     requestWrapper,
