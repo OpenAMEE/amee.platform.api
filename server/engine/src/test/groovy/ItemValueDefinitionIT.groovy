@@ -1,4 +1,5 @@
 import groovyx.net.http.HttpResponseException
+import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -6,14 +7,35 @@ import static org.junit.Assert.*
 /**
  * Tests for the Item Value Definition API.
  *
- * TODO: Document Item Value Definition API fully here. See https://jira.amee.com/browse/PL-9549 to vote on this task.
  */
 class ItemValueDefinitionIT extends BaseApiTest {
 
-    // TODO: 3.0 tests.
-
-    static def versions = [3.0, 3.1, 3.4]
-
+    /**
+     * Tests for creation, fetch and deletion of an Item Value Definition using JSON responses.
+     *
+     * Create a new Item Value Definition by POSTing to '/definitions/{UID}/values'
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>name
+     * <li>path
+     * <li>wikioc
+     * <li>value
+     * <li>choices
+     * <li>fromProfile
+     * <li>fromData
+     * <li>allowedRoles
+     * <li>unit
+     * <li>perUnit
+     * <li>valueDefinition
+     * <li>apiVersions
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) an Item Value Definition by sending a DELETE request to '/definitions/{UID}/values/{UID}'.
+     */
     @Test
     void createDeleteItemValueDefinition() {
         versions.each { version -> createDeleteItemValueDefinition(version) }
@@ -76,6 +98,19 @@ class ItemValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests creating an Item Value Definition using XML.
+     * XML must be used to create usages.
+     *
+     * @param version
+     * @return
+     */
+    @Test
+    @Ignore("PL-10487")
+    void createDeleteItemValueDefinitionXml() {
+        versions.each { version -> createDeleteItemValueDefinitionXml(version) }
+    }
+
     def createDeleteItemValueDefinitionXml(version) {
         if (version >= 3.4) {
             setAdminUser()
@@ -129,6 +164,29 @@ class ItemValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests fetching a list of Item Value Definitions for an Item Definition with JSON response.
+     *
+     * Item Value Definition GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>name - include the name value.
+     * <li>path - include the path value.
+     * <li>value - include the value.
+     * <li>audit - include the status, created and modified values.
+     * <li>wikiDoc - include the wikiDoc value.
+     * <li>itemDefinition - include the ItemDefinition UID and name values.
+     * <li>valueDefinition - include the ValueDefinition UID, name and type values.
+     * <li>usages - include the usages data.
+     * <li>choices - include the choices values.
+     * <li>units - include the unit and perUnit values.
+     * <li>flags - include the drilldown, fromData and fromProfile flags.
+     * <li>versions - include the version values.
+     * </ul>
+     *
+     * Item Value Definitions are sorted by name.
+     */
     @Test
     void getItemValueDefinitionsJson() {
         versions.each { version -> getItemValueDefinitionsJson(version) };
@@ -144,11 +202,15 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertTrue response.data instanceof net.sf.json.JSON;
             assertEquals 'OK', response.data.status;
             assertEquals 6, response.data.itemValueDefinitions.size();
+
             // Should be sorted by name
             assertTrue response.data.itemValueDefinitions.first().name.compareToIgnoreCase(response.data.itemValueDefinitions.last().name) < 0
         }
     }
 
+    /**
+     * Test fetching a number of Item Value Definitions with XML response.
+     */
     @Test
     void getItemValueDefinitionsXml() {
         versions.each { version -> getItemValueDefinitionsXml(version) };
@@ -164,11 +226,15 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals 'OK', response.data.Status.text();
             def allItemValueDefinitions = response.data.ItemValueDefinitions.ItemValueDefinition;
             assertEquals 6, allItemValueDefinitions.size();
+
             // Should be sorted by name
             assertTrue allItemValueDefinitions[0].Name.text().compareToIgnoreCase(allItemValueDefinitions[-1].Name.text()) < 0
         }
     }
 
+    /**
+     * Test fetching a single Item Value Definition using JSON.
+     */
     @Test
     void getItemValueDefinitionJson() {
         versions.each { version -> getItemValueDefinitionJson(version) }
@@ -204,6 +270,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Test fetching a single Item Value Definition using JSON.
+     */
     @Test
     void getItemValueDefinitionXml() {
         versions.each { version -> getItemValueDefinitionXml(version) }
@@ -239,6 +308,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests updating an Item Value Definition using form parameters.
+     */
     @Test
     void updateItemValueDefinitionJson() {
         versions.each { version -> updateItemValueDefinitionJson(version) };
@@ -246,6 +318,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
     def updateItemValueDefinitionJson(version) {
         setAdminUser();
+
         // 1) Do the update.
         def responsePut = client.put(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41",
@@ -255,6 +328,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON);
         assertEquals 204, responsePut.status;
+
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
@@ -268,6 +342,9 @@ class ItemValueDefinitionIT extends BaseApiTest {
         assertEquals 'New WikiDoc.', responseGet.data.itemValueDefinition.wikiDoc;
     }
 
+    /**
+     * Tests updating an Item Value Definition using XML.
+     */
     @Test
     void updateItemValueDefinitionXml() {
         versions.each { version -> updateItemValueDefinitionXml(version) }
@@ -296,6 +373,17 @@ class ItemValueDefinitionIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests validation rules.
+     *
+     * <ul>
+     *     <li>name - non-empty, min: 2, max: 255</li>
+     *     <li>path - unique, alpha-numeric & underscore, non-empty, min: 2, max: 255</li>
+     *     <li>wikiDoc - max: 32767</li>
+     *     <li>values - max: 255</li>
+     *     <li>choices - max: 255</li>
+     * </ul>
+     */
     @Test
     void updateInvalidItemValueDefinition() {
         setAdminUser();
@@ -402,7 +490,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
             <FromData>true</FromData>
             <FromProfile>true</FromProfile>
             <Versions>1.0,2.0</Versions>
-          </ItemValueDefinition>
         </ItemValueDefinition>
         '''
     }

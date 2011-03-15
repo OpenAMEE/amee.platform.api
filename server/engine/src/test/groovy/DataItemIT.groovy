@@ -5,12 +5,8 @@ import static org.junit.Assert.*
 
 /**
  * Tests for the Data Item API.
- *
- * TODO: Document Data Item API fully here. See https://jira.amee.com/browse/PL-9547 to vote on this task.
  */
 class DataItemIT extends BaseApiTest {
-
-    static def versions = [3.0, 3.1, 3.2, 3.4]
 
     static def dataItemUids = [
             'B6419AFB7114',
@@ -74,6 +70,7 @@ class DataItemIT extends BaseApiTest {
     def createDataItemJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+
             // Create a DataItem.
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
@@ -85,16 +82,20 @@ class DataItemIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 201, responsePost.status
+
             // Is Location available?
             assertTrue responsePost.headers['Location'] != null;
             assertTrue responsePost.headers['Location'].value != null;
             def location = responsePost.headers['Location'].value;
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
             // Get new DataItem UID.
             def uid = location.split('/')[7];
             assertTrue uid != null;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // Get the new DataItem.
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/${uid};full",
@@ -107,13 +108,17 @@ class DataItemIT extends BaseApiTest {
             assertEquals 4, responseGet.data.item.values.size();
             assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}");
             assertEquals 200, responseDelete.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
+
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/categories/Cooking/items/${uid}");
@@ -123,8 +128,6 @@ class DataItemIT extends BaseApiTest {
             }
         }
     }
-
-    // TODO: createDataItemXml
 
     /**
      * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
@@ -138,17 +141,21 @@ class DataItemIT extends BaseApiTest {
     def createDuplicateDataItemJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+
             // Create a DataItem.
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
                     body: ['path': 'testPath'],
                     requestContentType: URLENC,
                     contentType: JSON);
+
             // Should have been created.
             assertEquals 201, responsePost.status
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
             try {
+
                 // Create a DataItem.
                 client.post(
                         path: "/${version}/categories/Cooking/items",
@@ -156,19 +163,21 @@ class DataItemIT extends BaseApiTest {
                         requestContentType: URLENC,
                         contentType: JSON);
             } catch (HttpResponseException e) {
+
                 // Should have been rejected.
                 assertEquals 400, e.response.status;
             }
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/testPath");
+
             // Should have been deleted.
             assertEquals 200, responseDelete.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000);
         }
     }
-
-    // TODO: createDuplicateDataItemXml
 
     /**
      * Test fetching a number of DataItems with JSON responses.
@@ -176,7 +185,22 @@ class DataItemIT extends BaseApiTest {
      * This resource supports the 'startDate' parameter which behaves identically to the
      * DataItem values resource detailed and tested in DataItemValueIT.
      *
-     * The DataItem label field is only supported since version 3.2.
+     * Data Item GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>audit - include the status, created and modified values.
+     * <li>name - include the Data Item name.
+     * <li>label - include the Data Item label.
+     * <li>path - include the full Data Item path.
+     * <li>parent - include the parent Category UID and wikiName values.
+     * <li>wikiDoc - include the Data Item wikiDoc.
+     * <li>provenance - include the Data Item provenance value.
+     * <li>itemDefinition - include the ItemDefinition UID and name values;
+     * <li>values - include the Data Item Values' path and value.
+     * </ul>
+     *
+     * The label field is only supported since version 3.2.
      */
     @Test
     void getDataItemsJson() {
@@ -196,6 +220,7 @@ class DataItemIT extends BaseApiTest {
         assertEquals dataItemUids.size(), response.data.items.size()
         def responseUids = response.data.items.collect { it.uid }.sort()
         assert dataItemUids == responseUids
+
         // Should  be sorted by label
         if (version >= 3.2) {
             assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) < 0
@@ -223,6 +248,7 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
         assertEquals 5, response.data.items.size()
+
         // Should not be sorted by label
         if (version >= 3.2) {
             assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) > 0
@@ -230,7 +256,7 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
-     * Test fetching a number of DataItems with JSON responses.
+     * Test fetching a number of DataItems with XML responses.
      *
      * The DataItem label field is only supported since version 3.2.
      */
@@ -251,14 +277,45 @@ class DataItemIT extends BaseApiTest {
         def allDataItems = response.data.Items.Item
         assertEquals dataItemUids.size(), allDataItems.size()
         assert dataItemUids == allDataItems.@uid*.text().sort()
+
         // Should  be sorted by label
         if (version >= 3.2) {
             assertTrue allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
         }
     }
 
-    // TODO: getFilteredDataItemsXml
+    /**
+     * Test fetching a number of DataItems filtered to match a single value with XML responses.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
+    @Test
+    void getFilteredDataItemsXml() {
+        versions.each { version -> getFilteredDataItemsXml(version) }
+    }
 
+    def getFilteredDataItemsXml(version) {
+        client.contentType = XML
+        def response = client.get(
+                path: "/${version}/categories/Cooking/items;full",
+                query: ['numberOfPeople': '1'])
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals 'false', response.data.Items.@truncated.text()
+        assertEquals 5, response.data.Items.Item.size()
+
+        // Should not be sorted by label
+        if (version >= 3.2) {
+            assertTrue response.data.Items.Item[0].Label.text().compareToIgnoreCase(response.data.Items.Item[-1].Label.text()) > 0
+        }
+    }
+
+    /**
+     * Tests fetching a single DataItem with JSON response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemOneGasJson() {
         versions.each { version -> getDataItemOneGasJson(version) }
@@ -283,6 +340,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path});
     }
 
+    /**
+     * Tests fetching a single DataItem with XML response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemOneGasXml() {
         versions.each { version -> getDataItemOneGasXml(version) }
@@ -307,6 +369,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(oneGasItemValuePaths == allValues.Path*.text());
     }
 
+    /**
+     * Tests fetching a single DataItem with JSON response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemTenElectricJson() {
         versions.each { version -> getDataItemTenElectricJson(version) }
@@ -331,6 +398,11 @@ class DataItemIT extends BaseApiTest {
         assertTrue(tenElectricItemValuePaths == response.data.item.values.collect {it.path});
     }
 
+    /**
+     * Tests fetching a single DataItem with XML response.
+     *
+     * The DataItem label field is only supported since version 3.2.
+     */
     @Test
     void getDataItemTenElectricXml() {
         versions.each { version -> getDataItemTenElectricXml(version) }
@@ -444,12 +516,10 @@ class DataItemIT extends BaseApiTest {
         }
     }
 
-    // TODO: updateDataItemXml
-
-    // TODO: updateDataItemUnauthorizedXml
-
     /**
-     * The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * Tests an algorithm is applied to calculate a result with JSON response.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
      */
     @Test
     void getDataItemCalculationJson() {
@@ -459,22 +529,61 @@ class DataItemIT extends BaseApiTest {
     def getDataItemCalculationJson(version) {
         if (version >= 3.4) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full");
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 1, response.data.amounts.size();
-            def amount = response.data.amounts[0];
-            assertEquals 'year', amount.perUnit;
-            assertEquals 'kg', amount.unit;
-            assertEquals true, amount.default;
-            assertEquals("", 233.3, amount.value, 0.5);
-            assertEquals 'CO2', amount.type;
+            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
+                    query: [foo: 'bar'])
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 1, response.data.amounts.size()
+            def amount = response.data.amounts[0]
+            assertEquals 'year', amount.perUnit
+            assertEquals 'kg', amount.unit
+            assertEquals true, amount.default
+            assertEquals("", 233.3, amount.value, 0.5)
+            assertEquals 'CO2', amount.type
+            assertEquals 1, response.data.notes.size()
+            assertEquals 'comment', response.data.notes[0].type
+            assertEquals 'This is a comment', response.data.notes[0].value
+            assertEquals 1, response.data.values.size()
+            assertEquals 'foo', response.data.values[0].name
+            assertEquals 'bar', response.data.values[0].value
         }
     }
 
-    // TODO: getDataItemCalculationXml
+    /**
+     * Tests an algorithm is applied to calculate a result with XML response.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     */
+    @Test
+    void getDataItemCalculationXml() {
+        versions.each { version -> getDataItemCalculationXml(version) }
+    }
+
+    def getDataItemCalculationXml(version) {
+        if (version >= 3.4) {
+            client.contentType = XML
+            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
+                    query: [foo: 'bar'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            assertEquals 1, response.data.Amounts.Amount.size()
+            def amount = response.data.Amounts.Amount[0]
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals("", 233.3D, Double.parseDouble(amount.text()), 0.5D)
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 1, response.data.Notes.size()
+            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
+            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+            assertEquals 1, response.data.Values.size()
+            assertEquals 'foo', response.data.Values.Value[0].@name.text()
+            assertEquals 'bar', response.data.Values.Value[0].text()
+        }
+    }
 
     /**
      * Tests the validation rules for the Data Item name field.

@@ -8,8 +8,6 @@ import static org.junit.Assert.*
  */
 class AlgorithmIT extends BaseApiTest {
 
-    static def versions = [3.4]
-
     /**
      * Tests for creation, fetch and deletion of an Algorithm using JSON responses.
      *
@@ -34,40 +32,42 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def createDeleteAlgorithmJson(version) {
-        setAdminUser()
+        if (version >= 3.4) {
+            setAdminUser()
 
-        // Create a new Algorithm.
-        def responsePost = client.post(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms",
-                body: ['name': 'test',
-                        'content': 'xxx'],
-                requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 201, responsePost.status;
-        def location = responsePost.headers['Location'].value;
-        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}");
+            // Create a new Algorithm.
+            def responsePost = client.post(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms",
+                    body: ['name': 'test',
+                            'content': 'xxx'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, responsePost.status;
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}");
 
-        // Get the new Algorithm.
-        def responseGet = client.get(
-                path: "${location};full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'test', responseGet.data.algorithm.name;
-        assertEquals 'xxx', responseGet.data.algorithm.content;
+            // Get the new Algorithm.
+            def responseGet = client.get(
+                    path: "${location};full",
+                    contentType: JSON);
+            assertEquals 200, responseGet.status;
+            assertEquals 'application/json', responseGet.contentType;
+            assertTrue responseGet.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', responseGet.data.status;
+            assertEquals 'test', responseGet.data.algorithm.name;
+            assertEquals 'xxx', responseGet.data.algorithm.content;
 
-        // Delete it
-        def responseDelete = client.delete(path: location)
-        assertEquals 200, responseDelete.status
+            // Delete it
+            def responseDelete = client.delete(path: location)
+            assertEquals 200, responseDelete.status
 
-        // Should get a 404 here
-        try {
-            client.get(path: location)
-            fail 'Should have thrown an exception'
-        } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            // Should get a 404 here
+            try {
+                client.get(path: location)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
         }
     }
 
@@ -82,39 +82,41 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def createDeleteAlgorithmXml(version) {
-        setAdminUser()
+        if (version >= 3.4) {
+            setAdminUser()
 
-        // Create a new Algorithm.
-        def responsePost = client.post(
-                path: "/${version}/definitions/11D3548466F2/algorithms",
-                body: ['name': 'test',
-                        'content': 'xxx'],
-                requestContentType: URLENC,
-                contentType: XML)
-        assertEquals 201, responsePost.status
-        def location = responsePost.headers['Location'].value;
-        assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            // Create a new Algorithm.
+            def responsePost = client.post(
+                    path: "/${version}/definitions/11D3548466F2/algorithms",
+                    body: ['name': 'test',
+                            'content': 'xxx'],
+                    requestContentType: URLENC,
+                    contentType: XML)
+            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value;
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
-        // Get the new Algorithm.
-        def responseGet = client.get(
-                path: "${location};full",
-                contentType: XML)
-        assertEquals 200, responseGet.status
-        assertEquals 'application/xml', responseGet.contentType
-        assertEquals 'OK', responseGet.data.Status.text()
-        assertEquals 'test', responseGet.data.Algorithm.Name.text()
-        assertEquals 'xxx', responseGet.data.Algorithm.Content.text()
+            // Get the new Algorithm.
+            def responseGet = client.get(
+                    path: "${location};full",
+                    contentType: XML)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'test', responseGet.data.Algorithm.Name.text()
+            assertEquals 'xxx', responseGet.data.Algorithm.Content.text()
 
-        // Delete it
-        def responseDelete = client.delete(path: location)
-        assertEquals 200, responseDelete.status
+            // Delete it
+            def responseDelete = client.delete(path: location)
+            assertEquals 200, responseDelete.status
 
-        // Should get a 404 here
-        try {
-            client.get(path: location)
-            fail 'Should have thrown an exception'
-        } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            // Should get a 404 here
+            try {
+                client.get(path: location)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
         }
     }
 
@@ -132,7 +134,7 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def getAlgorithmsJson(version) {
-        if (version >= 3.1) {
+        if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms;full",
                     contentType: JSON);
@@ -157,7 +159,7 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def getAlgorithmsXml(version) {
-        if (version >= 3.1) {
+        if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms;full",
                     contentType: XML);
@@ -192,16 +194,18 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def getAlgorithmJson(version) {
-        def response = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertEquals 'default', response.data.algorithm.name;
-        assertEquals '1B3B44CAE90C', response.data.algorithm.itemDefinition.uid;
-        assertEquals 'Cooking', response.data.algorithm.itemDefinition.name;
+        if (version >= 3.4) {
+            def response = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals 'default', response.data.algorithm.name;
+            assertEquals '1B3B44CAE90C', response.data.algorithm.itemDefinition.uid;
+            assertEquals 'Cooking', response.data.algorithm.itemDefinition.name;
+        }
     }
 
     /**
@@ -215,15 +219,17 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def getAlgorithmXml(version) {
-        def response = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
-                contentType: XML);
-        assertEquals 200, response.status;
-        assertEquals 'application/xml', response.contentType;
-        assertEquals 'OK', response.data.Status.text();
-        assertEquals 'default', response.data.Algorithm.Name.text();
-        assertEquals '1B3B44CAE90C', response.data.Algorithm.ItemDefinition.@uid.text();
-        assertEquals 'Cooking', response.data.Algorithm.ItemDefinition.Name.text();
+        if (version >= 3.4) {
+            def response = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals 'default', response.data.Algorithm.Name.text();
+            assertEquals '1B3B44CAE90C', response.data.Algorithm.ItemDefinition.@uid.text();
+            assertEquals 'Cooking', response.data.Algorithm.ItemDefinition.Name.text();
+        }
     }
 
     /**
@@ -240,25 +246,27 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def updateAlgorithmJson(version) {
-        setAdminUser();
-        // 1) Do the update.
-        def responsePut = client.put(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA",
-                body: ['name': 'ZZZ New Name JSON',
-                        'content': 'New content JSON.'],
-                requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 204, responsePut.status;
-        // 2) Check values have been updated.
-        def responseGet = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'ZZZ New Name JSON', responseGet.data.algorithm.name;
-        assertEquals 'New content JSON.', responseGet.data.algorithm.content;
+        if (version >= 3.4) {
+            setAdminUser();
+            // 1) Do the update.
+            def responsePut = client.put(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA",
+                    body: ['name': 'ZZZ New Name JSON',
+                            'content': 'New content JSON.'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 204, responsePut.status;
+            // 2) Check values have been updated.
+            def responseGet = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
+                    contentType: JSON);
+            assertEquals 200, responseGet.status;
+            assertEquals 'application/json', responseGet.contentType;
+            assertTrue responseGet.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', responseGet.data.status;
+            assertEquals 'ZZZ New Name JSON', responseGet.data.algorithm.name;
+            assertEquals 'New content JSON.', responseGet.data.algorithm.content;
+        }
     }
 
     /**
@@ -272,24 +280,26 @@ class AlgorithmIT extends BaseApiTest {
     }
 
     def updateAlgorithmXml(version) {
-        setAdminUser()
-        // 1) Do the update.
-        def responsePut = client.put(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA",
-                body: ['name': 'ZZZ New Name XML',
-                        'content': 'New content XML.'],
-                requestContentType: URLENC,
-                contentType: XML)
-        assertEquals 204, responsePut.status
-        // 2) Check values have been updated.
-        def responseGet = client.get(
-                path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
-                contentType: XML)
-        assertEquals 200, responseGet.status
-        assertEquals 'application/xml', responseGet.contentType
-        assertEquals 'OK', responseGet.data.Status.text()
-        assertEquals 'ZZZ New Name XML', responseGet.data.Algorithm.Name.text()
-        assertEquals 'New content XML.', responseGet.data.Algorithm.Content.text()
+        if (version >= 3.4) {
+            setAdminUser()
+            // 1) Do the update.
+            def responsePut = client.put(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA",
+                    body: ['name': 'ZZZ New Name XML',
+                            'content': 'New content XML.'],
+                    requestContentType: URLENC,
+                    contentType: XML)
+            assertEquals 204, responsePut.status
+            // 2) Check values have been updated.
+            def responseGet = client.get(
+                    path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
+                    contentType: XML)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'ZZZ New Name XML', responseGet.data.Algorithm.Name.text()
+            assertEquals 'New content XML.', responseGet.data.Algorithm.Content.text()
+        }
     }
 
     /**
@@ -306,9 +316,15 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidName() {
-        setAdminUser();
-        updateAlgorithmFieldJson('name', 'empty', '');
-        updateAlgorithmFieldJson('name', 'long', String.randomString(256));
+        versions.each { version -> updateWithInvalidName(version) }
+    }
+
+    def updateWithInvalidName(version) {
+        if (version >= 3.4) {
+            setAdminUser();
+            updateAlgorithmFieldJson('name', 'empty', '');
+            updateAlgorithmFieldJson('name', 'long', String.randomString(256));
+        }
     }
 
     /**
@@ -323,8 +339,14 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidContent() {
-        setAdminUser();
-        updateAlgorithmFieldJson('content', 'long', String.randomString(32768));
+        versions.each { version -> updateWithInvalidContent(version) }
+    }
+
+    def updateWithInvalidContent(version) {
+        if (version >= 3.4) {
+            setAdminUser();
+            updateAlgorithmFieldJson('content', 'long', String.randomString(32768));
+        }
     }
 
     /**
@@ -359,7 +381,7 @@ class AlgorithmIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      * @param version version to test
      */
-    void updateAlgorithmFieldJson(field, code, value, since, version) {
+    def updateAlgorithmFieldJson(field, code, value, since, version) {
         if (version >= since) {
             try {
                 // Create form body.
