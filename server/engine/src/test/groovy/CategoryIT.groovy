@@ -287,9 +287,7 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
         assertEquals categoryNames.size(), response.data.categories.size()
-        // assert categoryUids.sort() == response.data.categories.collect {it.uid}.sort()
         assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
-
         // Results are sorted by wikiName
         assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.categories.collect {it.wikiName}
     }
@@ -313,7 +311,6 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
         assertEquals categoryNamesExcEcoinvent.size(), response.data.categories.size()
-        // assert categoryUidsExcEcoinvent.sort() == response.data.categories.collect {it.uid}.sort()
         assert categoryNamesExcEcoinvent.sort() == response.data.categories.collect {it.name}.sort()
         // Results should NOT be sorted
         assert categoryWikiNamesExcEcoinvent.sort { a, b -> a.compareToIgnoreCase(b) } != response.data.categories.collect {it.wikiName}
@@ -337,7 +334,6 @@ class CategoryIT extends BaseApiTest {
         assertEquals 'false', response.data.Categories.@truncated.text()
         def allCategories = response.data.Categories.Category
         assertEquals categoryNames.size(), allCategories.size()
-        // assert categoryUids.sort() == allCategories.@uid*.text().sort()
         assert categoryNames.sort() == allCategories.Name*.text().sort()
         // Should be sorted by wikiName
         assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, allCategories.WikiName*.text()
