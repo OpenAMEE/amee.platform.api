@@ -76,6 +76,8 @@ public class DataItemValueFormAcceptor_3_4_0 implements DataItemValueResource.Fo
         if (validator.isValid(requestWrapper.getFormParameters())) {
             // BaseDataItemValue was valid, we'll allow it to persist and invalidate the DataCategory.
             invalidationService.add(dataItemValue.getDataItem().getDataCategory());
+            // Mark the DataItem as modified.
+            dataItemValue.getDataItem().onModify();
             return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validator.getValidationResult());

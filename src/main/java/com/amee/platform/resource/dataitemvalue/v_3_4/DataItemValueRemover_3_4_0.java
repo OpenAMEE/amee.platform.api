@@ -51,6 +51,9 @@ public class DataItemValueRemover_3_4_0 implements DataItemValueResource.Remover
         resourceAuthorizationService.ensureAuthorizedForModify(
                 requestWrapper.getAttributes().get("activeUserUid"), dataItem);
 
+        // Mark the DataItem as modified.
+        dataItemValue.getDataItem().onModify();
+
         // Handle DataItem removal.
         dataItemService.remove(dataItemValue);
         invalidationService.add(dataItem.getDataCategory());
