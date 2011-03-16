@@ -553,7 +553,7 @@ class DataItemValueIT extends BaseApiTest {
             assert 'kg' == itemValue.Unit.text();
             assert 'kWh' == itemValue.PerUnit.text();
             // TODO: Test below doesn't seem to work.
-            // assert 'kg/(kW·h)' == itemValue.compoundUnit;
+            // assert 'kg/(kW·h)' == itemValue.CompoundUnit.text();
         }
     }
 
