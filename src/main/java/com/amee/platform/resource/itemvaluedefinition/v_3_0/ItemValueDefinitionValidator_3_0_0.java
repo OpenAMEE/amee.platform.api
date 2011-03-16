@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -174,5 +175,10 @@ public class ItemValueDefinitionValidator_3_0_0 extends BaseValidator implements
     @Override
     public void setObject(ItemValueDefinition itemValueDefinition) {
         this.itemValueDefinition = itemValueDefinition;
+    }
+
+    @Override
+    protected void beforeBind(Map<String, String> values) {
+        this.renameValue(values, "versions", "apiVersions");
     }
 }
