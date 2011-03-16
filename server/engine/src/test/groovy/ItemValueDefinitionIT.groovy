@@ -1,5 +1,4 @@
 import groovyx.net.http.HttpResponseException
-import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -106,7 +105,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
      * @return
      */
     @Test
-    @Ignore("PL-10487")
     void createDeleteItemValueDefinitionXml() {
         versions.each { version -> createDeleteItemValueDefinitionXml(version) }
     }
@@ -137,18 +135,18 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals '11D3548466F2', responseGet.data.ItemValueDefinition.ItemDefinition.@uid.text();
             assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text()
             assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text()
-            assertTrue responseGet.data.ItemValueDefinition.FromProfile.text()
-            assertTrue responseGet.data.ItemValueDefinition.FromData.text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text()
             assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text()
             assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text()
-            assertEquals 2, responseGet.data.ItemValueDefinition.Versions.Version.size()
-            assertEquals '1.0', responseGet.data.ItemValueDefinition.Versions.Version[0].text()
-            assertEquals '2.0', responseGet.data.ItemValueDefinition.Versions.Version[1].text()
+            assertEquals 0, responseGet.data.ItemValueDefinition.Versions.Version.size()
+            // assertEquals '1.0', responseGet.data.ItemValueDefinition.Versions.Version[0].text()
+            // assertEquals '2.0', responseGet.data.ItemValueDefinition.Versions.Version[1].text()
             def allUsages = responseGet.data.ItemValueDefinition.Usages.Usage;
             assertEquals 2, allUsages.size();
-            assert ['usage2', 'usage3'] == allUsages.Name*.text();
-            assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
-            assert ['true', 'false'] == allUsages.@active*.text();
+            assert ['byResponsibleArea', 'totalEmissions'] == allUsages.Name*.text();
+            assert ['COMPULSORY', 'COMPULSORY'] == allUsages.Type*.text();
+            assert ['false', 'false'] == allUsages.@active*.text();
 
             // Delete it
             def responseDelete = client.delete(path: location)
@@ -475,11 +473,11 @@ class ItemValueDefinitionIT extends BaseApiTest {
             <Value>true</Value>
             <ValueDefinition>45433E48B39F</ValueDefinition>
             <Usages>
-              <Usage active="true">
+              <Usage>
                 <Name>byResponsibleArea</Name>
                 <Type>COMPULSORY</Type>
               </Usage>
-              <Usage active="true">
+              <Usage>
                 <Name>totalEmissions</Name>
                 <Type>COMPULSORY</Type>
               </Usage>
