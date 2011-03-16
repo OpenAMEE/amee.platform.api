@@ -36,11 +36,11 @@ class ItemValueDefinitionIT extends BaseApiTest {
      * Delete (TRASH) an Item Value Definition by sending a DELETE request to '/definitions/{UID}/values/{UID}'.
      */
     @Test
-    void createDeleteItemValueDefinition() {
-        versions.each { version -> createDeleteItemValueDefinition(version) }
+    void createDeleteItemValueDefinitionJson() {
+        versions.each { version -> createDeleteItemValueDefinitionJson(version) }
     }
 
-    def createDeleteItemValueDefinition(version) {
+    def createDeleteItemValueDefinitionJson(version) {
         if (version >= 3.4) {
             setAdminUser()
 
@@ -126,22 +126,23 @@ class ItemValueDefinitionIT extends BaseApiTest {
             // Get the new ItemValueDefinition
             def responseGet = client.get(
                     path: "${location};full",
-                    contentType: XML)
-            assertEquals 200, responseGet.status
-            assertEquals 'application/xml', responseGet.contentType
-            assertEquals 'OK', responseGet.data.Status.text()
-            assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text()
-            assertEquals 'foo', responseGet.data.ItemValueDefinition.Path.text()
+                    contentType: XML);
+            assertEquals 200, responseGet.status;
+            assertEquals 'application/xml', responseGet.contentType;
+            assertEquals 'OK', responseGet.data.Status.text();
+            assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text();
+            assertEquals 'foo', responseGet.data.ItemValueDefinition.Path.text();
             assertEquals '11D3548466F2', responseGet.data.ItemValueDefinition.ItemDefinition.@uid.text();
-            assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text()
-            assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text()
-            assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text()
-            assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text()
-            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text()
-            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text()
-            assertEquals 0, responseGet.data.ItemValueDefinition.Versions.Version.size()
-            // assertEquals '1.0', responseGet.data.ItemValueDefinition.Versions.Version[0].text()
-            // assertEquals '2.0', responseGet.data.ItemValueDefinition.Versions.Version[1].text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text();
+            assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text();
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text();
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text();
+            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text();
+            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text();
+            def allVersions = responseGet.data.ItemValueDefinition.Versions.Version;
+            assertEquals 2, allVersions.size();
+            assertEquals '1.0', allVersions[0].text();
+            assertEquals '2.0', allVersions[1].text();
             def allUsages = responseGet.data.ItemValueDefinition.Usages.Usage;
             assertEquals 2, allUsages.size();
             assert ['byResponsibleArea', 'totalEmissions'] == allUsages.Name*.text();
