@@ -8,7 +8,8 @@ import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.ResourceService;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionValidationHelper;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionBaseAcceptor;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class ItemValueDefinitionsFormAcceptor_3_4_0 implements ItemValueDefinitionsResource.FormAcceptor {
+public class ItemValueDefinitionsFormAcceptor_3_4_0 extends ItemValueDefinitionBaseAcceptor implements ItemValueDefinitionsResource.FormAcceptor {
 
     @Autowired
     private DefinitionService definitionService;
@@ -31,9 +32,6 @@ public class ItemValueDefinitionsFormAcceptor_3_4_0 implements ItemValueDefiniti
 
     @Autowired
     private ResourceService resourceService;
-
-    @Autowired
-    private ItemValueDefinitionValidationHelper validationHelper;
 
     @Override
     @AMEETransaction
@@ -53,8 +51,10 @@ public class ItemValueDefinitionsFormAcceptor_3_4_0 implements ItemValueDefiniti
     }
 
     public Object handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition) {
-        validationHelper.setItemValueDefinition(itemValueDefinition);
-        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+        ItemValueDefinitionResource.ItemValueDefinitionValidator validator = getItemValueDefinitionValidator(requestWrapper);
+        validator.setObject(itemValueDefinition);
+        validator.initialise();
+        if (validator.isValid(requestWrapper.getFormParameters())) {
 
             // Add the ItemValueDefinition to the ItemDefinition
             itemValueDefinition.getItemDefinition().add(itemValueDefinition);
@@ -69,7 +69,7 @@ public class ItemValueDefinitionsFormAcceptor_3_4_0 implements ItemValueDefiniti
                     "/values/" + itemValueDefinition.getUid();
             return ResponseHelper.getOK(requestWrapper, location);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 }
