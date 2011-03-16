@@ -388,7 +388,10 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public void setApiVersions(Set<APIVersion> apiVersions) {
-        this.apiVersions = apiVersions;
+        this.apiVersions.clear();
+        if (apiVersions != null) {
+            this.apiVersions.addAll(apiVersions);
+        }
     }
 
     public boolean isValidInAPIVersion(APIVersion apiVersion) {
@@ -396,11 +399,11 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public boolean addAPIVersion(APIVersion apiVersion) {
-        return apiVersions.add(apiVersion);
+        return (apiVersion != null) && apiVersions.add(apiVersion);
     }
 
     public boolean removeAPIVersion(APIVersion apiVersion) {
-        return apiVersions.remove(apiVersion);
+        return (apiVersion != null) && apiVersions.remove(apiVersion);
     }
 
     public ItemValueDefinition getAliasedTo() {
