@@ -1,4 +1,5 @@
 import groovyx.net.http.HttpResponseException
+import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -557,6 +558,7 @@ class DataItemIT extends BaseApiTest {
      * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
      */
     @Test
+    @Ignore("PL-10492")
     void getDataItemCalculationXml() {
         versions.each { version -> getDataItemCalculationXml(version) }
     }
