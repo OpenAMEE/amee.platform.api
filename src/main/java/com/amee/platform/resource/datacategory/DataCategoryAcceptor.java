@@ -9,15 +9,9 @@ public abstract class DataCategoryAcceptor {
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
-    public DataCategoryResource.DataCategoryValidationHelper getValidationHelper(RequestWrapper requestWrapper) {
-        DataCategoryResource.DataCategoryValidationHelper validationHelper =
-                (DataCategoryResource.DataCategoryValidationHelper)
-                        resourceBeanFinder.getValidationHelper(
-                                DataCategoryResource.DataCategoryValidationHelper.class, requestWrapper);
-        validationHelper.setValidator(
-                (DataCategoryResource.DataCategoryValidator)
-                        resourceBeanFinder.getValidator(
-                                DataCategoryResource.DataCategoryValidator.class, requestWrapper));
-        return validationHelper;
+    public DataCategoryResource.DataCategoryValidator getValidator(RequestWrapper requestWrapper) {
+        return (DataCategoryResource.DataCategoryValidator)
+                resourceBeanFinder.getValidationHelper(
+                        DataCategoryResource.DataCategoryValidator.class, requestWrapper);
     }
 }

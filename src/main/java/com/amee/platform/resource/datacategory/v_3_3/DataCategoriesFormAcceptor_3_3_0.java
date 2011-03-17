@@ -32,20 +32,26 @@ public class DataCategoriesFormAcceptor_3_3_0 extends DataCategoryAcceptor imple
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
-        // Create new DataCategory.
+
+        // Create new DataCategory and validate.
         DataCategory dataCategory = new DataCategory();
-        DataCategoryResource.DataCategoryValidationHelper validationHelper = getValidationHelper(requestWrapper);
-        validationHelper.setDataCategory(dataCategory);
-        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+        DataCategoryResource.DataCategoryValidator validator = getValidator(requestWrapper);
+        validator.setObject(dataCategory);
+        validator.initialise();
+        if (validator.isValid(requestWrapper.getFormParameters())) {
+
+            // Save DataCategory.
+            dataService.persist(dataCategory);
+
             // Authorized?
             resourceAuthorizationService.ensureAuthorizedForAccept(
                     requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
-            // Save DataCategory.
-            dataService.persist(dataCategory);
-            // Woo!
-            return ResponseHelper.getOK(requestWrapper);
+
+            // Return location of Data Category.
+            String location = "/" + requestWrapper.getVersion() + "/categories/" + dataCategory.getUid();
+            return ResponseHelper.getOK(requestWrapper, location);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 }

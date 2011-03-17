@@ -18,6 +18,6 @@ public interface DataCategoriesResource {
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {
-        public DataCategoryResource.DataCategoryValidationHelper getValidationHelper(RequestWrapper requestWrapper);
+        public DataCategoryResource.DataCategoryValidator getValidator(RequestWrapper requestWrapper);
     }
 }
