@@ -53,7 +53,7 @@ class ItemDefinitionIT extends BaseApiTest {
 
             // Create a new ItemDefinition
             def responsePost = client.post(
-                    path: '/3.4/definitions',
+                    path: "/${version}/definitions",
                     body: [
                             'name': 'test',
                             'drillDown': 'foo,bar',

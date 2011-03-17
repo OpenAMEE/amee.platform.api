@@ -69,6 +69,7 @@ class CategoryIT extends BaseApiTest {
     def createCategoryJson(version) {
         if (version >= 3.3) {
             setAdminUser();
+
             // Create a DataCategory.
             def responsePost = client.post(
                     path: "/${version}/categories",
@@ -80,6 +81,7 @@ class CategoryIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 201, responsePost.status
+
             // Get the new DataCategory.
             def responseGet = client.get(
                     path: "/${version}/categories/Test_Wiki_Name",
@@ -90,9 +92,11 @@ class CategoryIT extends BaseApiTest {
             assertEquals 'OK', responseGet.data.status;
             assertEquals "Test Name", responseGet.data.category.name
             assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Test_Wiki_Name");
             assertEquals 200, responseDelete.status;
+
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/categories/Test_Wiki_Name");
@@ -576,6 +580,120 @@ class CategoryIT extends BaseApiTest {
             // Expect a 403.
             def response = e.response;
             assertEquals 403, response.status;
+        }
+    }
+
+    /**
+     * Tests that a Data Category is still available following an Item Definition being trashed.
+     */
+    @Test
+    void shouldBehaveWhenItemDefinitionIsTrashed() {
+        versions.each { version -> shouldBehaveWhenItemDefinitionIsTrashed(version) };
+    }
+
+    def shouldBehaveWhenItemDefinitionIsTrashed(version) {
+        if (version >= 3.4) {
+            setAdminUser();
+
+            // Create Item Definition.
+            def itemDefinitionPost = client.post(
+                    path: "/${version}/definitions",
+                    body: ['name': 'Test Item Definition'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, itemDefinitionPost.status;
+            def itemDefinitionLocation = itemDefinitionPost.headers['Location'].value;
+            def itemDefinitionUid = itemDefinitionLocation.split('/')[5];
+
+            // Create Item Value Definition.
+            def itemValueDefinitionPost = client.post(
+                    path: "/${version}/definitions/${itemDefinitionUid}/values",
+                    body: ['valueDefinition': '45433E48B39F',
+                            'name': 'Test Item Value Definition',
+                            'path': 'test_item_value_definition',
+                            'value': 'true',
+                            'fromProfile': 'false',
+                            'fromData': 'true',
+                            'unit': 'kg',
+                            'perUnit': 'month',
+                            'apiVersions': '2.0'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, itemValueDefinitionPost.status;
+
+            // Create Data Category.
+            def dataCategoryPost = client.post(
+                    path: "/${version}/categories",
+                    body: [
+                            dataCategory: 'Root',
+                            itemDefinition: itemDefinitionUid,
+                            path: 'testPath',
+                            name: 'Test Name',
+                            wikiName: 'Test_Wiki_Name'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, dataCategoryPost.status;
+            def dataCategoryLocation = dataCategoryPost.headers['Location'].value;
+
+            // Check Data Category is available.
+            def dataCategoryGet1 = client.get(
+                    path: "${dataCategoryLocation};full",
+                    contentType: JSON);
+            assertEquals 200, dataCategoryGet1.status;
+            assertEquals "Test Item Definition", dataCategoryGet1.data.category.itemDefinition.name;
+
+            // Create Data Item.
+            def dataItemPost = client.post(
+                    path: "${dataCategoryLocation}/items",
+                    body: ['values.test_item_value_definition': 10],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+            assertEquals 201, dataItemPost.status;
+            def dataItemLocation = dataItemPost.headers['Location'].value;
+
+            // Check Data Item is available.
+            def dataItemGet = client.get(
+                    path: "${dataItemLocation};full",
+                    contentType: JSON);
+            assertEquals 200, dataItemGet.status;
+            assertEquals 1, dataItemGet.data.item.values.size();
+            assertTrue(['10'].sort() == dataItemGet.data.item.values.collect {it.value}.sort());
+            assertTrue(['test_item_value_definition'].sort() == dataItemGet.data.item.values.collect {it.path}.sort());
+
+            // Delete Item Definition.
+            def itemDefinitionDelete = client.delete(path: itemDefinitionLocation);
+            assertEquals 200, itemDefinitionDelete.status;
+            try {
+                client.get(path: itemDefinitionLocation);
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+
+            // Check Data Category is available and there is no Item Definition.
+            def dataCategoryGet2 = client.get(
+                    path: "${dataCategoryLocation};full",
+                    contentType: JSON);
+            assertEquals 200, dataCategoryGet2.status;
+            assertNull dataCategoryGet2.data.category.itemDefinition;
+
+            // Check Data Item is not available.
+            try {
+                client.get(path: dataItemLocation);
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+
+            // Delete Data Category.
+            def dataCategoryDelete = client.delete(path: dataCategoryLocation);
+            assertEquals 200, dataCategoryDelete.status;
+            try {
+                client.get(path: itemDefinitionLocation);
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
         }
     }
 
