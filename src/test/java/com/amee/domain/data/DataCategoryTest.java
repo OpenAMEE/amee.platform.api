@@ -30,13 +30,11 @@ public class DataCategoryTest {
     public void noneTrashed() {
 
         // A DataCategory should be considered trashed if:
-        // itself is trashed or its ItemDefinition is trashed or its parent DataCategory is trashed.
+        // itself is trashed or its parent DataCategory is trashed.
 
-        when(mockItemDef.isTrash()).thenReturn(false);
         when(mockParentDc.isTrash()).thenReturn(false);
         assertFalse("DataCategory should be active", dc.isTrash());
 
-        verify(mockItemDef).isTrash();
         verify(mockParentDc).isTrash();
     }
 
@@ -51,12 +49,5 @@ public class DataCategoryTest {
         when(mockParentDc.isTrash()).thenReturn(true);
         assertTrue("DataCategory should be trashed", dc.isTrash());
         verify(mockParentDc).isTrash();
-    }
-
-    @Test
-    public void itemDefTrashed() {
-        when(mockItemDef.isTrash()).thenReturn(true);
-        assertTrue("Linked ItemDefinition is trashed", dc.isTrash());
-        verify(mockItemDef).isTrash();
     }
 }

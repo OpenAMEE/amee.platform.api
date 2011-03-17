@@ -218,7 +218,11 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     }
 
     public ItemDefinition getItemDefinition() {
-        return itemDefinition;
+        if ((itemDefinition != null) && !itemDefinition.isTrash()) {
+            return itemDefinition;
+        } else {
+            return null;
+        }
     }
 
     public void setItemDefinition(ItemDefinition itemDefinition) {
@@ -264,8 +268,7 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     @Override
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH) ||
-                ((getDataCategory() != null) && getDataCategory().isTrash()) ||
-                ((getItemDefinition() != null) && getItemDefinition().isTrash());
+                ((getDataCategory() != null) && getDataCategory().isTrash());
     }
 
     public String getWikiDoc() {
