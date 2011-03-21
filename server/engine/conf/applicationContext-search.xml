@@ -8,7 +8,7 @@
 
     <bean id="searchService" class="com.amee.platform.search.SearchService"/>
 
-    <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryService"/>
+    <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryServiceImpl"/>
 
     <bean id="luceneService" class="com.amee.platform.search.LuceneServiceImpl"/>
 
