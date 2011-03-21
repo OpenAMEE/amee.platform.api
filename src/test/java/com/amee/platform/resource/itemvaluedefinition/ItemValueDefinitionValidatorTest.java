@@ -1,8 +1,8 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.PerUnitEditor;
@@ -10,7 +10,6 @@ import com.amee.platform.resource.UnitEditor;
 import com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionValidator_3_0_0;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,16 +23,16 @@ import static org.mockito.Mockito.when;
 
 public class ItemValueDefinitionValidatorTest {
 
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
     private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
+        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.amee.platform.resource.dataitem;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.IMetadataService;
 import com.amee.domain.Metadata;
+import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.data.DataItem;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class DataItemValidatorTest {
 
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
 
 
     @Test
@@ -29,8 +29,8 @@ public class DataItemValidatorTest {
     // @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
     }
 
     // @Test

@@ -1,11 +1,11 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
 import com.amee.platform.science.ReturnValues;
-import com.amee.service.item.DataItemService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculationResource.Renderer {
 
     @Autowired
-    protected DataItemService dataItemService;
+    protected IDataItemService dataItemService;
 
     private DataItem dataItem;
     private Element rootElem;

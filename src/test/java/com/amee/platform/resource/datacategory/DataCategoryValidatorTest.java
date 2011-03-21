@@ -1,12 +1,11 @@
 package com.amee.platform.resource.datacategory;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.v_3_3.DataCategoryValidator_3_3_0;
 import com.amee.service.data.DataService;
-import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,16 +19,16 @@ import static org.mockito.Mockito.when;
 public class DataCategoryValidatorTest {
 
     private DataService mockDataService;
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
     private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
+        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
         mockDataService = mock(DataService.class);
         ThreadBeanHolder.set(DataService.class, mockDataService);
     }

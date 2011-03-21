@@ -4,9 +4,9 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.DataItemValuesFilter;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.DataItem;
-import com.amee.service.item.DataItemValuesFilter;
 
 /**
  * A resource to show the history of values for a {@link DataItem} for a specific {@link ItemValueDefinition}.
@@ -22,7 +22,7 @@ public interface DataItemValueHistoryResource {
          * Handle a request.
          *
          * @param requestWrapper the current {@link RequestWrapper}
-         * @param filter         the {@link com.amee.service.item.DataItemValuesFilter} for this request
+         * @param filter         the {@link com.amee.domain.DataItemValuesFilter} for this request
          */
         public void handle(RequestWrapper requestWrapper, DataItemValuesFilter filter);
 

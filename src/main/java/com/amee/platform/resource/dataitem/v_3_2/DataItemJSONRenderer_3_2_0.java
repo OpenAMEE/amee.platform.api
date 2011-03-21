@@ -2,12 +2,12 @@ package com.amee.platform.resource.dataitem.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
-import com.amee.service.item.DataItemService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
 
     @Autowired
-    protected DataItemService dataItemService;
+    protected IDataItemService dataItemService;
 
     protected DataItem dataItem;
     protected JSONObject rootObj;
