@@ -27,6 +27,9 @@
     <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
+    <!-- An aspect to support the perf4j @Profiled annotation.  -->
+    <bean id="timingAspect" class="org.perf4j.log4j.aop.TimingAspect"/>
+
     <!-- TransactionController Implementation. -->
     <bean id="transactionController" class="com.amee.persist.TransactionControllerImpl"/>
 
@@ -87,5 +90,11 @@
 
     <!-- A service only used in V3 for managing values in ThreadLocals. -->
     <bean id="transactionThreadBeanManager" class="com.amee.service.TransactionThreadBeanManager"/>
+
+    <!-- A functional implementation of LocaleServiceDAO. -->
+    <!--<bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAOImpl"/>-->
+
+    <!-- A no-op implementation of LocaleServiceDAO. -->
+    <bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAONoOpImpl"/>
 
 </beans>
