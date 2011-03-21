@@ -1,8 +1,8 @@
 package com.amee.domain.data;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,16 +26,16 @@ public class ItemDefinitionTest {
     public final static List<String> MOCK_USAGES_LIST =
             new ArrayList<String>(Arrays.asList("usage_1", "usage_2", "usage_3"));
 
-    private IMetadataService mockMetadataService;
-    private ILocaleService localeService;
+    private MetadataService mockMetadataService;
+    private LocaleService localeService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
-        localeService = mock(ILocaleService.class);
-        ThreadBeanHolder.set(ILocaleService.class, localeService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
+        localeService = mock(LocaleService.class);
+        ThreadBeanHolder.set(LocaleService.class, localeService);
     }
 
     @Test

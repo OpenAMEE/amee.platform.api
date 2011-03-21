@@ -282,12 +282,12 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
     }
 
     @Transient
-    protected IMetadataService getMetadataService() {
-        return ThreadBeanHolder.get(IMetadataService.class);
+    protected MetadataService getMetadataService() {
+        return ThreadBeanHolder.get(MetadataService.class);
     }
 
     @Transient
-    protected ILocaleService getLocaleService() {
-        return ThreadBeanHolder.get(ILocaleService.class);
+    protected LocaleService getLocaleService() {
+        return ThreadBeanHolder.get(LocaleService.class);
     }
 }

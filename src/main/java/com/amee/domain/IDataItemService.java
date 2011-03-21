@@ -1,7 +1,9 @@
 package com.amee.domain;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
@@ -48,6 +50,10 @@ public interface IDataItemService extends IItemService {
     public Date getDataItemsModified(DataCategory dataCategory);
 
     public boolean isDataItemUniqueByPath(DataItem dataItem);
+
+    public boolean isDataItemValueUniqueByStartDate(BaseDataItemValue itemValue);
+
+    public ResultsWrapper<BaseDataItemValue> getAllItemValues(DataItemValuesFilter filter);
 
     public void persist(DataItem dataItem);
 

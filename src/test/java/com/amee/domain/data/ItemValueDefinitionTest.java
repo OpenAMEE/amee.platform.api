@@ -2,7 +2,7 @@ package com.amee.domain.data;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.MetadataService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,15 +17,15 @@ public class ItemValueDefinitionTest {
     public final static String MOCK_CONFIGURATION_WITH_USAGES =
             "{\"usages\":[{\"name\":\"usage_1\",\"type\":\"compulsory\"},{\"name\":\"usage_2\",\"type\":\"optional\"}]}";
 
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
     private ItemValueDefinition itemValueDef;
     private ItemDefinition mockItemDef;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         itemValueDef = new ItemValueDefinition();
         mockItemDef = mock(ItemDefinition.class);
         itemValueDef.setItemDefinition(mockItemDef);
