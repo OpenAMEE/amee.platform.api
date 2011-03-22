@@ -13,16 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-public abstract class ItemValueDefinitionAcceptor implements ResourceAcceptor {
+public abstract class ItemValueDefinitionAcceptor extends ItemValueDefinitionBaseAcceptor implements ResourceAcceptor {
 
     @Autowired
     protected DefinitionService definitionService;
 
     @Autowired
-    private ResourceAuthorizationService resourceAuthorizationService;
+    protected ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
-    private ResourceService resourceService;
+    protected ResourceService resourceService;
 
     @Override
     @AMEETransaction

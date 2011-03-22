@@ -16,7 +16,6 @@ import com.amee.domain.tag.Tag;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
-import com.amee.service.item.DataItemService;
 import com.amee.service.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,7 +33,7 @@ public class ResourceServiceImpl implements ResourceService {
     private DefinitionService definitionService;
 
     @Autowired
-    private DataItemService dataItemService;
+    private IDataItemService dataItemService;
 
     @Autowired
     private TagService tagService;

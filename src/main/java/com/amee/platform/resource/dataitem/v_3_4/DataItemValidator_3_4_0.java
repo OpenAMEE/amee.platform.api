@@ -3,12 +3,12 @@ package com.amee.platform.resource.dataitem.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemTextValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemValueEditor;
-import com.amee.service.item.DataItemService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
 
     @Autowired
-    protected DataItemService dataItemService;
+    protected IDataItemService dataItemService;
 
     protected DataItem dataItem;
     protected Set<String> allowedFields = new HashSet<String>();

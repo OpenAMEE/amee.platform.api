@@ -5,6 +5,8 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.DataItemValuesFilter;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -13,8 +15,6 @@ import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
-import com.amee.service.item.DataItemService;
-import com.amee.service.item.DataItemValuesFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import java.util.Date;
 public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Builder {
 
     @Autowired
-    private DataItemService dataItemService;
+    private IDataItemService dataItemService;
 
     @Autowired
     private ResourceService resourceService;

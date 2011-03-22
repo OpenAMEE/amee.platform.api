@@ -3,16 +3,14 @@ package com.amee.platform.resource.itemvaluedefinition.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
-import com.amee.base.resource.ValidationResult;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.data.ItemValueUsage;
 import com.amee.platform.resource.ResourceService;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionValidationHelper;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionBaseAcceptor;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueUsageValidationHelper;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
 import org.jdom.Element;
@@ -23,27 +21,22 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitionsResource.DOMAcceptor {
+public class ItemValueDefinitionsDOMAcceptor_3_4_0 extends ItemValueDefinitionBaseAcceptor implements ItemValueDefinitionsResource.DOMAcceptor {
 
     @Autowired
-    DefinitionService definitionService;
+    private DefinitionService definitionService;
 
     @Autowired
-    ResourceAuthorizationService resourceAuthorizationService;
+    private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
     private ResourceService resourceService;
-
-    @Autowired
-    private ItemValueDefinitionValidationHelper validationHelper;
-
-    @Autowired
-    private ItemValueUsageValidationHelper itemValueUsageValidationHelper;
 
     @Override
     @AMEETransaction
@@ -71,7 +64,7 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
             }
 
             ItemValueDefinition itemValueDefinition = new ItemValueDefinition(itemDefinition);
-            return handle(requestWrapper, itemValueDefinition, parameters);
+            return handle(requestWrapper, rootElem, parameters, itemValueDefinition);
         } else {
 
             // Unexpected node.
@@ -80,18 +73,27 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
         }
     }
 
-    protected Object handle(RequestWrapper requestWrapper, ItemValueDefinition itemValueDefinition, Map<String, String> parameters) {
-        validationHelper.setItemValueDefinition(itemValueDefinition);
-        if (validationHelper.isValid(parameters)) {
+    protected Object handle(
+            RequestWrapper requestWrapper,
+            Element rootElem,
+            Map<String, String> parameters,
+            ItemValueDefinition itemValueDefinition) {
+
+        // Validate the ItemValueDefinition.
+        ItemValueDefinitionResource.ItemValueDefinitionValidator validator = getItemValueDefinitionValidator(requestWrapper);
+        validator.setObject(itemValueDefinition);
+        validator.initialise();
+        if (validator.isValid(parameters)) {
+
+            // Persist the ItemValueDefinition (do this now so other entities below can use the IVD ID).
+            definitionService.persist(itemValueDefinition);
 
             // ItemValueDefinition validation passed.
             // Handle and validate ItemValueUsages.
-            handleItemValueUsages(requestWrapper.getBodyAsDocument().getRootElement(), itemValueDefinition);
+            handleItemValueUsages(requestWrapper, rootElem, itemValueDefinition);
 
             // Add the ItemValueDefinition to the ItemDefinition
             itemValueDefinition.getItemDefinition().add(itemValueDefinition);
-
-            definitionService.persist(itemValueDefinition);
 
             // Invalidate the ItemDefinition
             definitionService.invalidate(itemValueDefinition.getItemDefinition());
@@ -101,58 +103,7 @@ public class ItemValueDefinitionsDOMAcceptor_3_4_0 implements ItemValueDefinitio
                     "/values/" + itemValueDefinition.getUid();
             return ResponseHelper.getOK(requestWrapper, location);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
-        }
-    }
-
-    // TODO: pull up
-    protected void handleItemValueUsages(Element rootElement, ItemValueDefinition itemValueDefinition) {
-        // Do we have ItemValueUsages to parse?
-        Element ItemValueUsagesElem = rootElement.getChild("Usages");
-        if (ItemValueUsagesElem != null) {
-            // Create collections for ItemValueUsages and ValidationResults.
-            Set<ItemValueUsage> itemValueUsages = new HashSet<ItemValueUsage>();
-            List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
-            // Parse all ItemValueUsages.
-            for (Object o : ItemValueUsagesElem.getChildren()) {
-                Element childElem = (Element) o;
-                if (childElem.getName().equals("Usage")) {
-                    // Create parameters map containing the name and type values.
-                    Map<String, String> parameters = new HashMap<String, String>();
-                    Element nameElem = childElem.getChild("Name");
-                    if (nameElem != null) {
-                        parameters.put("name", nameElem.getText());
-                    }
-                    Element typeElem = childElem.getChild("Type");
-                    if (typeElem != null) {
-                        parameters.put("type", typeElem.getText());
-                    }
-                    // Create and validate ItemValueUsage object.
-                    ItemValueUsage itemValueUsage = new ItemValueUsage();
-                    itemValueUsageValidationHelper.setItemValueUsage(itemValueUsage);
-                    if (itemValueUsageValidationHelper.isValid(parameters)) {
-                        // Validation passed.
-                        if (!itemValueUsages.add(itemValueUsage)) {
-                            // Should not have more than one equivalent ItemValueUsage.
-                            throw new ValidationException();
-                        }
-                    } else {
-                        // Validation failed.
-                        validationResults.add(itemValueUsageValidationHelper.getValidationResult());
-                    }
-                } else {
-                    // Unexpected node found.
-                    throw new ValidationException();
-                }
-            }
-            // Any validation errors?
-            if (validationResults.isEmpty()) {
-                // Validation passed.
-                itemValueDefinition.setItemValueUsages(itemValueUsages);
-            } else {
-                // Validation failed.
-                throw new ValidationException(validationResults);
-            }
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 }

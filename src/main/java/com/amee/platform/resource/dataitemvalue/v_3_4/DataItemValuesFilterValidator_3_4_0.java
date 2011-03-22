@@ -3,11 +3,11 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
+import com.amee.domain.DataItemValuesFilter;
 import com.amee.domain.IDataItemService;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.platform.science.StartEndDate;
-import com.amee.service.item.DataItemValuesFilter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

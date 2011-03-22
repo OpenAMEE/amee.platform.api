@@ -1,15 +1,15 @@
 package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.platform.resource.PerUnitEditor;
 import com.amee.platform.resource.UnitEditor;
+import com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionValidator_3_0_0;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,22 +23,25 @@ import static org.mockito.Mockito.when;
 
 public class ItemValueDefinitionValidatorTest {
 
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
     private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
+        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
     }
 
     @Test
     public void testValid() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
         ItemValueDefinition good = getItemValueDefinition("test");
+        validator.setObject(good);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(good, "test"))
                 .thenReturn("test");
@@ -71,8 +74,10 @@ public class ItemValueDefinitionValidatorTest {
 
     @Test
     public void testPathBadChars() {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
         ItemValueDefinition bad = getItemValueDefinition("test");
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "test"))
                 .thenReturn("test");
@@ -92,8 +97,10 @@ public class ItemValueDefinitionValidatorTest {
 
     @Test
     public void testBadUnit() throws Exception {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
         ItemValueDefinition bad = getItemValueDefinition("test");
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "test"))
                 .thenReturn("test");
@@ -111,8 +118,10 @@ public class ItemValueDefinitionValidatorTest {
 
     @Test
     public void testBadPerUnit() throws Exception {
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
         ItemValueDefinition bad = getItemValueDefinition("test");
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "test"))
                 .thenReturn("test");
@@ -151,7 +160,7 @@ public class ItemValueDefinitionValidatorTest {
         }
         ItemValueDefinition bad = getItemValueDefinition(name);
         when(mockLocaleService.getLocaleNameValue(bad, name))
-            .thenReturn(name);
+                .thenReturn(name);
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -162,7 +171,9 @@ public class ItemValueDefinitionValidatorTest {
         bean.setPropertyValue(field, lessThanMin);
 
         // Validate the object
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
         assertEquals("Got unexpected field error", field, errorsBad.getFieldError().getField());
@@ -182,7 +193,7 @@ public class ItemValueDefinitionValidatorTest {
         }
         ItemValueDefinition bad = getItemValueDefinition(name);
         when(mockLocaleService.getLocaleNameValue(bad, name))
-            .thenReturn(name);
+                .thenReturn(name);
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -193,7 +204,9 @@ public class ItemValueDefinitionValidatorTest {
         bean.setPropertyValue(field, greaterThanMax);
 
         // Validate the object
-        ItemValueDefinitionValidator validator = new ItemValueDefinitionValidator();
+        ItemValueDefinitionValidator_3_0_0 validator = new ItemValueDefinitionValidator_3_0_0();
+        validator.setObject(bad);
+        validator.initialise();
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
         assertEquals("Got unexpected field error", field, errorsBad.getFieldError().getField());

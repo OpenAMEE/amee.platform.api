@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -12,7 +13,6 @@ import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.invalidation.InvalidationService;
-import com.amee.service.item.DataItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class DataItemValueRemover_3_4_0 implements DataItemValueResource.Remover
     private ResourceService resourceService;
 
     @Autowired
-    private DataItemService dataItemService;
+    private IDataItemService dataItemService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;

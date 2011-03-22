@@ -12,7 +12,6 @@ import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitem.DataItemValueEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 import com.amee.platform.science.StartEndDate;
-import com.amee.service.item.DataItemService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
     private final Log log = LogFactory.getLog(getClass());
 
     @Autowired
-    protected DataItemService dataItemService;
+    protected IDataItemService dataItemService;
 
     protected BaseDataItemValue dataItemValue;
     protected Set<String> allowedFields = new HashSet<String>();

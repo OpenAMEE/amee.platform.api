@@ -6,13 +6,13 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.invalidation.InvalidationService;
-import com.amee.service.item.DataItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
     private ResourceService resourceService;
 
     @Autowired
-    private DataItemService dataItemService;
+    private IDataItemService dataItemService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;

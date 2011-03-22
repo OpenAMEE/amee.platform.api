@@ -10,15 +10,11 @@ import org.springframework.stereotype.Service;
 @Since("3.0.0")
 public class DataCategoryValidator_3_0_0 extends DataCategoryValidator_3_3_0 {
 
-    public DataCategoryValidator_3_0_0() {
-        super();
-    }
-
     /**
      * Overrides the super-class method to remove the history field.
      */
     @Override
-    protected void initialise() {
+    public void initialise() {
         addName();
         addPath();
         addWikiName();

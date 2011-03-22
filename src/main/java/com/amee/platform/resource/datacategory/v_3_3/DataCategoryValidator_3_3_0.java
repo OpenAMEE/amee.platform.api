@@ -4,6 +4,9 @@ import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemDefinition;
+import com.amee.platform.resource.DataCategoryEditor;
+import com.amee.platform.resource.ItemDefinitionEditor;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.auth.AuthenticationService;
 import com.amee.service.auth.ResourceAuthorizationService;
@@ -12,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Scope("prototype")
@@ -31,12 +37,20 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
+    @Autowired
+    protected DataCategoryEditor dataCategoryEditor;
+
+    @Autowired
+    protected ItemDefinitionEditor itemDefinitionEditor;
+
+    private DataCategory dataCategory;
+    private Set<String> allowedFields = new HashSet<String>();
+
     public DataCategoryValidator_3_3_0() {
         super();
-        initialise();
     }
 
-    protected void initialise() {
+    public void initialise() {
         addName();
         addPath();
         addWikiName();
@@ -45,13 +59,11 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
         addAuthority();
         addHistory();
         addDataCategory();
-    }
-
-    public boolean supports(Class clazz) {
-        return DataCategory.class.isAssignableFrom(clazz);
+        addItemDefinition();
     }
 
     protected void addName() {
+        allowedFields.add("name");
         add(new ValidationSpecification()
                 .setName("name")
                 .setMinSize(DataCategory.NAME_MIN_SIZE)
@@ -60,6 +72,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addPath() {
+        allowedFields.add("path");
         add(new ValidationSpecification()
                 .setName("path")
                 .setMinSize(DataCategory.PATH_MIN_SIZE)
@@ -84,6 +97,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addWikiName() {
+        allowedFields.add("wikiName");
         add(new ValidationSpecification()
                 .setName("wikiName")
                 .setMinSize(DataCategory.WIKI_NAME_MIN_SIZE)
@@ -107,6 +121,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addWikiDoc() {
+        allowedFields.add("wikiDoc");
         add(new ValidationSpecification()
                 .setName("wikiDoc")
                 .setMaxSize(DataCategory.WIKI_DOC_MAX_SIZE)
@@ -115,6 +130,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addProvenance() {
+        allowedFields.add("provenance");
         add(new ValidationSpecification()
                 .setName("provenance")
                 .setMaxSize(DataCategory.PROVENANCE_MAX_SIZE)
@@ -123,6 +139,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addAuthority() {
+        allowedFields.add("authority");
         add(new ValidationSpecification()
                 .setName("authority")
                 .setMaxSize(DataCategory.AUTHORITY_MAX_SIZE)
@@ -131,6 +148,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addHistory() {
+        allowedFields.add("history");
         add(new ValidationSpecification()
                 .setName("history")
                 .setMaxSize(DataCategory.HISTORY_MAX_SIZE)
@@ -139,6 +157,8 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     }
 
     protected void addDataCategory() {
+        allowedFields.add("dataCategory");
+        add(DataCategory.class, "dataCategory", dataCategoryEditor);
         add(new ValidationSpecification()
                 .setName("dataCategory")
                 .setAllowEmpty(false)
@@ -167,6 +187,40 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
                             }
                         })
         );
+    }
+
+    protected void addItemDefinition() {
+        allowedFields.add("itemDefinition");
+        add(ItemDefinition.class, "itemDefinition", itemDefinitionEditor);
+        add(new ValidationSpecification()
+                .setName("itemDefinition")
+                .setAllowEmpty(true)
+        );
+    }
+
+    @Override
+    public String getName() {
+        return "dataCategory";
+    }
+
+    @Override
+    public boolean supports(Class clazz) {
+        return DataCategory.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public String[] getAllowedFields() {
+        return allowedFields.toArray(new String[]{});
+    }
+
+    @Override
+    public DataCategory getObject() {
+        return dataCategory;
+    }
+
+    @Override
+    public void setObject(DataCategory dataCategory) {
+        this.dataCategory = dataCategory;
     }
 
     /**

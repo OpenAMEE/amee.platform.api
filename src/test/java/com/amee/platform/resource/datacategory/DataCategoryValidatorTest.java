@@ -1,12 +1,11 @@
 package com.amee.platform.resource.datacategory;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.ILocaleService;
-import com.amee.domain.IMetadataService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.platform.resource.datacategory.v_3_3.DataCategoryValidator_3_3_0;
 import com.amee.service.data.DataService;
-import com.amee.service.locale.LocaleService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,16 +19,16 @@ import static org.mockito.Mockito.when;
 public class DataCategoryValidatorTest {
 
     private DataService mockDataService;
-    private IMetadataService mockMetadataService;
+    private MetadataService mockMetadataService;
     private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(IMetadataService.class);
-        ThreadBeanHolder.set(IMetadataService.class, mockMetadataService);
+        mockMetadataService = mock(MetadataService.class);
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(ILocaleService.class, mockLocaleService);
+        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
         mockDataService = mock(DataService.class);
         ThreadBeanHolder.set(DataService.class, mockDataService);
     }
@@ -37,15 +36,17 @@ public class DataCategoryValidatorTest {
     @Test
     public void testValid() {
 
-        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
-        validator.setDataService(mockDataService);
-
         DataCategory root = new DataCategory();
         root.setPath("");
         root.setWikiName("Root");
         root.setName("Root");
 
         DataCategory good = new DataCategory();
+
+        DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
+        validator.setDataService(mockDataService);
+        validator.setObject(good);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(good, "name"))
                 .thenReturn("name");
@@ -72,10 +73,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testNameGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         String nameGreaterThanMax = RandomStringUtils.random(DataCategory.NAME_MAX_SIZE + 1);
 
@@ -93,10 +96,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testNameLessThanMin() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         String nameLessThanMin = RandomStringUtils.random(DataCategory.NAME_MIN_SIZE - 1);
 
@@ -114,10 +119,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testPathGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -134,10 +141,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testPathBadChars() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -154,10 +163,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -174,10 +185,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameLessThanMin() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -194,10 +207,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiNameBadChars() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -214,10 +229,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testWikiDocGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -234,10 +251,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testProvenanceGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -254,10 +273,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testAuthorityGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");
@@ -274,10 +295,12 @@ public class DataCategoryValidatorTest {
     @Test
     public void testHistoryGreaterThanMax() {
 
+        DataCategory bad = new DataCategory();
+
         DataCategoryResource.DataCategoryValidator validator = new DataCategoryValidator_3_3_0();
         validator.setDataService(mockDataService);
-
-        DataCategory bad = new DataCategory();
+        validator.setObject(bad);
+        validator.initialise();
 
         when(mockLocaleService.getLocaleNameValue(bad, "name"))
                 .thenReturn("name");

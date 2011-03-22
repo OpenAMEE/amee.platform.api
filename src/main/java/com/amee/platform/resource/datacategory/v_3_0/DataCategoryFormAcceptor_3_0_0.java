@@ -48,13 +48,14 @@ public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor impleme
         checkDataCategoryIsNotRoot(dataCategory);
 
         // Handle the DataCategory update (entity updated via validation binding).
-        DataCategoryResource.DataCategoryValidationHelper validationHelper = getValidationHelper(requestWrapper);
-        validationHelper.setDataCategory(dataCategory);
-        if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+        DataCategoryResource.DataCategoryValidator validator = getValidator(requestWrapper);
+        validator.setObject(dataCategory);
+        validator.initialise();
+        if (validator.isValid(requestWrapper.getFormParameters())) {
             invalidationService.add(dataCategory);
             return ResponseHelper.getOK(requestWrapper);
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 

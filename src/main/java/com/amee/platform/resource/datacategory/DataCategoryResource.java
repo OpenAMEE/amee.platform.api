@@ -50,24 +50,22 @@ public interface DataCategoryResource {
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {
-        public DataCategoryResource.DataCategoryValidationHelper getValidationHelper(RequestWrapper requestWrapper);
+        public DataCategoryResource.DataCategoryValidator getValidator(RequestWrapper requestWrapper);
     }
 
     public static interface DataCategoryValidator extends Validator {
-        public void setDataService(DataService dataService);
-    }
 
-    public static interface DataCategoryValidationHelper {
+        public void initialise();
 
-        public DataCategory getDataCategory();
+        public DataCategory getObject();
 
-        public void setDataCategory(DataCategory DataCategory);
+        public void setObject(DataCategory DataCategory);
 
         public boolean isValid(Map<String, String> queryParameters);
 
         public ValidationResult getValidationResult();
 
-        public void setValidator(DataCategoryResource.DataCategoryValidator validator);
+        public void setDataService(DataService dataService);
     }
 
     public static interface Remover extends ResourceRemover {

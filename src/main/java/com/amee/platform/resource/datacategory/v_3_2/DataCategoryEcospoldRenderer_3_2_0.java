@@ -2,6 +2,9 @@ package com.amee.platform.resource.datacategory.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MediaTypeNotSupportedException;
+import com.amee.domain.IDataItemService;
+import com.amee.domain.LocaleService;
+import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
@@ -9,9 +12,6 @@ import com.amee.domain.item.data.DataItem;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.service.data.DataService;
-import com.amee.service.item.DataItemService;
-import com.amee.service.locale.LocaleService;
-import com.amee.service.metadata.MetadataService;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -44,7 +44,7 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
     private DataService dataService;
 
     @Autowired
-    private DataItemService dataItemService;
+    private IDataItemService dataItemService;
 
     @Autowired
     private MetadataService metadataService;

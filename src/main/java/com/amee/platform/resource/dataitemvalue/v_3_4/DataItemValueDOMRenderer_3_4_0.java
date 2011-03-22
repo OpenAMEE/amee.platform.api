@@ -7,7 +7,6 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
-import com.amee.service.item.DataItemService;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class DataItemValueDOMRenderer_3_4_0 implements DataItemValueResource.Renderer {
 
     @Autowired
-    protected DataItemService dataItemService;
+    protected IDataItemService dataItemService;
 
     protected BaseDataItemValue dataItemValue;
     protected Element rootElem;

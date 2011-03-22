@@ -2,8 +2,8 @@ package com.amee.platform.resource.dataitemvalue;
 
 import com.amee.base.resource.*;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.DataItemValuesFilter;
 import com.amee.domain.item.data.DataItem;
-import com.amee.service.item.DataItemValuesFilter;
 
 import java.util.Date;
 import java.util.Map;
