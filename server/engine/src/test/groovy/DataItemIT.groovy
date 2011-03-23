@@ -1,5 +1,4 @@
 import groovyx.net.http.HttpResponseException
-import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -54,7 +53,8 @@ class DataItemIT extends BaseApiTest {
      * <li>path
      * <li>wikiDoc
      * <li>provenance
-     * <li>values.{path}* </ul>
+     * <li>values.{path}*
+     * </ul>
      *
      * The 'values.{path}' parameter can be used to set Data Item Values that are drill downs
      * or the first in a historical series.

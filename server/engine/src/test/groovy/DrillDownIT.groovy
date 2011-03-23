@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
 /**
- * Tests for the Data Category drill down API.
+ * Tests for the Data Category drill down API. This API has been available since version 3.3.
  */
 class DrillDownIT extends BaseApiTest {
 

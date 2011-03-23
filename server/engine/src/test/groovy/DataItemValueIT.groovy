@@ -4,8 +4,36 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
+/**
+ * Tests for the Data Item Value API. This API has been available since version 3.4.
+ *
+ * Data Item Values for a particular Item Value Definition can form a history. The values at the epoch
+ * are automatically created, can be updated but cannot be removed. It's possible to create, modify and remove
+ * values for any point after the epoch and up to the end of the epoch. It's not possible to have two values
+ * at the same point in a history. The current time resolution is down to the second. The epoch
+ * is '1970-01-01T00:00:00Z' and the end of the epoch is '2038-01-19T03:14:00Z'.
+ */
 class DataItemValueIT extends BaseApiTest {
 
+    /**
+     * Tests for creation, fetch and deletion of a historical Data Item Value using JSON responses.
+     *
+     * Create a new Data Item Value by POSTing to '/categories/{UID|wikiName}/items/{UID}/values/{path}' where
+     * the second UID is for the Data Item and the path is the Item Value Definition path.
+     *
+     * Supported POST parameters are:
+     *
+     * <ul>
+     * <li>value
+     * <li>startDate
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Delete (TRASH) a Data Item Value by sending a DELETE request
+     * to '/categories/{UID|wikiName}/items/{UID}/values/{path}/{UID}'. The last UID is the UID of the Data Item
+     * VAlue.
+     */
     @Test
     void createDataItemValueJson() {
         versions.each { version -> createDataItemValueJson(version) }
@@ -65,6 +93,11 @@ class DataItemValueIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests for creation, fetch and deletion of a historical Data Item Value using XML responses.
+     *
+     * See notes for createDataItemValueJson above.
+     */
     @Test
     void createDataItemValueXml() {
         versions.each { version -> createDataItemValueXml(version) }
@@ -123,6 +156,22 @@ class DataItemValueIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests for modification of a Data Item Value using JSON responses.
+     *
+     * Modify a new Data Item Value by PUTing to '/categories/{UID|wikiName}/items/{UID}/values/{path}/{UID}' where
+     * the second UID is for the Data Item, the path is the Item Value Definition path and the last UID is the
+     * Data Item Value UID.
+     *
+     * Supported PUT parameters are:
+     *
+     * <ul>
+     * <li>value
+     * <li>startDate (only supported for historical values)
+     * </ul>
+     *
+     * NOTE: For detailed rules on these parameters see the validation tests below.
+     */
     @Test
     void modifyDataItemValueJson() {
         versions.each { version -> modifyDataItemValueJson(version) }
@@ -165,6 +214,11 @@ class DataItemValueIT extends BaseApiTest {
         }
     }
 
+    /**
+     * Tests for modification of a Data Item Value using XML responses.
+     *
+     * See notes for createDataItemValueJson above.
+     */
     @Test
     void modifyDataItemValueXml() {
         versions.each { version -> modifyDataItemValueXml(version) }
@@ -264,7 +318,14 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     /**
-     * Tests fetching DataItemValues from the DataItem and DataItem values resource.
+     * Tests fetching Data Item Values from the Data Item and Data Item Values resource.
+     *
+     * GET a list of Data Item Values from '/categories/{UID|wikiName}/items/{UID}' for a lightweight value
+     * list along with full details on the Data Item or from '/categories/{UID|wikiName}/items/{UID}/values' for
+     * full Data Item Value details.
+     *
+     * The list of values will by default only include values applicable NOW. This can be altered using the startDate
+     * parameter, see the various tests above for examples of this.
      *
      * @param uid of the expected historical DataItemValue
      * @param value of the expected historical DataItemValue
@@ -392,7 +453,22 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     /**
-     * Test fetching item value history with a result limit for filtering.
+     * Tests fetching Data Item Values for a particular Item Value Definition. A value at the epoch will always be
+     * available but the primary purpose of this resource is to fetch multiple values that form a history.
+     *
+     * GET the list of values from '/categories/{UID|wikiName}/items/{UID}/values/{path}' where
+     * the second UID is for the Data Item and the path is the Item Value Definition path.
+     *
+     * Supported GET parameters are:
+     *
+     * <ul>
+     * <li>startDate
+     * <li>endDate
+     * <li>resultStart
+     * <li>resultLimit
+     * </ul>
+     *
+     * See the various tests just above for examples on how to use these.
      */
     @Test
     void getDataItemValueHistoryWithJustResultLimit() {
@@ -509,6 +585,15 @@ class DataItemValueIT extends BaseApiTest {
         getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4');
     }
 
+    /**
+     * Tests fetching a single Data Item Value.
+     *
+     * GET the Data Item Value from '/categories/{UID|wikiName}/items/{UID}/values/{path}/{identifier}' where
+     * the second UID is for the Data Item, the path is the Item Value Definition path and the identifier is for
+     * selecting the Data Item Value.
+     *
+     * See the various tests just above for examples on how to use the identifier.
+     */
     def getDataItemValue(uid, value, startDate, path) {
         versions.each { version -> getDataItemValueJson(version, uid, value, startDate, path) }
         versions.each { version -> getDataItemValueXml(version, uid, value, startDate, path) }
