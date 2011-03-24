@@ -1,11 +1,15 @@
 package com.amee.base.domain;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
+/**
+ * An annotation to mark a Spring bean as being available since a particular API version number.
+ * <p/>
+ *
+ * @See Until
+ * @see Version
+ * @see Versions
+ */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

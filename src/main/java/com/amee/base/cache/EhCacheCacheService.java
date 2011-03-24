@@ -7,6 +7,9 @@ import net.sf.ehcache.constructs.blocking.BlockingCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * An implementation of {@link CacheService} wrapping the EhCache library.
+ */
 public class EhCacheCacheService implements CacheService {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -37,7 +40,6 @@ public class EhCacheCacheService implements CacheService {
         log.debug("remove() - cache: " + region + " key: " + key);
         getBlockingCache(region).remove(key);
     }
-
 
     private BlockingCache getBlockingCache(String cacheName) {
         CacheManager cacheManager = getCacheManager();

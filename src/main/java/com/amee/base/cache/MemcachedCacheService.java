@@ -7,6 +7,9 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+/**
+ * An implementation of {@link CacheService} for Memcached. This is experimental and has never been used fully.
+ */
 public class MemcachedCacheService implements CacheService {
 
     private final Log log = LogFactory.getLog(getClass());

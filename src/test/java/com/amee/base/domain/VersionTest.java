@@ -33,6 +33,7 @@ public class VersionTest {
     @Test
     public void shouldBeEqual() {
         assertEquals(new Version("1"), new Version("1"));
+        assertEquals(new Version("1"), new Version("1.x"));
         assertEquals(new Version("01"), new Version("01"));
         assertEquals(new Version("01"), new Version("1"));
         assertEquals(new Version("1.1"), new Version("1.1"));
@@ -40,6 +41,9 @@ public class VersionTest {
         assertEquals(new Version("10"), new Version("10"));
         assertEquals(new Version("10.20"), new Version("10.20"));
         assertEquals(new Version("1.2.3"), new Version("1.2.3"));
+        assertEquals(new Version("1.x"), new Version("1.x.x"));
+        assertEquals(new Version("x"), new Version("x.x"));
+        assertEquals(new Version("x.x"), new Version("x.x.x"));
     }
 
     @Test

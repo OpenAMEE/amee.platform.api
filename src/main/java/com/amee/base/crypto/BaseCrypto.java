@@ -3,29 +3,39 @@ package com.amee.base.crypto;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class BaseCrypto {
+/**
+ * Provides a collection of String encryption utility methods. Methods cover encryption, decryption and key and salt
+ * generation and file management.
+ * <p/>
+ * Supports encryption with AES using CBC mode and PKCS #5 padding. Strings are encoded into UTF-8 before encryption
+ * and decoded after decryption. There are no String length or content limitations.
+ * <p/>
+ * All methods are static and this class is abstract, no instances are expected.
+ * <p/>
+ * The {@link InternalCrypto} sub-class provides extra utility functions.
+ */
+public abstract class BaseCrypto {
 
     public static final int KEY_SIZE = 256;
 
+    /**
+     * Encrypt the supplied String and return it.
+     *
+     * @param secretKeySpec The {@link SecretKeySpec} to use
+     * @param iv            The {@link IvParameterSpec to use}
+     * @param toBeEncrypted The String to be encrypted
+     * @return The encrypted String
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     protected static String encrypt(SecretKeySpec secretKeySpec, IvParameterSpec iv, String toBeEncrypted) throws CryptoException {
         try {
             byte[] data = toBeEncrypted.getBytes("UTF-8");
@@ -51,6 +61,15 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Decrypt the supplied String and return it.
+     *
+     * @param secretKeySpec The {@link SecretKeySpec} to use
+     * @param iv            The {@link IvParameterSpec to use}
+     * @param toBeDecrypted The String to be decrypted
+     * @return The decrypted String.
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     protected static String decrypt(SecretKeySpec secretKeySpec, IvParameterSpec iv, String toBeDecrypted) throws CryptoException {
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -76,10 +95,24 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Returns, in Base64 String form, a new AES {@link SecretKey} with a key size
+     * of {@link com.amee.base.crypto.BaseCrypto#KEY_SIZE}.
+     *
+     * @return The a {@link SecretKey} key as a String
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static String getNewKeyAsString() throws CryptoException {
         return getKeyAsString(getNewKey());
     }
 
+    /**
+     * Returns a new AES {@link SecretKey} with a key size
+     * of {@link com.amee.base.crypto.BaseCrypto#KEY_SIZE}.
+     *
+     * @return A new {@link SecretKey}
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     protected static SecretKey getNewKey() throws CryptoException {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
@@ -90,6 +123,13 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Converts the supplied {@link SecretKey} into Base64 String form. Will internally use an AES
+     * configured {@link SecretKeySpec}.
+     *
+     * @param key The {@link SecretKey} to convert to a String
+     * @return The {@link SecretKey} in String form.
+     */
     protected static String getKeyAsString(SecretKey key) {
         // convert key to byte array
         SecretKeySpec secretKeySpec = new SecretKeySpec(key.getEncoded(), "AES");
@@ -98,6 +138,14 @@ public class BaseCrypto {
         return new String(Base64.encodeBase64(keyAsBytes));
     }
 
+    /**
+     * Save the supplied {@link SecretKey} to the supplied File. Will internally use an AES
+     * configured {@link SecretKeySpec}.
+     *
+     * @param key  {@link SecretKey} to save
+     * @param file File to save the {@link SecretKey} to
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static void saveKeyToFile(SecretKey key, File file) throws CryptoException {
         try {
             // convert key to byte array
@@ -112,6 +160,13 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Loads a {@link SecretKeySpec} from the File.
+     *
+     * @param file File to load the {@link SecretKeySpec} from
+     * @return The {@link SecretKeySpec} loaded from the File
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static SecretKeySpec readKeyFromFile(File file) throws CryptoException {
         try {
             // read key byte array from file
@@ -125,6 +180,14 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * Loads a salt from the supplied File. Salt must be exactly 16 bytes long otherwise a
+     * {@link RuntimeException} is thrown.
+     *
+     * @param file to load salt from
+     * @return the salt as a byte array
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static byte[] readSaltFromFile(File file) throws CryptoException {
         try {
             // Read salt byte array from file.
@@ -147,9 +210,9 @@ public class BaseCrypto {
      * 8 bytes of the salt will be included.
      *
      * @param salt to use
-     * @param s to digest 
+     * @param s    to digest
      * @return MD5 Base64 representation of the supplied String
-     * @throws CryptoException
+     * @throws CryptoException encapsulates various potential cryptography exceptions
      */
     public static String getAsMD5AndBase64(byte[] salt, String s) throws CryptoException {
         try {
@@ -162,6 +225,15 @@ public class BaseCrypto {
         }
     }
 
+    /**
+     * A main method to create a new {@link SecretKey} and save it to a file.
+     * <p/>
+     * The first and only command line argument is expected to be a file name which the new {@link SecretKey} can
+     * be saved to.
+     *
+     * @param args command line arguments
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static void main(String[] args) throws CryptoException {
         System.out.println("Creating new key...");
         System.out.flush();

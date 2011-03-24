@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * A service bean to aid in discovery of beans whilst respecting the Since and Until annotations.
+ * A service bean to aid in discovery of beans whilst respecting the {@link Since} and {@link Until} annotations.
  */
 @Service
 public class VersionBeanFinder implements ApplicationContextAware {

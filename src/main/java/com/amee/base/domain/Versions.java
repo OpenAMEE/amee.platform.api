@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
- * A Spring Bean providing storage and utility functions for Versions supported by the application.
+ * A bean providing storage and utility functions for Versions supported by the application. This bean is designed
+ * for use in Spring.
  * <p/>
- * Configuration of this bean is in '/conf/applicationContext-versions.xml'.
+ * This bean should be configured in '/conf/applicationContext-versions.xml'.
  */
 public class Versions implements Serializable {
 

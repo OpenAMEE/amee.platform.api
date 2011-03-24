@@ -6,8 +6,10 @@ import java.io.File;
 
 /**
  * Cryptography for internal use with a private local key and salt.
+ * <p/>
+ * See the {@link BaseCrypto} class for detailed information on cryptography used in this class.
  */
-public class InternalCrypto extends BaseCrypto {
+public abstract class InternalCrypto extends BaseCrypto {
 
     private final static String KEY_FILE = "amee.keyFile";
     private final static String SALT_FILE = "amee.saltFile";
@@ -15,10 +17,13 @@ public class InternalCrypto extends BaseCrypto {
     private static SecretKeySpec secretKeySpec = null;
     private static IvParameterSpec iv = null;
 
-    public InternalCrypto() {
-        super();
-    }
-
+    /**
+     * Initialise the static properties of this Class from the key and salt files. The key file is identified by
+     * the amee.keyFile system property and the salt file by the amee.saltFile system property. See
+     * {@link BaseCrypto} for details on how key and salt files should be formed.
+     *
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     private synchronized static void initialise() throws CryptoException {
         if (InternalCrypto.secretKeySpec == null) {
             String keyFileName = System.getProperty(KEY_FILE);
@@ -36,6 +41,13 @@ public class InternalCrypto extends BaseCrypto {
         }
     }
 
+    /**
+     * Initialise the static properties of this Class from the supplied {@link SecretKeySpec} and salt.
+     *
+     * @param newSecretKey a {@link SecretKeySpec}
+     * @param newSalt      a salt
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     protected synchronized static void initialise(SecretKeySpec newSecretKey, byte[] newSalt) throws CryptoException {
         if (InternalCrypto.secretKeySpec == null) {
             if ((newSecretKey != null) && (newSalt != null) && (newSalt.length == 16)) {
@@ -48,18 +60,39 @@ public class InternalCrypto extends BaseCrypto {
         }
     }
 
+    /**
+     * Returns an encrypted version of the supplied string using the key and salt on the file system.
+     *
+     * @param toBeEncrypted the string to be encrypted
+     * @return the encrypted string
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static String encrypt(String toBeEncrypted) throws CryptoException {
         InternalCrypto.initialise();
         return encrypt(secretKeySpec, iv, toBeEncrypted);
     }
 
+    /**
+     * Returns a decrypted version of the supplied string using the key and salt on the file system.
+     *
+     * @param toBeDecrypted the string to be decrypted
+     * @return the decrypted string
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
     public static String decrypt(String toBeDecrypted) throws CryptoException {
         InternalCrypto.initialise();
         return decrypt(secretKeySpec, iv, toBeDecrypted);
     }
 
-    public static String getAsMD5AndBase64(String s) throws CryptoException {
+    /**
+     * Returns the supplied string in MD5 digested and Base64 encoded form.
+     *
+     * @param source string to be digested and encoded
+     * @return the supplied string in MD5 digested and Base64 encoded form
+     * @throws CryptoException encapsulates various potential cryptography exceptions
+     */
+    public static String getAsMD5AndBase64(String source) throws CryptoException {
         InternalCrypto.initialise();
-        return getAsMD5AndBase64(salt, s);
+        return getAsMD5AndBase64(salt, source);
     }
 }
