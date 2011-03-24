@@ -118,6 +118,24 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
+    <!-- Item -->
+    <cache name="com.amee.domain.item.data.DataItem"
+           maxElementsInMemory="12500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItem"
+           maxElementsInMemory="12500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
     <!-- ItemDefinition -->
     <cache name="com.amee.domain.data.ItemDefinition"
            maxElementsInMemory="2000"
@@ -145,6 +163,56 @@
     </cache>
     <cache name="com.amee.domain.data.ItemDefinition.returnValueDefinitions"
            maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ItemValue -->
+    <cache name="com.amee.domain.item.data.DataItemNumberValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemNumberValueHistory"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemTextValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemTextValueHistory"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItemNumberValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItemTextValue"
+           maxElementsInMemory="57500"
            eternal="false"
            overflowToDisk="false"
            timeToIdleSeconds="900"
