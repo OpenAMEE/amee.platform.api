@@ -25,6 +25,7 @@ public class RestletEngine extends Engine {
         start(new RestletEngine(), args);
     }
 
+    @Override
     protected boolean onStart() {
         // Obtain the Restlet container.
         container = ((Component) getSpringContext().getBean("platformContainer"));
@@ -66,6 +67,7 @@ public class RestletEngine extends Engine {
         }
     }
 
+    @Override
     protected boolean onShutdown() {
         // Stop Restlet Container. Wait 500ms.
         if (container != null) {
