@@ -5,15 +5,30 @@ import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * A {@link ResourceException} indicating that an expected request attribute is missing. Request attributes
+ * typically consist of URL path parts, such as categoryIdentifier and itemIdentifier in this example
+ * path definition: '/{categoryIdentifier}/items/{itemIdentifier}/values'.
+ */
 public class MissingAttributeException extends ResourceException {
 
     private String attributeName;
 
+    /**
+     * Construct a MissingAttributeException with a specific attribute name.
+     *
+     * @param attributeName the name of the missing attribute
+     */
     public MissingAttributeException(String attributeName) {
         super();
         this.setAttributeName(attributeName);
     }
 
+    /**
+     * Produces a {@link JSONObject} where the 'status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     *
+     * @return the {@link JSONObject} response representation.
+     */
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -26,6 +41,11 @@ public class MissingAttributeException extends ResourceException {
         }
     }
 
+    /**
+     * Produces a {@link Document} where the 'Status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     *
+     * @return the {@link Document} response representation.
+     */
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
@@ -34,10 +54,20 @@ public class MissingAttributeException extends ResourceException {
         return new Document(rootElem);
     }
 
+    /**
+     * Get the attribute name.
+     *
+     * @return the attribute name
+     */
     public String getAttributeName() {
         return attributeName;
     }
 
+    /**
+     * Set the attribute name.
+     *
+     * @param attributeName the attribute name
+     */
     public void setAttributeName(String attributeName) {
         this.attributeName = attributeName;
     }

@@ -11,10 +11,14 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.*;
 
 /**
- * A ResourceHandler which proxies handling of the RequestWrapper to the Spring bean identified in the
+ * A ResourceHandler which proxies handling of the {@link RequestWrapper} to the Spring bean identified in the
  * target property. A target ResourceHandler will be found in the Spring context which matches the Version
- * supported for the current request. The target ResourceHandler will be invoked with a Future
+ * supported for the current request. The target {@link ResourceHandler} will be invoked with a {@link Future}
  * with the timeout value (if this is greater than zero).
+ * <p/>
+ * The 'Local' part of the name for this class and sub-classes implies that requests will be handled by resource
+ * beans in the same JVM where the request arrived. This is opposed to other {@link ResourceHandler} which
+ * may send requests elsewhere to be handled.
  */
 @Service
 @Scope("prototype")
@@ -36,6 +40,7 @@ public class LocalResourceHandler implements ResourceHandler {
     // A global default timeout value (in seconds).
     private int defaultTimeout = 0;
 
+    @Override
     public Object handle(RequestWrapper requestWrapper) {
         // Lookup target bean.
         Object target = versionBeanFinder.getBeanForVersion(getTarget(), requestWrapper.getVersion());
@@ -71,6 +76,7 @@ public class LocalResourceHandler implements ResourceHandler {
         Object response = null;
         // Wrap the ResourceHandler in a Callable so it can be invoked via a Future below.
         Callable<Object> task = new Callable<Object>() {
+            @Override
             public Object call() throws Exception {
                 return handler.handle(requestWrapper);
             }
@@ -114,10 +120,20 @@ public class LocalResourceHandler implements ResourceHandler {
         return response;
     }
 
+    /**
+     * Get the name of the target spring bean.
+     *
+     * @return target spring bean name
+     */
     public String getTarget() {
         return target;
     }
 
+    /**
+     * Set the name of the target spring bean.
+     *
+     * @param target spring bean name
+     */
     public void setTarget(String target) {
         if (target == null) {
             target = "";
@@ -125,14 +141,29 @@ public class LocalResourceHandler implements ResourceHandler {
         this.target = target;
     }
 
+    /**
+     * Get the timeout.
+     *
+     * @return timeout value in seconds
+     */
     public int getTimeout() {
         return timeout > 0 ? timeout : defaultTimeout;
     }
 
+    /**
+     * Set the timeout.
+     *
+     * @param timeout value in seconds
+     */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
+    /**
+     * Sets the default timeout value from the amee.resourceDefaultTimeout system property.
+     *
+     * @param defaultTimeout timeout value in seconds
+     */
     @Value("#{ systemProperties['amee.resourceDefaultTimeout'] }")
     public void setDefaultTimeout(Integer defaultTimeout) {
         this.defaultTimeout = defaultTimeout;

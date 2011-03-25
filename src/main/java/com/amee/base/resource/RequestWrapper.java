@@ -13,22 +13,72 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Encapsulates properties and behaviour for requests intended for a resource. Typically the request will
+ * originate in a HTTP call and the terminology here reflects that. It's also possible that a RequestWrapper
+ * may represent a request from a non-HTTP source.
+ */
 public class RequestWrapper implements Serializable {
 
+    /**
+     * The name of the Spring resource bean needed to handle the request.
+     */
     private String target = "";
+
+    /**
+     * A {@link Version} indicating the API version desired by the request.
+     */
     private Version version;
+
+    /**
+     * A {@link List} of media-type names.
+     */
     private List<String> acceptedMediaTypes = new ArrayList<String>();
+
+    /**
+     * A {@link Map} of request attributes as String key-value pairs.
+     */
     private Map<String, String> attributes = new HashMap<String, String>();
+
+    /**
+     * A {@link Map} of request matrix parameters as String key-value pairs.
+     */
     private Map<String, String> matrixParameters = new HashMap<String, String>();
+
+    /**
+     * A {@link Map} of request query parameters as String key-value pairs.
+     */
     private Map<String, String> queryParameters = new HashMap<String, String>();
+
+    /**
+     * A {@link Map} of request form parameters as String key-value pairs.
+     */
     private Map<String, String> formParameters = new HashMap<String, String>();
+
+    /**
+     * A byte array forming a request body. This is typically an HTTP POST or PUT body.
+     */
     private byte[] body = null;
+
+    /**
+     * The media-type of the request body.
+     */
     private String mediaType = "";
 
+    /**
+     * Construct a empty RequestWrapper.
+     */
     public RequestWrapper() {
         super();
     }
 
+    /**
+     * Construct a RequestWrapper with specific properties.
+     *
+     * @param version            the API {@link Version}
+     * @param acceptedMediaTypes the accepted media-types
+     * @param attributes         the request attributes
+     */
     public RequestWrapper(
             Version version,
             List<String> acceptedMediaTypes,
@@ -39,6 +89,15 @@ public class RequestWrapper implements Serializable {
         setAttributes(attributes);
     }
 
+    /**
+     * Construct a RequestWrapper with specific properties.
+     *
+     * @param version            the API {@link Version}
+     * @param acceptedMediaTypes the accepted media-types
+     * @param attributes         the request attributes
+     * @param matrixParameters   the request matrix parameters
+     * @param queryParameters    the request query parameters
+     */
     public RequestWrapper(
             Version version,
             List<String> acceptedMediaTypes,
@@ -50,6 +109,16 @@ public class RequestWrapper implements Serializable {
         setQueryParameters(queryParameters);
     }
 
+    /**
+     * Construct a RequestWrapper with specific properties.
+     *
+     * @param version            the API {@link Version}
+     * @param acceptedMediaTypes the accepted media-types
+     * @param attributes         the request attributes
+     * @param matrixParameters   the request matrix parameters
+     * @param queryParameters    the request query parameters
+     * @param formParameters     the request form parameters
+     */
     public RequestWrapper(
             Version version,
             List<String> acceptedMediaTypes,
@@ -62,6 +131,17 @@ public class RequestWrapper implements Serializable {
         setMediaType("application/x-www-form-urlencoded");
     }
 
+    /**
+     * Construct a RequestWrapper with specific properties.
+     *
+     * @param version            the API {@link Version}
+     * @param acceptedMediaTypes the accepted media-types
+     * @param attributes         the request attributes
+     * @param matrixParameters   the request matrix parameters
+     * @param queryParameters    the request query parameters
+     * @param body               the request body
+     * @param mediaType          the request body media-type
+     */
     public RequestWrapper(
             Version version,
             List<String> acceptedMediaTypes,
@@ -75,6 +155,11 @@ public class RequestWrapper implements Serializable {
         setMediaType(mediaType);
     }
 
+    /**
+     * Construct a RequestWrapper from a {link JSONObject}.
+     *
+     * @param obj a {@link JSONObject}
+     */
     public RequestWrapper(JSONObject obj) {
         super();
         try {
@@ -91,6 +176,11 @@ public class RequestWrapper implements Serializable {
         }
     }
 
+    /**
+     * Serialize the RequestWrapper to a {@link JSONObject}.
+     *
+     * @return {@link JSONObject} representing the RequestWrapper
+     */
     public JSONObject toJSONObject() {
         try {
             JSONObject obj = new JSONObject();
@@ -108,7 +198,7 @@ public class RequestWrapper implements Serializable {
         }
     }
 
-    protected void addToMap(Map<String, String> m, JSONObject obj, String name) throws JSONException {
+    private static void addToMap(Map<String, String> m, JSONObject obj, String name) throws JSONException {
         JSONObject node = obj.getJSONObject(name);
         for (Iterator i = node.keys(); i.hasNext();) {
             String key = (String) i.next();
@@ -120,14 +210,14 @@ public class RequestWrapper implements Serializable {
         }
     }
 
-    protected void addToList(List<String> s, JSONObject obj, String name) throws JSONException {
+    private static void addToList(List<String> s, JSONObject obj, String name) throws JSONException {
         JSONArray arr = obj.getJSONArray(name);
         for (int i = 0; i < arr.length(); i++) {
             s.add((String) arr.get(i));
         }
     }
 
-    protected void setMapFromMap(Map<String, String> target, Map<String, String> source) {
+    private static void setMapFromMap(Map<String, String> target, Map<String, String> source) {
         target.clear();
         if (source != null) {
             for (String key : source.keySet()) {
@@ -195,6 +285,11 @@ public class RequestWrapper implements Serializable {
         return body;
     }
 
+    /**
+     * Gets the request body byte array as a UTF-8 string.
+     *
+     * @return the request body byte array as a string
+     */
     public String getBodyAsString() {
         try {
             return new String(body, "UTF-8");
@@ -205,8 +300,6 @@ public class RequestWrapper implements Serializable {
 
     /**
      * Returns the request body as a Document.
-     * <p/>
-     * TODO: Get ValidationException to be more informative.
      *
      * @return document
      */
@@ -218,16 +311,16 @@ public class RequestWrapper implements Serializable {
                 throw new RuntimeException("Cannot create a Document when there is an empty body.");
             }
         } catch (JDOMException e) {
+            // TODO: More detail in this exception.
             throw new ValidationException();
         } catch (IOException e) {
+            // TODO: More detail in this exception.
             throw new ValidationException();
         }
     }
 
     /**
      * Returns the request body as a JSONObject.
-     * <p/>
-     * TODO: Get ValidationException to be more informative.
      *
      * @return JSONObject
      */
@@ -239,10 +332,16 @@ public class RequestWrapper implements Serializable {
                 throw new RuntimeException("Cannot create a JSONObject when there is an empty body.");
             }
         } catch (JSONException e) {
+            // TODO: More detail in this exception.
             throw new ValidationException();
         }
     }
 
+    /**
+     * Set the request body byte array from the contents of an {@link InputStream}.
+     *
+     * @param stream to set body from
+     */
     public void setBody(InputStream stream) {
         try {
             body = IOUtils.toByteArray(stream);

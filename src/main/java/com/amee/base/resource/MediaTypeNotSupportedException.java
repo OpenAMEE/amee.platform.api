@@ -5,12 +5,20 @@ import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * A {@link ResourceException} indicating that the application does not support the requested media type.
+ */
 public class MediaTypeNotSupportedException extends ResourceException {
 
     public MediaTypeNotSupportedException() {
         super();
     }
 
+    /**
+     * Produces a {@link JSONObject} where the 'status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     *
+     * @return the {@link JSONObject} response representation.
+     */
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -22,6 +30,11 @@ public class MediaTypeNotSupportedException extends ResourceException {
         }
     }
 
+    /**
+     * Produces a {@link Document} where the 'Status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     *
+     * @return the {@link Document} response representation.
+     */
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");

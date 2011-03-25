@@ -6,6 +6,9 @@ import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * A {@link ResourceException} indicating that the user is not authorized to access the resource.
+ */
 public class NotAuthorizedException extends ResourceException {
 
     public NotAuthorizedException() {
@@ -16,6 +19,12 @@ public class NotAuthorizedException extends ResourceException {
         super(reason);
     }
 
+    /**
+     * Produces a {@link JSONObject} where the 'status' node contains 'NOT_AUTHORIZED'. If there is an exception
+     * message this will be included as a 'reason' node.
+     *
+     * @return the {@link JSONObject} response representation.
+     */
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -30,6 +39,12 @@ public class NotAuthorizedException extends ResourceException {
         }
     }
 
+    /**
+     * Produces a {@link Document} where the 'Status' node contains 'NOT_AUTHORIZED'. If there is an exception
+     * message this will be included as a 'Reason' node.
+     *
+     * @return the {@link Document} response representation.
+     */
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");

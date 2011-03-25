@@ -11,24 +11,50 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A {@link ResourceException} that can be thrown by resources to represent validation errors, typically from
+ * HTTP GET, POST or PUT calls which updating a bean or an entity.
+ */
 public class ValidationException extends ResourceException {
 
+    /**
+     * A {@link List} of {@link ValidationResult}s.
+     */
     private List<ValidationResult> validationResults = new ArrayList<ValidationResult>();
 
+    /**
+     * Constructor.
+     */
     public ValidationException() {
         super();
     }
 
+    /**
+     * Constructor that accepts a single {@link ValidationResult}.
+     *
+     * @param validationResult to include in the exception
+     */
     public ValidationException(ValidationResult validationResult) {
         this();
         setValidationResult(validationResult);
     }
 
+    /**
+     * Constructor that accepts a {@link List} of {@link ValidationResult}s.
+     *
+     * @param validationResults to include in the exception
+     */
     public ValidationException(List<ValidationResult> validationResults) {
         this();
         setValidationResults(validationResults);
     }
 
+    /**
+     * Create a {@link JSONObject} response representation which includes a single {@link ValidationResult} or
+     * a list of {@link ValidationResult}s.
+     *
+     * @return {@link JSONObject} response representation
+     */
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -49,6 +75,12 @@ public class ValidationException extends ResourceException {
         }
     }
 
+    /**
+     * Create a {@link Document} response representation which includes a single {@link ValidationResult} or
+     * a list of {@link ValidationResult}s.
+     *
+     * @return {@link Document} response representation
+     */
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
@@ -65,15 +97,30 @@ public class ValidationException extends ResourceException {
         return new Document(rootElem);
     }
 
+    /**
+     * Get the first {@link ValidationResult} in the list.
+     *
+     * @return the {@link ValidationResult}
+     */
     public ValidationResult getValidationResult() {
         return validationResults.isEmpty() ? null : validationResults.get(0);
     }
 
+    /**
+     * Set the first {@link ValidationResult} in the list.
+     *
+     * @param validationResult the {@link ValidationResult} to set
+     */
     public void setValidationResult(ValidationResult validationResult) {
         validationResults.clear();
         validationResults.add(validationResult);
     }
 
+    /**
+     * Sets the {@link ValidationResult}s list.
+     *
+     * @param validationResults the {@link ValidationResult}s to set
+     */
     public void setValidationResults(List<ValidationResult> validationResults) {
         validationResults.clear();
         validationResults.addAll(validationResults);

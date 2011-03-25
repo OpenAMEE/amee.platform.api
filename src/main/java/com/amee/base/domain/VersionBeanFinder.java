@@ -114,13 +114,14 @@ public class VersionBeanFinder implements ApplicationContextAware {
         return candidates;
     }
 
-    protected void addCandidate(Map<Version, List<String>> candidates, Version version, String beanName) {
+    private void addCandidate(Map<Version, List<String>> candidates, Version version, String beanName) {
         if (candidates.get(version) == null) {
             candidates.put(version, new ArrayList<String>());
         }
         candidates.get(version).add(beanName);
     }
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

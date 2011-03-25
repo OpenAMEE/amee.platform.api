@@ -4,7 +4,6 @@ import java.lang.annotation.*;
 
 /**
  * An annotation to mark a Spring bean as being available since a particular API version number.
- * <p/>
  *
  * @See Until
  * @see Version

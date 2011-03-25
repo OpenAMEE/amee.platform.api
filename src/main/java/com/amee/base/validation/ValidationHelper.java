@@ -20,24 +20,37 @@ import java.util.Map;
  * a {@link DataBinder} are used internally, integrating into the Spring validation framework.
  * <p/>
  * TODO: Merge this with {@link BaseValidator}.
+ *
+ * @deprecated This class should be merged into {@link BaseValidator}.
  */
+@Deprecated
 public abstract class ValidationHelper {
 
     private final Log log = LogFactory.getLog(getClass());
 
+    /**
+     * A {@link MessageSource} for detailed validation error messages.
+     */
     @Autowired
     private MessageSource messageSource;
 
+    /**
+     * The {@link DataBinder} used to bind incoming parameters to target bean fields.
+     */
     private DataBinder dataBinder;
 
+    /**
+     * Constructor.
+     */
     public ValidationHelper() {
         super();
     }
 
     /**
-     * Validates the supplied form.
+     * Validates the supplied map of parameters. The parameters, name / value pairs, typically arrive in
+     * a {@link com.amee.base.resource.RequestWrapper} as part of an HTTP GET, POST or PUT request.
      * <p/>
-     * TODO: Binder.setValidator() & Binder.validate() instead.
+     * TODO: Consider using Binder.setValidator() & Binder.validate() instead.
      *
      * @param values to validate
      * @return true if form is valid, otherwise false
@@ -124,10 +137,15 @@ public abstract class ValidationHelper {
         }
     }
 
-    protected PropertyValues createPropertyValues(Map<String, String> values) {
+    private PropertyValues createPropertyValues(Map<String, String> values) {
         return new MutablePropertyValues(values);
     }
 
+    /**
+     * Get the current {@link Validator} implementation.
+     *
+     * @return the current {@link Validator} implementation
+     */
     protected Validator getValidator() {
         throw new UnsupportedOperationException();
     }
@@ -154,18 +172,40 @@ public abstract class ValidationHelper {
         return getDataBinder().getBindingResult();
     }
 
+    /**
+     * Get the object that is being validated.
+     *
+     * @return the object that is being validated
+     */
     public Object getObject() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Get the friendly name of the object that is being validated.
+     *
+     * @return the friendly name of the object that is being validated
+     */
     public String getName() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Get the array of allowed fields. Only fields that match names in this array will be used
+     * by the {@link DataBinder}.
+     *
+     * @return the array of allowed fields
+     */
     public String[] getAllowedFields() {
         return new String[]{};
     }
 
+    /**
+     * Get a {@link ValidationResult} representing any validation errors. Pulls in details from
+     * the {@link Errors} and {@link MessageSource} objects.
+     *
+     * @return a {@link ValidationResult} representing any validation errors
+     */
     public ValidationResult getValidationResult() {
         // We always want a new ValidationResult.
         ValidationResult validationResult = new ValidationResult(messageSource);

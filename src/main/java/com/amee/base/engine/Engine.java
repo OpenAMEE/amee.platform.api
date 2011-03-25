@@ -14,7 +14,7 @@ import org.tanukisoftware.wrapper.WrapperManager;
 import java.util.TimeZone;
 
 /**
- * The main 'Engine' class that bootstraps the application.
+ * The main 'Engine' class that bootstraps the application. This implements WrapperListener from Tanuki.
  * <p/>
  * See: http://wrapper.tanukisoftware.org/jdoc/org/tanukisoftware/wrapper/WrapperListener.html
  */
@@ -49,6 +49,13 @@ public class Engine implements WrapperListener {
         WrapperManager.start(wrapperListener, args);
     }
 
+    /**
+     * Start the application.
+     *
+     * @param args command line arguments
+     * @return error code
+     */
+    @Override
     public Integer start(String[] args) {
 
         parseOptions(args);
@@ -80,6 +87,11 @@ public class Engine implements WrapperListener {
         }
     }
 
+    /**
+     * Parse the command line options and store in private properties.
+     *
+     * @param args the argument list
+     */
     protected void parseOptions(String[] args) {
 
         CommandLine line = null;
@@ -155,11 +167,21 @@ public class Engine implements WrapperListener {
         log.info("parseOptions() Time Zone is: " + TimeZone.getDefault().getDisplayName() + " (" + TimeZone.getDefault().getID() + ")");
     }
 
+    /**
+     * A callback for when the application has started.
+     *
+     * @return returns true if the application started successfully
+     */
     protected boolean onStart() {
         // Do nothing.
         return true;
     }
 
+    /**
+     * A callback for when the application has shutdown.
+     *
+     * @return returns true if the application has shutdown successfully
+     */
     protected boolean onShutdown() {
         // Stop Spring. Wait 500ms.
         if (springContext != null) {
@@ -180,6 +202,13 @@ public class Engine implements WrapperListener {
         return true;
     }
 
+    /**
+     * Stop the application.
+     *
+     * @param exitCode system exit code
+     * @return system exit code
+     */
+    @Override
     public int stop(int exitCode) {
         try {
             log.debug("Stopping Engine...");
@@ -191,6 +220,12 @@ public class Engine implements WrapperListener {
         return exitCode;
     }
 
+    /**
+     * Callback for handling system control events.
+     *
+     * @param event the event code
+     */
+    @Override
     public void controlEvent(int event) {
         log.debug("controlEvent() " + event);
         // Do nothing.

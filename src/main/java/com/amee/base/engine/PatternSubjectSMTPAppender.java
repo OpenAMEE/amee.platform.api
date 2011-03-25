@@ -18,6 +18,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
+ * Extends {@link SMTPAppender} to allow the message subject to be formatted with a pattern.
+ * <p/>
  * This is based on code from here: http://lajosd.blogspot.com/2009/09/log4j-smtpappender-exception-info-in.html
  */
 public class PatternSubjectSMTPAppender extends SMTPAppender {
@@ -81,9 +83,11 @@ public class PatternSubjectSMTPAppender extends SMTPAppender {
     }
 
     public static class EmailEvaluator implements TriggeringEventEvaluator {
+
+        @Override
         public boolean isTriggeringEvent(LoggingEvent event) {
             return event.getLevel().isGreaterOrEqual(Level.ERROR) && "true".equals(System.getProperty("amee.maillog"));
-      }
+        }
     }
 }
 

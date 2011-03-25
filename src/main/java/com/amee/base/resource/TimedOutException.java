@@ -5,12 +5,23 @@ import org.jdom.Element;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * A {@link ResourceException} indicating that the request timed-out whilst the resource was working.
+ */
 public class TimedOutException extends ResourceException {
 
+    /**
+     * Construct a TimedOutException.
+     */
     public TimedOutException() {
         super();
     }
 
+    /**
+     * Produces a {@link JSONObject} where the 'status' node contains 'TIMED_OUT'.
+     *
+     * @return the {@link JSONObject} response representation.
+     */
     @Override
     public JSONObject getJSONObject() {
         try {
@@ -22,6 +33,11 @@ public class TimedOutException extends ResourceException {
         }
     }
 
+    /**
+     * Produces a {@link Document} where the 'Status' node contains 'TIMED_OUT'.
+     *
+     * @return the {@link Document} response representation.
+     */
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");

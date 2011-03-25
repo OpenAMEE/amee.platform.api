@@ -210,15 +210,31 @@ public class ValidationSpecification implements Serializable {
         return CONTINUE;
     }
 
+    /**
+     * Get the name of the bean being validated.
+     *
+     * @return the name of the bean being validated
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of the bean being validated.
+     *
+     * @param name of the bean being validated
+     * @return {@link ValidationSpecification} to support method chaining
+     */
     public ValidationSpecification setName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Get the allowEmpty flag.
+     *
+     * @return allowEmpty flag
+     */
     public boolean isAllowEmpty() {
         return allowEmpty;
     }

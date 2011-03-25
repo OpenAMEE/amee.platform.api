@@ -11,6 +11,12 @@ import org.springframework.validation.FieldError;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Encapsulates validation results from attempts to update or create beans and entities.
+ *
+ * @see com.amee.base.validation.BaseValidator
+ * @see org.springframework.validation.Validator
+ */
 public class ValidationResult implements Serializable {
 
     private MessageSource messageSource;
