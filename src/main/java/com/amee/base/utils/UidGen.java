@@ -4,14 +4,24 @@ import java.io.Serializable;
 import java.util.Random;
 
 /**
- * These have a probability of 3.55271368 ? 10^-15 of not being unique :)
+ * A utility class for generating and validating AMEE UIDs.
+ * <p/>
+ * Access is typically via the two singletons, INSTANCE_12 and INSTANCE_16 although custom instances can be created.
+ * <p/>
+ * Most usages of UidGen are via INSTANCE_12 which provides for simple UIDs in the
+ * range  000000000000 to ZZZZZZZZZZZZ. It's possible to create UidGens for other forms of UIDs with varying
+ * separators, parts, radix and range.
  */
 public class UidGen implements Serializable {
 
-    // An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to ZZZZZZZZZZZZ).
+    /**
+     * An instance for creating typical 12 char AMEE UIDs (ranging from 000000000000 to ZZZZZZZZZZZZ).
+     */
     public final static UidGen INSTANCE_12 = new UidGen("", 6, 2, 36);
 
-    // An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to ZZZZZZZZZZZZZZZZ).
+    /**
+     * An instance for creating typical 16 char AMEE UIDs (ranging from 0000000000000000 to ZZZZZZZZZZZZZZZZ).
+     */
     public final static UidGen INSTANCE_16 = new UidGen("", 8, 2, 36);
 
     private final static Random RANDOM = new Random();
@@ -26,6 +36,14 @@ public class UidGen implements Serializable {
         super();
     }
 
+    /**
+     * Create a new instance with custom attributes.
+     *
+     * @param separator the String to separate parts of the UID
+     * @param parts     the number of UID parts
+     * @param partSize  the size of each part
+     * @param radix     the base or radix of each part
+     */
     public UidGen(String separator, int parts, int partSize, int radix) {
         this();
         this.separator = separator;
@@ -66,6 +84,12 @@ public class UidGen implements Serializable {
         uid.append(part);
     }
 
+    /**
+     * Returns true if the supplied UID matches the rules defined in this UidGen instance.
+     *
+     * @param uid the UID to validate
+     * @return true if the supplied UID matches the rules
+     */
     public boolean isValid(String uid) {
         if (uid == null) return false;
         if (uid.length() != (parts * partSize)) return false;
