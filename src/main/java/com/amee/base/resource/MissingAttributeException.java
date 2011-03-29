@@ -33,7 +33,7 @@ public class MissingAttributeException extends ResourceException {
     public JSONObject getJSONObject() {
         try {
             JSONObject o = new JSONObject();
-            o.put("status", "ERROR");
+            o.put("status", "INTERNAL_ERROR");
             o.put("error", "An attribute was missing: " + getAttributeName());
             return o;
         } catch (JSONException e) {
@@ -49,7 +49,7 @@ public class MissingAttributeException extends ResourceException {
     @Override
     public Document getDocument() {
         Element rootElem = new Element("Representation");
-        rootElem.addContent(new Element("Status").setText("ERROR"));
+        rootElem.addContent(new Element("Status").setText("INTERNAL_ERROR"));
         rootElem.addContent(new Element("Error").setText("An attribute was missing: " + getAttributeName()));
         return new Document(rootElem);
     }
