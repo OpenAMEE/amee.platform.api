@@ -29,7 +29,6 @@ public class ProfileItemTextValue extends BaseProfileItemValue implements Extern
 
     public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem) {
         super(itemValueDefinition, profileItem);
-        setValue(value);
     }
 
     public ProfileItemTextValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, String value) {

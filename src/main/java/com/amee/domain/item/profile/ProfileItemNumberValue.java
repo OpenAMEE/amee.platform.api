@@ -33,7 +33,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     private String perUnit = "";
 
     @Column(name = "VALUE", nullable = true)
-    private Double value = 0.0;
+    private Double value = null;
 
     /**
      * This value can be used to override the persisted value.
@@ -54,7 +54,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
         if (value != null) {
             setValue(value);
         } else {
-            setValue(0.0);
+            setValue("");
         }
     }
 
@@ -64,10 +64,10 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
             try {
                 setValue(Double.valueOf(value));
             } catch (NumberFormatException e) {
-                setValue(0.0);
+                setValue("");
             }
         } else {
-            setValue(0.0);
+            setValue("");
         }
     }
 
