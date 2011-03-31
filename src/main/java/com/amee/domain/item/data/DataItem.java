@@ -19,12 +19,15 @@
  */
 package com.amee.domain.item.data;
 
+import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IDataItemService;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItem;
+import com.amee.domain.item.BaseItemValue;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.DateTime;
@@ -34,6 +37,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "DATA_ITEM")
@@ -122,5 +126,29 @@ public class DataItem extends BaseItem {
             values = getItemDefinition().getDataItemValuesBean();
         }
         return values;
+    }
+
+    /**
+     * Simulates the legacy DataItem.getItemValues method. Usage of this is discouraged.
+     * <p/>
+     * This is used in algorithms.
+     *
+     * @return a list of {@link BaseItemValue}s
+     */
+    @Deprecated
+    @Transient
+    public List<BaseItemValue> getItemValues() {
+        return getDataItemService().getItemValues(this);
+    }
+
+    /**
+     * Gets the IDataItemService bound to the current thread. Usage of this is discouraged.
+     *
+     * @return the current {@link IDataItemService}
+     */
+    @Deprecated
+    @Transient
+    private IDataItemService getDataItemService() {
+        return ThreadBeanHolder.get(IDataItemService.class);
     }
 }
