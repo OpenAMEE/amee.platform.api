@@ -35,6 +35,8 @@ import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.EntityTag;
 import com.amee.domain.tag.Tag;
+import com.amee.domain.unit.AMEEUnit;
+import com.amee.domain.unit.AMEEUnitType;
 
 import java.io.Serializable;
 
@@ -42,7 +44,7 @@ import java.io.Serializable;
 
 public enum ObjectType implements Serializable {
 
-    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD, DINV, DINVH, DITV, DITVH, PINV, PITV, NPI, NDI;
+    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD, DINV, DINVH, DITV, DITVH, PINV, PITV, NPI, NDI, UN, UT;
 
     private String[] names = {
             "DC",
@@ -73,7 +75,9 @@ public enum ObjectType implements Serializable {
             "PINV",
             "PITV",
             "NPI",
-            "NDI"};
+            "NDI",
+            "UN",
+            "UT"};
 
     private String[] labels = {
             "DataCategory",
@@ -104,7 +108,9 @@ public enum ObjectType implements Serializable {
             "ProfileItemNumberValue",
             "ProfileItemTextValue",
             "NewProfileItem",
-            "NewDataItem"};
+            "NewDataItem",
+            "Unit",
+            "UnitType"};
 
     public String toString() {
         return getName();
@@ -161,6 +167,10 @@ public enum ObjectType implements Serializable {
             return TA;
         } else if (EntityTag.class.isAssignableFrom(c)) {
             return ET;
+        } else if (AMEEUnit.class.isAssignableFrom(c)) {
+            return UN;
+        } else if (AMEEUnitType.class.isAssignableFrom(c)) {
+            return UT;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
@@ -215,6 +225,10 @@ public enum ObjectType implements Serializable {
             return Tag.class;
         } else if (EntityTag.class.isAssignableFrom(c)) {
             return EntityTag.class;
+        } else if (AMEEUnit.class.isAssignableFrom(c)) {
+            return AMEEUnit.class;
+        } else if (AMEEUnitType.class.isAssignableFrom(c)) {
+            return AMEEUnitType.class;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
@@ -242,6 +256,10 @@ public enum ObjectType implements Serializable {
             return Tag.class;
         } else if (this.equals(ET)) {
             return EntityTag.class;
+        } else if (this.equals(UN)) {
+            return AMEEUnit.class;
+        } else if (this.equals(UT)) {
+            return AMEEUnitType.class;
         }
         throw new IllegalArgumentException("Class not supported.");
     }
