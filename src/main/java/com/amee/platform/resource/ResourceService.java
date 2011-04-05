@@ -10,6 +10,7 @@ import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.tag.Tag;
+import com.amee.domain.unit.AMEEUnitType;
 
 public interface ResourceService {
 
@@ -34,4 +35,6 @@ public interface ResourceService {
     public Algorithm getAlgorithm(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
 
     public Tag getTag(RequestWrapper requestWrapper);
+
+    public AMEEUnitType getUnitType(RequestWrapper requestWrapper);
 }
