@@ -34,24 +34,28 @@ class UnitIT extends BaseApiTest {
 
     def createAndRemoveUnitTypeJson(version) {
         if (version >= 3.5) {
+
             setAdminUser();
-            client.contentType = JSON;
+
+            def name = 'Unit Type To Be Deleted';
 
             // Create a new UnitType.
             def responsePost = client.post(
                     path: "/${version}/units/types",
-                    body: [name: 'Unit Type To Be Deleted'],
+                    body: [name: name],
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 201, responsePost.status;
 
+            // TODO: Fetch the UnitType.
+
             // Then delete the UnitType.
-            def responseDelete = client.delete(path: "/${version}/units/types/Unit Type To Be Delete");
+            def responseDelete = client.delete(path: "/${version}/units/types/${name}");
             assertEquals 200, responseDelete.status;
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/units/types/Unit Type To Be Delete");
+                client.get(path: "/${version}/units/types/${name}");
                 fail 'Should have thrown an exception';
             } catch (HttpResponseException e) {
                 assertEquals 404, e.response.status;

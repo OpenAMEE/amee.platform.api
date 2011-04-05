@@ -807,12 +807,12 @@
         <property name="defaultMatchQuery" value="false"/>
         <property name="attachments">
             <map>
-                <!--<entry key="">-->
-                <!--<bean class="com.amee.restlet.version.VersionFinder">-->
-                <!--<lookup-method name="createResource" bean="unitTypesResource"/>-->
-                <!--<property name="since" value="3.0.0"/>-->
-                <!--</bean>-->
-                <!--</entry>-->
+                <entry key="/types">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="unitTypesResource"/>
+                        <property name="since" value="3.5.0"/>
+                    </bean>
+                </entry>
                 <entry key="/types/{unitTypeIdentifier}">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="unitTypeResource"/>
@@ -823,35 +823,34 @@
         </property>
     </bean>
 
-    <!--<bean id="unitTypesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">-->
-    <!--<property name="modifiable" value="false"/>-->
-    <!--<property name="allowDelete" value="false"/>-->
-    <!--<property name="allowPut" value="false"/>-->
-    <!--<property name="allowPost" value="true"/>-->
-    <!--<property name="lastSegment" value="tags"/>-->
-    <!--<property name="attributeNames">-->
-    <!--<set>-->
-    <!--<value>activeUserUid</value>-->
-    <!--<value>categoryIdentifier</value>-->
-    <!--</set>-->
-    <!--</property>-->
-    <!--<property name="builder">-->
-    <!--<bean class="com.amee.base.resource.LocalResourceBuilder">-->
-    <!--<property name="target"-->
-    <!--value="com.amee.platform.resource.tag.TagsResource$Builder"/>-->
-    <!--</bean>-->
-    <!--</property>-->
-    <!--<property name="acceptors">-->
-    <!--<map>-->
-    <!--<entry key="application/x-www-form-urlencoded">-->
-    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
-    <!--<property name="target"-->
-    <!--value="com.amee.platform.resource.tag.TagsResource$FormAcceptor"/>-->
-    <!--</bean>-->
-    <!--</entry>-->
-    <!--</map>-->
-    <!--</property>-->
-    <!--</bean>-->
+    <bean id="unitTypesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="allowPost" value="true"/>
+        <property name="lastSegment" value="types"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
+        <!--<property name="builder">-->
+        <!--<bean class="com.amee.base.resource.LocalResourceBuilder">-->
+        <!--<property name="target"-->
+        <!--value="com.amee.platform.resource.tag.TagsResource$Builder"/>-->
+        <!--</bean>-->
+        <!--</property>-->
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.unit.UnitTypesResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
     <bean id="unitTypeResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="false"/>
@@ -880,12 +879,12 @@
         <!--</entry>-->
         <!--</map>-->
         <!--</property>-->
-        <!--<property name="remover">-->
-        <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
-        <!--<property name="target"-->
-        <!--value="com.amee.platform.resource.unit.UnitTypeResource$Remover"/>-->
-        <!--</bean>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.unit.UnitTypeResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Drill -->
