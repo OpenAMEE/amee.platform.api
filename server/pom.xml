@@ -359,6 +359,12 @@
             <groupId>code.lucamarrocco</groupId>
             <artifactId>hoptoad-notifier</artifactId>
             <version>${hoptoad-notifier.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Internal Runtime Dependencies. -->
