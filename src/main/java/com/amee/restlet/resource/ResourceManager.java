@@ -10,6 +10,8 @@ import org.restlet.data.Preference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
 public class ResourceManager {
@@ -79,7 +81,13 @@ public class ResourceManager {
                 Object a = getRequest().getAttributes().get(attributeName);
                 if (a instanceof String) {
                     // This removes any matrix parameters.
-                    attributes.put(attributeName, ((String) a).split(";")[0]);
+                    String value = ((String) a).split(";")[0];
+                    try {
+                        value = URLDecoder.decode(value, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        log.warn("getAttributes() Caught UnsupportedEncodingException: " + e.getMessage());
+                    }
+                    attributes.put(attributeName, value);
                 } else {
                     log.warn("getAttributes() Attribute value is not a String: " + attributeName);
                 }
