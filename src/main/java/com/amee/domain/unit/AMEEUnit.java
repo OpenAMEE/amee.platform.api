@@ -96,6 +96,12 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
         return entities;
     }
 
+    @Override
+    @Transient
+    public boolean isTrash() {
+        return super.isTrash() || getUnitType().isTrash();
+    }
+
     @Transient
     public String getSymbol() {
         if (getExternalSymbol().isEmpty()) {
