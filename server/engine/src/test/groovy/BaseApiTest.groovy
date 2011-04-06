@@ -1,4 +1,5 @@
 import com.amee.platform.search.SearchIndexerImpl
+import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -6,6 +7,9 @@ import org.junit.AfterClass
 import org.junit.Before
 import org.junit.BeforeClass
 import org.springframework.context.support.ClassPathXmlApplicationContext
+import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.ContentType.URLENC
+import static org.junit.Assert.*
 
 /**
  * A base class for API integration tests.
@@ -141,5 +145,53 @@ abstract class BaseApiTest {
      */
     boolean isNear(DateTime d1, DateTime d2, int delta) {
         return Math.abs(d2.millis - d1.millis) <= delta;
+    }
+
+    /**
+     * Submits a single field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     */
+    def updateInvalidFieldJson(path, field, code, value, since) {
+        versions.each { version -> updateInvalidFieldJson(path, field, code, value, since, version) };
+    }
+
+    /**
+     * Submits a single field value and tests the result. An error is expected.
+     *
+     * @param path of resource to update
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     * @param version version to test
+     */
+    def updateInvalidFieldJson(path, field, code, value, since, version) {
+        if (version >= since) {
+            try {
+                // Create form body.
+                def body = [:];
+                body[field] = value;
+                // Update UnitType.
+                client.put(
+                        path: "/${version}${path}",
+                        body: body,
+                        requestContentType: URLENC,
+                        contentType: JSON);
+                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+            } catch (HttpResponseException e) {
+                // Handle error response containing a ValidationResult.
+                def response = e.response;
+                assertEquals 400, response.status;
+                assertEquals 'application/json', response.contentType;
+                assertTrue response.data instanceof net.sf.json.JSON;
+                assertEquals 'INVALID', response.data.status;
+                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
+                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+            }
+        }
     }
 }

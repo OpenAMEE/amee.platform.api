@@ -869,16 +869,16 @@
                           value="com.amee.platform.resource.unit.UnitTypeResource$Builder"/>
             </bean>
         </property>
-        <!--<property name="acceptors">-->
-        <!--<map>-->
-        <!--<entry key="application/x-www-form-urlencoded">-->
-        <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
-        <!--<property name="target"-->
-        <!--value="com.amee.platform.resource.unit.UnitTypeResource$FormAcceptor"/>-->
-        <!--</bean>-->
-        <!--</entry>-->
-        <!--</map>-->
-        <!--</property>-->
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.unit.UnitTypeResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
         <property name="remover">
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"

@@ -62,4 +62,34 @@ class UnitIT extends BaseApiTest {
             }
         }
     }
+
+    /**
+     * Tests the validation rules for the UnitType name field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Mandatory.
+     * <li>Unique on lower case of entire string amongst all Unit Types.
+     * <li>No longer than 255 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidWikiName() {
+        setAdminUser();
+        updateUnitTypeFieldJson('name', 'empty', '');
+        updateUnitTypeFieldJson('name', 'long', String.randomString(256));
+        updateUnitTypeFieldJson('name', 'duplicate', 'Test Unit Type Two');
+    }
+
+    /**
+     * Submits a single UnitType field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     */
+    def updateUnitTypeFieldJson(field, code, value) {
+        updateInvalidFieldJson("/units/types/AAA3DAA7A390", field, code, value, 3.5)
+    }
 }
