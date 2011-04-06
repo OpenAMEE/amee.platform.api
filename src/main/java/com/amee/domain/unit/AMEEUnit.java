@@ -103,6 +103,11 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
     }
 
     @Transient
+    public boolean hasExternalSymbol() {
+        return !getExternalSymbol().isEmpty();
+    }
+
+    @Transient
     public String getSymbol() {
         if (getExternalSymbol().isEmpty()) {
             return getInternalSymbol();

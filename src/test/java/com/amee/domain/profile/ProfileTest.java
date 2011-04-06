@@ -3,8 +3,9 @@ package com.amee.domain.profile;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.auth.User;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ProfileTest {
 
