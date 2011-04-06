@@ -32,7 +32,7 @@ public class UnitTypeJSONRenderer_3_5_0 implements UnitTypeResource.Renderer {
         this.unitType = unitType;
         unitTypeObj = new JSONObject();
         if (rootObj != null) {
-            ResponseHelper.put(rootObj, "value", unitTypeObj);
+            ResponseHelper.put(rootObj, "unitType", unitTypeObj);
         }
     }
 

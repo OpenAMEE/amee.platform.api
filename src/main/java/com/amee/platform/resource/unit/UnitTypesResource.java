@@ -4,14 +4,11 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRenderer;
-import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.unit.AMEEUnitType;
 
 public interface UnitTypesResource {
 
     public static interface Builder extends ResourceBuilder {
-
-        public void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity);
 
         public UnitTypesResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
