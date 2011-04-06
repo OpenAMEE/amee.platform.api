@@ -1,4 +1,4 @@
-package com.amee.platform.resource.unit.v_3_5;
+package com.amee.platform.resource.unittype.v_3_5;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
@@ -6,7 +6,7 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.resource.ResourceService;
-import com.amee.platform.resource.unit.UnitTypeResource;
+import com.amee.platform.resource.unittype.UnitTypeResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

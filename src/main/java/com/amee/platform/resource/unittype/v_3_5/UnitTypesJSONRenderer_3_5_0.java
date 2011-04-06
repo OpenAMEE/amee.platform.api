@@ -1,9 +1,9 @@
-package com.amee.platform.resource.unit.v_3_5;
+package com.amee.platform.resource.unittype.v_3_5;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
-import com.amee.platform.resource.unit.UnitTypeResource;
-import com.amee.platform.resource.unit.UnitTypesResource;
+import com.amee.platform.resource.unittype.UnitTypeResource;
+import com.amee.platform.resource.unittype.UnitTypesResource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

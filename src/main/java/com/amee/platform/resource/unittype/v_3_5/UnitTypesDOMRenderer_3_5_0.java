@@ -1,8 +1,8 @@
-package com.amee.platform.resource.unit.v_3_5;
+package com.amee.platform.resource.unittype.v_3_5;
 
 import com.amee.base.domain.Since;
-import com.amee.platform.resource.unit.UnitTypeResource;
-import com.amee.platform.resource.unit.UnitTypesResource;
+import com.amee.platform.resource.unittype.UnitTypeResource;
+import com.amee.platform.resource.unittype.UnitTypesResource;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.context.annotation.Scope;

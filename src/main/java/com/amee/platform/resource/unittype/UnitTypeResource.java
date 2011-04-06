@@ -1,4 +1,4 @@
-package com.amee.platform.resource.unit;
+package com.amee.platform.resource.unittype;
 
 import com.amee.base.resource.*;
 import com.amee.domain.unit.AMEEUnitType;

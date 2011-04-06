@@ -1,10 +1,10 @@
-package com.amee.platform.resource.unit.v_3_5;
+package com.amee.platform.resource.unittype.v_3_5;
 
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.unit.AMEEUnitType;
-import com.amee.platform.resource.unit.UnitTypeResource;
+import com.amee.platform.resource.unittype.UnitTypeResource;
 import com.amee.service.unit.UnitService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
