@@ -2,8 +2,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.URLENC
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.fail
+import static org.junit.Assert.*
 
 /**
  * Tests for the Unit API.
@@ -11,10 +10,18 @@ import static org.junit.Assert.fail
  */
 class UnitIT extends BaseApiTest {
 
+    def unitTypeUids = [
+            'AAA3DAA7A390',
+            '1AA3DAA7A390'];
+
+    def unitTypeNames = [
+            'Test Unit Type One',
+            'Test Unit Type Two'];
+
     /**
-     * Tests for creation, fetch and deletion of a UnitType using JSON responses.
+     * Tests for creation, fetch and deletion of a Unit Type using JSON responses.
      *
-     * Create a new UnitType by POSTing to '/units/types'
+     * Create a new Unit Type by POSTing to '/units/types'
      *
      * Supported POST parameters are:
      *
@@ -24,7 +31,7 @@ class UnitIT extends BaseApiTest {
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
-     * Delete (TRASH) a UnitType by sending a DELETE request to '/units/types/{UID|name}'.
+     * Delete (TRASH) a Unit Type by sending a DELETE request to '/units/types/{UID|name}'.
      *
      */
     @Test
@@ -39,7 +46,7 @@ class UnitIT extends BaseApiTest {
 
             def name = 'Unit Type To Be Deleted';
 
-            // Create a new UnitType.
+            // Create a new Unit Type.
             def responsePost = client.post(
                     path: "/${version}/units/types",
                     body: [name: name],
@@ -47,9 +54,9 @@ class UnitIT extends BaseApiTest {
                     contentType: JSON);
             assertEquals 201, responsePost.status;
 
-            // TODO: Fetch the UnitType.
+            // TODO: Fetch the Unit Type.
 
-            // Then delete the UnitType.
+            // Then delete the Unit Type.
             def responseDelete = client.delete(path: "/${version}/units/types/${name}");
             assertEquals 200, responseDelete.status;
 
@@ -64,7 +71,40 @@ class UnitIT extends BaseApiTest {
     }
 
     /**
-     * Tests the validation rules for the UnitType name field.
+     * Tests fetching a list of all Unit Types using JSON.
+     *
+     * Unit Types GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>audit - include the status, created and modified values.
+     * </ul>
+     *
+     * Unit Types are sorted by name.
+     */
+    @Test
+    void getAllUnitTypesJson() {
+        versions.each { version -> getAllUnitTypesJson(version) }
+    }
+
+    def getAllUnitTypesJson(version) {
+        if (version >= 3.5) {
+
+            def response = client.get(
+                    path: "/${version}/units/types",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals unitTypeUids.size(), response.data.unitTypes.size();
+            assertEquals unitTypeUids.sort(), response.data.unitTypes.collect {it.uid}.sort();
+            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.unitTypes.collect {it.name};
+        }
+    }
+
+    /**
+     * Tests the validation rules for the Unit Type name field.
      *
      * The rules are as follows:
      *
@@ -75,15 +115,16 @@ class UnitIT extends BaseApiTest {
      * </ul>
      */
     @Test
-    void updateWithInvalidWikiName() {
+    void updateWithInvalidName() {
         setAdminUser();
         updateUnitTypeFieldJson('name', 'empty', '');
         updateUnitTypeFieldJson('name', 'long', String.randomString(256));
-        updateUnitTypeFieldJson('name', 'duplicate', 'Test Unit Type Two');
+        updateUnitTypeFieldJson('name', 'duplicate', 'Test Unit Type Two'); // Normal case.
+        updateUnitTypeFieldJson('name', 'duplicate', 'test unit type two'); // Lower case.
     }
 
     /**
-     * Submits a single UnitType field value and tests the result. An error is expected.
+     * Submits a single Unit Type field value and tests the result. An error is expected.
      *
      * @param field that is being updated
      * @param code expected upon error
