@@ -837,7 +837,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.unit.UnitTypesResource$Builder"/>
+                          value="com.amee.platform.resource.unittype.UnitTypesResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -845,7 +845,7 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.unit.UnitTypesResource$FormAcceptor"/>
+                                  value="com.amee.platform.resource.unittype.UnitTypesResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -866,7 +866,7 @@
         <property name="builder">
             <bean class="com.amee.base.resource.LocalResourceBuilder">
                 <property name="target"
-                          value="com.amee.platform.resource.unit.UnitTypeResource$Builder"/>
+                          value="com.amee.platform.resource.unittype.UnitTypeResource$Builder"/>
             </bean>
         </property>
         <property name="acceptors">
@@ -874,7 +874,7 @@
                 <entry key="application/x-www-form-urlencoded">
                     <bean class="com.amee.base.resource.LocalResourceAcceptor">
                         <property name="target"
-                                  value="com.amee.platform.resource.unit.UnitTypeResource$FormAcceptor"/>
+                                  value="com.amee.platform.resource.unittype.UnitTypeResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>
@@ -882,7 +882,7 @@
         <property name="remover">
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
-                          value="com.amee.platform.resource.unit.UnitTypeResource$Remover"/>
+                          value="com.amee.platform.resource.unittype.UnitTypeResource$Remover"/>
             </bean>
         </property>
     </bean>
