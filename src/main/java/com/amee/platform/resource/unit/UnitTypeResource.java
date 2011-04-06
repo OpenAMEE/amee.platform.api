@@ -31,7 +31,7 @@ public interface UnitTypeResource {
 
     public static interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper, AMEEUnitType unitType);
+        public UnitTypeResource.UnitTypeValidator getValidator(RequestWrapper requestWrapper);
     }
 
     public static interface UnitTypeValidator {

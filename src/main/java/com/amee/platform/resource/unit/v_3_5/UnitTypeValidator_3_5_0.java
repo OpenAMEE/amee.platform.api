@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +46,22 @@ public class UnitTypeValidator_3_5_0 extends BaseValidator implements UnitTypeRe
         add(new ValidationSpecification()
                 .setName("name")
                 .setMaxSize(AMEEUnitType.NAME_MAX_SIZE)
-                .setAllowEmpty(false));
+                .setAllowEmpty(false)
+                .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                // Ensure UnitType is unique on name.
+                                AMEEUnitType thisUnitType = (AMEEUnitType) object;
+                                if (thisUnitType != null) {
+                                    if (!unitService.isUnitTypeUniqueByName(thisUnitType)) {
+                                        errors.rejectValue("name", "duplicate");
+                                    }
+                                }
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        })
+        );
     }
 
     @Override
