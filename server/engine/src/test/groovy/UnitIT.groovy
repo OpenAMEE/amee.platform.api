@@ -12,11 +12,13 @@ class UnitIT extends BaseApiTest {
 
     def unitUids = [
             '1BB3DAA7A390',
-            '2BB3DAA7A390'];
+            '2BB3DAA7A390',
+            '3BB3DAA7A390'];
 
     def unitNames = [
             'Test Unit One',
-            'Test Unit Two'];
+            'Test Unit Two',
+            'Test Unit Three'];
 
     /**
      * Tests for creation, fetch and deletion of a Unit using JSON responses.
@@ -105,7 +107,7 @@ class UnitIT extends BaseApiTest {
             assertEquals 'OK', response.data.status;
             assertEquals unitUids.size(), response.data.units.size();
             assertEquals unitUids.sort(), response.data.units.collect {it.uid}.sort();
-            assertEquals unitNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.units.collect {it.name};
+            assertEquals unitNames.sort(), response.data.units.collect {it.name}.sort();
         }
     }
 
@@ -127,6 +129,45 @@ class UnitIT extends BaseApiTest {
         updateUnitFieldJson('name', 'long', String.randomString(256));
         updateUnitFieldJson('name', 'duplicate', 'Test Unit Two'); // Normal case.
         updateUnitFieldJson('name', 'duplicate', 'test unit two'); // Lower case.
+    }
+
+    /**
+     * Tests the validation rules for the Unit internalSymbol field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Mandatory.
+     * <li>Unique on lower case of entire string amongst all symbols in all Units.
+     * <li>No longer than 255 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidInternalSymbol() {
+        setAdminUser();
+        updateUnitFieldJson('internalSymbol', 'empty', '');
+        updateUnitFieldJson('internalSymbol', 'long', String.randomString(256));
+        updateUnitFieldJson('internalSymbol', 'duplicate', 'ef'); // Existing internalSymbol.
+        updateUnitFieldJson('internalSymbol', 'duplicate', 'kl'); // Existing externalSymbol.
+    }
+
+    /**
+     * Tests the validation rules for the Unit externalSymbol field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Optional.
+     * <li>Unique on lower case of entire string amongst all symbols in all Units.
+     * <li>No longer than 255 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidExternalSymbol() {
+        setAdminUser();
+        updateUnitFieldJson('externalSymbol', 'long', String.randomString(256));
+        updateUnitFieldJson('externalSymbol', 'duplicate', 'ef'); // Existing internalSymbol.
+        updateUnitFieldJson('externalSymbol', 'duplicate', 'kl'); // Existing externalSymbol.
     }
 
     /**

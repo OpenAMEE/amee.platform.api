@@ -181,7 +181,7 @@ abstract class BaseApiTest {
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON);
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+                fail "Response status code should have been 400 ('${field}', '${code}').";
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response;
@@ -189,8 +189,10 @@ abstract class BaseApiTest {
                 assertEquals 'application/json', response.contentType;
                 assertTrue response.data instanceof net.sf.json.JSON;
                 assertEquals 'INVALID', response.data.status;
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
+                def actualField = response.data.validationResult.errors.collect {it.field}[0];
+                assertTrue("The 'field' value should be '${field}' but was '${actualField}' instead.", field == actualField);
+                def actualCode = response.data.validationResult.errors.collect {it.code}[0];
+                assertTrue("The 'code' value should be '${code}' but was '${actualCode}' instead.", code == actualCode);
             }
         }
     }
