@@ -6,13 +6,14 @@ import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.platform.resource.unit.UnitResource;
 import com.amee.service.unit.UnitService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
+import javax.measure.unit.UnitFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ import java.util.Set;
 @Since("3.5.0")
 public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.UnitValidator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    protected final static UnitFormat UNIT_FORMAT = UnitFormat.getInstance();
 
     @Autowired
     protected UnitService unitService;
@@ -82,6 +83,12 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                                     if (!unitService.isUnitUniqueByInternalSymbol(thisUnit)) {
                                         errors.rejectValue("internalSymbol", "duplicate");
                                     }
+                                }
+                                // Ensure Unit symbol is valid.
+                                try {
+                                    UNIT_FORMAT.parseProductUnit(unit.getInternalSymbol(), new ParsePosition(0));
+                                } catch (ParseException e) {
+                                    errors.rejectValue("internalSymbol", "format");
                                 }
                                 return ValidationSpecification.CONTINUE;
                             }

@@ -40,6 +40,7 @@ public class UnitJSONRenderer_3_5_0 implements UnitResource.Renderer {
     public void addBasic() {
         ResponseHelper.put(unitObj, "uid", unit.getUid());
         ResponseHelper.put(unitObj, "name", unit.getName());
+        ResponseHelper.put(unitObj, "symbol", unit.getSymbol());
     }
 
     @Override
@@ -47,6 +48,25 @@ public class UnitJSONRenderer_3_5_0 implements UnitResource.Renderer {
         ResponseHelper.put(unitObj, "status", unit.getStatus().getName());
         ResponseHelper.put(unitObj, "created", DATE_FORMAT.print(unit.getCreated().getTime()));
         ResponseHelper.put(unitObj, "modified", DATE_FORMAT.print(unit.getModified().getTime()));
+    }
+
+    @Override
+    public void addSymbols() {
+        ResponseHelper.put(unitObj, "internalSymbol", unit.getInternalSymbol());
+        ResponseHelper.put(unitObj, "externalSymbol", unit.getExternalSymbol());
+    }
+
+    @Override
+    public void addUnitType() {
+        JSONObject unitTypeObj = new JSONObject();
+        ResponseHelper.put(unitTypeObj, "uid", unit.getUnitType().getUid());
+        ResponseHelper.put(unitTypeObj, "name", unit.getUnitType().getName());
+        ResponseHelper.put(unitObj, "unitType", unitTypeObj);
+    }
+
+    @Override
+    public void addInternalUnit() {
+        ResponseHelper.put(unitObj, "internalUnit", unit.getInternalUnit().toString());
     }
 
     @Override

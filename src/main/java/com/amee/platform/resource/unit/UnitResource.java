@@ -26,6 +26,12 @@ public interface UnitResource {
 
         public void addAudit();
 
+        public void addSymbols();
+
+        public void addUnitType();
+
+        public void addInternalUnit();
+
         public Object getObject();
     }
 

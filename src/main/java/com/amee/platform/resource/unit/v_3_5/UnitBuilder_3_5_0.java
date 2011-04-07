@@ -61,6 +61,9 @@ public class UnitBuilder_3_5_0 implements UnitResource.Builder {
         // Collect rendering options from matrix params.
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
+        boolean symbols = requestWrapper.getMatrixParameters().containsKey("symbols");
+        boolean unitType = requestWrapper.getMatrixParameters().containsKey("unitType");
+        boolean internalUnit = requestWrapper.getMatrixParameters().containsKey("internalUnit");
 
         // New Unit & basic.
         renderer.newUnit(unit);
@@ -69,6 +72,15 @@ public class UnitBuilder_3_5_0 implements UnitResource.Builder {
         // Optionals.
         if (audit || full) {
             renderer.addAudit();
+        }
+        if (symbols || full) {
+            renderer.addSymbols();
+        }
+        if (unitType || full) {
+            renderer.addUnitType();
+        }
+        if (internalUnit || full) {
+            renderer.addInternalUnit();
         }
     }
 

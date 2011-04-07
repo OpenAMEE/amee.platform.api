@@ -39,12 +39,32 @@ public class UnitDOMRenderer_3_5_0 implements UnitResource.Renderer {
     public void addBasic() {
         unitElem.setAttribute("uid", unit.getUid());
         unitElem.addContent(new Element("Name").setText(unit.getName()));
+        unitElem.addContent(new Element("Symbol").setText(unit.getSymbol()));
     }
 
     public void addAudit() {
         unitElem.setAttribute("status", unit.getStatus().getName());
         unitElem.setAttribute("created", DATE_FORMAT.print(unit.getCreated().getTime()));
         unitElem.setAttribute("modified", DATE_FORMAT.print(unit.getModified().getTime()));
+    }
+
+    @Override
+    public void addSymbols() {
+        unitElem.addContent(new Element("InternalSymbol").setText(unit.getInternalSymbol()));
+        unitElem.addContent(new Element("ExternalSymbol").setText(unit.getExternalSymbol()));
+    }
+
+    @Override
+    public void addUnitType() {
+        Element e = new Element("UnitType");
+        unitElem.addContent(e);
+        e.setAttribute("uid", unit.getUnitType().getUid());
+        e.addContent(new Element("Name").setText(unit.getUnitType().getName()));
+    }
+
+    @Override
+    public void addInternalUnit() {
+        unitElem.addContent(new Element("InternalUnit").setText(unit.getInternalUnit().toString()));
     }
 
     public String getMediaType() {
