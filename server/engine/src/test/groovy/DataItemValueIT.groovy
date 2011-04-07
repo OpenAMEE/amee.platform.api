@@ -191,7 +191,7 @@ class DataItemValueIT extends BaseApiTest {
             // Update the DataItemValue.
             def responsePost = client.put(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
-                    body: ['value': 'United Kingdom (modified by createDataItemValueJson)'],
+                    body: ['value': "United Kingdom (modified by createDataItemValueJson_${version})"],
                     requestContentType: URLENC,
                     contentType: JSON);
             assertEquals 204, responsePost.status
@@ -200,7 +200,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: JSON);
             assertEquals 200, responseGetDIV2.status;
-            assertEquals 'United Kingdom (modified by createDataItemValueJson)', responseGetDIV2.data.value.value;
+            assertTrue "United Kingdom (modified by createDataItemValueJson_${version})" == responseGetDIV2.data.value.value;
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
@@ -238,7 +238,7 @@ class DataItemValueIT extends BaseApiTest {
             // Update the DataItemValue.
             def responsePost = client.put(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
-                    body: ['value': 'United Kingdom (modified by createDataItemValueXml)'],
+                    body: ['value': "United Kingdom (modified by createDataItemValueXml_${version})"],
                     requestContentType: URLENC,
                     contentType: XML);
             assertEquals 204, responsePost.status
@@ -247,7 +247,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: XML);
             assertEquals 200, responseGetDIV2.status;
-            assertEquals 'United Kingdom (modified by createDataItemValueXml)', responseGetDIV2.data.Value.Value.text();
+            assertTrue "United Kingdom (modified by createDataItemValueXml_${version})" == responseGetDIV2.data.Value.Value.text();
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
