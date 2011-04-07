@@ -6,7 +6,6 @@ import static org.junit.Assert.*
 
 /**
  * Tests for the Unit API.
- *
  */
 class UnitTypeIT extends BaseApiTest {
 
@@ -54,7 +53,15 @@ class UnitTypeIT extends BaseApiTest {
                     contentType: JSON);
             assertEquals 201, responsePost.status;
 
-            // TODO: Fetch the Unit Type.
+            // Fetch the Unit Type.
+            def response = client.get(
+                    path: "/${version}/units/types/${name};full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals name, response.data.unitType.name;
 
             // Then delete the Unit Type.
             def responseDelete = client.delete(path: "/${version}/units/types/${name}");

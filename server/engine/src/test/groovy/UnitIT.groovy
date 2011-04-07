@@ -6,7 +6,6 @@ import static org.junit.Assert.*
 
 /**
  * Tests for the Unit API.
- *
  */
 class UnitIT extends BaseApiTest {
 
@@ -42,6 +41,8 @@ class UnitIT extends BaseApiTest {
      * <li>internalSymbol
      * <li>externalSymbol
      * </ul>
+     *
+     * See getAllUnitsForUnitTypeJson below for supported GET matrix parameters.
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
@@ -107,7 +108,12 @@ class UnitIT extends BaseApiTest {
      * <ul>
      * <li>full - include all values.
      * <li>audit - include the status, created and modified values.
+     * <li>symbols - include the internalSymbol and externalSymbol values.
+     * <li>unitType - include the unitType value. This is the UID and name of the Unit Type.
+     * <li>internalUnit - include the JScience toString value based in the internalSymbol.
      * </ul>
+     *
+     * By default the unit UID, name and implicit symbol are included.
      *
      * Units are sorted by symbol.
      */
