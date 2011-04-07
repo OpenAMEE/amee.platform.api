@@ -2,8 +2,10 @@ package com.amee.domain.item.profile;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IProfileItemService;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItem;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.profile.CO2CalculationService;
@@ -260,4 +262,29 @@ public class ProfileItem extends BaseItem {
     protected CO2CalculationService getCalculationService() {
         return ThreadBeanHolder.get(CO2CalculationService.class);
     }
+
+    /**
+     * Simulates the legacy Item.getItemValuesMap method. Usage of this is discouraged.
+     * <p/>
+     * This is used in algorithms.
+     *
+     * @return an ItemValueMap of {@link com.amee.domain.item.BaseItemValue} instances.
+     */
+    @Deprecated
+    @Transient
+    public ItemValueMap getItemValuesMap() {
+        return getProfileItemService().getItemValuesMap(this);
+    }
+
+    /**
+     * Gets the IProfileItemService bound to the current thread. Usage of this is discouraged.
+     *
+     * @return the current {@link IProfileItemService}
+     */
+    @Deprecated
+    @Transient
+    private IProfileItemService getProfileItemService() {
+        return ThreadBeanHolder.get(IProfileItemService.class);
+    }
+
 }
