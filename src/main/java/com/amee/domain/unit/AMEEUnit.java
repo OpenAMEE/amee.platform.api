@@ -40,6 +40,11 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
         super();
     }
 
+    public AMEEUnit(AMEEUnitType unitType) {
+        super();
+        setUnitType(unitType);
+    }
+
     public AMEEUnit(String name) {
         this();
         setName(name);
