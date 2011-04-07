@@ -79,7 +79,7 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                                 // Ensure Unit is unique on symbol.
                                 AMEEUnit thisUnit = (AMEEUnit) object;
                                 if (thisUnit != null) {
-                                    if (!unitService.isUnitUniqueBySymbol(thisUnit)) {
+                                    if (!unitService.isUnitUniqueByInternalSymbol(thisUnit)) {
                                         errors.rejectValue("internalSymbol", "duplicate");
                                     }
                                 }
@@ -102,7 +102,7 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                                 // Ensure Unit is unique on symbol.
                                 AMEEUnit thisUnit = (AMEEUnit) object;
                                 if (thisUnit != null) {
-                                    if (!unitService.isUnitUniqueBySymbol(thisUnit)) {
+                                    if (!unitService.isUnitUniqueByExternalSymbol(thisUnit)) {
                                         errors.rejectValue("externalSymbol", "duplicate");
                                     }
                                 }
