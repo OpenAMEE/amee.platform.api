@@ -89,7 +89,6 @@ class UnitTypeIT extends BaseApiTest {
 
     def getAllUnitTypesJson(version) {
         if (version >= 3.5) {
-
             def response = client.get(
                     path: "/${version}/units/types",
                     contentType: JSON);
