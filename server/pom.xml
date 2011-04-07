@@ -13,15 +13,15 @@
     <!-- Properties. -->
     <properties>
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.6.0-DEV</amee-platform-api.version>
+        <amee-platform-api.version>3.5.1</amee-platform-api.version>
         <amee-base.version>1.0.7</amee-base.version>
         <amee-persist.version>1.0.9</amee-persist.version>
         <amee-messaging.version>1.0.7</amee-messaging.version>
         <amee-restlet.version>1.0.12</amee-restlet.version>
         <amee-platform-science.version>1.0.13</amee-platform-science.version>
-        <amee-platform-domain.version>2.0.0</amee-platform-domain.version>
-        <amee-platform-service.version>2.0.0</amee-platform-service.version>
-        <amee-platform-resource.version>1.0.19</amee-platform-resource.version>
+        <amee-platform-domain.version>2.0.1-SNAPSHOT</amee-platform-domain.version>
+        <amee-platform-service.version>2.0.1-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-resource.version>1.0.20-SNAPSHOT</amee-platform-resource.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
