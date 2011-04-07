@@ -20,6 +20,16 @@ class UnitIT extends BaseApiTest {
             'Test Unit Two',
             'Test Unit Three'];
 
+    def unitInternalSymbols = [
+            'kg',
+            'kWh',
+            'm'];
+
+    def unitExternalSymbols = [
+            'zkg',
+            'zkWh',
+            'zm'];
+
     /**
      * Tests for creation, fetch and deletion of a Unit using JSON responses.
      *
@@ -49,8 +59,8 @@ class UnitIT extends BaseApiTest {
             setAdminUser();
 
             def name = 'Unit To Be Deleted';
-            def internalSymbol = 'ee';
-            def externalSymbol = 'ff';
+            def internalSymbol = 'oz';
+            def externalSymbol = 'zoz';
 
             // Create a new Unit.
             def responsePost = client.post(
@@ -63,7 +73,17 @@ class UnitIT extends BaseApiTest {
                     contentType: JSON);
             assertEquals 201, responsePost.status;
 
-            // TODO: Fetch the Unit.
+            // Fetch the Unit.
+            def response = client.get(
+                    path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol};full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals name, response.data.unit.name;
+            assertEquals internalSymbol, response.data.unit.internalSymbol;
+            assertEquals externalSymbol, response.data.unit.externalSymbol;
 
             // Then delete the Unit.
             def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
@@ -99,7 +119,7 @@ class UnitIT extends BaseApiTest {
     def getAllUnitsForUnitTypeJson(version) {
         if (version >= 3.5) {
             def response = client.get(
-                    path: "/${version}/units/types/AAA3DAA7A390/units",
+                    path: "/${version}/units/types/AAA3DAA7A390/units;full",
                     contentType: JSON);
             assertEquals 200, response.status;
             assertEquals 'application/json', response.contentType;
@@ -108,6 +128,8 @@ class UnitIT extends BaseApiTest {
             assertEquals unitUids.size(), response.data.units.size();
             assertEquals unitUids.sort(), response.data.units.collect {it.uid}.sort();
             assertEquals unitNames.sort(), response.data.units.collect {it.name}.sort();
+            assertEquals unitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort();
+            assertEquals unitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort();
         }
     }
 
@@ -140,6 +162,7 @@ class UnitIT extends BaseApiTest {
      * <li>Mandatory.
      * <li>Unique on lower case of entire string amongst all symbols in all Units.
      * <li>No longer than 255 characters.
+     * <li>Must be a valid unit symbol recognised by JScience.
      * </ul>
      */
     @Test
@@ -147,8 +170,9 @@ class UnitIT extends BaseApiTest {
         setAdminUser();
         updateUnitFieldJson('internalSymbol', 'empty', '');
         updateUnitFieldJson('internalSymbol', 'long', String.randomString(256));
-        updateUnitFieldJson('internalSymbol', 'duplicate', 'ef'); // Existing internalSymbol.
-        updateUnitFieldJson('internalSymbol', 'duplicate', 'kl'); // Existing externalSymbol.
+        updateUnitFieldJson('internalSymbol', 'duplicate', 'kWh'); // Existing internalSymbol.
+        updateUnitFieldJson('internalSymbol', 'duplicate', 'zm'); // Existing externalSymbol.
+        updateUnitFieldJson('internalSymbol', 'format', 'not_a_real_unit_symbol');
     }
 
     /**
@@ -166,8 +190,8 @@ class UnitIT extends BaseApiTest {
     void updateWithInvalidExternalSymbol() {
         setAdminUser();
         updateUnitFieldJson('externalSymbol', 'long', String.randomString(256));
-        updateUnitFieldJson('externalSymbol', 'duplicate', 'ef'); // Existing internalSymbol.
-        updateUnitFieldJson('externalSymbol', 'duplicate', 'kl'); // Existing externalSymbol.
+        updateUnitFieldJson('externalSymbol', 'duplicate', 'kWh'); // Existing internalSymbol.
+        updateUnitFieldJson('externalSymbol', 'duplicate', 'zm'); // Existing externalSymbol.
     }
 
     /**
