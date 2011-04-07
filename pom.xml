@@ -6,16 +6,16 @@
     <name>amee-platform-resource</name>
     <groupId>com.amee.platform</groupId>
     <artifactId>amee-platform-resource</artifactId>
-    <version>1.0.20-SNAPSHOT</version>
+    <version>1.0.21-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
     <properties>
         <!-- Versions. -->
-        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <amee-base.version>1.0.7</amee-base.version>
-        <amee-platform-service.version>2.0.1-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-service.version>2.0.1</amee-platform-service.version>
         <!-- External Versions. -->
+        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <junit.version>4.7</junit.version>
         <org-json.version>2.0</org-json.version>
         <org-mockito.version>1.8.1</org-mockito.version>
@@ -94,12 +94,12 @@
         <repository>
             <id>releases</id>
             <name>Releases Repository</name>
-            <url>https://nexus.amee.com/content/repositories/releases/</url>
+            <url>https://nexus.amee.com/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshots Repository</name>
-            <url>https://nexus.amee.com/content/repositories/snapshots/</url>
+            <url>https://nexus.amee.com/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
