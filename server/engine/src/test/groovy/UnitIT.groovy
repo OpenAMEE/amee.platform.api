@@ -74,6 +74,11 @@ class UnitIT extends BaseApiTest {
                     contentType: JSON);
             assertEquals 201, responsePost.status;
 
+            // Get and check the location.
+            def unitLocation = responsePost.headers['Location'].value;
+            def unitUid = unitLocation.split('/')[8];
+            assertTrue unitUid.size() == 12;
+
             // Fetch the Unit.
             def response = client.get(
                     path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol};full",
