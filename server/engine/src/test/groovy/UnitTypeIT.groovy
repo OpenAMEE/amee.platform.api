@@ -8,7 +8,7 @@ import static org.junit.Assert.*
  * Tests for the Unit API.
  *
  */
-class UnitIT extends BaseApiTest {
+class UnitTypeIT extends BaseApiTest {
 
     def unitTypeUids = [
             'AAA3DAA7A390',
