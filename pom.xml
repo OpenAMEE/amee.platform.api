@@ -12,7 +12,7 @@
     <properties>
         <!-- Versions. -->
         <amee-base.version>1.0.7</amee-base.version>
-        <amee-platform-service.version>2.0.1</amee-platform-service.version>
+        <amee-platform-service.version>2.0.2</amee-platform-service.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <junit.version>4.7</junit.version>
