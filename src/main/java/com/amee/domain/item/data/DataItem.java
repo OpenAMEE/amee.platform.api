@@ -129,6 +129,21 @@ public class DataItem extends BaseItem {
     }
 
     /**
+     * Simulates the legacy DataItem.getLabel method. Usage of this is discouraged.
+     * <p/>
+     * This is used in the following algorithms:
+     *  - 599C0F18A362
+     *  - 7A613C522477
+     *
+     * @return the DataItem label.
+     */
+    @Deprecated
+    @Transient
+    public String getLabel() {
+        return getDataItemService().getLabel(this);
+    }
+
+    /**
      * Simulates the legacy DataItem.getItemValues method. Usage of this is discouraged.
      * <p/>
      * This is used in algorithms.
