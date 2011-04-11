@@ -56,52 +56,53 @@ class UnitIT extends BaseApiTest {
 
     def createAndRemoveUnitJson(version) {
         if (version >= 3.5) {
+            createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce');
+            createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang');
+        }
+    }
 
-            setAdminUser();
+    def createAndRemoveUnitJson(version, name, internalSymbol, externalSymbol) {
 
-            def name = 'Unit To Be Deleted';
-            def internalSymbol = 'oz';
-            def externalSymbol = 'zoz';
+        setAdminUser();
 
-            // Create a new Unit.
-            def responsePost = client.post(
-                    path: "/${version}/units/types/1AA3DAA7A390/units",
-                    body: [
-                            name: name,
-                            internalSymbol: internalSymbol,
-                            externalSymbol: externalSymbol],
-                    requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, responsePost.status;
+        // Create a new Unit.
+        def responsePost = client.post(
+                path: "/${version}/units/types/1AA3DAA7A390/units",
+                body: [
+                        name: name,
+                        internalSymbol: internalSymbol,
+                        externalSymbol: externalSymbol],
+                requestContentType: URLENC,
+                contentType: JSON);
+        assertEquals 201, responsePost.status;
 
-            // Get and check the location.
-            def unitLocation = responsePost.headers['Location'].value;
-            def unitUid = unitLocation.split('/')[8];
-            assertTrue unitUid.size() == 12;
+        // Get and check the location.
+        def unitLocation = responsePost.headers['Location'].value;
+        def unitUid = unitLocation.split('/')[8];
+        assertTrue unitUid.size() == 12;
 
-            // Fetch the Unit.
-            def response = client.get(
-                    path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol};full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals name, response.data.unit.name;
-            assertEquals internalSymbol, response.data.unit.internalSymbol;
-            assertEquals externalSymbol, response.data.unit.externalSymbol;
+        // Fetch the Unit.
+        def response = client.get(
+                path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol};full",
+                contentType: JSON);
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals name, response.data.unit.name;
+        assertEquals internalSymbol, response.data.unit.internalSymbol;
+        assertEquals externalSymbol, response.data.unit.externalSymbol;
 
-            // Then delete the Unit.
-            def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
-            assertEquals 200, responseDelete.status;
+        // Then delete the Unit.
+        def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
+        assertEquals 200, responseDelete.status;
 
-            // We should get a 404 here.
-            try {
-                client.get(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
-                fail 'Should have thrown an exception';
-            } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
-            }
+        // We should get a 404 here.
+        try {
+            client.get(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
         }
     }
 
@@ -160,8 +161,6 @@ class UnitIT extends BaseApiTest {
         setAdminUser();
         updateUnitFieldJson('name', 'empty', '');
         updateUnitFieldJson('name', 'long', String.randomString(256));
-        updateUnitFieldJson('name', 'duplicate', 'Test Unit Two'); // Normal case.
-        updateUnitFieldJson('name', 'duplicate', 'test unit two'); // Lower case.
     }
 
     /**
@@ -182,7 +181,6 @@ class UnitIT extends BaseApiTest {
         updateUnitFieldJson('internalSymbol', 'empty', '');
         updateUnitFieldJson('internalSymbol', 'long', String.randomString(256));
         updateUnitFieldJson('internalSymbol', 'duplicate', 'kWh'); // Existing internalSymbol.
-        updateUnitFieldJson('internalSymbol', 'duplicate', 'zm'); // Existing externalSymbol.
         updateUnitFieldJson('internalSymbol', 'format', 'not_a_real_unit_symbol');
     }
 
@@ -201,8 +199,6 @@ class UnitIT extends BaseApiTest {
     void updateWithInvalidExternalSymbol() {
         setAdminUser();
         updateUnitFieldJson('externalSymbol', 'long', String.randomString(256));
-        updateUnitFieldJson('externalSymbol', 'duplicate', 'kWh'); // Existing internalSymbol.
-        updateUnitFieldJson('externalSymbol', 'duplicate', 'zm'); // Existing externalSymbol.
     }
 
     /**
