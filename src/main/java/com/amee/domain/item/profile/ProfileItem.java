@@ -175,12 +175,12 @@ public class ProfileItem extends BaseItem {
      * The following algorithms call this method:
      *  - 599C0F18A362 (Computers Generic)
      *  - 7A613C522477 (Entertainment Generic)
-     *
+     *  
      * @return the double value of the default GHG amount.
      */
     @Deprecated
     public double getAmount() {
-        return amounts.defaultValueAsDouble();
+        return getAmounts().defaultValueAsDouble();
     }
 
     public void setAmounts(ReturnValues amounts) {
