@@ -50,20 +50,6 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                 .setName("name")
                 .setMaxSize(AMEEUnit.NAME_MAX_SIZE)
                 .setAllowEmpty(false)
-                .setCustomValidation(
-                        new ValidationSpecification.CustomValidation() {
-                            @Override
-                            public int validate(Object object, Object value, Errors errors) {
-                                // Ensure Unit is unique on name.
-                                AMEEUnit thisUnit = (AMEEUnit) object;
-                                if (thisUnit != null) {
-                                    if (!unitService.isUnitUniqueByName(thisUnit)) {
-                                        errors.rejectValue("name", "duplicate");
-                                    }
-                                }
-                                return ValidationSpecification.CONTINUE;
-                            }
-                        })
         );
     }
 
@@ -102,20 +88,6 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                 .setName("externalSymbol")
                 .setMaxSize(AMEEUnit.SYMBOL_MAX_SIZE)
                 .setAllowEmpty(true)
-                .setCustomValidation(
-                        new ValidationSpecification.CustomValidation() {
-                            @Override
-                            public int validate(Object object, Object value, Errors errors) {
-                                // Ensure Unit is unique on symbol.
-                                AMEEUnit thisUnit = (AMEEUnit) object;
-                                if (thisUnit != null) {
-                                    if (!unitService.isUnitUniqueByExternalSymbol(thisUnit)) {
-                                        errors.rejectValue("externalSymbol", "duplicate");
-                                    }
-                                }
-                                return ValidationSpecification.CONTINUE;
-                            }
-                        })
         );
     }
 
