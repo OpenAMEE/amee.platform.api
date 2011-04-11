@@ -820,6 +820,18 @@ class CategoryIT extends BaseApiTest {
      * @param value to submit
      */
     def updateCategoryFieldJson(field, code, value) {
-        updateInvalidFieldJson("/categories/245CBD734418", field, code, value, 3.0)
+        updateCategoryFieldJson(field, code, value, 3.0)
+    }
+
+    /**
+     * Submits a single Data Category field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     */
+    def updateCategoryFieldJson(field, code, value, since) {
+        updateInvalidFieldJson("/categories/245CBD734418", field, code, value, since)
     }
 }
