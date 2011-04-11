@@ -107,9 +107,9 @@ class UnitIT extends BaseApiTest {
     }
 
     /**
-     * Tests fetching a list of Units for a Unit Type using JSON.
+     * Tests fetching a single unit.
      *
-     * Units GET requests support the following matrix parameters to modify the response.
+     * Unit GET requests support the following matrix parameters to modify the response.
      *
      * <ul>
      * <li>full - include all values.
@@ -117,7 +117,42 @@ class UnitIT extends BaseApiTest {
      * <li>symbols - include the internalSymbol and externalSymbol values.
      * <li>unitType - include the unitType value. This is the UID and name of the Unit Type.
      * <li>internalUnit - include the JScience toString value based in the internalSymbol.
+     * <li>alternatives - include a list of alternative units (those that share the unit type).
      * </ul>
+     *
+     * By default the unit UID, name and implicit symbol are included.
+     */
+    @Test
+    void getSingleUnitJson() {
+        versions.each { version -> getSingleUnitJson(version) }
+    }
+
+    def getSingleUnitJson(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units/types/AAA3DAA7A390/units/kg;full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals '1BB3DAA7A390', response.data.unit.uid;
+            assertEquals 'Test Unit One', response.data.unit.name;
+            assertEquals 'zkg', response.data.unit.symbol;
+            assertEquals 'kg', response.data.unit.internalSymbol;
+            assertEquals 'zkg', response.data.unit.externalSymbol;
+            assertEquals 2, response.data.alternatives.size();
+            assertEquals(['2BB3DAA7A390', '3BB3DAA7A390'].sort(), response.data.alternatives.collect {it.uid}.sort());
+            assertEquals(['Test Unit Two', 'Test Unit Three'].sort(), response.data.alternatives.collect {it.name}.sort());
+            assertEquals(['zkWh', 'zm'].sort(), response.data.alternatives.collect {it.symbol}.sort());
+        }
+    }
+
+    /**
+     * Tests fetching a list of Units for a Unit Type using JSON.
+     *
+     * Units GET requests support the same matrix parameters as GETs for a single unit, except for the
+     * alternatives matrix parameter.
      *
      * By default the unit UID, name and implicit symbol are included.
      *
