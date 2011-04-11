@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.platform.resource.unit.UnitResource;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class UnitJSONRenderer_3_5_0 implements UnitResource.Renderer {
     protected AMEEUnit unit;
     protected JSONObject rootObj;
     protected JSONObject unitObj;
+    protected JSONArray alternativeUnitsArr;
 
     @Override
     public void start() {
@@ -67,6 +69,25 @@ public class UnitJSONRenderer_3_5_0 implements UnitResource.Renderer {
     @Override
     public void addInternalUnit() {
         ResponseHelper.put(unitObj, "internalUnit", unit.getInternalUnit().toString());
+    }
+
+    @Override
+    public void startAlternativeUnits() {
+        if (rootObj != null) {
+            alternativeUnitsArr = new JSONArray();
+            ResponseHelper.put(rootObj, "alternatives", alternativeUnitsArr);
+        }
+    }
+
+    @Override
+    public void newAlternativeUnit(AMEEUnit alternativeUnit) {
+        if (alternativeUnitsArr != null) {
+            JSONObject alternativeUnitObj = new JSONObject();
+            ResponseHelper.put(alternativeUnitObj, "uid", alternativeUnit.getUid());
+            ResponseHelper.put(alternativeUnitObj, "name", alternativeUnit.getName());
+            ResponseHelper.put(alternativeUnitObj, "symbol", alternativeUnit.getSymbol());
+            alternativeUnitsArr.put(alternativeUnitObj);
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@ public class UnitDOMRenderer_3_5_0 implements UnitResource.Renderer {
     protected AMEEUnit unit;
     protected Element rootElem;
     protected Element unitElem;
+    protected Element alternativeUnitsElem;
 
     @Override
     public void start() {
@@ -56,15 +57,34 @@ public class UnitDOMRenderer_3_5_0 implements UnitResource.Renderer {
 
     @Override
     public void addUnitType() {
-        Element e = new Element("UnitType");
-        unitElem.addContent(e);
-        e.setAttribute("uid", unit.getUnitType().getUid());
-        e.addContent(new Element("Name").setText(unit.getUnitType().getName()));
+        Element unitTypeElem = new Element("UnitType");
+        unitElem.addContent(unitTypeElem);
+        unitTypeElem.setAttribute("uid", unit.getUnitType().getUid());
+        unitTypeElem.addContent(new Element("Name").setText(unit.getUnitType().getName()));
     }
 
     @Override
     public void addInternalUnit() {
         unitElem.addContent(new Element("InternalUnit").setText(unit.getInternalUnit().toString()));
+    }
+
+    @Override
+    public void startAlternativeUnits() {
+        if (rootElem != null) {
+            alternativeUnitsElem = new Element("Alternatives");
+            rootElem.addContent(alternativeUnitsElem);
+        }
+    }
+
+    @Override
+    public void newAlternativeUnit(AMEEUnit alternativeUnit) {
+        if (alternativeUnitsElem != null) {
+            Element alternativeUnitElem = new Element("Unit");
+            alternativeUnitsElem.addContent(alternativeUnitElem);
+            alternativeUnitElem.setAttribute("uid", alternativeUnit.getUid());
+            alternativeUnitElem.addContent(new Element("Name").setText(alternativeUnit.getName()));
+            alternativeUnitElem.addContent(new Element("Symbol").setText(alternativeUnit.getSymbol()));
+        }
     }
 
     public String getMediaType() {

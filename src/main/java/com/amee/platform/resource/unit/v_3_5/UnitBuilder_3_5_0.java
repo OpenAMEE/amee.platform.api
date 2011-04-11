@@ -9,6 +9,7 @@ import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.unit.UnitResource;
 import com.amee.service.auth.ResourceAuthorizationService;
+import com.amee.service.unit.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.5.0")
 public class UnitBuilder_3_5_0 implements UnitResource.Builder {
+
+    @Autowired
+    private UnitService unitService;
 
     @Autowired
     private ResourceService resourceService;
@@ -64,6 +68,7 @@ public class UnitBuilder_3_5_0 implements UnitResource.Builder {
         boolean symbols = requestWrapper.getMatrixParameters().containsKey("symbols");
         boolean unitType = requestWrapper.getMatrixParameters().containsKey("unitType");
         boolean internalUnit = requestWrapper.getMatrixParameters().containsKey("internalUnit");
+        boolean alternatives = requestWrapper.getMatrixParameters().containsKey("alternatives");
 
         // New Unit & basic.
         renderer.newUnit(unit);
@@ -81,6 +86,12 @@ public class UnitBuilder_3_5_0 implements UnitResource.Builder {
         }
         if (internalUnit || full) {
             renderer.addInternalUnit();
+        }
+        if (alternatives || full) {
+            renderer.startAlternativeUnits();
+            for (AMEEUnit alternativeUnit : unitService.getAlternativeUnits(unit)) {
+                renderer.newAlternativeUnit(alternativeUnit);
+            }
         }
     }
 

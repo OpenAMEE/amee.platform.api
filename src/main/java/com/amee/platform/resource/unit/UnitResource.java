@@ -32,6 +32,10 @@ public interface UnitResource {
 
         public void addInternalUnit();
 
+        public void startAlternativeUnits();
+
+        public void newAlternativeUnit(AMEEUnit u);
+
         public Object getObject();
     }
 

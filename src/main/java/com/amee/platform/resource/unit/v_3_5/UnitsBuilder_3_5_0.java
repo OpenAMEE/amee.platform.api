@@ -48,6 +48,9 @@ public class UnitsBuilder_3_5_0 implements UnitsResource.Builder {
         resourceAuthorizationService.ensureAuthorizedForBuild(
                 requestWrapper.getAttributes().get("activeUserUid"), unitType);
 
+        // Disallow 'alternatives' matrix parameter.
+        requestWrapper.getMatrixParameters().remove("alternatives");
+
         // Start Renderer.
         UnitsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
