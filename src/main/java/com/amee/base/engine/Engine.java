@@ -41,16 +41,27 @@ public class Engine implements WrapperListener {
         this.instanceName = instanceName;
     }
 
+    /**
+     * A main method which can be used to start an {@link Engine}.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         start(new Engine(), args);
     }
 
+    /**
+     * Start the application via {@link WrapperManager}.
+     *
+     * @param wrapperListener to use when starting the application.
+     * @param args            command line arguments
+     */
     protected static void start(WrapperListener wrapperListener, String[] args) {
         WrapperManager.start(wrapperListener, args);
     }
 
     /**
-     * Start the application.
+     * Start the application. This implements the start method of {@link WrapperListener}.
      *
      * @param args command line arguments
      * @return error code
