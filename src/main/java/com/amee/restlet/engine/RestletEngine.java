@@ -7,6 +7,9 @@ import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.service.LogService;
 
+/**
+ * Extends {@link Engine} to bootstrap an application based on Spring and Restlet with a Jetty web server.
+ */
 public class RestletEngine extends Engine {
 
     private final Log log = LogFactory.getLog(getClass());
@@ -21,10 +24,20 @@ public class RestletEngine extends Engine {
         super(instanceName, serverName, instanceName);
     }
 
+    /**
+     * A main method which can be used to start a {@link RestletEngine}.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         start(new RestletEngine(), args);
     }
 
+    /**
+     * A callback for when the application has started. Will start the Restlet container and Jetty.
+     *
+     * @return returns true if the application started successfully
+     */
     @Override
     protected boolean onStart() {
         // Obtain the Restlet container.
@@ -67,6 +80,12 @@ public class RestletEngine extends Engine {
         }
     }
 
+    /**
+     * A callback for when the application has shutdown. Will shutdown the Restlet Container and then
+     * call onShutdown in {@link Engine} to stop Spring.
+     *
+     * @return returns true if the application has shutdown successfully
+     */
     @Override
     protected boolean onShutdown() {
         // Stop Restlet Container. Wait 500ms.
@@ -89,6 +108,11 @@ public class RestletEngine extends Engine {
         return super.onShutdown();
     }
 
+    /**
+     * Get the Restlet container {@link Component}.
+     *
+     * @return the Restlet container {@link Component}
+     */
     public Component getContainer() {
         return container;
     }
