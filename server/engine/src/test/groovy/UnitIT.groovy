@@ -58,6 +58,7 @@ class UnitIT extends BaseApiTest {
         if (version >= 3.5) {
             createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce');
             createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang');
+            // createAndRemoveUnitJson(version, 'Meters Per Second', URLEncoder.encode('m/s'), URLEncoder.encode('m/s'));
         }
     }
 
