@@ -55,10 +55,18 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
         setInternalSymbol(internalSymbol);
     }
 
-
     public AMEEUnit(String name, String internalSymbol, String externalSymbol) {
         this(name, internalSymbol);
         setExternalSymbol(externalSymbol);
+    }
+
+    public AMEEUnit(Unit unit, Unit perUnit) {
+        this();
+        setInternalSymbol(unit.divide(perUnit).toString());
+    }
+
+    public static AMEEUnit toAMEEUnit(Unit unit, Unit perUnit) {
+        return new AMEEUnit(unit, perUnit);
     }
 
     @Override
@@ -82,7 +90,7 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
     @Override
     @Transient
     public String getFullPath() {
-        return getPath();
+        return getUnitType().getFullPath() + "/units/" + getDisplayPath();
     }
 
     @Override
@@ -129,6 +137,56 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
     @Transient
     public Unit getInternalUnit() {
         return getAmountUnit().toUnit();
+    }
+
+    /**
+     * Extracts the numerator unit from the unit. This is the bit before the '/' in some units.
+     *
+     * @return the numerator
+     */
+    @Transient
+    public Unit getInternalNumeratorUnit() {
+        String unitStr = getInternalUnit().toString();
+        if (unitStr.contains("/")) {
+            try {
+                return AmountUnit.valueOf(unitStr.split("/")[0]).toUnit();
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("The unit does not have a numerator.");
+            }
+        } else {
+            throw new IllegalStateException("The unit does not have a numerator.");
+        }
+    }
+
+    /**
+     * Extracts the denominator or per unit from the unit. This is the bit after the '/' in some units.
+     *
+     * @return the denominator
+     */
+    @Transient
+    public Unit getInternalDenominatorUnit() {
+        String unitStr = getInternalUnit().toString();
+        if (unitStr.contains("/")) {
+            try {
+                return AmountUnit.valueOf(unitStr.split("/")[1]).toUnit();
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("The unit does not have a denominator.");
+            }
+        } else {
+            throw new IllegalStateException("The unit does not have a denominator.");
+        }
+    }
+
+    /**
+     * Extracts the denominator or per unit from the unit. This is the bit after the '/' in some units.
+     * <p/>
+     * This is a convenient alias for getInternalDenominatorUnit.
+     *
+     * @return the denominator
+     */
+    @Transient
+    public Unit getInternalPerUnit() {
+        return getInternalDenominatorUnit();
     }
 
     public AMEEUnitType getUnitType() {

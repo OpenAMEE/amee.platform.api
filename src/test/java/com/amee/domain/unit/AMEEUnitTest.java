@@ -33,4 +33,18 @@ public class AMEEUnitTest {
         assertEquals(u1.getSymbol(), "\u00C5");
         assertEquals(u2.getSymbol(), "ang");
     }
+
+    @Test
+    public void canCreateAMEEUnitFromUnitAndPerUnit() {
+        AMEEUnit u = new AMEEUnit(SI.METER, SI.SECOND);
+        assertEquals(u.getSymbol(), "m/s");
+    }
+
+    @Test
+    public void canGetUnitAndPerUnitFromAMEEUnit() {
+        AMEEUnit u = new AMEEUnit("Meters Per Second", "m/s");
+        assertEquals(u.getSymbol(), "m/s");
+        assertEquals(u.getInternalNumeratorUnit().toString(), "m");
+        assertEquals(u.getInternalDenominatorUnit().toString(), "s");
+    }
 }

@@ -56,7 +56,7 @@ public class AMEEUnitType extends AMEEEntity implements Pathable {
     @Override
     @Transient
     public String getFullPath() {
-        return getPath();
+        return "units/types/" + getDisplayPath();
     }
 
     @Override
