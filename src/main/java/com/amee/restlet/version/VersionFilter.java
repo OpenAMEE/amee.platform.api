@@ -25,6 +25,14 @@ public class VersionFilter extends BaseFilter {
     @Autowired
     private Versions versions;
 
+    /**
+     * Overrides doHandle in {@link Filter} to only handle requests where the version is correct. See rules above.
+     *
+     * @param request  The request to handle.
+     * @param response The response to update.
+     * @return The continuation status. Either {@link #CONTINUE} or {@link #STOP}.
+     * @see {@link Filter}
+     */
     @Override
     protected int doHandle(Request request, Response response) {
         String v = (String) request.getAttributes().get("version");
