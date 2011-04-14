@@ -58,8 +58,7 @@ class UnitIT extends BaseApiTest {
         if (version >= 3.5) {
             createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce');
             createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang');
-            // TODO: See https://jira.amee.com/browse/PL-10851
-            // TODO: createAndRemoveUnitJson(version, 'Meters Per Second', URLEncoder.encode('m/s'), URLEncoder.encode('m/s'));
+            createAndRemoveUnitJson(version, 'Meters Per Second', 'm/s', 'm/s');
         }
     }
 
@@ -85,7 +84,7 @@ class UnitIT extends BaseApiTest {
 
         // Fetch the Unit.
         def response = client.get(
-                path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol};full",
+                path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid};full",
                 contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
@@ -96,12 +95,12 @@ class UnitIT extends BaseApiTest {
         assertEquals externalSymbol, response.data.unit.externalSymbol;
 
         // Then delete the Unit.
-        def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
+        def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid}");
         assertEquals 200, responseDelete.status;
 
         // We should get a 404 here.
         try {
-            client.get(path: "/${version}/units/types/1AA3DAA7A390/units/${internalSymbol}");
+            client.get(path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid}");
             fail 'Should have thrown an exception';
         } catch (HttpResponseException e) {
             assertEquals 404, e.response.status;
