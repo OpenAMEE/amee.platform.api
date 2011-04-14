@@ -17,10 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Status;
+import org.restlet.data.*;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.*;
 
@@ -69,12 +66,16 @@ public class GenericResource extends Resource {
     @Override
     public Representation represent(Variant variant) {
         Representation representation;
+        // Get a Representation.
         if (!hasValidationResults()) {
             representation = getBuildManager().getRepresentation(variant);
         } else {
             representation = getValidationResultRepresentation(variant.getMediaType());
         }
-        if (representation == null) {
+        // Update Representation with CharacterSet.
+        if (representation != null) {
+            representation.setCharacterSet(CharacterSet.UTF_8);
+        } else {
             log.warn("represent() Representation was null.");
         }
         return representation;
