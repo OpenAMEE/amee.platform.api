@@ -10,23 +10,26 @@
 
     <!-- Properties. -->
     <properties>
+
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-cli.version>1.2</commons-cli.version>
-        <commons-codec.version>1.4</commons-codec.version>
-        <commons-lang.version>2.5</commons-lang.version>
-        <commons-io.version>1.4</commons-io.version>
+        <commons-codec.version>1.5</commons-codec.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <commons-io.version>2.0.1</commons-io.version>
         <ehcache.version>1.6.2</ehcache.version>
-        <joda-time.version>1.6</joda-time.version>
-        <junit.version>4.7</junit.version>
-        <log4j.version>1.2.15</log4j.version>
-        <org-aspectj.version>1.6.8</org-aspectj.version>
-        <org.jdom.version>1.1</org.jdom.version>
+        <javax.mail.version>1.4.4</javax.mail.version>
+        <joda-time.version>1.6.2</joda-time.version>
+        <junit.version>4.8.2</junit.version>
+        <log4j.version>1.2.16</log4j.version>
+        <org-aspectj.version>1.6.10</org-aspectj.version>
+        <org.jdom.version>1.1.1</org.jdom.version>
         <org.json.version>2.0</org.json.version>
-        <org-mockito.version>1.8.1</org-mockito.version>
+        <org-mockito.version>1.8.5</org-mockito.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <spy-memcached.version>2.4</spy-memcached.version>
+        <spy-memcached.version>2.5</spy-memcached.version>
         <wrapper-standard.version>3.5.3</wrapper-standard.version>
+
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -114,6 +117,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+	        <groupId>javax.mail</groupId>
+	        <artifactId>mail</artifactId>
+	        <version>${javax.mail.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
