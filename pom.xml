@@ -10,17 +10,20 @@
 
     <!-- Properties. -->
     <properties>
+
         <!-- Internal Versions. -->
         <amee-base.version>1.0.7</amee-base.version>
+
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <hibernate-core.version>3.6.0.Final</hibernate-core.version>
+        <hibernate-core.version>3.6.3.Final</hibernate-core.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <org-aspectj.version>1.6.8</org-aspectj.version>
-        <junit.version>4.7</junit.version>
+        <org-aspectj.version>1.6.10</org-aspectj.version>
+        <junit.version>4.8.2</junit.version>
         <hsqldb.version>2.0.0</hsqldb.version>
-        <slf4j.version>1.5.11</slf4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
+
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
