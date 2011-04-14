@@ -1,7 +1,6 @@
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.URLENC
+import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
 /**
@@ -18,7 +17,7 @@ class UnitTypeIT extends BaseApiTest {
             'Test Unit Type Two'];
 
     /**
-     * Tests for creation, fetch and deletion of a Unit Type using JSON responses.
+     * Tests for creation, fetch and deletion of a Unit Type using JSON & XML responses.
      *
      * Create a new Unit Type by POSTing to '/units/types'
      *
@@ -34,8 +33,13 @@ class UnitTypeIT extends BaseApiTest {
      *
      */
     @Test
-    void createAndRemoveUnitTypeJson() {
-        versions.each { version -> createAndRemoveUnitTypeJson(version) }
+    void createAndRemoveUnitType() {
+        versions.each { version -> createAndRemoveUnitType(version) }
+    }
+
+    def createAndRemoveUnitType(version) {
+        createAndRemoveUnitTypeJson(version);
+        createAndRemoveUnitTypeXml(version);
     }
 
     def createAndRemoveUnitTypeJson(version) {
@@ -82,8 +86,51 @@ class UnitTypeIT extends BaseApiTest {
         }
     }
 
+    def createAndRemoveUnitTypeXml(version) {
+        if (version >= 3.5) {
+
+            setAdminUser();
+
+            def name = 'Unit Type To Be Deleted';
+
+            // Create a new Unit Type.
+            def responsePost = client.post(
+                    path: "/${version}/units/types",
+                    body: [name: name],
+                    requestContentType: URLENC,
+                    contentType: XML);
+            assertEquals 201, responsePost.status;
+
+            // Get and check the location.
+            def unitTypeLocation = responsePost.headers['Location'].value;
+            def unitTypeUid = unitTypeLocation.split('/')[6];
+            assertTrue unitTypeUid.size() == 12;
+
+            // Fetch the Unit Type.
+            def response = client.get(
+                    path: "/${version}/units/types/${name};full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals name, response.data.UnitType.Name.text();
+
+            // Then delete the Unit Type.
+            def responseDelete = client.delete(path: "/${version}/units/types/${name}");
+            assertEquals 200, responseDelete.status;
+
+            // We should get a 404 here.
+            try {
+                client.get(path: "/${version}/units/types/${name}");
+                fail 'Should have thrown an exception';
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status;
+            }
+        }
+    }
+
     /**
-     * Tests fetching a list of all Unit Types using JSON.
+     * Tests fetching a list of all Unit Types using JSON & XML.
      *
      * Unit Types GET requests support the following matrix parameters to modify the response.
      *
@@ -95,8 +142,13 @@ class UnitTypeIT extends BaseApiTest {
      * Unit Types are sorted by name.
      */
     @Test
-    void getAllUnitTypesJson() {
-        versions.each { version -> getAllUnitTypesJson(version) }
+    void getAllUnitTypes() {
+        versions.each { version -> getAllUnitTypes(version) }
+    }
+
+    def getAllUnitTypes(version) {
+        getAllUnitTypesJson(version);
+        getAllUnitTypesXml(version);
     }
 
     def getAllUnitTypesJson(version) {
@@ -111,6 +163,21 @@ class UnitTypeIT extends BaseApiTest {
             assertEquals unitTypeUids.size(), response.data.unitTypes.size();
             assertEquals unitTypeUids.sort(), response.data.unitTypes.collect {it.uid}.sort();
             assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.unitTypes.collect {it.name};
+        }
+    }
+
+    def getAllUnitTypesXml(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units/types",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            def allUnitTypes = response.data.UnitTypes.UnitType;
+            assertEquals unitTypeUids.size(), allUnitTypes.size();
+            assertEquals unitTypeUids.sort(), allUnitTypes.@uid*.text().sort();
+            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, allUnitTypes.Name*.text().sort();
         }
     }
 
