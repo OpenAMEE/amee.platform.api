@@ -807,6 +807,12 @@
         <property name="defaultMatchQuery" value="false"/>
         <property name="attachments">
             <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="unitsResource"/>
+                        <property name="since" value="3.5.0"/>
+                    </bean>
+                </entry>
                 <entry key="/types">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="unitTypesResource"/>
@@ -829,6 +835,35 @@
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="unitTypeUnitResource"/>
                         <property name="since" value="3.5.0"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="unitsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPut" value="false"/>
+        <property name="allowPost" value="true"/>
+        <property name="lastSegment" value="units"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.unit.UnitsResource$Builder"/>
+            </bean>
+        </property>
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.unit.UnitsResource$FormAcceptor"/>
                     </bean>
                 </entry>
             </map>

@@ -29,6 +29,14 @@ class UnitIT extends BaseApiTest {
             'zkWh',
             'zm'];
 
+    def allUnitUids = unitUids + ['4BB3DAA7A390'];
+
+    def allUnitNames = unitNames + ['Test Unit Four'];
+
+    def allUnitInternalSymbols = unitInternalSymbols + ['km'];
+
+    def allUnitExternalSymbols = unitExternalSymbols + ['zkm'];
+
     /**
      * Tests for creation, fetch and deletion of a Unit using JSON responses.
      *
@@ -51,30 +59,46 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveUnitJson() {
-        versions.each { version -> createAndRemoveUnitJson(version) }
+        versions.each { version -> createAndRemoveUnitJson(version, true) };
+        versions.each { version -> createAndRemoveUnitJson(version, false) };
     }
 
-    def createAndRemoveUnitJson(version) {
+    def createAndRemoveUnitJson(version, useUnitTypeResource) {
         if (version >= 3.5) {
-            createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce');
-            createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang');
-            createAndRemoveUnitJson(version, 'Meters Per Second', 'm/s', 'm/s');
+            createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce', useUnitTypeResource);
+            createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang', useUnitTypeResource);
+            createAndRemoveUnitJson(version, 'Meters Per Second', 'm/s', 'm/s', useUnitTypeResource);
         }
     }
 
-    def createAndRemoveUnitJson(version, name, internalSymbol, externalSymbol) {
+    def createAndRemoveUnitJson(version, name, internalSymbol, externalSymbol, useUnitTypeResource) {
 
         setAdminUser();
 
         // Create a new Unit.
-        def responsePost = client.post(
-                path: "/${version}/units/types/1AA3DAA7A390/units",
-                body: [
-                        name: name,
-                        internalSymbol: internalSymbol,
-                        externalSymbol: externalSymbol],
-                requestContentType: URLENC,
-                contentType: JSON);
+        def responsePost;
+        if (useUnitTypeResource) {
+            // Use the Unit Type Resource.
+            responsePost = client.post(
+                    path: "/${version}/units/types/1AA3DAA7A390/units",
+                    body: [
+                            name: name,
+                            internalSymbol: internalSymbol,
+                            externalSymbol: externalSymbol],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+        } else {
+            // Use the base Units resource.
+            responsePost = client.post(
+                    path: "/${version}/units",
+                    body: [
+                            name: name,
+                            internalSymbol: internalSymbol,
+                            externalSymbol: externalSymbol,
+                            unitType: '1AA3DAA7A390'],
+                    requestContentType: URLENC,
+                    contentType: JSON);
+        }
         assertEquals 201, responsePost.status;
 
         // Get and check the location.
@@ -84,7 +108,7 @@ class UnitIT extends BaseApiTest {
 
         // Fetch the Unit.
         def response = client.get(
-                path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid};full",
+                path: "${unitLocation};full",
                 contentType: JSON);
         assertEquals 200, response.status;
         assertEquals 'application/json', response.contentType;
@@ -95,12 +119,12 @@ class UnitIT extends BaseApiTest {
         assertEquals externalSymbol, response.data.unit.externalSymbol;
 
         // Then delete the Unit.
-        def responseDelete = client.delete(path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid}");
+        def responseDelete = client.delete(path: "${unitLocation}");
         assertEquals 200, responseDelete.status;
 
         // We should get a 404 here.
         try {
-            client.get(path: "/${version}/units/types/1AA3DAA7A390/units/${unitUid}");
+            client.get(path: "${unitLocation}");
             fail 'Should have thrown an exception';
         } catch (HttpResponseException e) {
             assertEquals 404, e.response.status;
@@ -178,6 +202,38 @@ class UnitIT extends BaseApiTest {
             assertEquals unitNames.sort(), response.data.units.collect {it.name}.sort();
             assertEquals unitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort();
             assertEquals unitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort();
+        }
+    }
+
+    /**
+     * Tests fetching a list of all Units JSON.
+     *
+     * Units GET requests support the same matrix parameters as GETs for a single unit, except for the
+     * alternatives matrix parameter.
+     *
+     * By default the unit UID, name and implicit symbol are included.
+     *
+     * Units are sorted by symbol.
+     */
+    @Test
+    void getAllUnitsJson() {
+        versions.each { version -> getAllUnitsJson(version) }
+    }
+
+    def getAllUnitsJson(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units;full",
+                    contentType: JSON);
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals allUnitUids.size(), response.data.units.size();
+            assertEquals allUnitUids.sort(), response.data.units.collect {it.uid}.sort();
+            assertEquals allUnitNames.sort(), response.data.units.collect {it.name}.sort();
+            assertEquals allUnitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort();
+            assertEquals allUnitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort();
         }
     }
 
