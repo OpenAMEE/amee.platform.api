@@ -1,7 +1,6 @@
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
-import static groovyx.net.http.ContentType.JSON
-import static groovyx.net.http.ContentType.URLENC
+import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 
 /**
@@ -38,7 +37,7 @@ class UnitIT extends BaseApiTest {
     def allUnitExternalSymbols = unitExternalSymbols + ['zkm'];
 
     /**
-     * Tests for creation, fetch and deletion of a Unit using JSON responses.
+     * Tests for creation, fetch and deletion of a Unit using JSON & XML responses.
      *
      * Create a new Unit by POSTing to '/units/types/{UID|name}/units'
      *
@@ -58,17 +57,22 @@ class UnitIT extends BaseApiTest {
      *
      */
     @Test
-    void createAndRemoveUnitJson() {
-        versions.each { version -> createAndRemoveUnitJson(version, true) };
-        versions.each { version -> createAndRemoveUnitJson(version, false) };
+    void createAndRemoveUnit() {
+        versions.each { version -> createAndRemoveUnit(version, true) };
+        versions.each { version -> createAndRemoveUnit(version, false) };
     }
 
-    def createAndRemoveUnitJson(version, useUnitTypeResource) {
+    def createAndRemoveUnit(version, useUnitTypeResource) {
         if (version >= 3.5) {
-            createAndRemoveUnitJson(version, 'Ounce', 'oz', 'ounce', useUnitTypeResource);
-            createAndRemoveUnitJson(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang', useUnitTypeResource);
-            createAndRemoveUnitJson(version, 'Meters Per Second', 'm/s', 'm/s', useUnitTypeResource);
+            createAndRemoveUnit(version, 'Ounce', 'oz', 'ounce', useUnitTypeResource);
+            createAndRemoveUnit(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang', useUnitTypeResource);
+            createAndRemoveUnit(version, 'Meters Per Second', 'm/s', 'm/s', useUnitTypeResource);
         }
+    }
+
+    def createAndRemoveUnit(version, name, internalSymbol, externalSymbol, useUnitTypeResource) {
+        createAndRemoveUnitJson(version, name, internalSymbol, externalSymbol, useUnitTypeResource);
+        createAndRemoveUnitXml(version, name, internalSymbol, externalSymbol, useUnitTypeResource);
     }
 
     def createAndRemoveUnitJson(version, name, internalSymbol, externalSymbol, useUnitTypeResource) {
@@ -117,6 +121,65 @@ class UnitIT extends BaseApiTest {
         assertEquals name, response.data.unit.name;
         assertEquals internalSymbol, response.data.unit.internalSymbol;
         assertEquals externalSymbol, response.data.unit.externalSymbol;
+
+        // Then delete the Unit.
+        def responseDelete = client.delete(path: "${unitLocation}");
+        assertEquals 200, responseDelete.status;
+
+        // We should get a 404 here.
+        try {
+            client.get(path: "${unitLocation}");
+            fail 'Should have thrown an exception';
+        } catch (HttpResponseException e) {
+            assertEquals 404, e.response.status;
+        }
+    }
+
+    def createAndRemoveUnitXml(version, name, internalSymbol, externalSymbol, useUnitTypeResource) {
+
+        setAdminUser();
+
+        // Create a new Unit.
+        def responsePost;
+        if (useUnitTypeResource) {
+            // Use the Unit Type Resource.
+            responsePost = client.post(
+                    path: "/${version}/units/types/1AA3DAA7A390/units",
+                    body: [
+                            name: name,
+                            internalSymbol: internalSymbol,
+                            externalSymbol: externalSymbol],
+                    requestContentType: URLENC,
+                    contentType: XML);
+        } else {
+            // Use the base Units resource.
+            responsePost = client.post(
+                    path: "/${version}/units",
+                    body: [
+                            name: name,
+                            internalSymbol: internalSymbol,
+                            externalSymbol: externalSymbol,
+                            unitType: '1AA3DAA7A390'],
+                    requestContentType: URLENC,
+                    contentType: XML);
+        }
+        assertEquals 201, responsePost.status;
+
+        // Get and check the location.
+        def unitLocation = responsePost.headers['Location'].value;
+        def unitUid = unitLocation.split('/')[8];
+        assertTrue unitUid.size() == 12;
+
+        // Fetch the Unit.
+        def response = client.get(
+                path: "${unitLocation};full",
+                contentType: XML);
+        assertEquals 200, response.status;
+        assertEquals 'application/xml', response.contentType;
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals name, response.data.Unit.Name.text();
+        assertEquals internalSymbol, response.data.Unit.InternalSymbol.text();
+        assertEquals externalSymbol, response.data.Unit.ExternalSymbol.text();
 
         // Then delete the Unit.
         def responseDelete = client.delete(path: "${unitLocation}");
