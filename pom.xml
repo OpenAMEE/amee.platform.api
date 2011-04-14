@@ -10,15 +10,18 @@
 
     <!-- Properties. -->
     <properties>
+
         <!-- Internal Versions. -->
         <amee-base.version>1.0.7</amee-base.version>
+
         <!-- External Versions. -->
-        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
-        <commons-lang.version>2.5</commons-lang.version>
-        <jetty.version>6.1.15</jetty.version>
-        <junit.version>4.7</junit.version>
+        <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
+        <commons-lang.version>2.6</commons-lang.version>
+        <jetty.version>6.1.26</jetty.version>
+        <junit.version>4.8.2</junit.version>
         <restlet.version>1.1.10</restlet.version>
-        <xerces.version>2.9.1</xerces.version>
+        <xerces.version>2.11.0</xerces.version>
+
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
