@@ -195,7 +195,7 @@ class UnitIT extends BaseApiTest {
     }
 
     /**
-     * Tests fetching a single unit.
+     * Tests fetching a single unit using JSON & XML.
      *
      * Unit GET requests support the following matrix parameters to modify the response.
      *
@@ -211,8 +211,13 @@ class UnitIT extends BaseApiTest {
      * By default the unit UID, name and implicit symbol are included.
      */
     @Test
-    void getSingleUnitJson() {
-        versions.each { version -> getSingleUnitJson(version) }
+    void getSingleUnit() {
+        versions.each { version -> getSingleUnit(version) }
+    }
+
+    def getSingleUnit(version) {
+        getSingleUnitJson(version);
+        getSingleUnitXml(version);
     }
 
     def getSingleUnitJson(version) {
@@ -236,8 +241,29 @@ class UnitIT extends BaseApiTest {
         }
     }
 
+    def getSingleUnitXml(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units/types/AAA3DAA7A390/units/kg;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            assertEquals '1BB3DAA7A390', response.data.Unit.@uid.text();
+            assertEquals 'Test Unit One', response.data.Unit.Name.text();
+            assertEquals 'zkg', response.data.Unit.Symbol.text();
+            assertEquals 'kg', response.data.Unit.InternalSymbol.text();
+            assertEquals 'zkg', response.data.Unit.ExternalSymbol.text();
+            def allAlternatives = response.data.Alternatives.Unit;
+            assertEquals 2, allAlternatives.size();
+            assertEquals(['2BB3DAA7A390', '3BB3DAA7A390'].sort(), allAlternatives.@uid*.text().sort());
+            assertEquals(['Test Unit Two', 'Test Unit Three'].sort(), allAlternatives.Name*.text().sort());
+            assertEquals(['zkWh', 'zm'].sort(), allAlternatives.Symbol*.text().sort());
+        }
+    }
+
     /**
-     * Tests fetching a list of Units for a Unit Type using JSON.
+     * Tests fetching a list of Units for a Unit Type using JSON & XML.
      *
      * Units GET requests support the same matrix parameters as GETs for a single unit, except for the
      * alternatives matrix parameter.
@@ -247,8 +273,13 @@ class UnitIT extends BaseApiTest {
      * Units are sorted by symbol.
      */
     @Test
-    void getAllUnitsForUnitTypeJson() {
-        versions.each { version -> getAllUnitsForUnitTypeJson(version) }
+    void getAllUnitsForUnitType() {
+        versions.each { version -> getAllUnitsForUnitType(version) }
+    }
+
+    def getAllUnitsForUnitType(version) {
+        getAllUnitsForUnitTypeJson(version);
+        getAllUnitsForUnitTypeXml(version);
     }
 
     def getAllUnitsForUnitTypeJson(version) {
@@ -268,8 +299,25 @@ class UnitIT extends BaseApiTest {
         }
     }
 
+    def getAllUnitsForUnitTypeXml(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units/types/AAA3DAA7A390/units;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            def allUnits = response.data.Units.Unit;
+            assertEquals unitUids.size(), allUnits.size();
+            assertEquals unitUids.sort(), allUnits.@uid*.text().sort();
+            assertEquals unitNames.sort(), allUnits.Name*.text().sort();
+            assertEquals unitInternalSymbols.sort(), allUnits.InternalSymbol*.text().sort();
+            assertEquals unitExternalSymbols.sort(), allUnits.ExternalSymbol*.text().sort();
+        }
+    }
+
     /**
-     * Tests fetching a list of all Units JSON.
+     * Tests fetching a list of all Units JSON & XML.
      *
      * Units GET requests support the same matrix parameters as GETs for a single unit, except for the
      * alternatives matrix parameter.
@@ -279,8 +327,13 @@ class UnitIT extends BaseApiTest {
      * Units are sorted by symbol.
      */
     @Test
-    void getAllUnitsJson() {
-        versions.each { version -> getAllUnitsJson(version) }
+    void getAllUnits() {
+        versions.each { version -> getAllUnits(version) }
+    }
+
+    def getAllUnits(version) {
+        getAllUnitsJson(version);
+        getAllUnitsXml(version);
     }
 
     def getAllUnitsJson(version) {
@@ -297,6 +350,23 @@ class UnitIT extends BaseApiTest {
             assertEquals allUnitNames.sort(), response.data.units.collect {it.name}.sort();
             assertEquals allUnitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort();
             assertEquals allUnitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort();
+        }
+    }
+
+    def getAllUnitsXml(version) {
+        if (version >= 3.5) {
+            def response = client.get(
+                    path: "/${version}/units;full",
+                    contentType: XML);
+            assertEquals 200, response.status;
+            assertEquals 'application/xml', response.contentType;
+            assertEquals 'OK', response.data.Status.text();
+            def allUnits = response.data.Units.Unit;
+            assertEquals allUnitUids.size(), allUnits.size();
+            assertEquals allUnitUids.sort(), allUnits.@uid*.text().sort();
+            assertEquals allUnitNames.sort(), allUnits.Name*.text().sort();
+            assertEquals allUnitInternalSymbols.sort(), allUnits.InternalSymbol*.text().sort();
+            assertEquals allUnitExternalSymbols.sort(), allUnits.ExternalSymbol*.text().sort();
         }
     }
 
