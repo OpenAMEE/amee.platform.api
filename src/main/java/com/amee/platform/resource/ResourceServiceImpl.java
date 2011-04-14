@@ -266,6 +266,11 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public AMEEUnitType getUnitType(RequestWrapper requestWrapper) {
+        return getUnitType(requestWrapper, false);
+    }
+
+    @Override
+    public AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType) {
         // Get Unit Type identifier.
         String unitTypeIdentifier = requestWrapper.getAttributes().get("unitTypeIdentifier");
         if (unitTypeIdentifier != null) {
@@ -277,7 +282,11 @@ public class ResourceServiceImpl implements ResourceService {
                 throw new NotFoundException();
             }
         } else {
-            throw new MissingAttributeException("unitTypeIdentifier");
+            if (!allowMissingUnitType) {
+                throw new MissingAttributeException("unitTypeIdentifier");
+            } else {
+                return null;
+            }
         }
     }
 

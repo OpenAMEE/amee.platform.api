@@ -39,5 +39,7 @@ public interface ResourceService {
 
     public AMEEUnitType getUnitType(RequestWrapper requestWrapper);
 
+    public AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType);
+
     public AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType);
 }

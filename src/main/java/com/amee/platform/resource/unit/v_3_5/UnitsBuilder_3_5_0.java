@@ -42,11 +42,16 @@ public class UnitsBuilder_3_5_0 implements UnitsResource.Builder {
     public Object handle(RequestWrapper requestWrapper) {
 
         // Get entities.
-        AMEEUnitType unitType = resourceService.getUnitType(requestWrapper);
+        AMEEUnitType unitType = resourceService.getUnitType(requestWrapper, true);
 
         // Authorized?
-        resourceAuthorizationService.ensureAuthorizedForBuild(
-                requestWrapper.getAttributes().get("activeUserUid"), unitType);
+        if (unitType != null) {
+            resourceAuthorizationService.ensureAuthorizedForBuild(
+                    requestWrapper.getAttributes().get("activeUserUid"), unitType);
+        } else {
+            resourceAuthorizationService.ensureAuthorizedForBuild(
+                    requestWrapper.getAttributes().get("activeUserUid"));
+        }
 
         // Disallow 'alternatives' matrix parameter.
         requestWrapper.getMatrixParameters().remove("alternatives");
@@ -67,6 +72,7 @@ public class UnitsBuilder_3_5_0 implements UnitsResource.Builder {
         return renderer.getObject();
     }
 
+    @Override
     public UnitsResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (unitsRenderer == null) {
             unitsRenderer = (UnitsResource.Renderer) resourceBeanFinder.getRenderer(UnitsResource.Renderer.class, requestWrapper);

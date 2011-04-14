@@ -48,6 +48,8 @@ public interface UnitResource {
 
         public void initialise();
 
+        public void initialise(boolean addUnitType);
+
         public boolean isValid(Map<String, String> queryParameters);
 
         public AMEEUnit getObject();

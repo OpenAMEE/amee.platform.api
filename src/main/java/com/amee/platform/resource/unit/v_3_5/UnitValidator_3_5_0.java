@@ -4,6 +4,8 @@ import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.unit.AMEEUnit;
+import com.amee.domain.unit.AMEEUnitType;
+import com.amee.platform.resource.UnitTypeEditor;
 import com.amee.platform.resource.unit.UnitResource;
 import com.amee.service.unit.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
     @Autowired
     protected UnitService unitService;
 
+    @Autowired
+    protected UnitTypeEditor unitTypeEditor;
+
     protected AMEEUnit unit;
     protected Set<String> allowedFields = new HashSet<String>();
 
@@ -39,9 +44,17 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
 
     @Override
     public void initialise() {
+        initialise(false);
+    }
+
+    @Override
+    public void initialise(boolean addUnitType) {
         addName();
         addInternalSymbol();
         addExternalSymbol();
+        if (addUnitType) {
+            addUnitType();
+        }
     }
 
     protected void addName() {
@@ -88,6 +101,15 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
                 .setName("externalSymbol")
                 .setMaxSize(AMEEUnit.SYMBOL_MAX_SIZE)
                 .setAllowEmpty(true)
+        );
+    }
+
+    protected void addUnitType() {
+        allowedFields.add("unitType");
+        add(AMEEUnitType.class, "unitType", unitTypeEditor);
+        add(new ValidationSpecification()
+                .setName("unitType")
+                .setAllowEmpty(false)
         );
     }
 
