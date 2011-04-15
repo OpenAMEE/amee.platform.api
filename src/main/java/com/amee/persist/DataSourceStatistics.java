@@ -4,6 +4,9 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Spring bean intended for use as a JMX bean to expose statistics about the current DataSource.
+ */
 @Service("dataSourceStatistics")
 public class DataSourceStatistics {
 

@@ -22,6 +22,9 @@ import javax.persistence.PersistenceException;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * An implementation of {@link TransactionController} for custom database transaction lifecycle management.
+ */
 public class TransactionControllerImpl extends EntityManagerFactoryAccessor implements TransactionController, ApplicationContextAware {
 
     @Autowired
@@ -101,6 +104,9 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         }
     }
 
+    /**
+     * Ends the the current transaction.
+     */
     public void end() {
         onBeforeEnd();
         commitOrRollbackTransaction();
@@ -109,10 +115,16 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         onEnd();
     }
 
+    /**
+     * Sends a BEFORE_END event before a transaction ends.
+     */
     public void onBeforeEnd() {
         applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.BEFORE_END));
     }
 
+    /**
+     * Sends an END event when a transaction has ended.
+     */
     public void onEnd() {
         applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.END));
     }
@@ -151,14 +163,23 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         transactionRollback.set(null);
     }
 
+    /**
+     * Sends a ROLLBACK event when a transaction has rolled-back.
+     */
     public void onRollback() {
         applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.ROLLBACK));
     }
 
+    /**
+     * Sends a COMMIT event when a transaction has been committed.
+     */
     public void onCommit() {
         applicationContext.publishEvent(new TransactionEvent(this, TransactionEventType.COMMIT));
     }
 
+    /**
+     * Opens an {@link EntityManager} if one is not already open.
+     */
     public void openEntityManager() {
         // Return if there is an EntityManager already associated with this request.
         if (TransactionSynchronizationManager.hasResource(getEntityManagerFactory()))
@@ -173,6 +194,9 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         }
     }
 
+    /**
+     * Ensures the currently active {@link EntityManager} is closed, if one exists.
+     */
     public void ensureEntityManagerIsClosed() {
         // Return if there is no EntityManager already associated with this request.
         if (!TransactionSynchronizationManager.hasResource(getEntityManagerFactory()))
@@ -186,6 +210,9 @@ public class TransactionControllerImpl extends EntityManagerFactoryAccessor impl
         }
     }
 
+    /**
+     * Set the current transaction to only rollback.
+     */
     public void setRollbackOnly() {
         transactionRollback.set(true);
     }
