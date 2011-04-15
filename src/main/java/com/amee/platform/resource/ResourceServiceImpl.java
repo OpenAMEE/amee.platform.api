@@ -13,10 +13,13 @@ import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.tag.Tag;
+import com.amee.domain.unit.AMEEUnit;
+import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
 import com.amee.service.tag.TagService;
+import com.amee.service.unit.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UnitService unitService;
 
     @Autowired
     private MessageSource messageSource;
@@ -255,6 +261,49 @@ public class ResourceServiceImpl implements ResourceService {
             }
         } else {
             throw new MissingAttributeException("tagIdentifier");
+        }
+    }
+
+    @Override
+    public AMEEUnitType getUnitType(RequestWrapper requestWrapper) {
+        return getUnitType(requestWrapper, false);
+    }
+
+    @Override
+    public AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType) {
+        // Get Unit Type identifier.
+        String unitTypeIdentifier = requestWrapper.getAttributes().get("unitTypeIdentifier");
+        if (unitTypeIdentifier != null) {
+            // Get Unit Type.
+            AMEEUnitType unitType = unitService.getUnitTypeByIdentifier(unitTypeIdentifier);
+            if (unitType != null) {
+                return unitType;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            if (!allowMissingUnitType) {
+                throw new MissingAttributeException("unitTypeIdentifier");
+            } else {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType) {
+        // Get Unit identifier.
+        String unitIdentifier = requestWrapper.getAttributes().get("unitIdentifier");
+        if (unitIdentifier != null) {
+            // Get Unit.
+            AMEEUnit unit = unitService.getUnitByIdentifier(unitIdentifier);
+            if ((unit != null) && unit.getUnitType().equals(unitType)) {
+                return unit;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("unitTypeIdentifier");
         }
     }
 }
