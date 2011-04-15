@@ -832,41 +832,6 @@ class CategoryIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateCategoryFieldJson(field, code, value, since) {
-        versions.each { version -> updateCategoryFieldJson(field, code, value, since, version) };
-    }
-
-    /**
-     * Submits a single Data Category field value and tests the result. An error is expected.
-     *
-     * @param field that is being updated
-     * @param code expected upon error
-     * @param value to submit
-     * @param since only to versions on or after this since value
-     * @param version version to test
-     */
-    def updateCategoryFieldJson(field, code, value, since, version) {
-        if (version >= since) {
-            try {
-                // Create form body.
-                def body = [:];
-                body[field] = value;
-                // Update Category (CO2_Benchmark).
-                client.put(
-                        path: "/${version}/categories/245CBD734418",
-                        body: body,
-                        requestContentType: URLENC,
-                        contentType: JSON);
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
-            } catch (HttpResponseException e) {
-                // Handle error response containing a ValidationResult.
-                def response = e.response;
-                assertEquals 400, response.status;
-                assertEquals 'application/json', response.contentType;
-                assertTrue response.data instanceof net.sf.json.JSON;
-                assertEquals 'INVALID', response.data.status;
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field});
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code});
-            }
-        }
+        updateInvalidFieldJson("/categories/245CBD734418", field, code, value, since)
     }
 }

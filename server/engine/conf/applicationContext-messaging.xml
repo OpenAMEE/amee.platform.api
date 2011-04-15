@@ -4,6 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <!-- See JavaDoc for classes in package com.amee.messaging.config for full details on the -->
+    <!-- configuration beans and properties below. -->
+
     <bean class="com.amee.messaging.config.MessagingConfig">
         <property name="runSleep" value="${MESSAGING_RUN_SLEEP}"/>
     </bean>
@@ -48,7 +51,7 @@
     </bean>
 
     <bean class="com.amee.service.invalidation.InvalidationMessageConsumer"/>
-    
+
     <!--<bean id="calculationExchange" class="com.amee.messaging.config.ExchangeConfig">-->
     <!--<property name="name" value="platform.${MESSAGING_SCOPE}.calculation"/>-->
     <!--<property name="type" value="direct"/>-->
