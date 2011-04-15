@@ -30,6 +30,8 @@
         <class>com.amee.domain.profile.Profile</class>
         <class>com.amee.domain.tag.Tag</class>
         <class>com.amee.domain.tag.EntityTag</class>
+        <class>com.amee.domain.unit.AMEEUnit</class>
+        <class>com.amee.domain.unit.AMEEUnitType</class>
         <properties>
             <!-- *** Hibernate Configuration *** -->
             <!-- See: http://www.hibernate.org/hib_docs/reference/en/html/configuration-optional.html -->
