@@ -39,6 +39,7 @@
         <hoptoad-notifier.version>1.8</hoptoad-notifier.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
+        <javax.mail.version>1.4</javax.mail.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
         <jscience.version>4.3.1</jscience.version>
@@ -291,6 +292,7 @@
                 <artifactId>gmaven-plugin</artifactId>
                 <version>1.2</version>
                 <configuration>
+                    <source>1.6</source>
                     <providerSelection>1.7</providerSelection>
                 </configuration>
                 <extensions>true</extensions>
@@ -364,11 +366,6 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency-->
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -448,6 +445,12 @@
                     <artifactId>jms</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${javax.mail.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Runtime Dependencies. -->
