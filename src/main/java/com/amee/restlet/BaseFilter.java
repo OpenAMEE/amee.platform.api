@@ -24,6 +24,13 @@ public class BaseFilter extends Filter {
         response.setStatus(fault.getStatus(), fault.getMessage());
     }
 
+    /**
+     * Get the current {@link RequestContext} object from the request attributes. Will throw
+     * a {@link RuntimeException} if the {@link RequestContext} is not present.
+     *
+     * @param request the current {@link Request}
+     * @return the current {@link RequestContext}
+     */
     protected RequestContext getRequestContext(Request request) {
         RequestContext requestContext = (RequestContext) request.getAttributes().get("requestContext");
         if (requestContext == null) {

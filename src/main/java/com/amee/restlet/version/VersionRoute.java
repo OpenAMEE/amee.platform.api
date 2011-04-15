@@ -7,11 +7,21 @@ import org.restlet.Router;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.util.Template;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * Extends Restlet {@link Route} to provide versioning functionality with the since and until properties. The
+ * intention is to ensure a {@link Route} is only available between the specified since and until versions.
+ */
 public class VersionRoute extends Route {
 
+    /**
+     * A {link Version} which defines when a {@link Route} has been available since.
+     */
     private Version since = new Version("0");
+
+    /**
+     * A {link Version} which defines when a {@link Route} is available until.
+     */
     private Version until = new Version("x");
 
     public VersionRoute(Restlet next) {
@@ -29,6 +39,10 @@ public class VersionRoute extends Route {
         updateVersions();
     }
 
+    /**
+     * Retrieves the since and until version values from a {@link VersionFinder}, if that is the next Restlet. If a
+     * VersionFinder is not available then the since and until versions will default to the widest range (0 to x).
+     */
     public void updateVersions() {
         if ((getNext() != null) && (VersionFinder.class.isAssignableFrom(getNext().getClass()))) {
             VersionFinder versionFinder = (VersionFinder) getNext();
@@ -37,6 +51,15 @@ public class VersionRoute extends Route {
         }
     }
 
+    /**
+     * Returns the score for a given call (usually between 0 and 1.0). This overrides the method in {@link Route} to
+     * return a score of zero if the 'versionSupported' request attribute indicates a version not supported by
+     * this {@link VersionRoute} (before the since or after/on the until version).
+     *
+     * @param request  The request to score.
+     * @param response The response to score.
+     * @return The score for a given call (between 0 and 1.0).
+     */
     @Override
     public float score(Request request, Response response) {
         float result = super.score(request, response);
