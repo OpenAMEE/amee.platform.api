@@ -50,12 +50,6 @@ public class Profile extends AMEEEntity implements Pathable {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @Column(name = "PATH")
-    private String path = "";
-
-    @Column(name = "NAME")
-    private String name = "";
-
     public Profile() {
         super();
     }
@@ -145,41 +139,19 @@ public class Profile extends AMEEEntity implements Pathable {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        if (name == null) {
-            name = "";
-        }
-        this.name = name;
+        return "";
     }
 
     public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        if (path == null) {
-            path = "";
-        }
-        this.path = path;
+        return "";
     }
 
     public String getDisplayName() {
-        if (getName().length() > 0) {
-            return getName();
-        } else {
-            return getDisplayPath();
-        }
+        return getDisplayPath();
     }
 
     public String getDisplayPath() {
-        if (!getPath().isEmpty()) {
-            return getPath();
-        } else {
-            return getUid();
-        }
+        return getUid();
     }
 
     public String getFullPath() {
