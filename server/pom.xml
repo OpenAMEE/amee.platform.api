@@ -18,7 +18,7 @@
         <amee-base.version>1.0.7</amee-base.version>
         <amee-persist.version>1.0.9</amee-persist.version>
         <amee-messaging.version>1.0.7</amee-messaging.version>
-        <amee-restlet.version>1.0.12</amee-restlet.version>
+        <amee-restlet.version>1.0.13-SNAPSHOT</amee-restlet.version>
         <amee-platform-science.version>1.1.0-SNAPSHOT</amee-platform-science.version>
         <amee-platform-domain.version>2.1.0-SNAPSHOT</amee-platform-domain.version>
         <amee-platform-service.version>2.1.0-SNAPSHOT</amee-platform-service.version>
