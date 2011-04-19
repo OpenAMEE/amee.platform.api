@@ -76,6 +76,7 @@ public class GenericResource extends Resource {
         if (representation != null) {
             representation.setCharacterSet(CharacterSet.UTF_8);
         } else {
+            // TODO: Means charset is not set but it really still should be.
             log.warn("represent() Representation was null.");
         }
         return representation;
