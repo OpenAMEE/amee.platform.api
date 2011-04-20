@@ -70,7 +70,9 @@ public class ItemValueDefinitionBuilder implements Builder {
             obj.put("modified", itemValueDefinition.getModified());
             obj.put("value", itemValueDefinition.getValue());
             obj.put("choices", itemValueDefinition.getChoices());
-            obj.put("allowedRoles", itemValueDefinition.getAllowedRoles());
+
+            // AllowedRoles has been removed. See: https://jira.amee.com/browse/PL-10448
+            obj.put("allowedRoles", "");
             obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("itemDefinition", itemValueDefinition.getItemDefinition().getIdentityJSONObject());
             obj.put("aliasedTo", itemValueDefinition.getAliasedTo() == null ? JSONObject.NULL : itemValueDefinition.getAliasedTo().getIdentityJSONObject());
@@ -112,7 +114,9 @@ public class ItemValueDefinitionBuilder implements Builder {
             element.setAttribute("modified", itemValueDefinition.getModified().toString());
             element.appendChild(XMLUtils.getElement(document, "Value", itemValueDefinition.getValue()));
             element.appendChild(XMLUtils.getElement(document, "Choices", itemValueDefinition.getChoices()));
-            element.appendChild(XMLUtils.getElement(document, "AllowedRoles", itemValueDefinition.getAllowedRoles()));
+
+            // AllowedRoles has been removed. See: https://jira.amee.com/browse/PL-10448
+            element.appendChild(XMLUtils.getElement(document, "AllowedRoles", ""));
             element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(itemValueDefinition.getItemDefinition().getIdentityElement(document));
             if (itemValueDefinition.getAliasedTo() != null) {

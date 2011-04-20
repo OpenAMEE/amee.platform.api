@@ -88,9 +88,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     @Column(name = "FROM_DATA")
     private boolean fromData = false;
 
-    @Column(name = "ALLOWED_ROLES", length = ALLOWED_ROLES_MAX_SIZE, nullable = true)
-    private String allowedRoles = "";
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "ITEM_VALUE_DEFINITION_API_VERSION",
@@ -285,17 +282,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
      */
     public boolean isDrillDown() {
         return this.itemDefinition.isDrillDownValue(this);
-    }
-
-    public String getAllowedRoles() {
-        return allowedRoles;
-    }
-
-    public void setAllowedRoles(String allowedRoles) {
-        if (allowedRoles == null) {
-            allowedRoles = "";
-        }
-        this.allowedRoles = allowedRoles;
     }
 
     public void setPerUnit(AmountPerUnit perUnit) {

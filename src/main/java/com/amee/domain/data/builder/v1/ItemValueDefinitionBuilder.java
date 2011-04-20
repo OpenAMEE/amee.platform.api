@@ -54,7 +54,9 @@ public class ItemValueDefinitionBuilder implements Builder {
             obj.put("choices", itemValueDefinition.getChoices());
             obj.put("fromProfile", itemValueDefinition.isFromProfile());
             obj.put("fromData", itemValueDefinition.isFromData());
-            obj.put("allowedRoles", itemValueDefinition.getAllowedRoles());
+
+            // AllowedRoles has been removed. See: https://jira.amee.com/browse/PL-10448
+            obj.put("allowedRoles", "");
             obj.put("environment", Environment.ENVIRONMENT.getIdentityJSONObject());
             obj.put("itemDefinition", itemValueDefinition.getItemDefinition().getIdentityJSONObject());
         }
@@ -79,7 +81,9 @@ public class ItemValueDefinitionBuilder implements Builder {
             element.setAttribute("modified", itemValueDefinition.getModified().toString());
             element.appendChild(XMLUtils.getElement(document, "Value", itemValueDefinition.getValue()));
             element.appendChild(XMLUtils.getElement(document, "Choices", itemValueDefinition.getChoices()));
-            element.appendChild(XMLUtils.getElement(document, "AllowedRoles", itemValueDefinition.getAllowedRoles()));
+
+            // AllowedRoles has been removed. See: https://jira.amee.com/browse/PL-10448
+            element.appendChild(XMLUtils.getElement(document, "AllowedRoles", ""));
             element.appendChild(Environment.ENVIRONMENT.getIdentityElement(document));
             element.appendChild(itemValueDefinition.getItemDefinition().getIdentityElement(document));
         }
