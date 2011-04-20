@@ -28,7 +28,7 @@
         <org-mockito.version>1.8.5</org-mockito.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <spy-memcached.version>2.5</spy-memcached.version>
-        <wrapper-standard.version>3.5.3</wrapper-standard.version>
+        <wrapper-standard.version>3.5.7</wrapper-standard.version>
 
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
