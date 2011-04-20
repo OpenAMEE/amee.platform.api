@@ -55,7 +55,6 @@ public class ItemValueDefinitionValidator_3_0_0 extends BaseValidator implements
         addApiVersions();
         allowedFields.add("fromProfile");
         allowedFields.add("fromData");
-        allowedFields.add("allowedRoles");
     }
 
     private void addApiVersions() {
