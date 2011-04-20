@@ -107,9 +107,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     @JoinColumn(name = "ALIASED_TO_ID")
     private List<ItemValueDefinition> aliases = new ArrayList<ItemValueDefinition>();
 
-    @Column(name = "FORCE_TIMESERIES")
-    private boolean isForceTimeSeries;
-
     /**
      * A JSONObject based on the deserialized form of the configuration property.
      */
@@ -488,19 +485,6 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
             setBuilder(new ItemValueDefinitionBuilder(this));
         }
         return builder;
-    }
-
-    /**
-     * Returns whether or not this ItemValueDefinition should always be g
-     *
-     * @return true if this ItemValueDefinition should always be treated as a timeseries value
-     */
-    public boolean isForceTimeSeries() {
-        return isForceTimeSeries;
-    }
-
-    public void setForceTimeSeries(boolean isForceTimeSeries) {
-        this.isForceTimeSeries = isForceTimeSeries;
     }
 
     /**
