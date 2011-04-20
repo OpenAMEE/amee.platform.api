@@ -24,7 +24,6 @@ class ItemValueDefinitionIT extends BaseApiTest {
      * <li>choices
      * <li>fromProfile
      * <li>fromData
-     * <li>allowedRoles
      * <li>unit
      * <li>perUnit
      * <li>valueDefinition
