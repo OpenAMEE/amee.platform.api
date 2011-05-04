@@ -184,15 +184,16 @@ then
     logMessage failed to ssh to master ${master_host}, snapshot status not updated on master
 fi
 
+# We don't use Solr
 # notify Solr to open a new Searcher
-logMessage notifing Solr to open a new Searcher
-${solr_root}/bin/commit
-if [[ $? != 0 ]]
-then
-  logMessage failed to connect to Solr server
-  logMessage snapshot installed but Solr server has not open a new Searcher
-  logExit failed 1
-fi
+#logMessage notifing Solr to open a new Searcher
+#${solr_root}/bin/commit
+#if [[ $? != 0 ]]
+#then
+#  logMessage failed to connect to Solr server
+#  logMessage snapshot installed but Solr server has not open a new Searcher
+#  logExit failed 1
+#fi
 
 rm -rf "${LOCKDIR}"
 logExit ended 0
