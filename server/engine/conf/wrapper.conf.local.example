@@ -51,6 +51,9 @@ set.SECURE_PORT=8091
 wrapper.java.initmemory=256
 wrapper.java.maxmemory=1024
 
+# Ping timeout value (seconds). Increase if load is causing wrapper to think app has hung.
+wrapper.ping.timeout=30
+
 # Database
 set.DB_USERNAME=amee
 set.DB_PSWD=amee
