@@ -21,6 +21,10 @@ import java.util.List;
 
 import static junit.framework.Assert.*;
 
+/**
+ * To run this test in IntelliJ IDEA create a run configuration with the following VM parameters:
+ * -javaagent:/Users/david.keen/code/AMEE/amee.persist/target/dependency/spring-instrument-3.0.5.RELEASE.jar
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
 
@@ -196,6 +200,10 @@ public class TransactionalTest extends BaseTest {
             Thread.sleep(10 * 1000);
             assertNull("Result should be null.", result);
             assertFalse("Should not have completed.", slowResourceHandlerCompleted);
+            assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
+            assertTrue("Should have BEFORE_BEGIN event.", dummyAMEETransactionListener.getTransactionEventTypes().get(0).equals(TransactionEventType.BEFORE_BEGIN));
+            assertTrue("Should have ROLLBACK event.", dummyAMEETransactionListener.getTransactionEventTypes().get(1).equals(TransactionEventType.ROLLBACK));
+            assertTrue("Should have END event.", dummyAMEETransactionListener.getTransactionEventTypes().get(2).equals(TransactionEventType.END));
         }
         // Fetch the entity, but should be null.
         DummyEntity removedDummyEntity = dummyEntityService.getDummyEntityByUid(dummyEntity.getUid());

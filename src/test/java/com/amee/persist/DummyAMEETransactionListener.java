@@ -21,6 +21,7 @@ public class DummyAMEETransactionListener implements ApplicationListener {
     @Autowired
     private DummyEntityDAO dao;
 
+    // A list of transaction event types to be checked in tests.
     private List<TransactionEventType> transactionEventTypes = new ArrayList<TransactionEventType>();
 
     public void onApplicationEvent(ApplicationEvent e) {
