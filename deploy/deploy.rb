@@ -29,8 +29,10 @@ set :use_sudo, false
 set :user, "platform-api"
 
 # Source code and build locations
-set :src_dir, "/Development/AMEE/amee.platform.api/project/amee.platform.api"
-set :package_dir, "/Development/AMEE/amee.platform.api/project/amee.platform.api.deploy"
+raise "PLATFORM_API_SRC_DIR - #{ENV['PLATFORM_API_SRC_DIR']} does not exist" unless File.exists?(ENV['PLATFORM_API_SRC_DIR'])
+raise "PLATFORM_API_PKG_DIR - #{ENV['PLATFORM_API_PKG_DIR']} does not exist" unless File.exists?(ENV['PLATFORM_API_PKG_DIR'])
+set :src_dir, ENV['PLATFORM_API_SRC_DIR']
+set :package_dir, ENV['PLATFORM_API_PKG_DIR']
 
 # Pick tag to deploy.
 set :branch do
