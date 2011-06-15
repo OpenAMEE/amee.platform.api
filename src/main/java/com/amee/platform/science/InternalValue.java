@@ -52,7 +52,7 @@ public class InternalValue {
      * @param endDate   - the end Date to filter the series
      */
     public InternalValue(List<ExternalGenericValue> values, Date startDate, Date endDate) {
-        slog.info("Diagnostics from filtering:" + values.size() + "," + new DateTime(startDate) + "," + new DateTime(endDate));
+        slog.info("InternalValue() Diagnostics from filtering: " + values.size() + "," + new DateTime(startDate) + "," + new DateTime(endDate));
 
         if (ExternalNumberValue.class.isAssignableFrom(values.get(0).getClass())) {
             DataSeries ds = new DataSeries();
@@ -68,7 +68,7 @@ public class InternalValue {
             ds.setSeriesStartDate(new DateTime(startDate));
             ds.setSeriesEndDate(new DateTime(endDate));
             this.value = ds;
-            slog.info("Series dates" + ds.getSeriesStartDate() + "->" + ds.getSeriesEndDate());
+            slog.info("InternalValue() Series dates " + ds.getSeriesStartDate() + "->" + ds.getSeriesEndDate());
         } else {
             this.value = values;
         }
