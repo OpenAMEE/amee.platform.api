@@ -65,7 +65,7 @@
         <property name="cronExpression" value="15 0/5 * * * ?"/>
     </bean>
 
-    <!-- Search index flush: Job definition. -->
+    <!-- Search index Searcher check: Job definition. -->
     <bean id="searchIndexCheckSearcherJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="luceneService"/>
