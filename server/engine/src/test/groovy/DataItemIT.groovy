@@ -95,7 +95,7 @@ class DataItemIT extends BaseApiTest {
             assertTrue uid != null;
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
 
             // Get the new DataItem.
             def responseGet = client.get(
@@ -111,14 +111,14 @@ class DataItemIT extends BaseApiTest {
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
 
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}");
             assertEquals 200, responseDelete.status;
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
 
             // We should get a 404 here.
             try {
@@ -154,7 +154,7 @@ class DataItemIT extends BaseApiTest {
             assertEquals 201, responsePost.status
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
             try {
 
                 // Create a DataItem.
@@ -176,7 +176,7 @@ class DataItemIT extends BaseApiTest {
             assertEquals 200, responseDelete.status;
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
         }
     }
 
@@ -456,7 +456,7 @@ class DataItemIT extends BaseApiTest {
             // Should have been created.
             assertEquals 201, responsePost.status
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
             // Update the DataItem.
             def responsePut = client.put(
                     path: "/${version}/categories/Cooking/items/aTestDataItem",
@@ -471,7 +471,7 @@ class DataItemIT extends BaseApiTest {
             // Should have been updated.
             assertEquals 204, responsePut.status;
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
             // Get the DataItem and check values.
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/aTestDataItem;full",
@@ -489,7 +489,7 @@ class DataItemIT extends BaseApiTest {
             // Should have been deleted.
             assertEquals 200, responseDelete.status;
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(2000);
         }
     }
 
