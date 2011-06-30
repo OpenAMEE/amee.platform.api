@@ -1,0 +1,11 @@
+jmeter.work.dir=/Users/david.keen/code/AMEE/amee.platform.api/scripts/jmeter
+jmeter.install.dir=/Applications/jakarta-jmeter-2.4
+jmeter.host=platform-api-dev.amee.com
+jmeter.testplan=v3_load.jmx
+jmeter.threads=1
+jmeter.loops=1
+# -1 means forever
+#jmeter.loops=-1
+jmeter.rampup=1
+jmeter.timer.deviation=100
+jmeter.timer.offset=300
