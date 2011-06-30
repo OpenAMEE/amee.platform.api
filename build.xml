@@ -9,9 +9,10 @@
     <property name="amee.current.lib" value="${amee.current}/lib" description="The location of the AMEE libs and dependencies."/>
     <property name="amee.shared" value="${amee.home}/shared" description="The location of the AMEE shared config."/>
 
-    <!-- Override this in build.properties -->
+    <!-- You may override the following in build.properties -->
     <property name="amee.devel.home" value="/Development/AMEE/amee.platform.api/project/amee.platform.api" />
-    
+    <property name="mvn.executable" value="/opt/local/bin/mvn"/>
+
     <target name="rebuild" depends="clean, package, copy-amee-libs"
             description="Perform a clean build from src."/>
 
@@ -19,7 +20,7 @@
 
     <target name="clean" description="Clean the deployment lib and target directories.">
         <!-- Clean the amee target dirs. -->
-        <exec executable="mvn" dir="server" failonerror="true">
+        <exec executable="${mvn.executable}" dir="server" failonerror="true">
             <!--arg value="-o"/-->
             <arg value="clean"/>
         </exec>
@@ -30,7 +31,7 @@
     </target>
 
     <target name="package" description="Run the mvn package goal.">
-        <exec executable="mvn" dir="server" failonerror="true">
+        <exec executable="${mvn.executable}" dir="server" failonerror="true">
             <!--arg value="-o"/-->
             <arg value="package"/>
         </exec>
