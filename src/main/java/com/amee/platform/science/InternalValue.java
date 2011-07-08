@@ -168,6 +168,12 @@ public class InternalValue {
         return filteredValues;
     }
 
+    /**
+     * Gets the amount in the units the algorithm is expecting.
+     *
+     * @param iv
+     * @return
+     */
     private Amount asInternalDecimal(ExternalGenericValue iv) {
         if (ExternalNumberValue.class.isAssignableFrom(iv.getClass())) {
             ExternalNumberValue value = (ExternalNumberValue)iv;
