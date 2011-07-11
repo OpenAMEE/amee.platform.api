@@ -13,9 +13,9 @@
 
         <!-- Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
-        <amee-base.version>1.0.8-SNAPSHOT</amee-base.version>
-        <amee-persist.version>1.0.10-SNAPSHOT</amee-persist.version>
-        <amee-platform-science.version>1.1.0-SNAPSHOT</amee-platform-science.version>
+        <amee-base.version>1.0.9</amee-base.version>
+        <amee-persist.version>1.0.10</amee-persist.version>
+        <amee-platform-science.version>1.1.0</amee-platform-science.version>
 
         <!-- External Versions. -->
         <commons-codec.version>1.5</commons-codec.version>
@@ -31,6 +31,11 @@
         <xerces.version>2.11.0</xerces.version>
         <xml-apis.version>2.11.0</xml-apis.version>
 
+        <!-- Plugin versions -->
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-release-plugin.version>2.2</maven-release-plugin.version>
+        <maven-surefire-plugin.version>2.8</maven-surefire-plugin.version>
+        
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -44,9 +49,32 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <localCheckout>true</localCheckout>
+                        <pushChanges>false</pushChanges>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <parallel>methods</parallel>
                     </configuration>
                 </plugin>
             </plugins>
@@ -55,10 +83,11 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <parallel>methods</parallel>
-                </configuration>
             </plugin>
         </plugins>
 
