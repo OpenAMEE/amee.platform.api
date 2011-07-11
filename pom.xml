@@ -13,8 +13,8 @@
     <properties>
         
         <!-- Versions. -->
-        <amee-base.version>1.0.8-SNAPSHOT</amee-base.version>
-        <amee-platform-service.version>2.1.0-SNAPSHOT</amee-platform-service.version>
+        <amee-base.version>1.0.9</amee-base.version>
+        <amee-platform-service.version>2.1.0</amee-platform-service.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
