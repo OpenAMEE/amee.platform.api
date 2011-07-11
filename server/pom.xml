@@ -15,14 +15,14 @@
 
         <!-- Internal Versions. -->
         <amee-platform-api.version>3.6.0-DEV</amee-platform-api.version>
-        <amee-base.version>1.0.8-SNAPSHOT</amee-base.version>
-        <amee-persist.version>1.0.10-SNAPSHOT</amee-persist.version>
-        <amee-messaging.version>1.0.8-SNAPSHOT</amee-messaging.version>
-        <amee-restlet.version>1.0.13-SNAPSHOT</amee-restlet.version>
-        <amee-platform-science.version>1.1.0-SNAPSHOT</amee-platform-science.version>
-        <amee-platform-domain.version>2.1.0-SNAPSHOT</amee-platform-domain.version>
-        <amee-platform-service.version>2.1.0-SNAPSHOT</amee-platform-service.version>
-        <amee-platform-resource.version>1.1.0-SNAPSHOT</amee-platform-resource.version>
+        <amee-base.version>1.0.9</amee-base.version>
+        <amee-persist.version>1.0.10</amee-persist.version>
+        <amee-messaging.version>1.0.8</amee-messaging.version>
+        <amee-restlet.version>1.0.13</amee-restlet.version>
+        <amee-platform-science.version>1.1.0</amee-platform-science.version>
+        <amee-platform-domain.version>2.1.0</amee-platform-domain.version>
+        <amee-platform-service.version>2.1.0</amee-platform-service.version>
+        <amee-platform-resource.version>1.1.0</amee-platform-resource.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
@@ -288,8 +288,7 @@
                         <server.name>localhost</server.name>
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
-                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider
-                        </org.joda.time.DateTimeZone.Provider>
+                        <org.joda.time.DateTimeZone.Provider>org.joda.time.tz.UTCProvider</org.joda.time.DateTimeZone.Provider>
                         <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>
                         <amee.masterIndex>true</amee.masterIndex>
                         <amee.clearIndex>true</amee.clearIndex>
