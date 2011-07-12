@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
@@ -10,7 +11,7 @@
 
     <!-- Properties. -->
     <properties>
-        
+
         <!-- Versions. -->
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
@@ -26,7 +27,7 @@
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
         <maven-release-plugin.version>2.2</maven-release-plugin.version>
         <maven-surefire-plugin.version>2.8</maven-surefire-plugin.version>
-        
+
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -70,6 +71,10 @@
 
         <plugins>
             <plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                </plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
@@ -186,7 +191,7 @@
                                 <source>1.6</source>
                                 <target>1.6</target>
                                 <compilerArguments>
-                                    <verbose />
+                                    <verbose/>
                                     <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
                                 </compilerArguments>
                             </configuration>
