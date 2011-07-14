@@ -24,27 +24,40 @@ package com.amee.platform.science;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Implements various Algorithm related test cases.
  * <p/>
  * Some test cases are described here: https://docs.google.com/a/amee.cc/Doc?docid=0AVPTOpeCYkq1ZGZxOXE1Y3JfMTFkZDk5eHdjZA&hl=en_GB
  */
+@RunWith(MockitoJUnitRunner.class)
 public class AlgorithmServiceTest {
 
     private AlgorithmRunner algorithmService;
     private DataSeries seriesA;
     private DataSeries seriesB;
     private DataSeries seriesC;
+    
+    @Mock private Algorithm mockAlgorithm;
 
     @Before
-    public void init() {
+    public void init() throws ScriptException {
         // Create the AlgorithmRunner.
         algorithmService = new AlgorithmRunner();
         // Create DataSeries A.
@@ -66,19 +79,21 @@ public class AlgorithmServiceTest {
 
     @Test
     public void reallySimpleAlgorithmOK() throws ScriptException {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent("1");
+        final String algorithmContent = "1";
+        stubGetCompiledScript(algorithmContent);
+
+        // The algorithm input values.
         Map<String, Object> values = new HashMap<String, Object>();
-        assertNotNull("Really simple algorithm should be OK.", algorithmService.evaluate(algorithm, values));
+        assertNotNull("Really simple algorithm should be OK.", algorithmService.evaluate(mockAlgorithm, values));
     }
 
     @Test
     public void emptyAlgorithmNotOK() throws ScriptException {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent("");
+        final String algorithmContent = "";
+        stubGetCompiledScript(algorithmContent);
         Map<String, Object> values = new HashMap<String, Object>();
         try {
-            algorithmService.evaluate(algorithm, values);
+            algorithmService.evaluate(mockAlgorithm, values);
             fail("Empty algorithm should NOT be OK.");
         } catch (Throwable t) {
             // swallow
@@ -106,11 +121,12 @@ public class AlgorithmServiceTest {
 
     @Test
     public void algorithmCanThrowIllegalArgumentException() throws ScriptException {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent("throw new java.lang.IllegalArgumentException('Bang!');");
+        final String algorithmContent = "throw new java.lang.IllegalArgumentException('Bang!');";
+        stubGetCompiledScript(algorithmContent);
+        
         Map<String, Object> values = new HashMap<String, Object>();
         try {
-            algorithmService.evaluate(algorithm, values);
+            algorithmService.evaluate(mockAlgorithm, values);
             fail("Algorithm should throw IllegalArgumentException.");
         } catch (ScriptException e) {
             IllegalArgumentException iae = AlgorithmRunner.getIllegalArgumentException(e);
@@ -120,6 +136,7 @@ public class AlgorithmServiceTest {
         }
     }
 
+    //TODO: Shouldn't these tests be in the DataSeries unit tests?
     /**
      * Multiply A by B.
      */
@@ -168,13 +185,14 @@ public class AlgorithmServiceTest {
      * Use a DataSeries in an Algorithm without a startDate and endDate.
      */
     @Test
-    public void shouldUseDataSeries() {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent("series.integrate();");
+    public void shouldUseDataSeries() throws ScriptException {
+        final String algorithmContent = "series.integrate();";
+        stubGetCompiledScript(algorithmContent);
+
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", seriesA.copy());
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
             assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", 0.6666666666666666, result.defaultValueAsDouble());
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
@@ -185,16 +203,18 @@ public class AlgorithmServiceTest {
      * Use a DataSeries in an Algorithm with a startDate and endDate.
      */
     @Test
-    public void shouldUseDataSeriesWithDateRange() {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent("series.integrate();");
+    public void shouldUseDataSeriesWithDateRange() throws ScriptException {
+        final String algorithmContent = "series.integrate();";
+        stubGetCompiledScript(algorithmContent);
+
         DataSeries series = seriesA.copy();
         series.setSeriesStartDate(new DateTime(2010, 1, 2, 0, 0, 0, 0));
         series.setSeriesEndDate(new DateTime(2010, 1, 5, 0, 0, 0, 0));
+
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", series);
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
             assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 0.5, result.defaultValueAsDouble());
         } catch (ScriptException e) {
             fail("Caught ScriptException: " + e.getMessage());
@@ -205,13 +225,14 @@ public class AlgorithmServiceTest {
      * Use multiple DataSeries in an Algorithm with a startDate and endDate.
      */
     @Test
-    public void shouldUseMultipleDataSeriesWithDateRange() {
-        MockAlgorithm algorithm = new MockAlgorithm();
-        algorithm.setContent(
+    public void shouldUseMultipleDataSeriesWithDateRange() throws ScriptException {
+        final String algorithmContent =
                 "series = seriesA.plus(seriesB).plus(seriesC);\n" +
                         "series.setSeriesStartDate(startDate);\n" +
                         "series.setSeriesEndDate(endDate);\n" +
-                        "series.integrate()");
+                        "series.integrate()";
+        stubGetCompiledScript(algorithmContent);
+
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("startDate", new DateTime(2010, 1, 2, 0, 0, 0, 0));
         values.put("endDate", new DateTime(2010, 1, 5, 0, 0, 0, 0));
@@ -219,7 +240,7 @@ public class AlgorithmServiceTest {
         values.put("seriesB", seriesB.copy());
         values.put("seriesC", seriesC.copy());
         try {
-            ReturnValues result = algorithmService.evaluate(algorithm, values);
+            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
             System.out.println(result);
             assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 3.1666666666666665, result.defaultValueAsDouble());
         } catch (ScriptException e) {
@@ -234,13 +255,13 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void multipleReturnValues() throws Exception {
-        MockAlgorithm mockAlgorithm = new MockAlgorithm();
         StringBuilder content = new StringBuilder();
         content.append("returnValues.putValue('CO2', 'kg', 'month', 5.43);");
         content.append("returnValues.putValue('CO2e', 'kg', 'month', 1.23);");
         content.append("returnValues.setDefaultType('CO2');");
         content.append("returnValues.addNote('comment', 'Note 1');");
-        mockAlgorithm.setContent(content.toString());
+        final String algorithmContent = content.toString();
+        stubGetCompiledScript(algorithmContent);
 
         Map<String, Object> values = new HashMap<String, Object>();
 
@@ -258,8 +279,9 @@ public class AlgorithmServiceTest {
      */
     @Test
     public void testSingleReturnValue() throws Exception {
-        MockAlgorithm mockAlgorithm = new MockAlgorithm();
-        mockAlgorithm.setContent("1.23");
+        final String algorithmContent = "1.23";
+        stubGetCompiledScript(algorithmContent);
+        
         Map<String, Object> values = new HashMap<String, Object>();
 
         ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
@@ -270,10 +292,20 @@ public class AlgorithmServiceTest {
 
     @Test(expected = AlgorithmException.class)
     public void testNullReturnValue() throws Exception {
-        MockAlgorithm mockAlgorithm = new MockAlgorithm();
-        mockAlgorithm.setContent(null);
+        final String algorithmContent = "null";
+        stubGetCompiledScript(algorithmContent);
+        
         Map<String, Object> values = new HashMap<String, Object>();
-
         algorithmService.evaluate(mockAlgorithm, values);
+    }
+
+    private void stubGetCompiledScript(final String AlgorithmContent) throws ScriptException {
+        when(mockAlgorithm.getCompiledScript(any(ScriptEngine.class))).thenAnswer(new Answer<CompiledScript>() {
+            @Override
+            public CompiledScript answer(InvocationOnMock invocation) throws ScriptException {
+                Object[] args = invocation.getArguments();
+                return ((Compilable) args[0]).compile(AlgorithmContent);
+            }
+        });
     }
 }

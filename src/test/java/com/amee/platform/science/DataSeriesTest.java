@@ -35,7 +35,6 @@ public class DataSeriesTest {
 
         now = new DateTime();
 
-        // Test adding two series
         List<DataPoint> a = new ArrayList<DataPoint>();
         a.add(new DataPoint(now.plusDays(1), new Amount("1")));
         a.add(new DataPoint(now.plusDays(2), new Amount("2")));
