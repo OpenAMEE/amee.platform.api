@@ -136,51 +136,6 @@ public class AlgorithmServiceTest {
         }
     }
 
-    //TODO: Shouldn't these tests be in the DataSeries unit tests?
-    /**
-     * Multiply A by B.
-     */
-    @Test
-    public void shouldMultiplyDataSeriesAAndB() {
-        String expectedSeriesAMultipliedByB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-03T00:00:00.000Z\",\"0.0\"],[\"2010-01-04T00:00:00.000Z\",\"1.0\"]]}";
-        DataSeries seriesAMultipliedByB = seriesA.multiply(seriesB);
-        System.out.println(expectedSeriesAMultipliedByB);
-        System.out.println(seriesAMultipliedByB.toString());
-        assertEquals("Should be able to multiply two DataSeries objects.", seriesAMultipliedByB.toString(), expectedSeriesAMultipliedByB);
-    }
-
-    /**
-     * Add B to A.
-     */
-    @Test
-    public void shouldAddDataSeriesBToA() {
-        String expectedSeriesAPlusB = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"1.0\"],[\"2010-01-03T00:00:00.000Z\",\"1.0\"],[\"2010-01-04T00:00:00.000Z\",\"2.5\"]]}";
-        DataSeries seriesAPlusB = seriesA.plus(seriesB);
-        assertEquals("Should be able to add together two DataSeries objects.", seriesAPlusB.toString(), expectedSeriesAPlusB);
-    }
-
-    /**
-     * Multiply B by C.
-     */
-    @Test
-    public void shouldMultiplyDataSeriesBAndC() {
-        String expectedSeriesBMultipliedByC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-02T00:00:00.000Z\",\"0.0\"],[\"2010-01-03T00:00:00.000Z\",\"1.0\"],[\"2010-01-04T00:00:00.000Z\",\"6.0\"]]}";
-        DataSeries seriesBMultipliedByC = seriesB.multiply(seriesC);
-        System.out.println(expectedSeriesBMultipliedByC);
-        System.out.println(seriesBMultipliedByC.toString());
-        assertEquals("Should be able to multiply two DataSeries objects.", seriesBMultipliedByC.toString(), expectedSeriesBMultipliedByC);
-    }
-
-    /**
-     * Add C to B.
-     */
-    @Test
-    public void shouldAddDataSeriesCToB() {
-        String expectedSeriesBPlusC = "{\"seriesStartDate\":\"2010-01-01T00:00:00.000Z\",\"seriesEndDate\":\"2010-01-04T00:00:00.000Z\",\"dataPoints\":[[\"2010-01-01T00:00:00.000Z\",\"0.0\"],[\"2010-01-02T00:00:00.000Z\",\"1.0\"],[\"2010-01-03T00:00:00.000Z\",\"2.0\"],[\"2010-01-04T00:00:00.000Z\",\"5.0\"]]}";
-        DataSeries seriesBPlusC = seriesB.plus(seriesC);
-        assertEquals("Should be able to add together two DataSeries objects.", seriesBPlusC.toString(), expectedSeriesBPlusC);
-    }
-
     /**
      * Use a DataSeries in an Algorithm without a startDate and endDate.
      */

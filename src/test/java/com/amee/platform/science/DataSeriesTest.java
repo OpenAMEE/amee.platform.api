@@ -5,8 +5,6 @@ import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
@@ -14,11 +12,15 @@ import static org.junit.Assert.assertNotNull;
 
 public class DataSeriesTest {
 
-    DateTime now;
-    DataSeries lhs;
-    DataSeries rhs;
-    DataPoint rhp;
-    float rhf;
+//    private DataSeries seriesA;
+//    private DataSeries seriesB;
+//    private DataSeries seriesC;
+
+    private DateTime now;
+    private DataSeries lhSeries;
+    private DataSeries rhSeries;
+    private DataPoint rhPoint;
+    private double rhDouble;
 
     /**
      * The original DELTA value for test accuracy.
@@ -35,286 +37,293 @@ public class DataSeriesTest {
 
         now = new DateTime();
 
-        List<DataPoint> a = new ArrayList<DataPoint>();
-        a.add(new DataPoint(now.plusDays(1), new Amount("1")));
-        a.add(new DataPoint(now.plusDays(2), new Amount("2")));
-        a.add(new DataPoint(now.plusDays(3), new Amount("3")));
-        lhs = new DataSeries(a);
+//        // Create DataSeries A.
+//        seriesA = new DataSeries();
+//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("1")));
+//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("0")));
+//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("0.5")));
+//        // Create DataSeries B.
+//        seriesB = new DataSeries();
+//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
+//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("1")));
+//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("2")));
+//        // Create DataSeries C.
+//        seriesC = new DataSeries();
+//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
+//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 2, 0, 0, 0, 0), new Amount("1")));
+//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("3")));
 
-        List<DataPoint> b = new ArrayList<DataPoint>();
-        b.add(new DataPoint(now.plusDays(1), new Amount("2")));
-        b.add(new DataPoint(now.plusDays(2), new Amount("3")));
-        b.add(new DataPoint(now.plusDays(3), new Amount("4")));
-        rhs = new DataSeries(b);
+        lhSeries = new DataSeries();
+        lhSeries.addDataPoint(new DataPoint(now.plusDays(1), new Amount("1")));
+        lhSeries.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2")));
+        lhSeries.addDataPoint(new DataPoint(now.plusDays(3), new Amount("3")));
+        lhSeries.setSeriesStartDate(now.plusHours(36));
+        lhSeries.setSeriesEndDate(now.plusDays(5));
 
-        lhs.setSeriesStartDate(now.plusHours(36));
-        rhs.setSeriesStartDate(now.plusHours(37));
-        lhs.setSeriesEndDate(now.plusDays(5));
-        rhs.setSeriesEndDate(now.plusDays(5));
-        rhp = new DataPoint(now.plusDays(1), new Amount("4"));
+        rhSeries = new DataSeries();
+        rhSeries.addDataPoint(new DataPoint(now.plusDays(1), new Amount("2")));
+        rhSeries.addDataPoint(new DataPoint(now.plusDays(2), new Amount("3")));
+        rhSeries.addDataPoint(new DataPoint(now.plusDays(3), new Amount("4")));
+        rhSeries.setSeriesStartDate(now.plusHours(37));
+        rhSeries.setSeriesEndDate(now.plusDays(5));
 
-        rhf = 4.0f;
+        rhPoint = new DataPoint(now.plusDays(1), new Amount("4"));
+
+        rhDouble = 4.0;
     }
 
     @Test
     public void add() {
 
-        DataSeries test;
-        DataSeries actual;
+        // Add a series to a series
+        DataSeries expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("3")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("5")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("7")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        // Add two data series
-        List<DataPoint> sum = new ArrayList<DataPoint>();
-        sum.add(new DataPoint(now.plusDays(1), new Amount("3")));
-        sum.add(new DataPoint(now.plusDays(2), new Amount("5")));
-        sum.add(new DataPoint(now.plusDays(3), new Amount("7")));
-        actual = new DataSeries(sum);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        test = lhs.plus(rhs);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
-        assertEquals("Combined series should have start date", now.plusHours(36), test.getSeriesStartDate());
-        assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
+        DataSeries actual = lhSeries.plus(rhSeries);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
+        assertEquals("Combined series should have start date of: " + expected.getSeriesStartDate(),
+            now.plusHours(36), actual.getSeriesStartDate());
+        assertEquals("Combined series should have end date of: " + expected.getSeriesEndDate(),
+            now.plusDays(5), actual.getSeriesEndDate());
 
-        // Add a series and a single point
-        sum = new ArrayList<DataPoint>();
-        sum.add(new DataPoint(now.plusDays(1), new Amount("5")));
-        sum.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        sum.add(new DataPoint(now.plusDays(3), new Amount("7")));
-        actual = new DataSeries(sum);
-        test = lhs.plus(rhp);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        assertEquals("Combined series should have start date, is " + test.getSeriesStartDate() + " cf " + now.plusHours(36),
-                now.plusHours(36), test.getSeriesStartDate());
-        assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        // Add a point to a series
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("5")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("7")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        // Add a series and a primitive
-        test = lhs.plus(rhf);
-        assertEquals("Combined series should have start date, is " + test.getSeriesStartDate() + " cf " + now.plusHours(36),
-                now.plusHours(36), test.getSeriesStartDate());
-        assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        actual = lhSeries.plus(rhPoint);
+        assertEquals("Combined series should have start date of: " + expected.getSeriesStartDate() + " was: " + actual.getSeriesStartDate(),
+            expected.getSeriesStartDate(), actual.getSeriesStartDate());
+        assertEquals("Combined series should have end date of: " + expected.getSeriesEndDate(),
+            expected.getSeriesEndDate(), actual.getSeriesEndDate());
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
+
+        // Add a double to a series
+        actual = lhSeries.plus(rhDouble);
+        assertEquals("Combined series should have start date of: " + now.plusHours(36) + " was: " + actual.getSeriesStartDate(),
+            now.plusHours(36), actual.getSeriesStartDate());
+        assertEquals("Combined series should have end date of: " + now.plusDays(5) + " was: " + actual.getSeriesEndDate(),
+            now.plusDays(5), actual.getSeriesEndDate());
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
     }
 
     @Test
     public void subtract() {
 
-        DataSeries test;
-        DataSeries actual;
+        // Subtract a series from a series
+        DataSeries expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("-1")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("-1")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("-1")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("-1")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("-1")));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("-1")));
-        actual = new DataSeries(diff);
-        test = lhs.subtract(rhs);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        DataSeries actual = lhSeries.subtract(rhSeries);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
 
+        // Subtract a point from a series
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("-3")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("-2")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("-1")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("-3")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("-2")));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("-1")));
-        actual = new DataSeries(diff);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        test = lhs.subtract(rhp);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        actual = lhSeries.subtract(rhPoint);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
 
-        // Subtract a series and a primitive
-        test = lhs.subtract(rhf);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        // Subtract a double from a series
+        actual = lhSeries.subtract(rhDouble);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
     }
 
     @Test
     public void divide() {
 
-        DataSeries test;
-        DataSeries actual;
+        // Divide a series by a series
+        DataSeries expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("0.5")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2").divide(new Amount("3"))));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("0.75")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("0.5")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("2").divide(new Amount("3"))));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("0.75")));
-        actual = new DataSeries(diff);
-        test = lhs.divide(rhs);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        DataSeries actual = lhSeries.divide(rhSeries);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
 
-        diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("0.25")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("0.5")));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("0.75")));
-        actual = new DataSeries(diff);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        test = lhs.divide(rhp);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        // Divide a series by a point
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("0.25")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("0.5")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("0.75")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        // Divide a series and a primitive
-        test = lhs.divide(rhf);
+        actual = lhSeries.divide(rhPoint);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
 
-        //print(test, actual);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        // Divide a series by a double
+        actual = lhSeries.divide(rhDouble);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
     }
 
     @Test
     public void multiply() {
 
-        DataSeries test;
-        DataSeries actual;
+        // Multiply a series by a series
+        DataSeries expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("2")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        List<DataPoint> diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("2")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        actual = new DataSeries(diff);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        test = lhs.multiply(rhs);
-        assertEquals("Integrate should produce the correct value.", test.integrate(), actual.integrate());
+        DataSeries actual = lhSeries.multiply(rhSeries);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
 
+        // Multiply a series by a point
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("4")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("8")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
 
-        diff = new ArrayList<DataPoint>();
-        diff.add(new DataPoint(now.plusDays(1), new Amount("4")));
-        diff.add(new DataPoint(now.plusDays(2), new Amount("8")));
-        diff.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        actual = new DataSeries(diff);
-        actual.setSeriesStartDate(now.plusHours(36));
-        actual.setSeriesEndDate(now.plusDays(5));
-        test = lhs.multiply(rhp);
-        assertEquals("Combined series should have start date, is " + test.getSeriesStartDate() + " cf " + now.plusHours(36),
-                now.plusHours(36), test.getSeriesStartDate());
-        assertEquals("Combined series should have end date", now.plusDays(5), test.getSeriesEndDate());
-        assertEquals("Integrate should produce the correct value, is " + test.integrate() + " cf " + actual.integrate(),
-                test.integrate(), actual.integrate());
+        actual = lhSeries.multiply(rhPoint);
+        assertEquals("Combined series should have start date of: " + expected.getSeriesStartDate() + ". Was: " + actual.getSeriesStartDate(),
+            expected.getSeriesStartDate(), actual.getSeriesStartDate());
+        assertEquals("Combined series should have end date of: " + expected.getSeriesEndDate() + ". Was: " + actual.getSeriesEndDate(),
+            expected.getSeriesEndDate(), actual.getSeriesEndDate());
+        assertEquals("Integrate should produce the correct value of " + expected.integrate() + ". Was: " + actual.integrate(),
+            expected.integrate(), actual.integrate());
 
-        // Divide a series and a primitive
-        test = lhs.multiply(rhf);
-        assertEquals("Integrate should produce the correct value, is " + test.integrate() + " cf " + actual.integrate(),
-                test.integrate(), actual.integrate());
+        // Multiply a series by a double
+        actual = lhSeries.multiply(rhDouble);
+        assertEquals("Integrate should produce the correct value of " + expected.integrate() + ". Was: " + actual.integrate(),
+            expected.integrate(), actual.integrate());
     }
 
     @Test
     public void queryWithNarrowerStartAndEndDate() {
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
-        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
-        DataSeries series = new DataSeries(points);
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(now.plusDays(1), new Amount("2")));
+        series.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        series.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        series.addDataPoint(new DataPoint(now.plusDays(4), new Amount("12")));
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(3));
-        Amount window = new Amount(now.plusDays(3).getMillis() - now.plusDays(1).getMillis());
+        Long expectedWindow = now.plusDays(3).getMillis() - now.plusDays(1).getMillis();
 
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (2 + 6) / 2.0;
-        assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
+        double expectedValue = (2 + 6) / 2.0;
+        assertEquals("Integrate should produce the correct value (" + expectedValue + ")",
+            expectedValue, series.integrate().getValue(), DELTA);
     }
 
     @Test
     public void queryWithWiderStartAndEndDate() {
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        points.add(new DataPoint(now.plusDays(4), new Amount("15")));
-        DataSeries series = new DataSeries(points);
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        series.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        series.addDataPoint(new DataPoint(now.plusDays(4), new Amount("15")));
         series.setSeriesStartDate(now.plusDays(1));
         series.setSeriesEndDate(now.plusDays(5));
-        Amount window = new Amount(now.plusDays(5).getMillis() - now.plusDays(2).getMillis());
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
+        Long expectedWindow = now.plusDays(5).getMillis() - now.plusDays(2).getMillis();
+
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (6 + 12 + 15) / 3.0;
-        assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
+        double expectedValue = (6 + 12 + 15) / 3.0;
+        assertEquals("Integrate should produce the correct value (" + expectedValue + ")",
+                expectedValue, series.integrate().getValue(), DELTA);
     }
 
     @Test
     public void queryWithStartDate() {
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
-        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
-        DataSeries series = new DataSeries(points);
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(now.plusDays(1), new Amount("2")));
+        series.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        series.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        series.addDataPoint(new DataPoint(now.plusDays(4), new Amount("12")));
         series.setSeriesStartDate(now.plusDays(2));
-        Amount window = new Amount(now.plusDays(4).getMillis() - now.plusDays(2).getMillis());
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
+        Long expectedWindow = now.plusDays(4).getMillis() - now.plusDays(2).getMillis();
+
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (6 + 12) / 2.0;
-        assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
+        double expectedValue = (6 + 12) / 2.0;
+        assertEquals("Integrate should produce the correct value (" + expectedValue + ")",
+            expectedValue, series.integrate().getValue(), DELTA);
     }
 
     @Test
     public void queryWithEndDate() {
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(1), new Amount("2")));
-        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        points.add(new DataPoint(now.plusDays(4), new Amount("12")));
-        DataSeries series = new DataSeries(points);
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(now.plusDays(1), new Amount("2")));
+        series.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        series.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        series.addDataPoint(new DataPoint(now.plusDays(4), new Amount("12")));
         series.setSeriesEndDate(now.plusDays(2));
-        Amount window = new Amount(now.plusDays(2).getMillis() - now.plusDays(1).getMillis());
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
+        Long expectedWindow = now.plusDays(2).getMillis() - now.plusDays(1).getMillis();
+
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = 2.0;
-        assertEquals("Integrate should produce the correct value ( " + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
+        double expectedValue = 2.0;
+        assertEquals("Integrate should produce the correct value ( " + expectedValue + ")",
+            expectedValue, series.integrate().getValue(), DELTA);
     }
 
     @Test
     public void queryWithoutStartOrEndDate() {
         DateTime start = now.plusDays(1);
         DateTime end = now.plusDays(4);
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(start, new Amount("2")));
-        points.add(new DataPoint(now.plusDays(2), new Amount("6")));
-        points.add(new DataPoint(now.plusDays(3), new Amount("12")));
-        points.add(new DataPoint(end, new Amount("15")));
-        DataSeries series = new DataSeries(points);
-        Amount window = new Amount(end.getMillis() - start.getMillis());
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
-        assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (2 + 6 + 12) / 3.0;
-        assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
 
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(start, new Amount("2")));
+        series.addDataPoint(new DataPoint(now.plusDays(2), new Amount("6")));
+        series.addDataPoint(new DataPoint(now.plusDays(3), new Amount("12")));
+        series.addDataPoint(new DataPoint(end, new Amount("15")));
+        Long expectedWindow = end.getMillis() - start.getMillis();
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
+        assertNotNull("Should be able to integrate.", series.integrate());
+        double expectedValue = (2 + 6 + 12) / 3.0;
+        assertEquals("Integrate should produce the correct value (" + expectedValue + ")",
+            expectedValue, series.integrate().getValue(), DELTA);
     }
 
     @Test
     public void queryWithInsideStartAndEndDate() {
+        DataSeries series = new DataSeries();
+        series.addDataPoint(new DataPoint(now.plusDays(10), new Amount("2")));
+        series.addDataPoint(new DataPoint(now.plusDays(20), new Amount("3")));
+        series.addDataPoint(new DataPoint(now.plusDays(30), new Amount("5")));
+        series.addDataPoint(new DataPoint(now.plusDays(40), new Amount("7")));
+
         int start = 15;
         int end = 35;
-        List<DataPoint> points = new ArrayList<DataPoint>();
-        points.add(new DataPoint(now.plusDays(10), new Amount("2")));
-        points.add(new DataPoint(now.plusDays(20), new Amount("3")));
-        points.add(new DataPoint(now.plusDays(30), new Amount("5")));
-        points.add(new DataPoint(now.plusDays(40), new Amount("7")));
-        DataSeries series = new DataSeries(points);
         series.setSeriesStartDate(now.plusHours(start * 24));
         series.setSeriesEndDate(now.plusHours(end * 24));
-        Amount window = new Amount(now.plusHours(end * 24).getMillis() - now.plusHours(start * 24).getMillis());
-        assertEquals("Should have correct time window.", window, series.getSeriesTimeInMillis());
+        Long expectedWindow = now.plusHours(end * 24).getMillis() - now.plusHours(start * 24).getMillis();
+        assertEquals("Should have correct time window.", expectedWindow, series.getSeriesTimeInMillis());
         assertNotNull("Should be able to integrate.", series.integrate());
-        double target = (2 * 5 + 3 * 10 + 5 * 5) / 20.0;
-        assertEquals("Integrate should produce the correct value (" + target + "): " + series.integrate().getValue(),
-                target, series.integrate().getValue(), DELTA);
+        double expectedValue = (2 * 5 + 3 * 10 + 5 * 5) / 20.0;
+        assertEquals("Integrate should produce the correct value (" + expectedValue + ")",
+            expectedValue, series.integrate().getValue(), DELTA);
     }
 
-    private void print(DataSeries test, DataSeries actual) {
+    private void print(DataSeries expected, DataSeries actual) {
 
-        for (DateTime dt : test.getDateTimePoints()) {
-            DataPoint dp = test.getDataPoint(dt);
-            System.out.println("test: " + dt.toString("yyyy-dd-MM") + " => " + dp.getValue());
+        for (DateTime dt : expected.getDateTimePoints()) {
+            DataPoint dp = expected.getDataPoint(dt);
+            System.out.println("expected: " + dt.toString("yyyy-dd-MM") + " => " + dp.getValue());
         }
-        System.out.println("test: " + test.integrate());
+        System.out.println("expected: " + expected.integrate());
 
         for (DateTime dt : actual.getDateTimePoints()) {
             DataPoint dp = actual.getDataPoint(dt);

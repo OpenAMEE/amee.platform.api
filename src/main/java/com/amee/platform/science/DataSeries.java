@@ -87,9 +87,9 @@ public class DataSeries {
         return obj;
     }
 
-    protected Amount getSeriesTimeInMillis() {
+    protected Long getSeriesTimeInMillis() {
         if (dataPoints.isEmpty()) {
-            return Amount.ZERO;
+            return 0l;
         }
         DateTime seriesStart = getSeriesStartDate();
         DateTime seriesEnd = getSeriesEndDate();
@@ -97,7 +97,7 @@ public class DataSeries {
             // the range of interest is undef
             return null;
         }
-        return new Amount(seriesEnd.getMillis() - seriesStart.getMillis());
+        return seriesEnd.getMillis() - seriesStart.getMillis();
     }
 
     DateTime getSeriesStartDate() {
@@ -330,7 +330,7 @@ public class DataSeries {
     public Amount integrate() {
 
         double integral = 0.0;
-        Amount seriesTimeInMillis = getSeriesTimeInMillis();
+        Long seriesTimeInMillis = getSeriesTimeInMillis();
 
         if (log.isDebugEnabled()) {
             log.debug("integrate() Integrating, time range:" + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length, " + dataPoints.size());
@@ -338,7 +338,7 @@ public class DataSeries {
 
         if (seriesTimeInMillis == null) {
             integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
-        } else if (!seriesTimeInMillis.equals(Amount.ZERO)) {
+        } else if (seriesTimeInMillis > 0) {
             Collections.sort(dataPoints);
             for (int i = 0; i < dataPoints.size(); i++) {
                 // Work out segment time series.
@@ -358,11 +358,11 @@ public class DataSeries {
                 // but in case it hasn't (and for direct testing not via internal value)
 
                 // Add weighted average value.
-                double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.getValue();
+                double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
                 if (log.isDebugEnabled()) {
                     log.debug("integrate() " +
                             "Diagnostics from integrate()" + weightedAverage + "," + current.getValue() + "," + i + "," + dataPoints.size() +
-                            "," + segmentInMillis / (seriesTimeInMillis.getValue()));
+                            "," + segmentInMillis / (seriesTimeInMillis.doubleValue()));
                 }
                 if (start.isAfter(end)) continue;
                 integral = integral + weightedAverage;
