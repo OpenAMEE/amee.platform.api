@@ -58,18 +58,22 @@ public class AlgorithmServiceTest {
 
     @Before
     public void init() throws ScriptException {
+
         // Create the AlgorithmRunner.
         algorithmService = new AlgorithmRunner();
+
         // Create DataSeries A.
         seriesA = new DataSeries();
         seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("1")));
         seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("0")));
         seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("0.5")));
+
         // Create DataSeries B.
         seriesB = new DataSeries();
         seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
         seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("1")));
         seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("2")));
+
         // Create DataSeries C.
         seriesC = new DataSeries();
         seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
@@ -146,12 +150,8 @@ public class AlgorithmServiceTest {
 
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", seriesA.copy());
-        try {
-            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
-            assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", 0.6666666666666666, result.defaultValueAsDouble());
-        } catch (ScriptException e) {
-            fail("Caught ScriptException: " + e.getMessage());
-        }
+        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", 0.6666666666666666, result.defaultValueAsDouble());
     }
 
     /**
@@ -168,12 +168,8 @@ public class AlgorithmServiceTest {
 
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", series);
-        try {
-            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
-            assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 0.5, result.defaultValueAsDouble());
-        } catch (ScriptException e) {
-            fail("Caught ScriptException: " + e.getMessage());
-        }
+        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 0.5, result.defaultValueAsDouble());
     }
 
     /**
@@ -194,13 +190,10 @@ public class AlgorithmServiceTest {
         values.put("seriesA", seriesA.copy());
         values.put("seriesB", seriesB.copy());
         values.put("seriesC", seriesC.copy());
-        try {
-            ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
-            System.out.println(result);
-            assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 3.1666666666666665, result.defaultValueAsDouble());
-        } catch (ScriptException e) {
-            fail("Caught ScriptException: " + e.getMessage());
-        }
+
+        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+//        System.out.println(result);
+        assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 3.1666666666666665, result.defaultValueAsDouble());
     }
 
     /**

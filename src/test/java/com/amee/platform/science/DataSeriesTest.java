@@ -37,22 +37,6 @@ public class DataSeriesTest {
 
         now = new DateTime();
 
-//        // Create DataSeries A.
-//        seriesA = new DataSeries();
-//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("1")));
-//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("0")));
-//        seriesA.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("0.5")));
-//        // Create DataSeries B.
-//        seriesB = new DataSeries();
-//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
-//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 3, 0, 0, 0, 0), new Amount("1")));
-//        seriesB.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("2")));
-//        // Create DataSeries C.
-//        seriesC = new DataSeries();
-//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 1, 0, 0, 0, 0), new Amount("0")));
-//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 2, 0, 0, 0, 0), new Amount("1")));
-//        seriesC.addDataPoint(new DataPoint(new DateTime(2010, 1, 4, 0, 0, 0, 0), new Amount("3")));
-
         lhSeries = new DataSeries();
         lhSeries.addDataPoint(new DataPoint(now.plusDays(1), new Amount("1")));
         lhSeries.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2")));
@@ -142,6 +126,17 @@ public class DataSeriesTest {
         // Subtract a double from a series
         actual = lhSeries.subtract(rhDouble);
         assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
+
+        // Subtract a series from a double
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("3")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("1")));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
+        
+        actual = lhSeries.subtract(rhDouble, true);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
     }
 
     @Test
@@ -150,7 +145,7 @@ public class DataSeriesTest {
         // Divide a series by a series
         DataSeries expected = new DataSeries();
         expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("0.5")));
-        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2").divide(new Amount("3"))));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount(2.0 / 3.0)));
         expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount("0.75")));
         expected.setSeriesStartDate(now.plusHours(36));
         expected.setSeriesEndDate(now.plusDays(5));
@@ -171,6 +166,17 @@ public class DataSeriesTest {
 
         // Divide a series by a double
         actual = lhSeries.divide(rhDouble);
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
+
+        // Divide a double by a series
+        expected = new DataSeries();
+        expected.addDataPoint(new DataPoint(now.plusDays(1), new Amount("4")));
+        expected.addDataPoint(new DataPoint(now.plusDays(2), new Amount("2")));
+        expected.addDataPoint(new DataPoint(now.plusDays(3), new Amount(4.0 / 3.0)));
+        expected.setSeriesStartDate(now.plusHours(36));
+        expected.setSeriesEndDate(now.plusDays(5));
+        
+        actual = lhSeries.divide(rhDouble, true);
         assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
     }
 

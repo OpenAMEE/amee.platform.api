@@ -141,6 +141,7 @@ public class DataSeries {
             combinedSeries.add(new DataPoint(dateTimePoint, operation.operate().getValue()));
         }
         DataSeries result = new DataSeries(combinedSeries);
+
         // the new series's start/end dates in terms of the 'window of interest' are then the largest overlap of the two
         // although usually they'll be the same as they'll be set by the query range
         result.setSeriesStartDate(getSeriesStartDate().isBefore(series.getSeriesStartDate()) ?
@@ -227,9 +228,20 @@ public class DataSeries {
      * @return a new DataSeries representing the subtraction of the double value from this DataSeries
      */
     public DataSeries subtract(double d) {
+        return subtract(d, false);
+    }
+
+    /**
+     * Subtract a double value from this DataSeries.
+     *
+     * @param d the double value to subtract
+     * @param invert invert the operands.
+     * @return a new DataSeries representing the subtraction of the double value from this DataSeries
+     */
+    public DataSeries subtract(double d, boolean invert) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.subtract(d));
+            combinedDataPoints.add(dp.subtract(d, invert));
         }
         DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one
@@ -270,9 +282,21 @@ public class DataSeries {
      * @return a new DataSeries representing the division of this DataSeries by the double value
      */
     public DataSeries divide(double d) {
+        return divide(d, false);
+    }
+
+    /**
+     * Divide this DataSeries by a double value.
+     *
+     *
+     * @param d the double value by which to divide this DataSeries
+     * @param invert invert the operands
+     * @return a new DataSeries representing the division of this DataSeries by the double value
+     */
+    public DataSeries divide(double d, boolean invert) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
-            combinedDataPoints.add(dp.divide(d));
+            combinedDataPoints.add(dp.divide(d, invert));
         }
         DataSeries result = new DataSeries(combinedDataPoints);
         // make the window of interest be the same as the current one

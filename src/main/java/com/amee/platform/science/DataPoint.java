@@ -127,7 +127,23 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the subtraction of the double value from this DataPoint
      */
     public DataPoint subtract(double d) {
-        return new DataPoint(dateTime, amount.subtract(new Amount(d)));
+        return subtract(d, false);
+    }
+
+    /**
+     * Subtract a double value from this DataPoint.
+     *
+     *
+     * @param d the double to subtract
+     * @param invert invert the operands
+     * @return a new DataPoint representing the subtraction of the double value from this DataPoint
+     */
+    public DataPoint subtract(double d, boolean invert) {
+        if (invert) {
+            return new DataPoint(dateTime, new Amount(d).subtract(amount));
+        } else {
+            return new DataPoint(dateTime, amount.subtract(new Amount(d)));
+        }
     }
 
     /**
@@ -147,7 +163,22 @@ public class DataPoint implements Comparable<DataPoint> {
      * @return a new DataPoint representing the division of this DataPoint by the double value
      */
     public DataPoint divide(double d) {
-        return new DataPoint(dateTime, amount.divide(new Amount(d)));
+        return divide(d, false);
+    }
+
+    /**
+     * Divide this DataPoint by a double value.
+     *
+     * @param d the double value by which to divide this DataPoint
+     * @param invert invert the operands
+     * @return a new DataPoint representing the division of this DataPoint by the double value
+     */
+    public DataPoint divide(double d, boolean invert) {
+        if (invert) {
+            return new DataPoint(dateTime, new Amount(d).divide(amount));
+        } else {
+            return new DataPoint(dateTime, amount.divide(new Amount(d)));
+        }
     }
 
     /**
