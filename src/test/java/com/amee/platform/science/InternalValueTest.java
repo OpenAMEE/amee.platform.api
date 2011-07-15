@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -151,8 +152,8 @@ public class InternalValueTest {
         assertTrue("Should contain expected ItemValues", filteredDates.contains(dateFour));
         assertFalse("Should not contain filtered ItemValues", filteredDates.contains(dateFive));
         assertFalse("Should not contain filtered ItemValues", filteredDates.contains(dateSix));
-        assertTrue("Should have a window of two minutes, is:"+filteredValues.getSeriesTimeInMillis() +"s",
-                filteredValues.getSeriesTimeInMillis().equals(new Amount((float)(120*1000))));
+        assertEquals("Should have a window of two minutes, is: " + filteredValues.getSeriesTimeInMillis() + "s",
+            new Long(120 * 1000), filteredValues.getSeriesTimeInMillis());
     }
 
     @Test
