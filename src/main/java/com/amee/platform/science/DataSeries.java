@@ -117,8 +117,13 @@ public class DataSeries {
         }
     }
 
-    // Combine this DataSeries with another DataSeries using the given Operation.
-
+    /**
+     * Combine this DataSeries with another DataSeries using the given Operation.
+     *
+     * @param series
+     * @param operation
+     * @return
+     */
     @SuppressWarnings("unchecked")
     private DataSeries combine(DataSeries series, Operation operation) {
 
