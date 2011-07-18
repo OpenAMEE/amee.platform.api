@@ -185,6 +185,18 @@ public class DataSeries {
      * @return a new DataSeries representing the addition of the double value and the DataSeries
      */
     public DataSeries plus(double d) {
+        return plus(d, false);
+    }
+
+    /**
+     * Add a double value to this DataSeries.
+     *
+     *
+     * @param d the double value to add
+     * @param invert dummy parameter to keep the apis consistent. Addition is commutative so invert doesn't do anything.
+     * @return a new DataSeries representing the addition of the double value and the DataSeries
+     */
+    public DataSeries plus(double d, boolean invert) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.plus(d));
@@ -337,6 +349,17 @@ public class DataSeries {
      * @return a new DataSeries representing the multiplication of the DataSeries and the double value
      */
     public DataSeries multiply(double d) {
+        return multiply(d, false);
+    }
+
+    /**
+     * Multiply this DataSeries by a double value.
+     *
+     * @param d - the double value to multiply this DataSeries
+     * @param invert dummy parameter to keep the apis consistent. Multiplication is commutative so invert doesn't do anything.
+     * @return a new DataSeries representing the multiplication of the DataSeries and the double value
+     */
+    public DataSeries multiply(double d, boolean invert) {
         List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.multiply(d));

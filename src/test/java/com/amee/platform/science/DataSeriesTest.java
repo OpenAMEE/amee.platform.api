@@ -12,10 +12,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class DataSeriesTest {
 
-//    private DataSeries seriesA;
-//    private DataSeries seriesB;
-//    private DataSeries seriesC;
-
     private DateTime now;
     private DataSeries lhSeries;
     private DataSeries rhSeries;
@@ -57,7 +53,7 @@ public class DataSeriesTest {
     }
 
     @Test
-    public void add() {
+    public void plus() {
 
         // Add a series to a series
         DataSeries expected = new DataSeries();
@@ -91,6 +87,14 @@ public class DataSeriesTest {
 
         // Add a double to a series
         actual = lhSeries.plus(rhDouble);
+        assertEquals("Combined series should have start date of: " + now.plusHours(36) + " was: " + actual.getSeriesStartDate(),
+            now.plusHours(36), actual.getSeriesStartDate());
+        assertEquals("Combined series should have end date of: " + now.plusDays(5) + " was: " + actual.getSeriesEndDate(),
+            now.plusDays(5), actual.getSeriesEndDate());
+        assertEquals("Integrate should produce the correct value.", expected.integrate(), actual.integrate());
+
+        // Add a series to a double (addition is commutative)
+        actual = lhSeries.plus(rhDouble, true);
         assertEquals("Combined series should have start date of: " + now.plusHours(36) + " was: " + actual.getSeriesStartDate(),
             now.plusHours(36), actual.getSeriesStartDate());
         assertEquals("Combined series should have end date of: " + now.plusDays(5) + " was: " + actual.getSeriesEndDate(),
@@ -212,6 +216,11 @@ public class DataSeriesTest {
 
         // Multiply a series by a double
         actual = lhSeries.multiply(rhDouble);
+        assertEquals("Integrate should produce the correct value of " + expected.integrate() + ". Was: " + actual.integrate(),
+            expected.integrate(), actual.integrate());
+
+        // Multiply a double by a series (commutative)
+        actual = lhSeries.multiply(rhDouble, true);
         assertEquals("Integrate should produce the correct value of " + expected.integrate() + ". Was: " + actual.integrate(),
             expected.integrate(), actual.integrate());
     }
