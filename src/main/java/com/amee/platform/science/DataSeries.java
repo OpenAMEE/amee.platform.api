@@ -9,10 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class representing a series of {@link DataPoint} values. Provides various mathematical operations
@@ -21,7 +18,7 @@ import java.util.List;
 public class DataSeries {
 
     private final Log log = LogFactory.getLog("science");
-    private List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+    private SortedSet<DataPoint> dataPoints = new TreeSet<DataPoint>();
 
     /// These dates will be used to define a query window on the series.
     private DateTime seriesStartDate;
@@ -31,16 +28,16 @@ public class DataSeries {
      * Construct an empty series.
      */
     public DataSeries() {
-        this(new ArrayList<DataPoint>());
+        this(new TreeSet<DataPoint>());
     }
 
     /**
-     * Construct a series from the list of {@link DataPoint} values.
+     * Construct a series from the set of {@link DataPoint} values.
      *
      * @param dataPoints - the list of {@link DataPoint} values
      */
-    public DataSeries(List<DataPoint> dataPoints) {
-        this.dataPoints = new ArrayList<DataPoint>(dataPoints);
+    public DataSeries(Set<DataPoint> dataPoints) {
+        this.dataPoints = new TreeSet<DataPoint>(dataPoints);
     }
 
     /**
@@ -102,7 +99,7 @@ public class DataSeries {
 
     DateTime getSeriesStartDate() {
         if (!dataPoints.isEmpty()) {
-            DateTime first = dataPoints.get(0).getDateTime();
+            DateTime first = dataPoints.first().getDateTime();
             return (seriesStartDate != null) && seriesStartDate.isAfter(first) ? seriesStartDate : first;
         } else {
             return null;
@@ -111,7 +108,7 @@ public class DataSeries {
 
     DateTime getSeriesEndDate() {
         if (!dataPoints.isEmpty()) {
-            return (seriesEndDate != null) ? seriesEndDate : dataPoints.get(dataPoints.size() - 1).getDateTime();
+            return (seriesEndDate != null) ? seriesEndDate : dataPoints.last().getDateTime();
         } else {
             return null;
         }
@@ -133,7 +130,7 @@ public class DataSeries {
 
         // For each DateTime point, find the nearest corresponding DataPoint in each series and apply the desired
         // Operation.
-        List<DataPoint> combinedSeries = new ArrayList<DataPoint>();
+        SortedSet<DataPoint> combinedSeries = new TreeSet<DataPoint>();
         for (DateTime dateTimePoint : dateTimePoints) {
             DataPoint lhs = getDataPoint(dateTimePoint);
             DataPoint rhs = series.getDataPoint(dateTimePoint);
@@ -197,7 +194,7 @@ public class DataSeries {
      * @return a new DataSeries representing the addition of the double value and the DataSeries
      */
     public DataSeries plus(double d, boolean invert) {
-        List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
+        SortedSet<DataPoint> combinedDataPoints = new TreeSet<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.plus(d));
         }
@@ -251,7 +248,7 @@ public class DataSeries {
      * @return a new DataSeries representing the subtraction of the double value from this DataSeries
      */
     public DataSeries subtract(double d, boolean invert) {
-        List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
+        SortedSet<DataPoint> combinedDataPoints = new TreeSet<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.subtract(d, invert));
         }
@@ -306,7 +303,7 @@ public class DataSeries {
      * @return a new DataSeries representing the division of this DataSeries by the double value
      */
     public DataSeries divide(double d, boolean invert) {
-        List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
+        SortedSet<DataPoint> combinedDataPoints = new TreeSet<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.divide(d, invert));
         }
@@ -360,7 +357,7 @@ public class DataSeries {
      * @return a new DataSeries representing the multiplication of the DataSeries and the double value
      */
     public DataSeries multiply(double d, boolean invert) {
-        List<DataPoint> combinedDataPoints = new ArrayList<DataPoint>();
+        SortedSet<DataPoint> combinedDataPoints = new TreeSet<DataPoint>();
         for (DataPoint dp : dataPoints) {
             combinedDataPoints.add(dp.multiply(d));
         }
@@ -385,27 +382,26 @@ public class DataSeries {
         Long seriesTimeInMillis = getSeriesTimeInMillis();
 
         if (log.isDebugEnabled()) {
-            log.debug("integrate() Integrating, time range:" + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length, " + dataPoints.size());
+            log.debug("integrate() Integrating, time range: " + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length: " + dataPoints.size());
         }
 
         if (seriesTimeInMillis == null) {
-            integral = dataPoints.get(dataPoints.size() - 1).getValue().getValue();
+            integral = dataPoints.last().getValue().getValue();
         } else if (seriesTimeInMillis > 0) {
-            Collections.sort(dataPoints);
-            for (int i = 0; i < dataPoints.size(); i++) {
+            DataPoint[] pointArray = dataPoints.toArray(new DataPoint[dataPoints.size()]);
+            for (int i = 0; i < pointArray.length; i++) {
                 // Work out segment time series.
-                DataPoint current = dataPoints.get(i);
+                DataPoint current = pointArray[i];
                 DateTime end;
-                if (i == (dataPoints.size() - 1)) {
+                if (i == (pointArray.length - 1)) {
                     end = getSeriesEndDate();
                 } else {
-                    DataPoint next = dataPoints.get(i + 1);
+                    DataPoint next = pointArray[i + 1];
                     end = getSeriesEndDate().isBefore(next.getDateTime()) ? getSeriesEndDate() : next.getDateTime();
                 }
                 DateTime start = getSeriesStartDate().isAfter(current.getDateTime()) ?
                         getSeriesStartDate() : current.getDateTime();
-                double segmentInMillis =
-                        end.getMillis() - start.getMillis();
+                double segmentInMillis = end.getMillis() - start.getMillis();
                 // the filtering should have removed points after the end of the window of interest
                 // but in case it hasn't (and for direct testing not via internal value)
 
@@ -413,8 +409,8 @@ public class DataSeries {
                 double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
                 if (log.isDebugEnabled()) {
                     log.debug("integrate() " +
-                            "Diagnostics from integrate()" + weightedAverage + "," + current.getValue() + "," + i + "," + dataPoints.size() +
-                            "," + segmentInMillis / (seriesTimeInMillis.doubleValue()));
+                            "Diagnostics from integrate() weightedAverage: " + weightedAverage + ", current value: " + current.getValue() + ", " + i + ", datapoints size: " + pointArray.length +
+                            ", segment millis / series millis: " + segmentInMillis / (seriesTimeInMillis.doubleValue()));
                 }
                 if (start.isAfter(end)) continue;
                 integral = integral + weightedAverage;
@@ -446,6 +442,8 @@ public class DataSeries {
      */
     public DataPoint getDataPoint(DateTime dateTime) {
         DataPoint selected = DataPoint.NULL;
+
+        // datapoints must be sorted in ascending order (earliest first)
         for (DataPoint dataPoint : dataPoints) {
             if (!dataPoint.getDateTime().isAfter(dateTime)) {
                 selected = dataPoint;

@@ -47,9 +47,9 @@ import static org.mockito.Mockito.when;
  * Some test cases are described here: https://docs.google.com/a/amee.cc/Doc?docid=0AVPTOpeCYkq1ZGZxOXE1Y3JfMTFkZDk5eHdjZA&hl=en_GB
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AlgorithmServiceTest {
+public class AlgorithmRunnerTest {
 
-    private AlgorithmRunner algorithmService;
+    private AlgorithmRunner algorithmRunner;
     private DataSeries seriesA;
     private DataSeries seriesB;
     private DataSeries seriesC;
@@ -60,7 +60,7 @@ public class AlgorithmServiceTest {
     public void init() throws ScriptException {
 
         // Create the AlgorithmRunner.
-        algorithmService = new AlgorithmRunner();
+        algorithmRunner = new AlgorithmRunner();
 
         // Create DataSeries A.
         seriesA = new DataSeries();
@@ -88,7 +88,7 @@ public class AlgorithmServiceTest {
 
         // The algorithm input values.
         Map<String, Object> values = new HashMap<String, Object>();
-        assertNotNull("Really simple algorithm should be OK.", algorithmService.evaluate(mockAlgorithm, values));
+        assertNotNull("Really simple algorithm should be OK.", algorithmRunner.evaluate(mockAlgorithm, values));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class AlgorithmServiceTest {
         stubGetCompiledScript(algorithmContent);
         Map<String, Object> values = new HashMap<String, Object>();
         try {
-            algorithmService.evaluate(mockAlgorithm, values);
+            algorithmRunner.evaluate(mockAlgorithm, values);
             fail("Empty algorithm should NOT be OK.");
         } catch (Throwable t) {
             // swallow
@@ -130,7 +130,7 @@ public class AlgorithmServiceTest {
         
         Map<String, Object> values = new HashMap<String, Object>();
         try {
-            algorithmService.evaluate(mockAlgorithm, values);
+            algorithmRunner.evaluate(mockAlgorithm, values);
             fail("Algorithm should throw IllegalArgumentException.");
         } catch (ScriptException e) {
             IllegalArgumentException iae = AlgorithmRunner.getIllegalArgumentException(e);
@@ -150,7 +150,7 @@ public class AlgorithmServiceTest {
 
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", seriesA.copy());
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
         assertEquals("Should be able to use DataSeries.integrate() without a startDate and endDate.", 0.6666666666666666, result.defaultValueAsDouble());
     }
 
@@ -168,7 +168,7 @@ public class AlgorithmServiceTest {
 
         Map<String, Object> values = new HashMap<String, Object>();
         values.put("series", series);
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
         assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 0.5, result.defaultValueAsDouble());
     }
 
@@ -191,7 +191,7 @@ public class AlgorithmServiceTest {
         values.put("seriesB", seriesB.copy());
         values.put("seriesC", seriesC.copy());
 
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
 //        System.out.println(result);
         assertEquals("Should be able to use DataSeries.integrate() with a startDate and endDate.", 3.1666666666666665, result.defaultValueAsDouble());
     }
@@ -213,7 +213,7 @@ public class AlgorithmServiceTest {
 
         Map<String, Object> values = new HashMap<String, Object>();
 
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
         assertEquals("Should have 2 amounts in result", 2, result.getReturnValues().size());
         assertEquals("Incorrect default amount", 5.43, result.defaultValueAsDouble(), 0.000001);
         assertEquals("Should have 1 note", 1, result.getNotes().size());
@@ -232,7 +232,7 @@ public class AlgorithmServiceTest {
         
         Map<String, Object> values = new HashMap<String, Object>();
 
-        ReturnValues result = algorithmService.evaluate(mockAlgorithm, values);
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
         assertEquals("Should have 1 result", 1, result.getReturnValues().size());
         assertEquals("Incorrect return value", 1.23, result.defaultValueAsDouble(), 0.000001);
         assertTrue("Notes should be empty", result.getNotes().isEmpty());
@@ -244,7 +244,7 @@ public class AlgorithmServiceTest {
         stubGetCompiledScript(algorithmContent);
         
         Map<String, Object> values = new HashMap<String, Object>();
-        algorithmService.evaluate(mockAlgorithm, values);
+        algorithmRunner.evaluate(mockAlgorithm, values);
     }
 
     private void stubGetCompiledScript(final String AlgorithmContent) throws ScriptException {

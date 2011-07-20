@@ -201,8 +201,13 @@ public class DataPoint implements Comparable<DataPoint> {
         return new DataPoint(dateTime, amount.multiply(new Amount(d)));
     }
 
+    /**
+     * Sorted collections of DataPoints are ordered by date.
+     * 
+     * @param that
+     * @return
+     */
     public int compareTo(DataPoint that) {
-        // TODO: Collections of DataPoint values will be ordered by what?
         return getDateTime().compareTo(that.getDateTime());
     }
 }
