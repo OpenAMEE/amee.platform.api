@@ -16,26 +16,25 @@ public class ValueTypeTest {
 
     // Map of Enum name => label
     // Use a LinkedHashMap so the order is the same as in the Enum.
-    private static final Map<String, String> pairs = new LinkedHashMap<String, String>();
-    {
-        pairs.put("UNSPECIFIED", "Unspecified");
-        pairs.put("TEXT", "Text");
-        pairs.put("DATE","Date");
-        pairs.put("BOOLEAN", "Boolean");
-        pairs.put("INTEGER", "Integer");
-        pairs.put("DECIMAL", "Decimal");
-    }
+    private static final Map<String, String> PAIRS = new LinkedHashMap<String, String>() {{
+        put("UNSPECIFIED", "Unspecified");
+        put("TEXT", "Text");
+        put("DATE", "Date");
+        put("BOOLEAN", "Boolean");
+        put("INTEGER", "Integer");
+        put("DECIMAL", "Decimal");
+    }};
 
     @Test
     public void getChoices() {
-        assertEquals(pairs, ValueType.getChoices());
+        assertEquals(PAIRS, ValueType.getChoices());
     }
 
     @Test
     public void getJSONObject() {
         try {
             JSONObject JsonObject = ValueType.getJSONObject();
-            assertJsonObject(pairs, JsonObject);
+            assertJsonObject(PAIRS, JsonObject);
         } catch (JSONException e) {
             fail(e.getMessage());
         }
@@ -78,7 +77,7 @@ public class ValueTypeTest {
             NamedNodeMap attributes = valueTypeNode.getAttributes();
             Node nameNode = attributes.getNamedItem("name");
             Node labelNode = attributes.getNamedItem("label");
-            assertEquals(pairs.get(nameNode.getNodeValue()), labelNode.getNodeValue());
+            assertEquals(PAIRS.get(nameNode.getNodeValue()), labelNode.getNodeValue());
         }
     }
 

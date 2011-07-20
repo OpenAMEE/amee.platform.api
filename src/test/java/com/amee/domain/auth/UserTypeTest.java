@@ -16,24 +16,23 @@ import static org.junit.Assert.fail;
 public class UserTypeTest {
     // Map of Enum name => label
     // Use a LinkedHashMap so the order is the same as in the Enum.
-    private static final Map<String, String> pairs = new LinkedHashMap<String, String>();
-    {
-        pairs.put("STANDARD", "Standard");
-        pairs.put("GUEST", "Guest");
-        pairs.put("ANONYMOUS", "Anonymous");
-        pairs.put("SUPER", "Super");
-    }
+    private static final Map<String, String> PAIRS = new LinkedHashMap<String, String>() {{
+        put("STANDARD", "Standard");
+        put("GUEST", "Guest");
+        put("ANONYMOUS", "Anonymous");
+        put("SUPER", "Super");
+    }};
 
     @Test
     public void getChoices() {
-        assertEquals(pairs, UserType.getChoices());
+        assertEquals(PAIRS, UserType.getChoices());
     }
 
     @Test
     public void getJSONObject() {
         try {
             JSONObject JsonObject = UserType.getJSONObject();
-            assertJsonObject(pairs, JsonObject);
+            assertJsonObject(PAIRS, JsonObject);
         } catch (JSONException e) {
             fail(e.getMessage());
         }
@@ -76,7 +75,7 @@ public class UserTypeTest {
             NamedNodeMap attributes = UserTypeNode.getAttributes();
             Node nameNode = attributes.getNamedItem("name");
             Node labelNode = attributes.getNamedItem("label");
-            assertEquals(pairs.get(nameNode.getNodeValue()), labelNode.getNodeValue());
+            assertEquals(PAIRS.get(nameNode.getNodeValue()), labelNode.getNodeValue());
         }
     }
 
