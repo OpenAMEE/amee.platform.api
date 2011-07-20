@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 
 public class UserTypeTest {
     // Map of Enum name => label
+    // Use a LinkedHashMap so the order is the same as in the Enum.
     private static final Map<String, String> pairs = new LinkedHashMap<String, String>();
     {
         pairs.put("STANDARD", "Standard");

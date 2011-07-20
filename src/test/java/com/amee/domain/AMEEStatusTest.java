@@ -6,16 +6,14 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.w3c.dom.*;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AMEEStatusTest {
     // Map of Enum name => label
-    private static final Map<String, String> pairs = new HashMap<String, String>();
+    private static final Map<String, String> pairs = new LinkedHashMap<String, String>();
     {
         pairs.put("TRASH", "Trash");
         pairs.put("ACTIVE", "Active");

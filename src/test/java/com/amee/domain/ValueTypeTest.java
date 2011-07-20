@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.w3c.dom.*;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -15,7 +15,8 @@ import static org.junit.Assert.*;
 public class ValueTypeTest {
 
     // Map of Enum name => label
-    private static final Map<String, String> pairs = new HashMap<String, String>();
+    // Use a LinkedHashMap so the order is the same as in the Enum.
+    private static final Map<String, String> pairs = new LinkedHashMap<String, String>();
     {
         pairs.put("UNSPECIFIED", "Unspecified");
         pairs.put("TEXT", "Text");
