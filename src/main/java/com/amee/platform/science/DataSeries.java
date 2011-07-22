@@ -97,7 +97,12 @@ public class DataSeries {
         return seriesEnd.getMillis() - seriesStart.getMillis();
     }
 
-    DateTime getSeriesStartDate() {
+    /**
+     * Gets the seriesStartDate.
+     *
+     * @return return the seriesStartDate if set and after the first DataPoint, otherwise the date of the first DataPoint.
+     */
+    public DateTime getSeriesStartDate() {
         if (!dataPoints.isEmpty()) {
             DateTime first = dataPoints.first().getDateTime();
             return (seriesStartDate != null) && seriesStartDate.isAfter(first) ? seriesStartDate : first;
@@ -106,7 +111,12 @@ public class DataSeries {
         }
     }
 
-    DateTime getSeriesEndDate() {
+    /**
+     * Gets the seriesEndDate.
+     *
+     * @return return the seriesEndDate if set, otherwise the date of the last DataPoint.
+     */
+    public DateTime getSeriesEndDate() {
         if (!dataPoints.isEmpty()) {
             return (seriesEndDate != null) ? seriesEndDate : dataPoints.last().getDateTime();
         } else {
