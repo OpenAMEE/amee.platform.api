@@ -596,6 +596,9 @@
                             <includes>
                                 <include>**/*SmokeTest*</include>
                             </includes>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
