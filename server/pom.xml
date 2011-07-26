@@ -159,6 +159,11 @@
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <parallel>methods</parallel>
+                        
+                        <!-- Exclude the smoke tests -->
+                        <excludes>
+                            <exclude>**/*SmokeTest*</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
                 <plugin>
