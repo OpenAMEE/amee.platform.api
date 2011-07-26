@@ -32,7 +32,7 @@ class DefinitionSmokeTest extends BaseSmokeTest {
     @Test
     void getItemValueDefinition() {
         def response = client.get(
-            path: "/3/definitions/${config.uid.itemDefinition.IPCC_military_aircraft.a10}o/values/${config.uid.itemValueDefinition.IPCC_military_aircraft.a10.flightDuration};full")
+            path: "/3/definitions/${config.uid.itemDefinition.IPCC_military_aircraft.a10}/values/${config.uid.itemValueDefinition.IPCC_military_aircraft.a10.flightDuration};full")
         assertResponseOk response
         assertEquals "flightDuration", response.data.itemValueDefinition.path
     }
