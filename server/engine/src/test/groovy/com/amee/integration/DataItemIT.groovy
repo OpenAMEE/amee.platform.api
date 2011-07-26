@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -184,7 +186,7 @@ class DataItemIT extends BaseApiTest {
      * Test fetching a number of DataItems with JSON responses.
      *
      * This resource supports the 'startDate' parameter which behaves identically to the
-     * DataItem values resource detailed and tested in DataItemValueIT.
+     * DataItem values resource detailed and tested in com.amee.integration.DataItemValueIT.
      *
      * Data Item GET requests support the following matrix parameters to modify the response.
      *

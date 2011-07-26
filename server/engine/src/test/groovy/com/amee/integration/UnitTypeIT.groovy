@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -34,7 +36,7 @@ class UnitTypeIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveUnitType() {
-        versions.each { version -> createAndRemoveUnitType(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnitType(version) }
     }
 
     def createAndRemoveUnitType(version) {
@@ -143,7 +145,7 @@ class UnitTypeIT extends BaseApiTest {
      */
     @Test
     void getAllUnitTypes() {
-        versions.each { version -> getAllUnitTypes(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnitTypes(version) }
     }
 
     def getAllUnitTypes(version) {

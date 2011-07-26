@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.joda.time.DateTime
 import org.junit.Test

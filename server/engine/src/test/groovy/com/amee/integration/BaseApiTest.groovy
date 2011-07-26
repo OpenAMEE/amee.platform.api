@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import com.amee.platform.search.SearchIndexerImpl
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient

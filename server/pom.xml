@@ -574,4 +574,28 @@
     <!--<url>scm:git:ssh://git@github.com/AMEE/amee.git</url>-->
     <!--</scm>-->
 
+    <profiles>
+
+        <!-- A profile to run smoke tests -->
+        <profile>
+            <id>smoke</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*SmokeTest*</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

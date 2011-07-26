@@ -4,3 +4,4 @@ wrapper.conf.local
 build.properties
 
 /scripts/jmeter/results/
+/server/engine/src/test/resources/smoke.properties

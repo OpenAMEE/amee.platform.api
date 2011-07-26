@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
@@ -35,7 +37,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJson() {
-        versions.each { version -> searchJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchJson(version) }
     }
 
     def searchJson(version) {
@@ -55,7 +57,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJsonWithExcTags() {
-        versions.each { version -> searchJsonWithExcTags(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchJsonWithExcTags(version) }
     }
 
     def searchJsonWithExcTags(version) {
@@ -78,7 +80,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJsonWithTags() {
-        versions.each { version -> searchJsonWithTags(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchJsonWithTags(version) }
     }
 
     def searchJsonWithTags(version) {
@@ -101,7 +103,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXml() {
-        versions.each { version -> searchXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchXml(version) }
     }
 
     def searchXml(version) {
@@ -121,7 +123,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXmlWithExcTags() {
-        versions.each { version -> searchXmlWithExcTags(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchXmlWithExcTags(version) }
     }
 
     def searchXmlWithExcTags(version) {
@@ -144,7 +146,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXmlWithTags() {
-        versions.each { version -> searchXmlWithTags(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchXmlWithTags(version) }
     }
 
     def searchXmlWithTags(version) {
@@ -168,7 +170,7 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchWithInvalidQueryJson() {
-        versions.each { version -> searchWithInvalidQueryJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> searchWithInvalidQueryJson(version) }
     }
 
     def searchWithInvalidQueryJson(version) {

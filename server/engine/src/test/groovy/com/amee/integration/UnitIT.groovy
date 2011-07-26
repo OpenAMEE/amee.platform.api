@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -58,8 +60,8 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveUnit() {
-        versions.each { version -> createAndRemoveUnit(version, true) };
-        versions.each { version -> createAndRemoveUnit(version, false) };
+        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnit(version, true) };
+        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnit(version, false) };
     }
 
     def createAndRemoveUnit(version, useUnitTypeResource) {
@@ -212,7 +214,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getSingleUnit() {
-        versions.each { version -> getSingleUnit(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getSingleUnit(version) }
     }
 
     def getSingleUnit(version) {
@@ -274,7 +276,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getAllUnitsForUnitType() {
-        versions.each { version -> getAllUnitsForUnitType(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnitsForUnitType(version) }
     }
 
     def getAllUnitsForUnitType(version) {
@@ -328,7 +330,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getAllUnits() {
-        versions.each { version -> getAllUnits(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnits(version) }
     }
 
     def getAllUnits(version) {

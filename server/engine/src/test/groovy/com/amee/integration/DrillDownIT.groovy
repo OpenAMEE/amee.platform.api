@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
