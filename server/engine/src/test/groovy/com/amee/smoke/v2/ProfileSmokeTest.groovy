@@ -40,6 +40,13 @@ class ProfileSmokeTest extends BaseSmokeTest {
         response = client.get(path: "/profiles/${profileUid}/transport/plane/specific/military/ipcc/${profileItemUid}")
         assertResponseOk(response)
 
+        // Update the profile item
+        response = client.put(
+            path: "/profiles/${profileUid}/transport/plane/specific/military/ipcc/${profileItemUid}",
+            body: ['flightDuration': '2'],
+            requestContentType: URLENC)
+        assertResponseOk(response)
+
         // Delete the profile
         response = client.delete(path: "/profiles/${profileUid}")
         assertResponseOk(response)
