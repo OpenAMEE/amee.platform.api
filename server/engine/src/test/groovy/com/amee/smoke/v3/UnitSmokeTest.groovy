@@ -1,8 +1,9 @@
-package com.amee.smoke
+package com.amee.smoke.v3
 
 import org.junit.Test
 import org.junit.Ignore
 import static org.junit.Assert.*
+import com.amee.smoke.BaseSmokeTest
 
 
 class UnitSmokeTest extends BaseSmokeTest {

@@ -1,7 +1,8 @@
-package com.amee.smoke
+package com.amee.smoke.v3
 
 import org.junit.Test
 import static org.junit.Assert.*
+import com.amee.smoke.BaseSmokeTest
 
 /**
  * Smoke tests for the /definitions resources.

@@ -20,7 +20,19 @@ abstract class BaseSmokeTest {
 
         // Get the HTTP client
         config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
-        client = new RESTClient("${config.api.protocol}://${config.api.host}:${config.api.port}")
+
+        // V2 or V3 API?
+        def packageName = this.getClass().getPackage().name.tokenize(".").last()
+        switch (packageName) {
+            case "v2":
+                client = new RESTClient("${config.api.protocol}://${config.api.host.v2}:${config.api.port}")
+                break
+            case "v3":
+                client = new RESTClient("${config.api.protocol}://${config.api.host.v3}:${config.api.port}")
+                break
+        }
+
+
 
         // Use JSON for the smoke tests.
         client.setContentType JSON
@@ -49,4 +61,5 @@ abstract class BaseSmokeTest {
         assertEquals 200, response.status
         assertEquals 'OK', response.data.status
     }
+
 }
