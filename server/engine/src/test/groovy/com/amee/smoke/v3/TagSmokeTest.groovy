@@ -1,8 +1,9 @@
 package com.amee.smoke.v3
 
-import org.junit.Test
-import static org.junit.Assert.*
 import com.amee.smoke.BaseSmokeTest
+import org.junit.Test
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 /**
  * Smoke tests for the /tags resources.

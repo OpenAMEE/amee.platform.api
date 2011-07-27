@@ -1,8 +1,9 @@
 package com.amee.smoke.v3
 
-import org.junit.Test
-import static org.junit.Assert.*
 import com.amee.smoke.BaseSmokeTest
+import org.junit.Test
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 /**
  * Smoke tests for the /categories resources.
@@ -66,9 +67,9 @@ class CategorySmokeTest extends BaseSmokeTest {
     @Test
     void getItemValue() {
         def response = client.get(
-            path: "/3/categories/UK_energy_by_supplier/items/${config.uid.item.UK_energy_by_supplier.british_gas}/values/kgCO2PerKWh/933B61F6CD91")
+            path: "/3/categories/UK_energy_by_supplier/items/${config.uid.item.UK_energy_by_supplier.british_gas}/values/kgCO2PerKWh/${config.uid.itemValue.UK_energy_by_supplier.british_gas.kgCO2PerKWh}")
         assertResponseOk response
-        assertEquals "1970-01-01T00:00:00Z", response.data.value.startDate
+        assertEquals "2009-01-01T00:00:00Z", response.data.value.startDate
     }
 
     @Test
