@@ -69,6 +69,9 @@ public class Engine implements WrapperListener {
     @Override
     public Integer start(String[] args) {
 
+        // Redirect JDK logging to Commons Logging
+        JavaLoggingToCommonsLoggingRedirector.activate();
+
         parseOptions(args);
 
         log.debug("Starting Engine...");
