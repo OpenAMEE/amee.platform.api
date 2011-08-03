@@ -57,6 +57,7 @@ public enum ObjectType implements Serializable {
     ALC("ALC", "AlgorithmContext") { Class toClass() {return AlgorithmContext.class;} },
     USR("USR", "User") { Class toClass() {return User.class;} },
     GRP("GRP", "Group") { Class toClass() {return Group.class;} },
+    ENV("ENV", "Environment") { Class toClass() {return Environment.class;} },
     PRM("PRM", "Permission") { Class toClass() {return Permission.class;} },
     LN("LN", "LocaleName") { Class toClass() {return LocaleName.class;} },
     GP("GP", "GroupPrincipal") { Class toClass() {return GroupPrincipal.class;} },
@@ -147,6 +148,8 @@ public enum ObjectType implements Serializable {
             return USR;
         } else if (Group.class.isAssignableFrom(c)) {
             return GRP;
+        } else if (Environment.class.isAssignableFrom(c)) {
+            return ENV;
         } else if (Permission.class.isAssignableFrom(c)) {
             return PRM;
         } else if (LocaleName.class.isAssignableFrom(c)) {
