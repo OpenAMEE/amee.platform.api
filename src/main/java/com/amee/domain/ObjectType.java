@@ -49,34 +49,34 @@ import java.util.Map;
 public enum ObjectType implements Serializable {
 
     // NOTE: These are stored in the database as strings.
-    DC("DC", "DataCategory") { Class toClass() {return DataCategory.class;} },
-    AL("AL", "Algorithm") { Class toClass() {return Algorithm.class;} },
-    ID("ID", "ItemDefinition") { Class toClass() {return ItemDefinition.class;} },
-    IVD("IVD", "ItemValueDefinition") { Class toClass() {return ItemValueDefinition.class;} },
-    PR("PR", "Profile") { Class toClass() {return Profile.class;} },
-    ALC("ALC", "AlgorithmContext") { Class toClass() {return AlgorithmContext.class;} },
-    USR("USR", "User") { Class toClass() {return User.class;} },
-    GRP("GRP", "Group") { Class toClass() {return Group.class;} },
-    ENV("ENV", "Environment") { Class toClass() {return Environment.class;} },
-    PRM("PRM", "Permission") { Class toClass() {return Permission.class;} },
-    LN("LN", "LocaleName") { Class toClass() {return LocaleName.class;} },
-    GP("GP", "GroupPrincipal") { Class toClass() {return GroupPrincipal.class;} },
-    VD("VD", "ValueDefinition") { Class toClass() {return ValueDefinition.class;} },
-    AV("AV", "APIVersion") { Class toClass() {return APIVersion.class;} },
-    MD("MD", "Metadata") { Class toClass() {return Metadata.class;} },
-    TA("TA", "Tag") { Class toClass() {return Tag.class;} },
-    ET("ET", "EntityTag") { Class toClass() {return EntityTag.class;} },
-    RVD("RVD", "ReturnValueDefinition") { Class toClass() {return ReturnValueDefinition.class;} },
-    DINV("DINV", "DataItemNumberValue") { Class toClass() {return DataItemNumberValue.class;} },
-    DINVH("DINVH", "DataItemNumberValueHistory") { Class toClass() {return DataItemNumberValueHistory.class;} },
-    DITV("DITV", "DataItemTextValue") { Class toClass() {return DataItemTextValue.class;} },
-    DITVH("DITVH", "DataItemTextValueHistory") { Class toClass() {return DataItemTextValueHistory.class;} },
-    PINV("PINV", "ProfileItemNumberValue") { Class toClass() {return ProfileItemNumberValue.class;} },
-    PITV("PITV", "ProfileItemTextValue") { Class toClass() {return ProfileItemTextValue.class;} },
-    NPI("NPI", "NewProfileItem") { Class toClass() {return ProfileItem.class;} },
-    NDI("NDI", "NewDataItem") { Class toClass() {return DataItem.class;} },
-    UN("UN", "Unit") { Class toClass() {return AMEEUnit.class;} },
-    UT("UT", "UnitType") { Class toClass() {return AMEEUnitType.class;} };
+    DC("DC", "DataCategory") { public Class toClass() {return DataCategory.class;} },
+    AL("AL", "Algorithm") { public Class toClass() {return Algorithm.class;} },
+    ID("ID", "ItemDefinition") { public Class toClass() {return ItemDefinition.class;} },
+    IVD("IVD", "ItemValueDefinition") { public Class toClass() {return ItemValueDefinition.class;} },
+    PR("PR", "Profile") { public Class toClass() {return Profile.class;} },
+    ALC("ALC", "AlgorithmContext") { public Class toClass() {return AlgorithmContext.class;} },
+    USR("USR", "User") { public Class toClass() {return User.class;} },
+    GRP("GRP", "Group") { public Class toClass() {return Group.class;} },
+    ENV("ENV", "Environment") { public Class toClass() {return Environment.class;} },
+    PRM("PRM", "Permission") { public Class toClass() {return Permission.class;} },
+    LN("LN", "LocaleName") { public Class toClass() {return LocaleName.class;} },
+    GP("GP", "GroupPrincipal") { public Class toClass() {return GroupPrincipal.class;} },
+    VD("VD", "ValueDefinition") { public Class toClass() {return ValueDefinition.class;} },
+    AV("AV", "APIVersion") { public Class toClass() {return APIVersion.class;} },
+    MD("MD", "Metadata") { public Class toClass() {return Metadata.class;} },
+    TA("TA", "Tag") { public Class toClass() {return Tag.class;} },
+    ET("ET", "EntityTag") { public Class toClass() {return EntityTag.class;} },
+    RVD("RVD", "ReturnValueDefinition") { public Class toClass() {return ReturnValueDefinition.class;} },
+    DINV("DINV", "DataItemNumberValue") { public Class toClass() {return DataItemNumberValue.class;} },
+    DINVH("DINVH", "DataItemNumberValueHistory") { public Class toClass() {return DataItemNumberValueHistory.class;} },
+    DITV("DITV", "DataItemTextValue") { public Class toClass() {return DataItemTextValue.class;} },
+    DITVH("DITVH", "DataItemTextValueHistory") { public Class toClass() {return DataItemTextValueHistory.class;} },
+    PINV("PINV", "ProfileItemNumberValue") { public Class toClass() {return ProfileItemNumberValue.class;} },
+    PITV("PITV", "ProfileItemTextValue") { public Class toClass() {return ProfileItemTextValue.class;} },
+    NPI("NPI", "NewProfileItem") { public Class toClass() {return ProfileItem.class;} },
+    NDI("NDI", "NewDataItem") { public Class toClass() {return DataItem.class;} },
+    UN("UN", "Unit") { public Class toClass() {return AMEEUnit.class;} },
+    UT("UT", "UnitType") { public Class toClass() {return AMEEUnitType.class;} };
 
     private final String name;
     private final String label;
@@ -111,7 +111,7 @@ public enum ObjectType implements Serializable {
         return label;
     }
 
-    abstract Class toClass();
+    public abstract Class toClass();
     
     public static ObjectType fromClass(Class c) {
         if (DataCategory.class.isAssignableFrom(c)) {
