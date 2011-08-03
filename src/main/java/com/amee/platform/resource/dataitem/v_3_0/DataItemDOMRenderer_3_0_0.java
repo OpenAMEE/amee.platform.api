@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Since("3.0.0")
 public class DataItemDOMRenderer_3_0_0 extends DataItemDOMRenderer_3_1_0 {
 
+    @Override
     public void newValue(BaseItemValue itemValue) {
         Element valueElem = new Element("Value");
         valueElem.addContent(new Element("Path").setText(itemValue.getPath()));
