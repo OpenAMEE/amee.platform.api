@@ -20,13 +20,13 @@ public enum ValueUsageType implements Serializable {
     OPTIONAL("OPTIONAL", "Optional"),
     IGNORED("IGNORED", "Ignored");
 
+    private final String name;
+    private final String label;
+
     ValueUsageType(String name, String label) {
         this.name = name;
         this.label = label;
     }
-
-    private final String name;
-    private final String label;
 
     @Override
     public String toString() {
@@ -36,7 +36,7 @@ public enum ValueUsageType implements Serializable {
     public String getName() {
         return name;
     }
-
+    
     public String getLabel() {
         return label;
     }

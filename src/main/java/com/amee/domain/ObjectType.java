@@ -30,8 +30,10 @@ import com.amee.domain.auth.User;
 import com.amee.domain.data.*;
 import com.amee.domain.environment.Environment;
 import com.amee.domain.item.BaseItemValue;
-import com.amee.domain.item.data.DataItem;
+import com.amee.domain.item.data.*;
 import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.item.profile.ProfileItemNumberValue;
+import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.EntityTag;
 import com.amee.domain.tag.Tag;
@@ -39,92 +41,78 @@ import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-// TODO: Refactor (see other Enums)
+// TODO: Change NDI to DI and NPI to PI
 
 public enum ObjectType implements Serializable {
 
-    DC, AL, ID, IVD, DI, PI, IV, PR, ALC, USR, GRP, ENV, PRM, LN, GP, VD, AV, MD, TA, ET, RVD, DINV, DINVH, DITV, DITVH, PINV, PITV, NPI, NDI, UN, UT;
+    // NOTE: These are stored in the database as strings.
+    DC("DC", "DataCategory") { Class toClass() {return DataCategory.class;} },
+    AL("AL", "Algorithm") { Class toClass() {return Algorithm.class;} },
+    ID("ID", "ItemDefinition") { Class toClass() {return ItemDefinition.class;} },
+    IVD("IVD", "ItemValueDefinition") { Class toClass() {return ItemValueDefinition.class;} },
+    PR("PR", "Profile") { Class toClass() {return Profile.class;} },
+    ALC("ALC", "AlgorithmContext") { Class toClass() {return AlgorithmContext.class;} },
+    USR("USR", "User") { Class toClass() {return User.class;} },
+    GRP("GRP", "Group") { Class toClass() {return Group.class;} },
+    PRM("PRM", "Permission") { Class toClass() {return Permission.class;} },
+    LN("LN", "LocaleName") { Class toClass() {return LocaleName.class;} },
+    GP("GP", "GroupPrincipal") { Class toClass() {return GroupPrincipal.class;} },
+    VD("VD", "ValueDefinition") { Class toClass() {return ValueDefinition.class;} },
+    AV("AV", "APIVersion") { Class toClass() {return APIVersion.class;} },
+    MD("MD", "Metadata") { Class toClass() {return Metadata.class;} },
+    TA("TA", "Tag") { Class toClass() {return Tag.class;} },
+    ET("ET", "EntityTag") { Class toClass() {return EntityTag.class;} },
+    RVD("RVD", "ReturnValueDefinition") { Class toClass() {return ReturnValueDefinition.class;} },
+    DINV("DINV", "DataItemNumberValue") { Class toClass() {return DataItemNumberValue.class;} },
+    DINVH("DINVH", "DataItemNumberValueHistory") { Class toClass() {return DataItemNumberValueHistory.class;} },
+    DITV("DITV", "DataItemTextValue") { Class toClass() {return DataItemTextValue.class;} },
+    DITVH("DITVH", "DataItemTextValueHistory") { Class toClass() {return DataItemTextValueHistory.class;} },
+    PINV("PINV", "ProfileItemNumberValue") { Class toClass() {return ProfileItemNumberValue.class;} },
+    PITV("PITV", "ProfileItemTextValue") { Class toClass() {return ProfileItemTextValue.class;} },
+    NPI("NPI", "NewProfileItem") { Class toClass() {return ProfileItem.class;} },
+    NDI("NDI", "NewDataItem") { Class toClass() {return DataItem.class;} },
+    UN("UN", "Unit") { Class toClass() {return AMEEUnit.class;} },
+    UT("UT", "UnitType") { Class toClass() {return AMEEUnitType.class;} };
 
-    private String[] names = {
-            "DC",
-            "AL",
-            "ID",
-            "IVD",
-            "DI",
-            "PI",
-            "IV",
-            "PR",
-            "ALC",
-            "USR",
-            "GRP",
-            "ENV",
-            "PRM",
-            "LN",
-            "GP",
-            "VD",
-            "AV",
-            "MD",
-            "TA",
-            "ET",
-            "RVD",
-            "DINV",
-            "DINVH",
-            "DITV",
-            "DITVH",
-            "PINV",
-            "PITV",
-            "NPI",
-            "NDI",
-            "UN",
-            "UT"};
+    private final String name;
+    private final String label;
 
-    private String[] labels = {
-            "DataCategory",
-            "Algorithm",
-            "ItemDefinition",
-            "ItemValueDefinition",
-            "DataItem",
-            "ProfileItem",
-            "ItemValue",
-            "Profile",
-            "AlgorithmContext",
-            "User",
-            "Group",
-            "Environment",
-            "Permission",
-            "LocaleName",
-            "GroupPrincipal",
-            "ValueDefinition",
-            "APIVersion",
-            "Metadata",
-            "Tag",
-            "EntityTag",
-            "ReturnValueDefinition",
-            "DataItemNumberValue",
-            "DataItemNumberValueHistory",
-            "DataItemTextValue",
-            "DataItemTextValueHistory",
-            "ProfileItemNumberValue",
-            "ProfileItemTextValue",
-            "NewProfileItem",
-            "NewDataItem",
-            "Unit",
-            "UnitType"};
+    private static final Map<String, ObjectType> stringToEnum = new HashMap<String, ObjectType>();
 
+    static {
+        for (ObjectType type : values()) {
+            stringToEnum.put(type.toString(), type);
+        }
+    }
+
+    ObjectType(String name, String label) {
+        this.name = name;
+        this.label = label;
+    }
+
+    @Override
     public String toString() {
-        return getName();
+        return name;
+    }
+
+    public static ObjectType fromString(String name) {
+        return stringToEnum.get(name);
     }
 
     public String getName() {
-        return names[this.ordinal()];
+        return name;
     }
 
     public String getLabel() {
-        return labels[this.ordinal()];
+        return label;
     }
 
-    public static ObjectType getType(Class c) {
+    abstract Class toClass();
+    
+    public static ObjectType fromClass(Class c) {
         if (DataCategory.class.isAssignableFrom(c)) {
             return DC;
         } else if (Algorithm.class.isAssignableFrom(c)) {
@@ -136,11 +124,21 @@ public enum ObjectType implements Serializable {
         } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
             return RVD;
         } else if (DataItem.class.isAssignableFrom(c)) {
-            return DI;
+            return NDI;
         } else if (ProfileItem.class.isAssignableFrom(c)) {
-            return PI;
-        } else if (BaseItemValue.class.isAssignableFrom(c)) {
-            return IV;
+            return NPI;
+        } else if (DataItemNumberValue.class.isAssignableFrom(c)) {
+            return DINV;
+        } else if (DataItemNumberValueHistory.class.isAssignableFrom(c)) {
+            return DINVH;
+        } else if (DataItemTextValue.class.isAssignableFrom(c)) {
+            return DITV;
+        } else if (DataItemTextValueHistory.class.isAssignableFrom(c)) {
+            return DITVH;
+        } else if (ProfileItemNumberValue.class.isAssignableFrom(c)) {
+            return PINV;
+        } else if (ProfileItemTextValue.class.isAssignableFrom(c)) {
+           return PITV;
         } else if (Profile.class.isAssignableFrom(c)) {
             return PR;
         } else if (AlgorithmContext.class.isAssignableFrom(c)) {
@@ -149,8 +147,6 @@ public enum ObjectType implements Serializable {
             return USR;
         } else if (Group.class.isAssignableFrom(c)) {
             return GRP;
-        } else if (Environment.class.isAssignableFrom(c)) {
-            return ENV;
         } else if (Permission.class.isAssignableFrom(c)) {
             return PRM;
         } else if (LocaleName.class.isAssignableFrom(c)) {
@@ -228,37 +224,6 @@ public enum ObjectType implements Serializable {
         } else if (AMEEUnit.class.isAssignableFrom(c)) {
             return AMEEUnit.class;
         } else if (AMEEUnitType.class.isAssignableFrom(c)) {
-            return AMEEUnitType.class;
-        }
-        throw new IllegalArgumentException("Class not supported.");
-    }
-
-    public Class getClazz() {
-        if (this.equals(USR)) {
-            return User.class;
-        } else if (this.equals(GRP)) {
-            return Group.class;
-        } else if (this.equals(ENV)) {
-            return Environment.class;
-        } else if (this.equals(PR)) {
-            return Profile.class;
-        } else if (this.equals(DC)) {
-            return DataCategory.class;
-        } else if (this.equals(DI)) {
-            return DataItem.class;
-        } else if (this.equals(PI)) {
-            return ProfileItem.class;
-        } else if (this.equals(IV)) {
-            return BaseItemValue.class;
-        } else if (this.equals(MD)) {
-            return Metadata.class;
-        } else if (this.equals(TA)) {
-            return Tag.class;
-        } else if (this.equals(ET)) {
-            return EntityTag.class;
-        } else if (this.equals(UN)) {
-            return AMEEUnit.class;
-        } else if (this.equals(UT)) {
             return AMEEUnitType.class;
         }
         throw new IllegalArgumentException("Class not supported.");

@@ -23,13 +23,13 @@ public enum ValueType implements Serializable {
     INTEGER("INTEGER", "Integer"),
     DOUBLE("DECIMAL", "Decimal");
 
+    private final String name;
+    private final String label;
+
     ValueType(String name, String label) {
         this.name = name;
         this.label = label;
     }
-
-    private final String name;
-    private final String label;
 
     @Override
     public String toString() {

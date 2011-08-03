@@ -39,14 +39,14 @@ public enum AMEEStatus implements Serializable {
     ACTIVE("ACTIVE", "Active"),
     DEPRECATED("DEPRECATED", "Deprecated");
 
+    private final String name;
+    private final String label;
+
     AMEEStatus(String name, String label) {
         this.name = name;
         this.label = label;
     }
-
-    private final String name;
-    private final String label;
-
+    
     @Override
     public String toString() {
         return name;

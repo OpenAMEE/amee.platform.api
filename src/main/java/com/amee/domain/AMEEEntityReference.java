@@ -128,7 +128,7 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
      * @param uid        for new instance
      */
     public AMEEEntityReference(String entityType, String uid) {
-        this(ObjectType.valueOf(entityType), uid);
+        this(ObjectType.fromString(entityType), uid);
     }
 
     /**
@@ -260,7 +260,7 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
      * @return the ObjectType
      */
     public ObjectType getEntityType() {
-        return ObjectType.valueOf(entityType);
+        return ObjectType.fromString(entityType);
     }
 
     /**

@@ -10,32 +10,34 @@ import java.util.Map;
 
 public enum SortOrder {
 
-    ASC, DESC;
+    ASC("ASC", "ASC"),
+    DESC("DESC", "DESC");
 
-    private String[] names = {
-            "ASC",
-            "DESC"};
+    private final String name;
+    private final String label;
 
-    private String[] labels = {
-            "ASC",
-            "DESC"};
+    SortOrder(String name, String label) {
+        this.name = name;
+        this.label = label;
+    }
 
+    @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
     public String getName() {
-        return names[this.ordinal()];
+        return name;
     }
 
     public String getLabel() {
-        return labels[this.ordinal()];
+        return label;
     }
 
     public static Map<String, String> getChoices() {
         Map<String, String> choices = new LinkedHashMap<String, String>();
         for (SortOrder sortOrder : values()) {
-            choices.put(sortOrder.getName(), sortOrder.getLabel());
+            choices.put(sortOrder.name, sortOrder.label);
         }
         return choices;
     }
