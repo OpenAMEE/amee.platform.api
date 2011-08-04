@@ -7,7 +7,7 @@ import com.amee.base.resource.ResponseHelper;
 import com.amee.base.resource.ValidationResult;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
@@ -38,7 +38,7 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
     private ResourceService resourceService;
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;

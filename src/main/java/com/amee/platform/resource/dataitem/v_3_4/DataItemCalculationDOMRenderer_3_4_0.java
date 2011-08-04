@@ -1,7 +1,7 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculationResource.Renderer {
 
     @Autowired
-    protected IDataItemService dataItemService;
+    protected DataItemService dataItemService;
 
     private DataItem dataItem;
     private Element rootElem;

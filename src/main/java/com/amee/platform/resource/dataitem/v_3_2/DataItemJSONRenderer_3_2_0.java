@@ -2,7 +2,7 @@ package com.amee.platform.resource.dataitem.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
 
     @Autowired
-    protected IDataItemService dataItemService;
+    protected DataItemService dataItemService;
 
     protected DataItem dataItem;
     protected JSONObject rootObj;

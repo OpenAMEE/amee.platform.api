@@ -2,7 +2,7 @@ package com.amee.platform.resource.datacategory.v_3_2;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.MediaTypeNotSupportedException;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.LocaleService;
 import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
@@ -44,7 +44,7 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
     private DataService dataService;
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private MetadataService metadataService;

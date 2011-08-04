@@ -4,7 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.DataItemValuesFilter;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.platform.science.StartEndDate;
@@ -52,7 +52,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        add(StartEndDate.class, "endDate", new StartEndDateEditor(IDataItemService.Y2038));
+        add(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
         add(new ValidationSpecification()
                 .setName("endDate")
                 .setAllowEmpty(true));

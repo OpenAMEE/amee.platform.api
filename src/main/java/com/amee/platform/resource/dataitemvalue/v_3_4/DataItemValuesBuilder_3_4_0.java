@@ -6,7 +6,7 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.DataItemValuesFilter;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -29,7 +29,7 @@ import java.util.Date;
 public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Builder {
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceService resourceService;

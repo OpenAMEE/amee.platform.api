@@ -7,7 +7,7 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.DataItemValuesFilter;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryResource.Builder {
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceService resourceService;
@@ -71,12 +71,12 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
         DataItemValuesFilter filter = new DataItemValuesFilter();
         filter.setDataItem(dataItem);
         filter.setItemValueDefinition(itemValueDefinition);
-        filter.setStartDate(IDataItemService.EPOCH);
+        filter.setStartDate(DataItemService.EPOCH);
 
         // Create validator.
         DataItemValuesResource.DataItemValuesFilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
-        validator.setDefaultStartDate(IDataItemService.EPOCH);
+        validator.setDefaultStartDate(DataItemService.EPOCH);
         validator.initialise();
 
         // Is the filter valid?
