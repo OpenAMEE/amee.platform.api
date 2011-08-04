@@ -53,6 +53,8 @@ public enum ObjectType implements Serializable {
     AL("AL", "Algorithm") { public Class toClass() {return Algorithm.class;} },
     ID("ID", "ItemDefinition") { public Class toClass() {return ItemDefinition.class;} },
     IVD("IVD", "ItemValueDefinition") { public Class toClass() {return ItemValueDefinition.class;} },
+    DI("DI", "DataItem") { public Class toClass() {return DataItem.class;} },
+    PI("PI", "ProfileItem") { public Class toClass() {return ProfileItem.class;} },
     PR("PR", "Profile") { public Class toClass() {return Profile.class;} },
     ALC("ALC", "AlgorithmContext") { public Class toClass() {return AlgorithmContext.class;} },
     USR("USR", "User") { public Class toClass() {return User.class;} },
@@ -125,9 +127,9 @@ public enum ObjectType implements Serializable {
         } else if (ReturnValueDefinition.class.isAssignableFrom(c)) {
             return RVD;
         } else if (DataItem.class.isAssignableFrom(c)) {
-            return NDI;
+            return DI;
         } else if (ProfileItem.class.isAssignableFrom(c)) {
-            return NPI;
+            return PI;
         } else if (DataItemNumberValue.class.isAssignableFrom(c)) {
             return DINV;
         } else if (DataItemNumberValueHistory.class.isAssignableFrom(c)) {
