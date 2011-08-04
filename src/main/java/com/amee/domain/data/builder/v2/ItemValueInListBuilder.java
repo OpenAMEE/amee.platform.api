@@ -21,7 +21,7 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
-import com.amee.domain.IItemService;
+import com.amee.domain.ItemService;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
@@ -35,9 +35,9 @@ import org.w3c.dom.Element;
 public class ItemValueInListBuilder implements Builder {
 
     private BaseItemValue itemValue;
-    private IItemService itemService;
+    private ItemService itemService;
 
-    public ItemValueInListBuilder(BaseItemValue itemValue, IItemService itemService) {
+    public ItemValueInListBuilder(BaseItemValue itemValue, ItemService itemService) {
         this.itemValue = itemValue;
         this.itemService = itemService;
     }

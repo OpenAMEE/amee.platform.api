@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface IDataItemService extends IItemService {
+public interface DataItemService extends ItemService {
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);

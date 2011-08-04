@@ -1,7 +1,7 @@
 package com.amee.domain.data.builder;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
@@ -19,9 +19,9 @@ import org.w3c.dom.Element;
 public class DataItemBuilder implements ItemBuilder {
 
     private DataItem item;
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
-    public DataItemBuilder(DataItem item, IDataItemService dataItemService) {
+    public DataItemBuilder(DataItem item, DataItemService dataItemService) {
         this.item = item;
         this.dataItemService = dataItemService;
     }
@@ -122,7 +122,7 @@ public class DataItemBuilder implements ItemBuilder {
         obj.put("label", dataItemService.getLabel(item));
         obj.put("startDate",
                 StartEndDate.getLocalStartEndDate(
-                        new StartEndDate(IDataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString());
+                        new StartEndDate(DataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString());
         obj.put("endDate", "");
         // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
         return obj;
@@ -157,7 +157,7 @@ public class DataItemBuilder implements ItemBuilder {
         dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(item)));
         dataItemElement.appendChild(XMLUtils.getElement(document, "StartDate",
                 StartEndDate.getLocalStartEndDate(
-                        new StartEndDate(IDataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString()));
+                        new StartEndDate(DataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString()));
         dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate", ""));
         // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
         return dataItemElement;

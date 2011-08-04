@@ -21,7 +21,7 @@ package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
-import com.amee.domain.IItemService;
+import com.amee.domain.ItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.item.BaseItemValue;
@@ -36,14 +36,14 @@ public class ItemValueBuilder implements Builder {
 
     private BaseItemValue itemValue;
     private ItemBuilder itemBuilder;
-    private IItemService itemService;
+    private ItemService itemService;
 
-    public ItemValueBuilder(BaseItemValue itemValue, IItemService itemService) {
+    public ItemValueBuilder(BaseItemValue itemValue, ItemService itemService) {
         this.itemValue = itemValue;
         this.itemService = itemService;
     }
 
-    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder, IItemService itemService) {
+    public ItemValueBuilder(BaseItemValue itemValue, ItemBuilder itemBuilder, ItemService itemService) {
         this(itemValue, itemService);
         this.itemBuilder = itemBuilder;
     }

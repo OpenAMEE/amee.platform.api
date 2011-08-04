@@ -1,6 +1,6 @@
 package com.amee.domain.data;
 
-import com.amee.domain.IItemService;
+import com.amee.domain.ItemService;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.StartEndDate;
 import org.apache.commons.collections.Predicate;
@@ -13,7 +13,7 @@ import java.util.List;
 class CurrentItemValuePredicate implements Predicate {
 
     private List<BaseItemValue> itemValues;
-    private IItemService itemService;
+    private ItemService itemService;
 
     public CurrentItemValuePredicate(List<BaseItemValue> itemValues) {
         this.itemValues = itemValues;

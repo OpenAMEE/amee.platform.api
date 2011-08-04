@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class DataItemValuesFilter extends LimitFilter {
 
-    private Date startDate = IDataItemService.EPOCH;
-    private Date endDate = IDataItemService.Y2038;
+    private Date startDate = DataItemService.EPOCH;
+    private Date endDate = DataItemService.Y2038;
     private DataItem dataItem;
     private ItemValueDefinition itemValueDefinition;
 
@@ -32,7 +32,7 @@ public class DataItemValuesFilter extends LimitFilter {
 
     public void setStartDate(Date startDate) {
         if (startDate == null) {
-            startDate = IDataItemService.EPOCH;
+            startDate = DataItemService.EPOCH;
         }
         this.startDate = startDate;
     }
@@ -43,7 +43,7 @@ public class DataItemValuesFilter extends LimitFilter {
 
     public void setEndDate(Date endDate) {
         if (endDate == null) {
-            endDate = IDataItemService.Y2038;
+            endDate = DataItemService.Y2038;
         }
         this.endDate = endDate;
     }

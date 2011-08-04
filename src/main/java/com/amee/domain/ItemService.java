@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public interface IItemService {
+public interface ItemService {
 
     public BaseItem getItemByUid(String uid);
 

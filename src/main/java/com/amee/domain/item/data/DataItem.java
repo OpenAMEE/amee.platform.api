@@ -21,7 +21,7 @@ package com.amee.domain.item.data;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -157,13 +157,13 @@ public class DataItem extends BaseItem {
     }
 
     /**
-     * Gets the IDataItemService bound to the current thread. Usage of this is discouraged.
+     * Gets the DataItemService bound to the current thread. Usage of this is discouraged.
      *
-     * @return the current {@link IDataItemService}
+     * @return the current {@link com.amee.domain.DataItemService}
      */
     @Deprecated
     @Transient
-    private IDataItemService getDataItemService() {
-        return ThreadBeanHolder.get(IDataItemService.class);
+    private DataItemService getDataItemService() {
+        return ThreadBeanHolder.get(DataItemService.class);
     }
 }

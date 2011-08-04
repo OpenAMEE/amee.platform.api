@@ -20,8 +20,8 @@
 package com.amee.domain.profile.builder.v1;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.IDataItemService;
-import com.amee.domain.IProfileItemService;
+import com.amee.domain.DataItemService;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.DataItemBuilder;
@@ -46,10 +46,10 @@ public class ProfileItemBuilder implements ItemBuilder {
     private static DateFormat DAY_DATE_FMT = new SimpleDateFormat(DAY_DATE);
 
     private ProfileItem item;
-    private IProfileItemService profileItemService;
-    private IDataItemService dataItemService;
+    private ProfileItemService profileItemService;
+    private DataItemService dataItemService;
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;

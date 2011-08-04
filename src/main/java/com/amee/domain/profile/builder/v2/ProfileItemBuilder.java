@@ -20,8 +20,8 @@
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.IDataItemService;
-import com.amee.domain.IProfileItemService;
+import com.amee.domain.DataItemService;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.ItemBuilder;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.DataItemBuilder;
@@ -43,17 +43,17 @@ public class ProfileItemBuilder implements ItemBuilder {
 
     private ProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
-    private IDataItemService dataItemService;
-    private IProfileItemService profileItemService;
+    private DataItemService dataItemService;
+    private ProfileItemService profileItemService;
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService, AmountCompoundUnit returnUnit) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;
