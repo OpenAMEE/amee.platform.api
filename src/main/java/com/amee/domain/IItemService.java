@@ -33,7 +33,7 @@ public interface IItemService {
 
     public ItemValueMap getItemValuesMap(BaseItem item);
 
-    public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
+    public boolean isItemValueUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
     public void loadItemValuesForItems(Collection<BaseItem> items);
 
