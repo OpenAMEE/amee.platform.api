@@ -1,6 +1,7 @@
 package com.amee.platform.resource;
 
 import com.amee.platform.science.AmountPerUnit;
+
 import java.beans.PropertyEditorSupport;
 
 public class PerUnitEditor extends PropertyEditorSupport {
