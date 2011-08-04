@@ -2,8 +2,8 @@ package com.amee.domain.item.profile;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.ProfileItemService;
 import com.amee.domain.ObjectType;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItem;

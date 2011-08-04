@@ -9,9 +9,7 @@ import org.w3c.dom.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class UserTypeTest {
     // Map of Enum name => label
