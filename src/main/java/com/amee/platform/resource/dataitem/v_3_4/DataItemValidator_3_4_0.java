@@ -179,4 +179,20 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
     public void setObject(DataItem dataItem) {
         this.dataItem = dataItem;
     }
+
+    /**
+     * Override validate to perform global object validation.
+     * 
+     * @param object to validate
+     * @param errors to store validation errors
+     */
+    @Override
+    public void validate(Object object, Errors errors) {
+        super.validate(object, errors);
+
+        // Check for duplicates;
+        if (dataItemService.equivalentDataItemExists(dataItem)) {
+            errors.reject("duplicate");
+        }
+    }
 }
