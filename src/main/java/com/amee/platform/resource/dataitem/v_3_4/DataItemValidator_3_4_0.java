@@ -195,4 +195,14 @@ public class DataItemValidator_3_4_0 extends BaseValidator implements DataItemRe
             errors.reject("duplicate");
         }
     }
+
+    /**
+     * Setter used by unit tests.
+     *
+     * @param dataItemService a DataItemService (probably mocked)
+     */
+    @Override
+    public void setDataItemService(DataItemService dataItemService) {
+        this.dataItemService = dataItemService;
+    }
 }

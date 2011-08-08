@@ -1,6 +1,7 @@
 package com.amee.platform.resource.dataitem;
 
 import com.amee.base.resource.*;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
@@ -66,6 +67,8 @@ public interface DataItemResource {
         public void setObject(DataItem object);
 
         public ValidationResult getValidationResult();
+
+        public void setDataItemService(DataItemService dataItemService);
     }
 
     public static interface Remover extends ResourceRemover {
