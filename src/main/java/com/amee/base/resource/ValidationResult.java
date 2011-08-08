@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import java.io.Serializable;
 import java.util.*;
@@ -190,15 +191,15 @@ public class ValidationResult implements Serializable {
     }
 
     public void setErrors(Errors e) {
-        for (Object error : e.getAllErrors()) {
-            if (error.getClass().isAssignableFrom(FieldError.class)) {
-                FieldError fieldError = (FieldError) error;
-                if ((fieldError.getRejectedValue() != null) && (fieldError.getRejectedValue() instanceof String)) {
-                    addError(fieldError.getField(), fieldError.getCode(), getMessage(fieldError.getCodes()), (String) fieldError.getRejectedValue());
-                } else {
-                    addError(fieldError.getField(), fieldError.getCode(), getMessage(fieldError.getCodes()));
-                }
+        for (FieldError fieldError : e.getFieldErrors()) {
+            if ((fieldError.getRejectedValue() != null) && (fieldError.getRejectedValue() instanceof String)) {
+                addError(fieldError.getField(), fieldError.getCode(), getMessage(fieldError.getCodes()), (String) fieldError.getRejectedValue());
+            } else {
+                addError(fieldError.getField(), fieldError.getCode(), getMessage(fieldError.getCodes()));
             }
+        }
+        for (ObjectError objectError : e.getGlobalErrors()) {
+            addError("global", objectError.getCode(), getMessage(objectError.getCodes()));
         }
     }
 
