@@ -7,7 +7,7 @@ import com.amee.domain.MetadataService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.data.DataItem;
-import com.amee.platform.resource.dataitem.v_3_4.DataItemValidator_3_4_0;
+import com.amee.platform.resource.dataitem.v_3_6.DataItemValidator_3_6_0;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testValid() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem good = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(good);
@@ -61,7 +61,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testNameGreaterThanMax() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(bad);
@@ -81,7 +81,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testPathGreaterThanMax() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(bad);
@@ -101,7 +101,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testPathBadChars() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(bad);
@@ -121,7 +121,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testWikiDocGreaterThanMax() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setDataItemService(mockDataItemService);
         validator.setObject(bad);
@@ -141,7 +141,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testProvenanceGreaterThanMax() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(bad);
@@ -161,7 +161,7 @@ public class DataItemValidatorTest {
 
     @Test
     public void testDuplicate() {
-        DataItemValidator_3_4_0 validator = new DataItemValidator_3_4_0();
+        DataItemValidator_3_6_0 validator = new DataItemValidator_3_6_0();
         validator.setDataItemService(mockDataItemService);
         DataItem bad = new DataItem(new DataCategory(), new ItemDefinition());
         validator.setObject(bad);
