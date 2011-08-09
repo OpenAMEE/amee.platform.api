@@ -2,6 +2,7 @@ package com.amee.domain;
 
 import com.amee.base.domain.ResultsWrapper;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
@@ -34,6 +35,10 @@ public interface DataItemService extends ItemService {
     public DataItem getDataItemByIdentifier(DataCategory parent, String path);
 
     public Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+
+    public ItemValueMap getDrillDownValuesMap(DataItem dataItem);
+
+    public boolean equivalentDataItemExists(DataItem dataItem);
 
     public DataItem getDataItemByUid(DataCategory parent, String uid);
 
