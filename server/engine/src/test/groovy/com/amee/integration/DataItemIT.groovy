@@ -137,11 +137,11 @@ class DataItemIT extends BaseApiTest {
      * duplicate paths are not allowed.
      */
     @Test
-    void createDuplicateDataItemJson() {
-        versions.each { version -> createDuplicateDataItemJson(version) }
+    void createDuplicatePathJson() {
+        versions.each { version -> createDuplicatePathJson(version) }
     }
 
-    def createDuplicateDataItemJson(version) {
+    def createDuplicatePathJson(version) {
         if (version >= 3.4) {
             setAdminUser();
 
