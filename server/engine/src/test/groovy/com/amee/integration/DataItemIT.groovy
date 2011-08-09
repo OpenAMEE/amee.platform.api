@@ -133,6 +133,56 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
+     * Tests creation of two new DataItems with the same category and drill down values.
+     * The second DataItem should fail to be created.
+     */
+    @Test
+    void createDuplicateDataItemJson() {
+        versions.each { version -> createDuplicateDataItemJson(version) }
+    }
+
+    def createDuplicateDataItemJson(version) {
+        if (version >= 3.6) {
+            setAdminUser()
+
+            // Create a DataItem
+            def responsePost = client.post(
+                path: "/${version}/categories/Cooking/items",
+                body: ['values.numberOfPeople': 100],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+
+            // Get the UID
+            def location = responsePost.headers['Location'].value
+            def uid = location.split('/')[7]
+            assertNotNull uid
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(2000)
+
+            // Try to create another data item with the same drilldown value.
+            try {
+                client.post(
+                    path: "/${version}/categories/Cooking/items",
+                    body: ['values.numberOfPeople': 100],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+            } catch (HttpResponseException e) {
+
+                // Should have been rejected.
+                assertEquals 400, e.response.status
+            }
+
+            // Delete it
+            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
+            assertEquals 200, responseDelete.status
+        }
+    }
+
+    /**
      * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
      * duplicate paths are not allowed.
      */
@@ -214,7 +264,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['resultLimit': '6'])
+                query: [resultLimit: '6'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -244,7 +294,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['numberOfPeople': '1'])
+                query: [numberOfPeople: '1'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -272,7 +322,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['resultLimit': '6'])
+                query: [resultLimit: '6'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -301,7 +351,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['numberOfPeople': '1'])
+                query: [numberOfPeople: '1'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
