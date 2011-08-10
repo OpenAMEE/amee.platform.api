@@ -639,6 +639,46 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
+     * Tests an algorithm that returns Infinity or NaN return values.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * Algorithms should not normally return non-finite values however if they do the platform should handle them.
+     * JSON does not allow non-finite numbers so we return them as strings.
+     */
+    @Test
+    void getDataItemCalculationInfinityAndNanJson() {
+        versions.each { version -> getDataItemCalculationInfinityAndNanJson(version)}
+    }
+
+    def getDataItemCalculationInfinityAndNanJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+            def response = client.get(path: "/${version}/categories/Computers_generic/items/651B5AE27940/calculation;full")
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 2, response.data.amounts.size()
+            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.amounts)
+        }
+    }
+
+    def hasInfinityAndNan(amounts) {
+        def hasInfinity = false
+        def hasNan = false
+
+        amounts.each {
+            if (it.type == 'infinity' && it.value == 'Infinity') {
+                hasInfinity = true;
+            }
+            if (it.type == 'nan' && it.value == 'NaN') {
+                hasNan = true;
+            }
+        }
+        return hasInfinity && hasNan;
+    }
+
+    /**
      * Tests the validation rules for the Data Item name field.
      *
      * The rules are as follows:
