@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemValidator_3_4_0 extends DataItemValidator_3_6_0 implements DataItemResource.DataItemValidator {
+public class DataItemValidator_3_4_0 extends DataItemValidator_3_6_0 {
 
     public DataItemValidator_3_4_0() {
         super();
