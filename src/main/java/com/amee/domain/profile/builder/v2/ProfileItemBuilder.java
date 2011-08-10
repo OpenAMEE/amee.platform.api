@@ -88,7 +88,16 @@ public class ProfileItemBuilder implements ItemBuilder {
         buildElement(obj, detailed);
 
         JSONObject amount = new JSONObject();
-        amount.put("value", item.getAmounts().defaultValueAsAmount().convert(returnUnit).getValue());
+        double value = item.getAmounts().defaultValueAsAmount().convert(returnUnit).getValue();
+
+        // Check for NaN or Infinity which are invalid in JSON.
+        if (Double.isInfinite(value)) {
+            amount.put("value", "Infinity");
+        } else if (Double.isNaN(value)) {
+            amount.put("value", "NaN");
+        } else {
+            amount.put("value", value);
+        }
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
 
@@ -101,7 +110,16 @@ public class ProfileItemBuilder implements ItemBuilder {
 
             // Create an Amount object
             JSONObject amountObj = new JSONObject();
-            amountObj.put("value", entry.getValue().getValue());
+            double returnValue = entry.getValue().getValue();
+
+            // Check for NaN or Infinity which are invalid in JSON.
+            if (Double.isInfinite(returnValue)) {
+                amountObj.put("value", "Infinity");
+            } else if (Double.isNaN(returnValue)) {
+                amountObj.put("value", "NaN");
+            } else {
+                amountObj.put("value", returnValue);
+            }
             amountObj.put("type", entry.getKey());
             amountObj.put("unit", entry.getValue().getUnit());
             amountObj.put("perUnit", entry.getValue().getPerUnit());

@@ -78,10 +78,20 @@ public class ProfileItemBuilder implements ItemBuilder {
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
-        if (!profileItemService.isSingleFlight(item)) {
-            obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue());
+        double value;
+        if (profileItemService.isSingleFlight(item)) {
+            value = item.getAmounts().defaultValueAsDouble();
         } else {
-            obj.put("amountPerMonth", item.getAmounts().defaultValueAsDouble());
+            value = item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue();
+        }
+
+        // Check for NaN or Infinity which are invalid in JSON.
+        if (Double.isInfinite(value)) {
+            obj.put("amountPerMonth", "Infinity");
+        } else if (Double.isNaN(value)) {
+            obj.put("amountPerMonth", "NaN");
+        } else {
+            obj.put("amountPerMonth", value);
         }
         obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));
