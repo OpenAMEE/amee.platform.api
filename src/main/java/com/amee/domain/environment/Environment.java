@@ -11,6 +11,11 @@ import org.w3c.dom.Element;
 
 import java.util.Date;
 
+/**
+ * @deprecated Environments have been removed from the platform and are only retained for backwards compatibility
+ *             in representations.
+ */
+@Deprecated
 public class Environment extends AMEEEntity implements Comparable {
 
     /**
