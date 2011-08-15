@@ -111,7 +111,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
 
     @Override
     public boolean isTrash() {
-        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash();
+        return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash() || getValueDefinition().isTrash();
     }
 
     public boolean isUsableValue() {

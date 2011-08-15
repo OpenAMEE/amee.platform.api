@@ -3,8 +3,12 @@ package com.amee.domain.data;
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.MetadataService;
+import com.amee.domain.ValueDefinition;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Set;
 
@@ -12,34 +16,39 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ItemValueDefinitionTest {
 
     public final static String MOCK_CONFIGURATION_WITH_USAGES =
             "{\"usages\":[{\"name\":\"usage_1\",\"type\":\"compulsory\"},{\"name\":\"usage_2\",\"type\":\"optional\"}]}";
 
-    private MetadataService mockMetadataService;
+    @Mock private MetadataService mockMetadataService;
+    @Mock private ItemDefinition mockItemDef;
+    @Mock private ValueDefinition mockValueDefinition;
+    
     private ItemValueDefinition itemValueDef;
-    private ItemDefinition mockItemDef;
+
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
-        mockMetadataService = mock(MetadataService.class);
         ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
         itemValueDef = new ItemValueDefinition();
-        mockItemDef = mock(ItemDefinition.class);
         itemValueDef.setItemDefinition(mockItemDef);
+        itemValueDef.setValueDefinition(mockValueDefinition);
     }
 
     @Test
     public void noneTrashed() {
 
         // An ItemValueDefinition should be considered trashed if:
-        // itself is trashed or its ItemDefinition is trashed.
+        // itself is trashed or its ItemDefinition is trashed or its ValueDefinition is trashed.
 
         when(mockItemDef.isTrash()).thenReturn(false);
+        when(mockValueDefinition.isTrash()).thenReturn(false);
         assertFalse("ItemValueDefinition should not be trashed", itemValueDef.isTrash());
         verify(mockItemDef).isTrash();
+        verify(mockValueDefinition).isTrash();
     }
 
     @Test
@@ -53,6 +62,13 @@ public class ItemValueDefinitionTest {
         when(mockItemDef.isTrash()).thenReturn(true);
         assertTrue("ItemValueDefinition should be trashed", itemValueDef.isTrash());
         verify(mockItemDef).isTrash();
+    }
+
+    @Test
+    public void valueDefTrashed() {
+        when(mockValueDefinition.isTrash()).thenReturn(true);
+        assertTrue("ItemValueDefinition should be trashed", itemValueDef.isTrash());
+        verify(mockValueDefinition).isTrash();
     }
 
     @Test
