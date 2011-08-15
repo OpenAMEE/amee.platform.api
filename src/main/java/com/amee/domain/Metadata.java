@@ -77,4 +77,9 @@ public class Metadata extends AMEEEntity {
         }
         this.value = value;
     }
+
+    @Override
+    public boolean isTrash() {
+        return status.equals(AMEEStatus.TRASH) || getEntityReference().getEntity().isTrash();
+    }
 }
