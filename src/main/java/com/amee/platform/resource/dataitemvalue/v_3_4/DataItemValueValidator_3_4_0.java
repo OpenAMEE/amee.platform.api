@@ -3,7 +3,7 @@ package com.amee.platform.resource.dataitemvalue.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.data.BaseDataItemTextValue;
@@ -34,7 +34,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
     private final Log log = LogFactory.getLog(getClass());
 
     @Autowired
-    protected IDataItemService dataItemService;
+    protected DataItemService dataItemService;
 
     protected BaseDataItemValue dataItemValue;
     protected Set<String> allowedFields = new HashSet<String>();
@@ -107,9 +107,9 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                                     if (thisDIV != null) {
                                         if (HistoryValue.class.isAssignableFrom(thisDIV.getClass())) {
                                             HistoryValue hv = (HistoryValue) thisDIV;
-                                            if (hv.getStartDate().compareTo(IDataItemService.EPOCH) <= 0) {
+                                            if (hv.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
                                                 errors.rejectValue("startDate", "epoch");
-                                            } else if (hv.getStartDate().compareTo(IDataItemService.Y2038) >= 0) {
+                                            } else if (hv.getStartDate().compareTo(DataItemService.Y2038) >= 0) {
                                                 errors.rejectValue("startDate", "end_of_epoch");
                                             } else if (!dataItemService.isDataItemValueUniqueByStartDate(thisDIV)) {
                                                 errors.rejectValue("startDate", "duplicate");

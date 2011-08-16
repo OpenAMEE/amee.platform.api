@@ -5,8 +5,8 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
+import com.amee.domain.DataItemService;
 import com.amee.domain.DataItemValuesFilter;
-import com.amee.domain.IDataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
@@ -29,7 +29,7 @@ import java.util.Date;
 public class DataItemBuilder_3_4_0 implements DataItemResource.Builder {
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceService resourceService;

@@ -6,7 +6,7 @@ import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.calculation.service.CalculationService;
 import com.amee.domain.APIVersion;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
@@ -45,7 +45,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
     private ResourceService resourceService;
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private CalculationService calculationService;

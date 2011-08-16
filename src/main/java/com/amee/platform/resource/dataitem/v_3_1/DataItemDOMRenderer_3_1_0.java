@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Since("3.1.0")
 public class DataItemDOMRenderer_3_1_0 extends DataItemDOMRenderer_3_2_0 {
 
+    @Override
     public void addLabel() {
         // Not in 3.1.
     }

@@ -7,7 +7,7 @@ import com.amee.base.resource.ValidationResult;
 import com.amee.base.utils.UidGen;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -36,7 +36,7 @@ public class ResourceServiceImpl implements ResourceService {
     private DefinitionService definitionService;
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private TagService tagService;
@@ -126,13 +126,13 @@ public class ResourceServiceImpl implements ResourceService {
                 dataItemValue =
                         (BaseDataItemValue) itemValueMap.get(
                                 itemValueDefinition.getPath(),
-                                IDataItemService.EPOCH);
+                                DataItemService.EPOCH);
             } else if (itemValueIdentifier.equals("LAST")) {
                 // Use the last possible date.
                 dataItemValue =
                         (BaseDataItemValue) itemValueMap.get(
                                 itemValueDefinition.getPath(),
-                                IDataItemService.Y2038);
+                                DataItemService.Y2038);
             } else if (UidGen.INSTANCE_12.isValid(itemValueIdentifier)) {
                 // Treat identifier as a UID.
                 dataItemValue = (BaseDataItemValue) dataItemService.getByUid(dataItem, itemValueIdentifier);

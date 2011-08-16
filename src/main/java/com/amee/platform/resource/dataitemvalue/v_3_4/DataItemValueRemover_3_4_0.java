@@ -4,7 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.base.transaction.AMEETransaction;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
@@ -31,7 +31,7 @@ public class DataItemValueRemover_3_4_0 implements DataItemValueResource.Remover
     private ResourceService resourceService;
 
     @Autowired
-    private IDataItemService dataItemService;
+    private DataItemService dataItemService;
 
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;

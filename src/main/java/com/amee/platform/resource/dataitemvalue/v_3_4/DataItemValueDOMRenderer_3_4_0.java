@@ -1,7 +1,7 @@
 package com.amee.platform.resource.dataitemvalue.v_3_4;
 
 import com.amee.base.domain.Since;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class DataItemValueDOMRenderer_3_4_0 implements DataItemValueResource.Renderer {
 
     @Autowired
-    protected IDataItemService dataItemService;
+    protected DataItemService dataItemService;
 
     protected BaseDataItemValue dataItemValue;
     protected Element rootElem;
@@ -59,7 +59,7 @@ public class DataItemValueDOMRenderer_3_4_0 implements DataItemValueResource.Ren
             HistoryValue hv = (HistoryValue) dataItemValue;
             dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(hv.getStartDate().getTime())));
         } else {
-            dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(IDataItemService.EPOCH.getTime())));
+            dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(DataItemService.EPOCH.getTime())));
         }
     }
 
