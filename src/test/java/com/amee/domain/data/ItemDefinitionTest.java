@@ -3,6 +3,7 @@ package com.amee.domain.data;
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.LocaleService;
 import com.amee.domain.MetadataService;
+import com.amee.domain.ValueDefinition;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,11 +92,13 @@ public class ItemDefinitionTest {
         itemDefinition.setModified(new DateTime(2011, 1, 1, 0, 0, 0, 0).toDate());
         // Create ItemDefinition One.
         ItemValueDefinition itemValueDefinition1 = new ItemValueDefinition(itemDefinition);
+        itemValueDefinition1.setValueDefinition(new ValueDefinition());
         itemValueDefinition1.setModified(new DateTime(2011, 1, 2, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition1);
         mockLocaleName(itemValueDefinition1);
         // Create ItemDefinition Two.
         ItemValueDefinition itemValueDefinition2 = new ItemValueDefinition(itemDefinition);
+        itemValueDefinition2.setValueDefinition(new ValueDefinition());
         itemValueDefinition2.setModified(new DateTime(2011, 1, 3, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition2);
         mockLocaleName(itemValueDefinition2);
@@ -112,11 +115,13 @@ public class ItemDefinitionTest {
         itemDefinition.setModified(new DateTime(2011, 1, 3, 0, 0, 0, 0).toDate());
         // Create ItemDefinition One.
         ItemValueDefinition itemValueDefinition1 = new ItemValueDefinition(itemDefinition);
+        itemValueDefinition1.setValueDefinition(new ValueDefinition());
         itemValueDefinition1.setModified(new DateTime(2011, 1, 2, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition1);
         mockLocaleName(itemValueDefinition1);
         // Create ItemDefinition Two.
         ItemValueDefinition itemValueDefinition2 = new ItemValueDefinition(itemDefinition);
+        itemValueDefinition2.setValueDefinition(new ValueDefinition());
         itemValueDefinition2.setModified(new DateTime(2011, 1, 1, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition2);
         mockLocaleName(itemValueDefinition2);
