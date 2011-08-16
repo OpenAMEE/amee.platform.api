@@ -1,27 +1,8 @@
-/**
- * This file is part of AMEE.
- * <p/>
- * AMEE is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- * <p/>
- * AMEE is free software and is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * <p/>
- * Created by http://www.dgen.net.
- * Website http://www.amee.cc
- */
 package com.amee.domain.data.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.Builder;
-import com.amee.domain.IItemService;
+import com.amee.domain.ItemService;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
@@ -35,9 +16,9 @@ import org.w3c.dom.Element;
 public class ItemValueInListBuilder implements Builder {
 
     private BaseItemValue itemValue;
-    private IItemService itemService;
+    private ItemService itemService;
 
-    public ItemValueInListBuilder(BaseItemValue itemValue, IItemService itemService) {
+    public ItemValueInListBuilder(BaseItemValue itemValue, ItemService itemService) {
         this.itemValue = itemValue;
         this.itemService = itemService;
     }

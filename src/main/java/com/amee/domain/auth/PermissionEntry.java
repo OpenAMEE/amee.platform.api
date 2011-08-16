@@ -1,24 +1,3 @@
-/*
- * This file is part of AMEE.
- *
- * Copyright (c) 2007, 2008, 2009 AMEE UK LIMITED (help@amee.com).
- *
- * AMEE is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * AMEE is free software and is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Created by http://www.dgen.net.
- * Website http://www.amee.cc
- */
 package com.amee.domain.auth;
 
 import com.amee.base.utils.XMLUtils;
@@ -70,7 +49,7 @@ public class PermissionEntry implements Serializable {
      * associated with the value property. For example, allow or deny a principal to
      * 'view' an entity.
      */
-    private Boolean allow = true;
+    private boolean allow = true;
 
     /**
      * Private default constructor, enforcing immutability for PermissionEntry instances.
@@ -143,8 +122,8 @@ public class PermissionEntry implements Serializable {
         if (this == o) return true;
         if (!PermissionEntry.class.isAssignableFrom(o.getClass())) return false;
         PermissionEntry entry = (PermissionEntry) o;
-        return (getValue().equals(OWN.getValue()) && entry.getValue().equals(OWN.getValue())) ||
-                (getValue().equals(entry.getValue()) && getAllow().equals(entry.getAllow()) && getStatus().equals(entry.getStatus()));
+        return (value.equals(OWN.value) && entry.value.equals(OWN.value)) ||
+            (value.equals(entry.value) && allow == entry.allow && status.equals(entry.status));
     }
 
     /**
@@ -155,10 +134,10 @@ public class PermissionEntry implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + getValue().hashCode();
-        if (!getValue().equals(OWN.getValue())) {
-            hash = 31 * hash + getAllow().hashCode();
-            hash = 31 * hash + getStatus().hashCode();
+        hash = 31 * hash + value.hashCode();
+        if (!value.equals(OWN.value)) {
+            hash = 31 * hash + (allow ? 0 : 1);
+            hash = 31 * hash + status.hashCode();
         }
         return hash;
     }
@@ -167,7 +146,7 @@ public class PermissionEntry implements Serializable {
         JSONObject obj = new JSONObject();
         obj.put("value", getValue());
         obj.put("status", getStatus().getName());
-        obj.put("allow", getAllow());
+        obj.put("allow", isAllow());
         return obj;
     }
 
@@ -175,7 +154,7 @@ public class PermissionEntry implements Serializable {
         Element element = document.createElement("PermissionEntry");
         element.appendChild(XMLUtils.getElement(document, "Value", getValue()));
         element.appendChild(XMLUtils.getElement(document, "Status", getStatus().getName()));
-        element.appendChild(XMLUtils.getElement(document, "Allow", getAllow().toString()));
+        element.appendChild(XMLUtils.getElement(document, "Allow", Boolean.toString(isAllow())));
         return element;
     }
 
@@ -198,16 +177,7 @@ public class PermissionEntry implements Serializable {
      *
      * @return true if the allow state of a PermissionEntry is true
      */
-    public Boolean isAllow() {
-        return allow;
-    }
-
-    /**
-     * Returns true if the allow state of a PermissionEntry is true.
-     *
-     * @return true if the allow state of a PermissionEntry is true
-     */
-    public Boolean getAllow() {
+    public boolean isAllow() {
         return allow;
     }
 

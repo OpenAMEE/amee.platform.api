@@ -6,32 +6,30 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.w3c.dom.*;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AMEEStatusTest {
     // Map of Enum name => label
-    private static final Map<String, String> pairs = new HashMap<String, String>();
-    {
-        pairs.put("TRASH", "Trash");
-        pairs.put("ACTIVE", "Active");
-        pairs.put("DEPRECATED", "Deprecated");
-    }
+    // Use a LinkedHashMap so the order is the same as in the Enum.
+    private static final Map<String, String> PAIRS = new LinkedHashMap<String, String>() {{
+        put("TRASH", "Trash");
+        put("ACTIVE", "Active");
+        put("DEPRECATED", "Deprecated");
+    }};
 
     @Test
     public void getChoices() {
-        assertEquals(pairs, AMEEStatus.getChoices());
+        assertEquals(PAIRS, AMEEStatus.getChoices());
     }
 
     @Test
     public void getJSONObject() {
         try {
             JSONObject JsonObject = AMEEStatus.getJSONObject();
-            assertJsonObject(pairs, JsonObject);
+            assertJsonObject(PAIRS, JsonObject);
         } catch (JSONException e) {
             fail(e.getMessage());
         }
@@ -74,7 +72,7 @@ public class AMEEStatusTest {
             NamedNodeMap attributes = AMEEStatusNode.getAttributes();
             Node nameNode = attributes.getNamedItem("name");
             Node labelNode = attributes.getNamedItem("label");
-            assertEquals(pairs.get(nameNode.getNodeValue()), labelNode.getNodeValue());
+            assertEquals(PAIRS.get(nameNode.getNodeValue()), labelNode.getNodeValue());
         }
     }
 }

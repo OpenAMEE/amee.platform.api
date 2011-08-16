@@ -11,29 +11,29 @@ import java.util.Map;
 
 public enum PagerSetType implements Serializable {
 
-    ALL, EXCLUDE, INCLUDE;
+    ALL("ALL", "All"),
+    EXCLUDE("EXCLUDE", "Exclude"),
+    INCLUDE("INCLUDE", "Include");
 
-    private String[] names = {
-            "ALL",
-            "EXCLUDE",
-            "INCLUDE"};
+    private final String name;
+    private final String label;
 
-    // TODO: i18n - clues here: http://www.jroller.com/page/RickHigh?entry=jdk_1_5_enums_jsf
-    private String[] labels = {
-            "All",
-            "Exclude",
-            "Include"};
+    PagerSetType(String name, String label) {
+        this.name = name;
+        this.label = label;
+    }
 
+    @Override
     public String toString() {
-        return getName();
+        return name;
     }
 
     public String getName() {
-        return names[this.ordinal()];
+        return name;
     }
 
     public String getLabel() {
-        return labels[this.ordinal()];
+        return label;
     }
 
     public static Map<String, String> getChoices() {

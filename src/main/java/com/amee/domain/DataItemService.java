@@ -2,6 +2,7 @@ package com.amee.domain;
 
 import com.amee.base.domain.ResultsWrapper;
 import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface IDataItemService extends IItemService {
+public interface DataItemService extends ItemService {
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
     public final static Date EPOCH = new Date(0);
@@ -34,6 +35,10 @@ public interface IDataItemService extends IItemService {
     public DataItem getDataItemByIdentifier(DataCategory parent, String path);
 
     public Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+
+    public ItemValueMap getDrillDownValuesMap(DataItem dataItem);
+
+    public boolean equivalentDataItemExists(DataItem dataItem);
 
     public DataItem getDataItemByUid(DataCategory parent, String uid);
 

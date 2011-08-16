@@ -19,14 +19,14 @@ public enum UserType implements Serializable {
     ANONYMOUS("ANONYMOUS", "Anonymous"),
     SUPER("SUPER", "Super");
 
+    private final String name;
+    private final String label;
+
     UserType(String name, String label) {
         this.name = name;
         this.label = label;
     }
-
-    private final String name;
-    private final String label;
-
+    
     @Override
     public String toString() {
         return name;
@@ -35,7 +35,7 @@ public enum UserType implements Serializable {
     public String getName() {
         return name;
     }
-
+    
     public String getLabel() {
         return label;
     }

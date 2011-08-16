@@ -19,11 +19,9 @@ import javax.persistence.*;
 import java.util.TimeZone;
 
 /**
- * A User represents a single person or entity who has authenticated access to an Environment.
+ * A User represents a single person or entity who has authenticated access to the AMEE Platform.
  * <p/>
  * Users can be members of Groups via GroupPrincipal.
- * <p/>
- * A User belongs to an Environment.
  * <p/>
  * When deleting a User we need to ensure all relevant GroupPrincipals are also removed.
  *

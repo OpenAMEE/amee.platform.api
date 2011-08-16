@@ -2,8 +2,8 @@ package com.amee.domain.item.profile;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IProfileItemService;
 import com.amee.domain.ObjectType;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItem;
@@ -281,14 +281,14 @@ public class ProfileItem extends BaseItem {
     }
 
     /**
-     * Gets the IProfileItemService bound to the current thread. Usage of this is discouraged.
+     * Gets the ProfileItemService bound to the current thread. Usage of this is discouraged.
      *
-     * @return the current {@link IProfileItemService}
+     * @return the current {@link com.amee.domain.ProfileItemService}
      */
     @Deprecated
     @Transient
-    private IProfileItemService getProfileItemService() {
-        return ThreadBeanHolder.get(IProfileItemService.class);
+    private ProfileItemService getProfileItemService() {
+        return ThreadBeanHolder.get(ProfileItemService.class);
     }
 
 }

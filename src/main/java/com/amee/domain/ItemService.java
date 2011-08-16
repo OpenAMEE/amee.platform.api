@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public interface IItemService {
+public interface ItemService {
 
     public BaseItem getItemByUid(String uid);
 
@@ -33,7 +33,7 @@ public interface IItemService {
 
     public ItemValueMap getItemValuesMap(BaseItem item);
 
-    public boolean isUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
+    public boolean isItemValueUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
     public void loadItemValuesForItems(Collection<BaseItem> items);
 

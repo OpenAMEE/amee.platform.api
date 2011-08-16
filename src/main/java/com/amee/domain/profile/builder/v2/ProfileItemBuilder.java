@@ -1,28 +1,9 @@
-/**
- * This file is part of AMEE.
- *
- * AMEE is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * AMEE is free software and is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Created by http://www.dgen.net.
- * Website http://www.amee.cc
- */
 package com.amee.domain.profile.builder.v2;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.IDataItemService;
-import com.amee.domain.IProfileItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.ItemBuilder;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v2.ItemValueBuilder;
@@ -43,17 +24,17 @@ public class ProfileItemBuilder implements ItemBuilder {
 
     private ProfileItem item;
     private AmountCompoundUnit returnUnit = CO2AmountUnit.DEFAULT;
-    private IDataItemService dataItemService;
-    private IProfileItemService profileItemService;
+    private DataItemService dataItemService;
+    private ProfileItemService profileItemService;
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService, AmountCompoundUnit returnUnit) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService, AmountCompoundUnit returnUnit) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;
         this.returnUnit = returnUnit;
     }
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;
@@ -107,7 +88,16 @@ public class ProfileItemBuilder implements ItemBuilder {
         buildElement(obj, detailed);
 
         JSONObject amount = new JSONObject();
-        amount.put("value", item.getAmounts().defaultValueAsAmount().convert(returnUnit).getValue());
+        double value = item.getAmounts().defaultValueAsAmount().convert(returnUnit).getValue();
+
+        // Check for NaN or Infinity which are invalid in JSON.
+        if (Double.isInfinite(value)) {
+            amount.put("value", "Infinity");
+        } else if (Double.isNaN(value)) {
+            amount.put("value", "NaN");
+        } else {
+            amount.put("value", value);
+        }
         amount.put("unit", returnUnit.toString());
         obj.put("amount", amount);
 
@@ -120,7 +110,16 @@ public class ProfileItemBuilder implements ItemBuilder {
 
             // Create an Amount object
             JSONObject amountObj = new JSONObject();
-            amountObj.put("value", entry.getValue().getValue());
+            double returnValue = entry.getValue().getValue();
+
+            // Check for NaN or Infinity which are invalid in JSON.
+            if (Double.isInfinite(returnValue)) {
+                amountObj.put("value", "Infinity");
+            } else if (Double.isNaN(returnValue)) {
+                amountObj.put("value", "NaN");
+            } else {
+                amountObj.put("value", returnValue);
+            }
             amountObj.put("type", entry.getKey());
             amountObj.put("unit", entry.getValue().getUnit());
             amountObj.put("perUnit", entry.getValue().getPerUnit());

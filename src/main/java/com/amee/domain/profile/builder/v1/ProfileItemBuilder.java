@@ -1,28 +1,9 @@
-/**
- * This file is part of AMEE.
- *
- * AMEE is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * AMEE is free software and is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Created by http://www.dgen.net.
- * Website http://www.amee.cc
- */
 package com.amee.domain.profile.builder.v1;
 
 import com.amee.base.utils.XMLUtils;
-import com.amee.domain.IDataItemService;
-import com.amee.domain.IProfileItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.ItemBuilder;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.builder.DataItemBuilder;
 import com.amee.domain.data.builder.v1.ItemValueBuilder;
@@ -46,10 +27,10 @@ public class ProfileItemBuilder implements ItemBuilder {
     private static DateFormat DAY_DATE_FMT = new SimpleDateFormat(DAY_DATE);
 
     private ProfileItem item;
-    private IProfileItemService profileItemService;
-    private IDataItemService dataItemService;
+    private ProfileItemService profileItemService;
+    private DataItemService dataItemService;
 
-    public ProfileItemBuilder(ProfileItem item, IDataItemService dataItemService, IProfileItemService profileItemService) {
+    public ProfileItemBuilder(ProfileItem item, DataItemService dataItemService, ProfileItemService profileItemService) {
         this.item = item;
         this.dataItemService = dataItemService;
         this.profileItemService = profileItemService;
@@ -97,10 +78,20 @@ public class ProfileItemBuilder implements ItemBuilder {
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
-        if (!profileItemService.isSingleFlight(item)) {
-            obj.put("amountPerMonth", item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue());
+        double value;
+        if (profileItemService.isSingleFlight(item)) {
+            value = item.getAmounts().defaultValueAsDouble();
         } else {
-            obj.put("amountPerMonth", item.getAmounts().defaultValueAsDouble());
+            value = item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue();
+        }
+
+        // Check for NaN or Infinity which are invalid in JSON.
+        if (Double.isInfinite(value)) {
+            obj.put("amountPerMonth", "Infinity");
+        } else if (Double.isNaN(value)) {
+            obj.put("amountPerMonth", "NaN");
+        } else {
+            obj.put("amountPerMonth", value);
         }
         obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));

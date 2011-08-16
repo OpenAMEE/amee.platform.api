@@ -1,27 +1,8 @@
-/**
- * This file is part of AMEE.
- *
- * AMEE is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * AMEE is free software and is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Created by http://www.dgen.net.
- * Website http://www.amee.cc
- */
 package com.amee.domain.item.data;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
-import com.amee.domain.IDataItemService;
+import com.amee.domain.DataItemService;
 import com.amee.domain.Metadata;
 import com.amee.domain.ObjectType;
 import com.amee.domain.data.DataCategory;
@@ -157,13 +138,13 @@ public class DataItem extends BaseItem {
     }
 
     /**
-     * Gets the IDataItemService bound to the current thread. Usage of this is discouraged.
+     * Gets the DataItemService bound to the current thread. Usage of this is discouraged.
      *
-     * @return the current {@link IDataItemService}
+     * @return the current {@link com.amee.domain.DataItemService}
      */
     @Deprecated
     @Transient
-    private IDataItemService getDataItemService() {
-        return ThreadBeanHolder.get(IDataItemService.class);
+    private DataItemService getDataItemService() {
+        return ThreadBeanHolder.get(DataItemService.class);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public interface IProfileItemService extends IItemService {
+public interface ProfileItemService extends ItemService {
 
     @Override
     public ProfileItem getItemByUid(String uid);
