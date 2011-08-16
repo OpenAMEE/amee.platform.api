@@ -47,7 +47,7 @@ public class AMEETransactionAspect implements ApplicationContextAware {
     }
 
     /**
-     * After method returns, publish the {@link TransactionEventType} COMMENT & END events.
+     * After method returns, publish the {@link TransactionEventType} COMMIT & END events.
      */
     @AfterReturning("@annotation(com.amee.base.transaction.AMEETransaction)")
     public void afterReturning() {
