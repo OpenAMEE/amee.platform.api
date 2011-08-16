@@ -5,10 +5,9 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Test;
 
-import java.util.Calendar;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class StartEndDateTest {
     private static final TimeZone TIME_ZONE_NY = TimeZone.getTimeZone("America/New_York");

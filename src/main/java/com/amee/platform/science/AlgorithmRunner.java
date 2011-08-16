@@ -2,9 +2,15 @@ package com.amee.platform.science;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sun.org.mozilla.javascript.internal.*;
+import sun.org.mozilla.javascript.internal.JavaScriptException;
+import sun.org.mozilla.javascript.internal.NativeJavaObject;
+import sun.org.mozilla.javascript.internal.Scriptable;
+import sun.org.mozilla.javascript.internal.ScriptableObject;
 
-import javax.script.*;
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.Map;
 
 public class AlgorithmRunner {
