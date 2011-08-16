@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -28,7 +30,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void createDeleteAlgorithmJson() {
-        versions.each { version -> createDeleteAlgorithmJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> createDeleteAlgorithmJson(version) }
     }
 
     def createDeleteAlgorithmJson(version) {
@@ -44,7 +46,7 @@ class AlgorithmIT extends BaseApiTest {
                     contentType: JSON);
             assertEquals 201, responsePost.status;
             def location = responsePost.headers['Location'].value;
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}");
+            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}");
 
             // Get the new Algorithm.
             def responseGet = client.get(
@@ -78,7 +80,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void createDeleteAlgorithmXml() {
-        versions.each { version -> createDeleteAlgorithmXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> createDeleteAlgorithmXml(version) }
     }
 
     def createDeleteAlgorithmXml(version) {
@@ -94,7 +96,7 @@ class AlgorithmIT extends BaseApiTest {
                     contentType: XML)
             assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value;
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
 
             // Get the new Algorithm.
             def responseGet = client.get(
@@ -130,7 +132,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmsJson() {
-        versions.each { version -> getAlgorithmsJson(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsJson(version) };
     }
 
     def getAlgorithmsJson(version) {
@@ -155,7 +157,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmsXml() {
-        versions.each { version -> getAlgorithmsXml(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsXml(version) };
     }
 
     def getAlgorithmsXml(version) {
@@ -190,7 +192,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmJson() {
-        versions.each { version -> getAlgorithmJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmJson(version) }
     }
 
     def getAlgorithmJson(version) {
@@ -215,7 +217,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmXml() {
-        versions.each { version -> getAlgorithmXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmXml(version) }
     }
 
     def getAlgorithmXml(version) {
@@ -242,7 +244,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateAlgorithmJson() {
-        versions.each { version -> updateAlgorithmJson(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmJson(version) };
     }
 
     def updateAlgorithmJson(version) {
@@ -276,7 +278,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateAlgorithmXml() {
-        versions.each { version -> updateAlgorithmXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmXml(version) }
     }
 
     def updateAlgorithmXml(version) {
@@ -316,7 +318,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidName() {
-        versions.each { version -> updateWithInvalidName(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> updateWithInvalidName(version) }
     }
 
     def updateWithInvalidName(version) {
@@ -339,7 +341,7 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidContent() {
-        versions.each { version -> updateWithInvalidContent(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> updateWithInvalidContent(version) }
     }
 
     def updateWithInvalidContent(version) {
@@ -369,7 +371,7 @@ class AlgorithmIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateAlgorithmFieldJson(field, code, value, since) {
-        versions.each { version -> updateAlgorithmFieldJson(field, code, value, since, version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmFieldJson(field, code, value, since, version) };
     }
 
     /**

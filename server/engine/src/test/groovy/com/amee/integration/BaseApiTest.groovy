@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import com.amee.platform.search.SearchIndexerImpl
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
@@ -18,7 +20,7 @@ import static org.junit.Assert.*
  */
 abstract class BaseApiTest {
 
-    static def versions = [3.0, 3.1, 3.2, 3.3, 3.4, 3.5]
+    static def versions = [3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6]
     static def config
     static def context
     static def container

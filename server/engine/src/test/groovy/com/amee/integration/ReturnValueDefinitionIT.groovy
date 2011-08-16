@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -35,7 +37,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void createReturnValueDefinition() {
-        versions.each { version -> createReturnValueDefinition(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> createReturnValueDefinition(version) }
     }
 
     def createReturnValueDefinition(version) {
@@ -58,7 +60,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             assertTrue responsePost.headers['Location'] != null;
             assertTrue responsePost.headers['Location'].value != null;
             def location = responsePost.headers['Location'].value;
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
 
             // Add new RVD to local state.
             def uid = location.split('/')[7];
@@ -116,7 +118,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionsJson() {
-        versions.each { version -> getReturnValueDefinitionsJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionsJson(version) }
     }
 
     def getReturnValueDefinitionsJson(version) {
@@ -141,7 +143,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionsXml() {
-        versions.each { version -> getReturnValueDefinitionsXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionsXml(version) }
     }
 
     def getReturnValueDefinitionsXml(version) {
@@ -166,7 +168,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionJson() {
-        versions.each { version -> getReturnValueDefinitionJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionJson(version) }
     }
 
     def getReturnValueDefinitionJson(version) {
@@ -205,7 +207,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionXml() {
-        versions.each { version -> getReturnValueDefinitionXml(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionXml(version) }
     }
 
     def getReturnValueDefinitionXml(version) {
@@ -243,7 +245,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void updateReturnValueDefinitionJson() {
-        versions.each { version -> updateReturnValueDefinitionJson(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> updateReturnValueDefinitionJson(version) }
     }
 
     def updateReturnValueDefinitionJson(version) {
@@ -283,7 +285,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void defaultType() {
-        versions.each { version -> defaultType(version) }
+        com.amee.integration.BaseApiTest.versions.each { version -> defaultType(version) }
     }
 
     def defaultType(version) {
@@ -399,7 +401,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateReturnValueDefinitionFieldJson(uid, field, code, value, since) {
-        versions.each { version -> updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) };
     }
 
     /**

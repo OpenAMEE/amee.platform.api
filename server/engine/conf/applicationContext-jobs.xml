@@ -14,7 +14,9 @@
         <property name="triggers">
             <list>
                 <ref bean="searchIndexUpdateCronTrigger"/>
-                <ref bean="searchIndexFlushCronTrigger"/>
+
+                <!-- Index optimisation disabled due to timeouts. See: https://jira.amee.com/browse/PL-10972 -->
+                <!--ref bean="searchIndexFlushCronTrigger"/-->
                 <ref bean="searchIndexSnapshotCronTrigger"/>
                 <ref bean="searchIndexCheckSearcherCronTrigger"/>
             </list>

@@ -1,3 +1,5 @@
+package com.amee.integration
+
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
@@ -131,8 +133,8 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
-     * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
-     * duplicate paths are not allowed.
+     * Tests creation of two new DataItems with the same category and drill down values.
+     * The second DataItem should fail to be created.
      */
     @Test
     void createDuplicateDataItemJson() {
@@ -140,6 +142,56 @@ class DataItemIT extends BaseApiTest {
     }
 
     def createDuplicateDataItemJson(version) {
+        if (version >= 3.6) {
+            setAdminUser()
+
+            // Create a DataItem
+            def responsePost = client.post(
+                path: "/${version}/categories/Cooking/items",
+                body: ['values.numberOfPeople': 100],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+
+            // Get the UID
+            def location = responsePost.headers['Location'].value
+            def uid = location.split('/')[7]
+            assertNotNull uid
+
+            // Sleep a little to give the index a chance to be updated.
+            sleep(2000)
+
+            // Try to create another data item with the same drilldown value.
+            try {
+                client.post(
+                    path: "/${version}/categories/Cooking/items",
+                    body: ['values.numberOfPeople': 100],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+            } catch (HttpResponseException e) {
+
+                // Should have been rejected.
+                assertEquals 400, e.response.status
+            }
+
+            // Delete it
+            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
+            assertEquals 200, responseDelete.status
+        }
+    }
+
+    /**
+     * Test creation of two new DataItems with the same path. The second DataItem should fail to be created because
+     * duplicate paths are not allowed.
+     */
+    @Test
+    void createDuplicatePathJson() {
+        versions.each { version -> createDuplicatePathJson(version) }
+    }
+
+    def createDuplicatePathJson(version) {
         if (version >= 3.4) {
             setAdminUser();
 
@@ -184,7 +236,7 @@ class DataItemIT extends BaseApiTest {
      * Test fetching a number of DataItems with JSON responses.
      *
      * This resource supports the 'startDate' parameter which behaves identically to the
-     * DataItem values resource detailed and tested in DataItemValueIT.
+     * DataItem values resource detailed and tested in com.amee.integration.DataItemValueIT.
      *
      * Data Item GET requests support the following matrix parameters to modify the response.
      *
@@ -212,7 +264,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['resultLimit': '6'])
+                query: [resultLimit: '6'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -242,7 +294,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['numberOfPeople': '1'])
+                query: [numberOfPeople: '1'])
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -270,7 +322,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['resultLimit': '6'])
+                query: [resultLimit: '6'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -299,7 +351,7 @@ class DataItemIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
-                query: ['numberOfPeople': '1'])
+                query: [numberOfPeople: '1'])
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -584,6 +636,46 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'foo', response.data.Values.Value[0].@name.text()
             assertEquals 'bar', response.data.Values.Value[0].text()
         }
+    }
+
+    /**
+     * Tests an algorithm that returns Infinity or NaN return values.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * Algorithms should not normally return non-finite values however if they do the platform should handle them.
+     * JSON does not allow non-finite numbers so we return them as strings.
+     */
+    @Test
+    void getDataItemCalculationInfinityAndNanJson() {
+        versions.each { version -> getDataItemCalculationInfinityAndNanJson(version)}
+    }
+
+    def getDataItemCalculationInfinityAndNanJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+            def response = client.get(path: "/${version}/categories/Computers_generic/items/651B5AE27940/calculation;full")
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 2, response.data.amounts.size()
+            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.amounts)
+        }
+    }
+
+    def hasInfinityAndNan(amounts) {
+        def hasInfinity = false
+        def hasNan = false
+
+        amounts.each {
+            if (it.type == 'infinity' && it.value == 'Infinity') {
+                hasInfinity = true;
+            }
+            if (it.type == 'nan' && it.value == 'NaN') {
+                hasNan = true;
+            }
+        }
+        return hasInfinity && hasNan;
     }
 
     /**

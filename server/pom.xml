@@ -14,15 +14,15 @@
     <properties>
 
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.6.0</amee-platform-api.version>
-        <amee-base.version>1.0.9</amee-base.version>
-        <amee-persist.version>1.0.10</amee-persist.version>
-        <amee-messaging.version>1.0.8</amee-messaging.version>
-        <amee-restlet.version>1.0.13</amee-restlet.version>
-        <amee-platform-science.version>1.1.0</amee-platform-science.version>
-        <amee-platform-domain.version>2.1.0</amee-platform-domain.version>
-        <amee-platform-service.version>2.1.0</amee-platform-service.version>
-        <amee-platform-resource.version>1.1.1</amee-platform-resource.version>
+        <amee-platform-api.version>3.7.0</amee-platform-api.version>
+        <amee-base.version>1.1.0</amee-base.version>
+        <amee-persist.version>1.0.11</amee-persist.version>
+        <amee-messaging.version>1.0.9</amee-messaging.version>
+        <amee-restlet.version>1.0.14</amee-restlet.version>
+        <amee-platform-science.version>1.2.0</amee-platform-science.version>
+        <amee-platform-domain.version>2.2.0</amee-platform-domain.version>
+        <amee-platform-service.version>2.2.0</amee-platform-service.version>
+        <amee-platform-resource.version>1.2.0</amee-platform-resource.version>
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
@@ -159,6 +159,11 @@
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <parallel>methods</parallel>
+                        
+                        <!-- Exclude the smoke tests -->
+                        <excludes>
+                            <exclude>**/*SmokeTest*</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -573,5 +578,32 @@
     <!--<developerConnection>scm:git:ssh://git@github.com/AMEE/amee.git</developerConnection>-->
     <!--<url>scm:git:ssh://git@github.com/AMEE/amee.git</url>-->
     <!--</scm>-->
+
+    <profiles>
+
+        <!-- A profile to run smoke tests -->
+        <profile>
+            <id>smoke</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*SmokeTest*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
