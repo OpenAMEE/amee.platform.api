@@ -122,11 +122,11 @@
                 <artifactId>amee-platform-resource</artifactId>
                 <version>${amee-platform-resource.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.amee.platform</groupId>
-                <artifactId>amee-platform-api-engine</artifactId>
-                <version>${amee-platform-api.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>com.amee.platform</groupId>-->
+                <!--<artifactId>amee-platform-api-engine</artifactId>-->
+                <!--<version>${amee-platform-api.version}</version>-->
+            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
 

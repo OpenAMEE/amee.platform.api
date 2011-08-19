@@ -28,40 +28,59 @@ abstract class BaseSmokeTest {
             case "v2":
                 apiVersion = 2
                 client = new RESTClient("${config.api.protocol}://${config.api.host.v2}:${config.api.port}")
-
-                // Can't use the built-in auth handling as we don't send the WWW-Authenticate header in v2
-                def auth = 'Basic ' + (config.api.standard.user + ':' + config.api.standard.password).bytes.encodeBase64().toString()
-                client.headers.Authorization = auth
                 break
             case "v3":
                 apiVersion = 3
                 client = new RESTClient("${config.api.protocol}://${config.api.host.v3}:${config.api.port}")
                 break
+            case "admin":
+                apiVersion = 2
+                client = new RESTClient("${config.api.protocol}://${config.api.host.admin}:${config.api.port}")
+                break
         }
-
-
-
-        // Use JSON for the smoke tests.
-        client.setContentType JSON
 
         // Set standard user as default.
         setStandardUser();
+
+        // Use JSON for the smoke tests.
+        client.setContentType JSON
     }
 
     def setStandardUser() {
         client.auth.basic config.api.standard.user, config.api.standard.password
+
+        // Can't use the built-in RESTClient auth handling as we don't send the WWW-Authenticate header in v2
+        if (apiVersion == 2) {
+            def auth = 'Basic ' + (config.api.standard.user + ':' + config.api.standard.password).bytes.encodeBase64().toString()
+            client.headers.Authorization = auth
+        }
     }
 
     def setAdminUser() {
         client.auth.basic config.api.admin.user, config.api.admin.password
+
+        if (apiVersion == 2) {
+            def auth = 'Basic ' + (config.api.admin.user + ':' + config.api.admin.password).bytes.encodeBase64().toString()
+            client.headers.Authorization = auth
+        }
     }
 
     def setRootUser() {
         client.auth.basic config.api.root.user, config.api.root.password
+
+        if (apiVersion == 2) {
+            def auth = 'Basic ' + (config.api.root.user + ':' + config.api.root.password).bytes.encodeBase64().toString()
+            client.headers.Authorization = auth
+        }
     }
 
     def setEcoinventUser() {
         client.auth.basic config.api.ecoinvent.user, config.api.ecoinvent.password
+
+        if (apiVersion == 2) {
+            def auth = 'Basic ' + (config.api.ecoinvent.user + ':' + config.api.ecoinvent.password).bytes.encodeBase64().toString()
+            client.headers.Authorization = auth
+        }
     }
 
     def assertResponseOk(response) {
