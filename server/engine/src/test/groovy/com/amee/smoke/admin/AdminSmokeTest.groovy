@@ -4,9 +4,11 @@ import com.amee.smoke.BaseSmokeTest
 import org.junit.Test
 import groovyx.net.http.HttpResponseException
 import static org.junit.Assert.*
+import org.junit.Ignore
 
 class AdminSmokeTest extends BaseSmokeTest {
 
+    @Ignore("Ignore until 2.18.1 is deployed.")
     @Test
     void viewUsers() {
         try {
@@ -21,6 +23,7 @@ class AdminSmokeTest extends BaseSmokeTest {
         assertResponseOk(response)
     }
 
+    @Ignore("Ignore until 2.18.1 is deployed.")
     @Test
     void viewGroups() {
         try {
