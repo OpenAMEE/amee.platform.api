@@ -38,7 +38,7 @@
         <hibernate-memcached.version>1.2.2</hibernate-memcached.version>
         <hoptoad-notifier.version>1.8</hoptoad-notifier.version>
         <hsqldb.version>2.0.0</hsqldb.version>
-        <http-builder.version>0.5.0</http-builder.version>
+        <http-builder.version>0.5.1</http-builder.version>
         <javax.mail.version>1.4</javax.mail.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
