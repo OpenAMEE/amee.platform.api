@@ -5,7 +5,7 @@
     <name>amee-platform-resource</name>
     <groupId>com.amee.platform</groupId>
     <artifactId>amee-platform-resource</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
@@ -13,7 +13,7 @@
         
         <!-- Versions. -->
         <amee-base.version>1.1.0</amee-base.version>
-        <amee-platform-service.version>2.2.0</amee-platform-service.version>
+        <amee-platform-service.version>2.2.1-SNAPSHOT</amee-platform-service.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
