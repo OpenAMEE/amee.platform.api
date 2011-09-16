@@ -148,7 +148,7 @@ class DataItemIT extends BaseApiTest {
             // Create a DataItem
             def responsePost = client.post(
                 path: "/${version}/categories/Cooking/items",
-                body: ['values.numberOfPeople': 100],
+                body: ['values.numberOfPeople': 100, 'values.fuel': 'foo'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
@@ -163,11 +163,11 @@ class DataItemIT extends BaseApiTest {
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
 
-            // Try to create another data item with the same drilldown value.
+            // Try to create another data item with the same drilldown values.
             try {
                 client.post(
                     path: "/${version}/categories/Cooking/items",
-                    body: ['values.numberOfPeople': 100],
+                    body: ['values.numberOfPeople': 100, 'values.fuel': 'foo'],
                     requestContentType: URLENC,
                     contentType: JSON)
             } catch (HttpResponseException e) {
@@ -178,6 +178,25 @@ class DataItemIT extends BaseApiTest {
 
             // Delete it
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
+            assertEquals 200, responseDelete.status
+
+            // Create another data item with different value for one drilldown.
+            responsePost = client.post(
+                path: "/${version}/categories/Cooking/items",
+                body: ['values.numberOfPeople': 100, 'values.fuel': 'bar'],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+
+            // Get the UID
+            location = responsePost.headers['Location'].value
+            uid = location.split('/')[7]
+            assertNotNull uid
+
+            // Delete it
+            responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
             assertEquals 200, responseDelete.status
         }
     }
