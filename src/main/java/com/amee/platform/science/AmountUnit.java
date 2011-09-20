@@ -52,6 +52,9 @@ public class AmountUnit {
     // Define barrels
     private final static Unit<? extends Quantity> BARREL_OIL = NonSI.GALLON_LIQUID_US.times(42);
 
+    // Define pound-mole
+    private final static Unit<? extends Quantity> POUND_MOLE = SI.MOLE.times(453.59237);
+
     {
         // Create usable ASCII representations. JScience will use non-ASCII characters by default.
         UNIT_FORMAT.label(KILOWATT_HOUR, "kWh");
@@ -151,6 +154,9 @@ public class AmountUnit {
 
         // Barrel
         UNIT_FORMAT.label(BARREL_OIL, "bbl");
+
+        // Pound-mole
+        UNIT_FORMAT.label(POUND_MOLE, "lbmol");
     }
 
     public static final AmountUnit ONE = new AmountUnit(Unit.ONE);
@@ -173,7 +179,6 @@ public class AmountUnit {
     }
 
     // This is like Unit.valueOf but forces use of UNIT_FORMAT instead.
-
     protected static Unit<? extends Quantity> internalValueOf(CharSequence unit) {
         if ((unit == null) || (unit.length() == 0)) {
             throw new IllegalArgumentException("The unit argument is blank.");

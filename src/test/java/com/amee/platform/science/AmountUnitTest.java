@@ -138,5 +138,8 @@ public class AmountUnitTest {
 
         // Cubic metre.
         assertEquals(SI.CUBIC_METRE, AmountUnit.valueOf("m^3").toUnit());
+
+        // Pound-mol. A pound-mole is equal to 453.59237 mols.
+        assertEquals(AmountUnit.valueOf("lbmol").toUnit(), SI.MOLE.times(453.59237));
     }
 }
