@@ -184,6 +184,10 @@ public class AmountUnit {
             throw new IllegalArgumentException("The unit argument is blank.");
         }
         try {
+            // Check for Ecoinvent units first.
+            if (EcoinventUnits.isValidEcoinventUnit(unit.toString())) {
+                return EcoinventUnits.getEcoinventUnit(unit.toString()).getUnit();
+            }
             return UNIT_FORMAT.parseProductUnit(unit, new ParsePosition(0));
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);

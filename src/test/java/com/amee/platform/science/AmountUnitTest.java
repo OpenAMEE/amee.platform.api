@@ -7,6 +7,7 @@ import javax.measure.unit.SI;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 
 public class AmountUnitTest {
 
@@ -141,5 +142,21 @@ public class AmountUnitTest {
 
         // Pound-mol. A pound-mole is equal to 453.59237 mols.
         assertEquals(AmountUnit.valueOf("lbmol").toUnit(), SI.MOLE.times(453.59237));
+    }
+
+    @Test
+    public void testEcoinventUnits() {
+        assertEquals(AmountUnit.valueOf("m3 waste").toUnit(), SI.CUBIC_METRE);
+        assertNull(AmountUnit.valueOf("pig place").toUnit());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testBlankUnit() {
+        AmountUnit.valueOf("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidUnit() {
+        AmountUnit.valueOf("This is not a unit");
     }
 }
