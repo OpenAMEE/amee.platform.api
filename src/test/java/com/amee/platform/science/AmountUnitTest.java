@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -147,7 +148,7 @@ public class AmountUnitTest {
     @Test
     public void testEcoinventUnits() {
         assertEquals(AmountUnit.valueOf("m3 waste").toUnit(), SI.CUBIC_METRE);
-        assertNull(AmountUnit.valueOf("pig place").toUnit());
+        assertEquals(AmountUnit.valueOf("pig place").toUnit(), Unit.ONE);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -54,14 +54,14 @@ public abstract class EcoinventUnits {
 
     static {
         ECOINVENT_UNITS = new HashMap<String, EcoinventUnit>();
-        ECOINVENT_UNITS.put("CTU", new EcoinventUnit("CTU", null));
-        ECOINVENT_UNITS.put("DALYs", new EcoinventUnit("DALYs", null));
-        ECOINVENT_UNITS.put("ELU", new EcoinventUnit("ELU", null));
-        ECOINVENT_UNITS.put("LU", new EcoinventUnit("LU", null));
+        ECOINVENT_UNITS.put("CTU", new EcoinventUnit("CTU", Unit.ONE));
+        ECOINVENT_UNITS.put("DALYs", new EcoinventUnit("DALYs", Unit.ONE));
+        ECOINVENT_UNITS.put("ELU", new EcoinventUnit("ELU", Unit.ONE));
+        ECOINVENT_UNITS.put("LU", new EcoinventUnit("LU", Unit.ONE));
         ECOINVENT_UNITS.put("MJ", new EcoinventUnit("MJ", AmountUnit.valueOf("MJ").toUnit()));
         ECOINVENT_UNITS.put("MJ-Eq", new EcoinventUnit("MJ-Eq", AmountUnit.valueOf("MJ").toUnit(), "MJ-Eq"));
-        ECOINVENT_UNITS.put("Nm3", new EcoinventUnit("Nm3", null));
-        ECOINVENT_UNITS.put("UBP", new EcoinventUnit("UBP", null));
+        ECOINVENT_UNITS.put("Nm3", new EcoinventUnit("Nm3", Unit.ONE));
+        ECOINVENT_UNITS.put("UBP", new EcoinventUnit("UBP", Unit.ONE));
         ECOINVENT_UNITS.put("h", new EcoinventUnit("h", AmountUnit.valueOf("h").toUnit()));
         ECOINVENT_UNITS.put("ha", new EcoinventUnit("ha", AmountUnit.valueOf("ha").toUnit()));
         ECOINVENT_UNITS.put("kBq", new EcoinventUnit("kBq", AmountUnit.valueOf("kBq").toUnit()));
@@ -96,22 +96,22 @@ public abstract class EcoinventUnits {
         ECOINVENT_UNITS.put("m", new EcoinventUnit("m", AmountUnit.valueOf("m").toUnit()));
         ECOINVENT_UNITS.put("m2", new EcoinventUnit("m2", AmountUnit.valueOf("m^2").toUnit()));
         ECOINVENT_UNITS.put("m2.ppm.h", new EcoinventUnit("m2.ppm.h", AmountUnit.valueOf("m^2").toUnit(), "ppm.h"));
-        ECOINVENT_UNITS.put("m2a", new EcoinventUnit("m2a", null));
+        ECOINVENT_UNITS.put("m2a", new EcoinventUnit("m2a", Unit.ONE));
         ECOINVENT_UNITS.put("m3", new EcoinventUnit("m3", AmountUnit.valueOf("m^3").toUnit()));
         ECOINVENT_UNITS.put("m3 air", new EcoinventUnit("m3 air", AmountUnit.valueOf("m^3").toUnit(), "air"));
         ECOINVENT_UNITS.put("m3 soil", new EcoinventUnit("m3 soil", AmountUnit.valueOf("m^3").toUnit(), "soil"));
         ECOINVENT_UNITS.put("m3 waste water", new EcoinventUnit("m3 waste water", AmountUnit.valueOf("m^3").toUnit(), "waste water"));
         ECOINVENT_UNITS.put("m3 waste", new EcoinventUnit("m3 waste", AmountUnit.valueOf("m^3").toUnit(), "waste"));
-        ECOINVENT_UNITS.put("m3a", new EcoinventUnit("m3a", null));
-        ECOINVENT_UNITS.put("ma", new EcoinventUnit("ma", null));
+        ECOINVENT_UNITS.put("m3a", new EcoinventUnit("m3a", Unit.ONE));
+        ECOINVENT_UNITS.put("ma", new EcoinventUnit("ma", Unit.ONE));
         ECOINVENT_UNITS.put("moles of H+-Eq", new EcoinventUnit("moles of H+-Eq", AmountUnit.valueOf("mol").toUnit(), "of H+-Eq"));
-        ECOINVENT_UNITS.put("person.ppm.h", new EcoinventUnit("person.ppm.h", null, "ppm.h"));
-        ECOINVENT_UNITS.put("pig place", new EcoinventUnit("pig place", null, "pig place"));
-        ECOINVENT_UNITS.put("pkm", new EcoinventUnit("pkm", null));
-        ECOINVENT_UNITS.put("points", new EcoinventUnit("points", null));
-        ECOINVENT_UNITS.put("tkm", new EcoinventUnit("tkm", null));
-        ECOINVENT_UNITS.put("unit", new EcoinventUnit("unit", null));
-        ECOINVENT_UNITS.put("vkm", new EcoinventUnit("vkm", null));
+        ECOINVENT_UNITS.put("person.ppm.h", new EcoinventUnit("person.ppm.h", Unit.ONE, "ppm.h"));
+        ECOINVENT_UNITS.put("pig place", new EcoinventUnit("pig place", Unit.ONE, "pig place"));
+        ECOINVENT_UNITS.put("pkm", new EcoinventUnit("pkm", Unit.ONE));
+        ECOINVENT_UNITS.put("points", new EcoinventUnit("points", Unit.ONE));
+        ECOINVENT_UNITS.put("tkm", new EcoinventUnit("tkm", Unit.ONE));
+        ECOINVENT_UNITS.put("unit", new EcoinventUnit("unit", Unit.ONE));
+        ECOINVENT_UNITS.put("vkm", new EcoinventUnit("vkm", Unit.ONE));
     }
 
     public static EcoinventUnit getEcoinventUnit(String ecoinventUnit) {
