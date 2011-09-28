@@ -23,6 +23,7 @@
         <amee-platform-domain.version>2.3.0-SNAPSHOT</amee-platform-domain.version>
         <amee-platform-service.version>2.3.0-SNAPSHOT</amee-platform-service.version>
         <amee-platform-resource.version>1.3.0-SNAPSHOT</amee-platform-resource.version>
+
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
@@ -32,6 +33,7 @@
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+        <gmaven-runtime-1.7.version>1.3</gmaven-runtime-1.7.version>
         <groovy.version>1.7.10</groovy.version>
         <h2.version>1.3.154</h2.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
@@ -60,7 +62,6 @@
         <maven-surefire-plugin.version>2.8</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.8.1</maven-failsafe-plugin.version>
         <gmaven-plugin.version>1.3</gmaven-plugin.version>
-        <gmaven-runtime-1.7.version>1.3</gmaven-runtime-1.7.version>
 
         <!-- Paths. -->
         <amee.home>/var/www/apps/platform-api-local</amee.home>
@@ -78,114 +79,58 @@
         <module>restlet</module>
     </modules>
 
-    <!-- Internal Dependencies. -->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.amee</groupId>
-                <artifactId>amee-base</artifactId>
-                <version>${amee-base.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee</groupId>
-                <artifactId>amee-persist</artifactId>
-                <version>${amee-persist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee</groupId>
-                <artifactId>amee-restlet</artifactId>
-                <version>${amee-restlet.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee</groupId>
-                <artifactId>amee-messaging</artifactId>
-                <version>${amee-messaging.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee.platform</groupId>
-                <artifactId>amee-platform-science</artifactId>
-                <version>${amee-platform-science.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee.platform</groupId>
-                <artifactId>amee-platform-domain</artifactId>
-                <version>${amee-platform-domain.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee.platform</groupId>
-                <artifactId>amee-platform-service</artifactId>
-                <version>${amee-platform-service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amee.platform</groupId>
-                <artifactId>amee-platform-resource</artifactId>
-                <version>${amee-platform-resource.version}</version>
-            </dependency>
-            <!--<dependency>-->
-                <!--<groupId>com.amee.platform</groupId>-->
-                <!--<artifactId>amee-platform-api-engine</artifactId>-->
-                <!--<version>${amee-platform-api.version}</version>-->
-            <!--</dependency>-->
-        </dependencies>
-    </dependencyManagement>
-
-    <!-- Build Plugins. -->
+    <!-- Plugins. -->
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>${maven-dependency-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                    <configuration>
-                        <parallel>methods</parallel>
-                        
-                        <!-- Exclude the smoke tests -->
-                        <excludes>
-                            <exclude>**/*SmokeTest*</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${maven-failsafe-plugin.version}</version>
-                    <!-- TODO: put config in here -->
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.gmaven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
-                    <version>${gmaven-plugin.version}</version>
-                    <!-- TODO: put config in here -->
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
+
+            <!-- Override default source and target setting of 1.5 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <!-- Compile Groovy code -->
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmaven-plugin.version}</version>
+
+                <!-- Use groovy 1.7 -->
+                <configuration>
+                    <providerSelection>1.7</providerSelection>
+                </configuration>
+
+                <!-- Override default groovy-all version -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Copy all dependencies to build directories, ready for Capistrano install. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
                 <executions>
-                    <!-- Copy all dependencies to build directories, ready for Capistrano install. -->
                     <execution>
                         <id>copy-dependencies-other</id>
                         <phase>package</phase>
@@ -200,21 +145,32 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-            </plugin>
-
             <!-- Unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <parallel>methods</parallel>
+
+                    <!-- Exclude the smoke tests -->
+                    <excludes>
+                        <exclude>**/*SmokeTest*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <!-- Integration tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
                     <forkMode>perTest</forkMode>
                     <environmentVariables>
@@ -322,108 +278,11 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Groovy -->
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <providerSelection>1.7</providerSelection>
-                </configuration>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <fileset>
-                                    <directory>${basedir}/src/test/groovy</directory>
-                                    <includes>
-                                        <include>**/*.groovy</include>
-                                    </includes>
-                                </fileset>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.gmaven.runtime</groupId>
-                        <artifactId>gmaven-runtime-1.7</artifactId>
-                        <version>${gmaven-runtime-1.7.version}</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.codehaus.groovy</groupId>
-                                <artifactId>groovy-all</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-all</artifactId>
-                        <version>${groovy.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
-
-        <!--testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>test-log4j.xml</include>
-                    <include>applicationContext.xml</include>
-                </includes>
-            </testResource>
-        </testResources-->
-
     </build>
 
     <!-- Dependencies. -->
     <dependencies>
-
-        <!-- Compile Dependencies. -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>code.lucamarrocco</groupId>
-            <artifactId>hoptoad-notifier</artifactId>
-            <version>${hoptoad-notifier.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- Internal Runtime Dependencies. -->
         <dependency>
@@ -469,6 +328,45 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Compile Dependencies. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>code.lucamarrocco</groupId>
+            <artifactId>hoptoad-notifier</artifactId>
+            <version>${hoptoad-notifier.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Runtime Dependencies. -->
         <dependency>
             <groupId>log4j</groupId>
@@ -489,7 +387,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Runtime Dependencies. -->
         <!-- Explicit dependency & version here to avoid transitive dependency mess -->
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
@@ -534,6 +431,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.gmaven.runtime</groupId>
+            <artifactId>gmaven-runtime-1.7</artifactId>
+            <version>${gmaven-runtime-1.7.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
@@ -563,20 +466,14 @@
             <version>${http-builder.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.codehaus.gmaven</groupId>-->
-        <!--<artifactId>gmaven</artifactId>-->
-        <!--<version>1.3</version>-->
-        <!--</dependency>-->
-
     </dependencies>
 
     <!-- Version Control. -->
-    <!--<scm>-->
-    <!--<connection>scm:git:ssh://git@github.com/AMEE/amee.git</connection>-->
-    <!--<developerConnection>scm:git:ssh://git@github.com/AMEE/amee.git</developerConnection>-->
-    <!--<url>scm:git:ssh://git@github.com/AMEE/amee.git</url>-->
-    <!--</scm>-->
+    <!--scm>
+    <connection>scm:git:ssh://git@github.com/AMEE/amee.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/AMEE/amee.git</developerConnection>
+    <url>scm:git:ssh://git@github.com/AMEE/amee.git</url>
+    </scm-->
 
     <profiles>
 
@@ -591,6 +488,8 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+
+                        <!-- Include the smoke tests -->
                         <configuration>
                             <includes>
                                 <include>**/*SmokeTest*</include>
