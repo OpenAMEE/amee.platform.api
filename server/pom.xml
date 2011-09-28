@@ -103,6 +103,7 @@
                 <!-- Use groovy 1.7 -->
                 <configuration>
                     <providerSelection>1.7</providerSelection>
+                    <source/>
                 </configuration>
 
                 <!-- Override default groovy-all version -->
@@ -465,6 +466,14 @@
             <artifactId>http-builder</artifactId>
             <version>${http-builder.version}</version>
             <scope>test</scope>
+
+            <!-- See: INFRA-767, INFRA-787 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
