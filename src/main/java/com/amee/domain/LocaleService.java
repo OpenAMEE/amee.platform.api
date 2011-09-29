@@ -21,10 +21,6 @@ public interface LocaleService {
 
     public LocaleName getLocaleName(IAMEEEntityReference entity, String locale);
 
-    public String getLocaleNameValue(IAMEEEntityReference entity);
-
-    public String getLocaleNameValue(IAMEEEntityReference entity, String defaultName);
-
     public void clearLocaleName(IAMEEEntityReference entity, String locale);
 
     public void setLocaleName(IAMEEEntityReference entity, String locale, String name);
