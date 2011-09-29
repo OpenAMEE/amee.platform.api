@@ -24,15 +24,12 @@ import static org.mockito.Mockito.when;
 public class ItemValueDefinitionValidatorTest {
 
     private MetadataService mockMetadataService;
-    private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
         mockMetadataService = mock(MetadataService.class);
         ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
-        mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
     }
 
     @Test
@@ -42,9 +39,6 @@ public class ItemValueDefinitionValidatorTest {
         ItemValueDefinition good = getItemValueDefinition("test");
         validator.setObject(good);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(good, "test"))
-                .thenReturn("test");
 
         BindException errorsGood = new BindException(good, "good");
 
@@ -79,9 +73,6 @@ public class ItemValueDefinitionValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "test"))
-                .thenReturn("test");
-
         BindException errorsBad = new BindException(bad, "bad");
         bad.setPath("!!!!!");
 
@@ -102,9 +93,6 @@ public class ItemValueDefinitionValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "test"))
-                .thenReturn("test");
-
         BindException errorsBad = new BindException(bad, "bad");
         bad.setUnit("Not a real unit");
 
@@ -122,9 +110,6 @@ public class ItemValueDefinitionValidatorTest {
         ItemValueDefinition bad = getItemValueDefinition("test");
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "test"))
-                .thenReturn("test");
 
         BindException errorsBad = new BindException(bad, "good");
         bad.setUnit("Not a real perUnit");
@@ -159,9 +144,6 @@ public class ItemValueDefinitionValidatorTest {
             name = "test";
         }
         ItemValueDefinition bad = getItemValueDefinition(name);
-        when(mockLocaleService.getLocaleNameValue(bad, name))
-                .thenReturn(name);
-
         BindException errorsBad = new BindException(bad, "bad");
 
         // Set the field under test
@@ -192,8 +174,6 @@ public class ItemValueDefinitionValidatorTest {
             name = "test";
         }
         ItemValueDefinition bad = getItemValueDefinition(name);
-        when(mockLocaleService.getLocaleNameValue(bad, name))
-                .thenReturn(name);
 
         BindException errorsBad = new BindException(bad, "bad");
 

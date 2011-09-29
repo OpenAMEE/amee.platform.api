@@ -20,15 +20,12 @@ public class DataCategoryValidatorTest {
 
     private DataService mockDataService;
     private MetadataService mockMetadataService;
-    private LocaleService mockLocaleService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
         mockMetadataService = mock(MetadataService.class);
         ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
-        mockLocaleService = mock(LocaleService.class);
-        ThreadBeanHolder.set(LocaleService.class, mockLocaleService);
         mockDataService = mock(DataService.class);
         ThreadBeanHolder.set(DataService.class, mockDataService);
     }
@@ -48,8 +45,6 @@ public class DataCategoryValidatorTest {
         validator.setObject(good);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(good, "name"))
-                .thenReturn("name");
         when(mockDataService.isDataCategoryUniqueByPath(good))
                 .thenReturn(true);
         when(mockDataService.isDataCategoryUniqueByWikiName(good))
@@ -82,9 +77,6 @@ public class DataCategoryValidatorTest {
 
         String nameGreaterThanMax = RandomStringUtils.random(DataCategory.NAME_MAX_SIZE + 1);
 
-        when(mockLocaleService.getLocaleNameValue(bad, nameGreaterThanMax))
-                .thenReturn(nameGreaterThanMax);
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName(nameGreaterThanMax);
@@ -105,9 +97,6 @@ public class DataCategoryValidatorTest {
 
         String nameLessThanMin = RandomStringUtils.random(DataCategory.NAME_MIN_SIZE - 1);
 
-        when(mockLocaleService.getLocaleNameValue(bad, nameLessThanMin))
-                .thenReturn(nameLessThanMin);
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName(nameLessThanMin);
@@ -125,9 +114,6 @@ public class DataCategoryValidatorTest {
         validator.setDataService(mockDataService);
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -148,9 +134,6 @@ public class DataCategoryValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName("name");
@@ -169,9 +152,6 @@ public class DataCategoryValidatorTest {
         validator.setDataService(mockDataService);
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -192,9 +172,6 @@ public class DataCategoryValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName("name");
@@ -213,9 +190,6 @@ public class DataCategoryValidatorTest {
         validator.setDataService(mockDataService);
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -236,9 +210,6 @@ public class DataCategoryValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName("name");
@@ -257,9 +228,6 @@ public class DataCategoryValidatorTest {
         validator.setDataService(mockDataService);
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
 
         BindException errorsBad = new BindException(bad, "bad");
 
@@ -280,9 +248,6 @@ public class DataCategoryValidatorTest {
         validator.setObject(bad);
         validator.initialise();
 
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
-
         BindException errorsBad = new BindException(bad, "bad");
 
         bad.setName("name");
@@ -301,9 +266,6 @@ public class DataCategoryValidatorTest {
         validator.setDataService(mockDataService);
         validator.setObject(bad);
         validator.initialise();
-
-        when(mockLocaleService.getLocaleNameValue(bad, "name"))
-                .thenReturn("name");
 
         BindException errorsBad = new BindException(bad, "bad");
 
