@@ -8,11 +8,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.junit.Assert.*;
 
-/**
- * TODO: The tests commented out below don't seem to work in Bamboo.
- * <p/>
- * See:https://jira.amee.com/browse/PL-10424
- */
 public class InternalCryptoTest {
 
     @Test
