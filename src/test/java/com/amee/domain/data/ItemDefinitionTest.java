@@ -28,15 +28,12 @@ public class ItemDefinitionTest {
             new ArrayList<String>(Arrays.asList("usage_1", "usage_2", "usage_3"));
 
     private MetadataService mockMetadataService;
-    private LocaleService localeService;
 
     @Before
     public void setUp() {
         ThreadBeanHolder.clear();
         mockMetadataService = mock(MetadataService.class);
         ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
-        localeService = mock(LocaleService.class);
-        ThreadBeanHolder.set(LocaleService.class, localeService);
     }
 
     @Test
@@ -95,13 +92,11 @@ public class ItemDefinitionTest {
         itemValueDefinition1.setValueDefinition(new ValueDefinition());
         itemValueDefinition1.setModified(new DateTime(2011, 1, 2, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition1);
-        mockLocaleName(itemValueDefinition1);
         // Create ItemDefinition Two.
         ItemValueDefinition itemValueDefinition2 = new ItemValueDefinition(itemDefinition);
         itemValueDefinition2.setValueDefinition(new ValueDefinition());
         itemValueDefinition2.setModified(new DateTime(2011, 1, 3, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition2);
-        mockLocaleName(itemValueDefinition2);
         // Should get the date of ItemValueDefinition Two.
         assertTrue(
                 "ItemValueDefinition Two should define the most recent modified date.",
@@ -118,24 +113,14 @@ public class ItemDefinitionTest {
         itemValueDefinition1.setValueDefinition(new ValueDefinition());
         itemValueDefinition1.setModified(new DateTime(2011, 1, 2, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition1);
-        mockLocaleName(itemValueDefinition1);
         // Create ItemDefinition Two.
         ItemValueDefinition itemValueDefinition2 = new ItemValueDefinition(itemDefinition);
         itemValueDefinition2.setValueDefinition(new ValueDefinition());
         itemValueDefinition2.setModified(new DateTime(2011, 1, 1, 0, 0, 0, 0).toDate());
         itemDefinition.add(itemValueDefinition2);
-        mockLocaleName(itemValueDefinition2);
         // Should get the date of ItemDefinition.
         assertTrue(
                 "The ItemDefinition should define the most recent modified date.",
                 itemDefinition.getModifiedDeep().equals(new DateTime(2011, 1, 3, 0, 0, 0, 0).toDate()));
-    }
-
-    private void mockLocaleName(ItemValueDefinition itemValueDefinition2) {
-        when(localeService.getLocaleNameValue(itemValueDefinition2, "")).thenAnswer(new Answer<String>() {
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return (String) invocation.getArguments()[1];
-            }
-        });
     }
 }
