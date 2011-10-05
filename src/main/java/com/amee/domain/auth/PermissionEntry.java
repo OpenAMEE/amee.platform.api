@@ -27,6 +27,9 @@ public class PermissionEntry implements Serializable {
      * Constants for the various commonly used permission entry values.
      */
     public final static PermissionEntry OWN = new PermissionEntry("o");
+
+    // Grants permission to view /admin URIs
+    public final static PermissionEntry ADMIN = new PermissionEntry("a");
     public final static PermissionEntry VIEW = new PermissionEntry("v");
     public final static PermissionEntry VIEW_DENY = new PermissionEntry("v", false);
     public final static PermissionEntry CREATE = new PermissionEntry("c");
