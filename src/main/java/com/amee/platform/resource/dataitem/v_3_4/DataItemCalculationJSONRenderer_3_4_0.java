@@ -31,7 +31,8 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
             // Create a multiple amount object.
             JSONObject multipleAmountObj = new JSONObject();
-            ResponseHelper.put(multipleAmountObj, "value", entry.getValue().getValue());
+            ResponseHelper.put(multipleAmountObj, "value",
+                entry.getValue().getValue() == null ? JSONObject.NULL : entry.getValue().getValue());
             ResponseHelper.put(multipleAmountObj, "type", entry.getKey());
             ResponseHelper.put(multipleAmountObj, "unit", entry.getValue().getUnit());
             ResponseHelper.put(multipleAmountObj, "perUnit", entry.getValue().getPerUnit());

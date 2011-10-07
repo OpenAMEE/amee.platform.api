@@ -55,10 +55,12 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
             // Create a multiple amount object.
             JSONObject multipleAmountObj = new JSONObject();
 
-            double returnValue = entry.getValue().getValue();
-            if (Double.isInfinite(returnValue)) {
+            Double returnValue = entry.getValue().getValue();
+            if (returnValue == null) {
+                ResponseHelper.put(multipleAmountObj, "value", JSONObject.NULL);
+            } else if (returnValue.isInfinite()) {
                 ResponseHelper.put(multipleAmountObj, "value", "Infinity");
-            } else if (Double.isNaN(returnValue)) {
+            } else if (returnValue.isNaN()) {
                 ResponseHelper.put(multipleAmountObj, "value", "NaN");
             } else {
                 ResponseHelper.put(multipleAmountObj, "value", returnValue);
