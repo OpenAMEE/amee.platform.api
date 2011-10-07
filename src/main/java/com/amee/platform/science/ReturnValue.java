@@ -9,9 +9,9 @@ public class ReturnValue {
     private String type;
     private String unit;
     private String perUnit;
-    private double value;
+    private Double value;
 
-    public ReturnValue(String type, String unit, String perUnit, double value) {
+    public ReturnValue(String type, String unit, String perUnit, Double value) {
         this.type = type;
         this.unit = unit;
         this.perUnit = perUnit;
@@ -42,11 +42,11 @@ public class ReturnValue {
         this.perUnit = perUnit;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
@@ -55,7 +55,7 @@ public class ReturnValue {
      *
      * @return the double value of this ReturnValue.
      */
-    public double toDouble() {
+    public Double toDouble() {
         return value;
     }
 
@@ -65,13 +65,13 @@ public class ReturnValue {
      * @return a CO2Amount with this ReturnValue's values.
      */
     public CO2Amount toAmount() {
-        if (value == 0.0) {
+        if (value == 0.0 || value == null) {
             return CO2Amount.ZERO;
         }
         return newAmount(unit, perUnit, value);
     }
 
-    private CO2Amount newAmount(String unit, String perUnit, double value) {
+    private CO2Amount newAmount(String unit, String perUnit, Double value) {
         CO2AmountUnit amountUnit = new CO2AmountUnit(unit, perUnit);
         return new CO2Amount(value, amountUnit);
     }
@@ -86,7 +86,7 @@ public class ReturnValue {
             append("type", type).
             append("unit", unit).
             append("perUnit", perUnit).
-            append("value", f.format(value)).
+            append("value", value != null ? f.format(value) : "").
             toString();
     }
 }

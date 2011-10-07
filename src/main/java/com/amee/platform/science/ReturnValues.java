@@ -35,7 +35,7 @@ public class ReturnValues {
      * @param perUnit the per unit, eg 'month'.
      * @param value the value of the amount.
      */
-    public void putValue(String type, String unit, String perUnit, double value) {
+    public void putValue(String type, String unit, String perUnit, Double value) {
         ReturnValue returnValue = new ReturnValue(type, unit, perUnit, value);
         returnValues.put(type, returnValue);
 
@@ -43,6 +43,16 @@ public class ReturnValues {
         if (returnValues.size() == 1) {
             setDefaultType(type);
         }
+    }
+
+    /**
+     * Add an empty amount to the return values.
+     * This should be used when we cannot calculate a value for a certain type.
+     *
+     * @param type the GHG type to add, eg 'CH4'.
+     */
+    public void putEmptyValue(String type) {
+        putValue(type, null, null, null);
     }
 
     /**
