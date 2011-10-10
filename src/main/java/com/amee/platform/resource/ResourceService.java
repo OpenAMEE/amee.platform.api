@@ -9,6 +9,7 @@ import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
@@ -42,4 +43,6 @@ public interface ResourceService {
     public AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType);
 
     public AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType);
+
+    public Profile getProfile(RequestWrapper requestWrapper);
 }
