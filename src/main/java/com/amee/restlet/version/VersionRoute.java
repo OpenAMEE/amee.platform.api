@@ -15,12 +15,12 @@ import org.restlet.util.Template;
 public class VersionRoute extends Route {
 
     /**
-     * A {link Version} which defines when a {@link Route} has been available since.
+     * A {@link Version} which defines when a {@link Route} has been available since.
      */
     private Version since = new Version("0");
 
     /**
-     * A {link Version} which defines when a {@link Route} is available until.
+     * A {@link Version} which defines when a {@link Route} is available until.
      */
     private Version until = new Version("x");
 
