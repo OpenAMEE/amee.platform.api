@@ -49,7 +49,7 @@ public class ReturnValues {
      * Add an empty amount to the return values.
      * This should be used when we cannot calculate a value for a certain type.
      *
-     * Some code duplicateion here. We don't delegate to the double putValue method here because we need to use
+     * Some code duplication here. We don't delegate to the double putValue method here because we need to use
      * a primitive double there rather than Double.
      *
      * @param type the GHG type to add, eg 'CH4'.
