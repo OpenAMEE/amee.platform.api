@@ -47,10 +47,11 @@ public class ProfilesBuilder_3_6_0 implements ProfilesResource.Builder {
             renderer.newProfile(profileBuilder.getRenderer(requestWrapper));
         }
 
-        
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        renderer.ok();
+        return renderer.getObject();
     }
 
+    @Override
     public ProfilesResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (profilesRenderer == null) {
             profilesRenderer = (ProfilesResource.Renderer) resourceBeanFinder.getRenderer(

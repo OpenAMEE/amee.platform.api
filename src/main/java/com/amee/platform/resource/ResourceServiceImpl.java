@@ -12,12 +12,14 @@ import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
+import com.amee.service.profile.ProfileService;
 import com.amee.service.tag.TagService;
 import com.amee.service.unit.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,9 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private UnitService unitService;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Autowired
     private MessageSource messageSource;
@@ -304,6 +309,23 @@ public class ResourceServiceImpl implements ResourceService {
             }
         } else {
             throw new MissingAttributeException("unitTypeIdentifier");
+        }
+    }
+
+    @Override
+    public Profile getProfile(RequestWrapper requestWrapper) {
+
+        // Get the profile identifier
+        String profileIdentifier = requestWrapper.getAttributes().get("profileIdentifier");
+        if (profileIdentifier != null) {
+            Profile profile = profileService.getProfileByUid(profileIdentifier);
+            if (profile != null) {
+                return profile;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("profileIdentifier");
         }
     }
 }
