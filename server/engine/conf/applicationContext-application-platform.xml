@@ -54,6 +54,7 @@
             <map>
                 <entry key="/categories" value-ref="categoriesRouter"/>
                 <entry key="/definitions" value-ref="definitionsRouter"/>
+                <entry key="/profiles" value-ref="profilesRouter"/>
                 <entry key="/search" value-ref="searchRouter"/>
                 <entry key="/tags" value-ref="tagsRouter"/>
                 <entry key="/units" value-ref="unitsRouter"/>
@@ -61,6 +62,7 @@
         </property>
     </bean>
 
+    <!-- Categories -->
     <bean id="categoriesRouter" class="com.amee.restlet.version.VersionSpringRouter">
         <constructor-arg ref="platformApplication"/>
         <property name="defaultMatchingMode" ref="modeStartsWith"/>
@@ -361,6 +363,7 @@
         </property>
     </bean>
 
+    <!-- Definitions -->
     <bean id="definitionsRouter" class="com.amee.restlet.version.VersionSpringRouter">
         <constructor-arg ref="platformApplication"/>
         <property name="defaultMatchingMode" ref="modeStartsWith"/>
@@ -673,8 +676,94 @@
         </property>
     </bean>
 
-    <!-- Search. -->
+    <!-- Profiles -->
+    <bean id="profilesRouter" class="com.amee.restlet.version.VersionSpringRouter">
+        <constructor-arg ref="platformApplication"/>
+        <property name="defaultMatchingMode" ref="modeStartsWith"/>
+        <property name="defaultMatchQuery" value="false"/>
+        <property name="attachments">
+            <map>
+                <entry key="">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="profilesResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
+                <entry key="/{profileIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="profileResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
 
+    <bean id="profilesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPost" value="true"/>
+        <property name="allowPut" value="false"/>
+        <property name="lastSegment" value="profiles"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.profile.ProfilesResource$Builder"/>
+            </bean>
+        </property>
+        <!--<property name="acceptors">-->
+            <!--<map>-->
+                <!--<entry key="application/x-www-form-urlencoded">-->
+                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+                        <!--<property name="target"-->
+                                  <!--value="com.amee.platform.resource.profile.ProfilesResource$FormAcceptor"/>-->
+                    <!--</bean>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="profileResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowDelete" value="true"/>
+        <property name="allowPut" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>profileIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.profile.ProfileResource$Builder"/>
+            </bean>
+        </property>
+        <!--<property name="acceptors">-->
+            <!--<map>-->
+                <!--<entry key="application/x-www-form-urlencoded">-->
+                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+                        <!--<property name="target"-->
+                                  <!--value="com.amee.platform.resource.tag.TagResource$FormAcceptor"/>-->
+                    <!--</bean>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+        <!--<property name="remover">-->
+            <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
+                <!--<property name="target"-->
+                          <!--value="com.amee.platform.resource.tag.TagResource$Remover"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+    </bean>
+
+    <!-- Search. -->
     <bean id="searchRouter" class="com.amee.restlet.version.VersionSpringRouter">
         <constructor-arg ref="platformApplication"/>
         <property name="defaultMatchingMode" ref="modeStartsWith"/>
@@ -710,7 +799,6 @@
     </bean>
 
     <!-- Tags. -->
-
     <bean id="tagsRouter" class="com.amee.restlet.version.VersionSpringRouter">
         <constructor-arg ref="platformApplication"/>
         <property name="defaultMatchingMode" ref="modeStartsWith"/>
@@ -800,7 +888,6 @@
     </bean>
 
     <!-- Units. -->
-
     <bean id="unitsRouter" class="com.amee.restlet.version.VersionSpringRouter">
         <constructor-arg ref="platformApplication"/>
         <property name="defaultMatchingMode" ref="modeStartsWith"/>
