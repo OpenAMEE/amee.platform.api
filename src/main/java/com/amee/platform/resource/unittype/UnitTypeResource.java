@@ -18,8 +18,6 @@ public interface UnitTypeResource {
 
     public static interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newUnitType(AMEEUnitType unitType);
 
         public void addBasic();

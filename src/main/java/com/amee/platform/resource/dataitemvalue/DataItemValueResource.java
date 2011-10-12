@@ -19,8 +19,6 @@ public interface DataItemValueResource {
 
     public static interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newDataItemValue(BaseDataItemValue dataItemValue);
 
         public void addBasic();
