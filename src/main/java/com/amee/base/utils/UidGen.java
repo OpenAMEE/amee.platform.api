@@ -11,6 +11,8 @@ import java.util.Random;
  * Most usages of UidGen are via INSTANCE_12 which provides for simple UIDs in the
  * range  000000000000 to ZZZZZZZZZZZZ. It's possible to create UidGens for other forms of UIDs with varying
  * separators, parts, radix and range.
+ *
+ * See https://jira.amee.com/browse/PL-3303 for an analysis of collision probability.
  */
 public class UidGen implements Serializable {
 
