@@ -226,6 +226,27 @@ public class AlgorithmRunnerTest {
         algorithmRunner.evaluate(mockAlgorithm, values);
     }
 
+    /**
+     * One return value could not be calculated.
+     */
+    @Test
+    public void emptyReturnValues() throws Exception {
+        StringBuilder content = new StringBuilder();
+        content.append("returnValues.putValue('CO2', 'kg', 'month', 5.43);");
+        content.append("returnValues.putEmptyValue('CH4');");
+        content.append("returnValues.setDefaultType('CO2');");
+        content.append("returnValues.addNote('error', 'CH4 value could not be calculated.');");
+        final String algorithmContent = content.toString();
+        stubGetCompiledScript(algorithmContent);
+
+        Map<String, Object> values = new HashMap<String, Object>();
+
+        ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
+        assertEquals("Should have 2 return values", 2, result.getReturnValues().size());
+        assertEquals("Should have 1 error note", 1, result.getNotes().size());
+        assertNull("Should have an empty value for CH4", result.getReturnValues().get("CH4").getValue());
+    } 
+
     private void stubGetCompiledScript(final String AlgorithmContent) throws ScriptException {
         when(mockAlgorithm.getCompiledScript(any(ScriptEngine.class))).thenAnswer(new Answer<CompiledScript>() {
             @Override

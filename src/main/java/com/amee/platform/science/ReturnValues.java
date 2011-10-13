@@ -46,6 +46,25 @@ public class ReturnValues {
     }
 
     /**
+     * Add an empty amount to the return values.
+     * This should be used when we cannot calculate a value for a certain type.
+     *
+     * Some code duplication here. We don't delegate to the double putValue method here because we need to use
+     * a primitive double there rather than Double.
+     *
+     * @param type the GHG type to add, eg 'CH4'.
+     */
+    public void putEmptyValue(String type) {
+        ReturnValue returnValue = new ReturnValue(type, null, null, null);
+        returnValues.put(type, returnValue);
+
+        // We make the first added amount the default.
+        if (returnValues.size() == 1) {
+            setDefaultType(type);
+        }
+    }
+
+    /**
      * Mark the given GHG type as the default.
      *
      * @param type the type to be marked as default.
