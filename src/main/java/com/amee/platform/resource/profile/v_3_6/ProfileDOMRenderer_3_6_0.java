@@ -33,7 +33,7 @@ public class ProfileDOMRenderer_3_6_0 implements ProfileResource.Renderer {
     public void newProfile(Profile profile) {
         this.profile = profile;
         profileElem = new Element("Profile");
-        if (profileElem != null) {
+        if (rootElem != null) {
             rootElem.addContent(profileElem);
         }
     }
@@ -52,7 +52,7 @@ public class ProfileDOMRenderer_3_6_0 implements ProfileResource.Renderer {
 
     @Override
     public void startCategories() {
-        if (rootElem != null) {
+        if (profileElem != null) {
             categoriesElem = new Element("Categories");
             profileElem.addContent(categoriesElem);
         }

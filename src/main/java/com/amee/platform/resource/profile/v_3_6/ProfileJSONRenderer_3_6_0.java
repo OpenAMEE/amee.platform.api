@@ -55,9 +55,9 @@ public class ProfileJSONRenderer_3_6_0 implements ProfileResource.Renderer {
 
     @Override
     public void startCategories() {
-        if (rootObj != null) {
+        if (profileObj != null) {
             categoriesArr = new JSONArray();
-            ResponseHelper.put(rootObj, "categories", categoriesArr);
+            ResponseHelper.put(profileObj, "categories", categoriesArr);
         }
     }
 
@@ -68,6 +68,7 @@ public class ProfileJSONRenderer_3_6_0 implements ProfileResource.Renderer {
             ResponseHelper.put(categoryObj, "uid", category.getUid());
             ResponseHelper.put(categoryObj, "name", category.getName());
             ResponseHelper.put(categoryObj, "wikiName", category.getWikiName());
+            categoriesArr.put(categoryObj);
         }
     }
 
