@@ -178,6 +178,13 @@ class ProfileIT extends BaseApiTest {
      *
      * Profiles GET requests support the same matrix parameters as GETs for a single Profile.
      *
+     * Profiles GET requests support the following query parameters to filter the results.
+     *
+     * <ul>
+     *     <li>resultStart - Zero-based starting index offset to support result-set 'pagination'. Defaults to 0.
+     *     <li>resultLimit - Limit the number of entries in the result-set. Defaults to 50 there is no max.
+     * </ul>
+     *
      */
     @Test
     void getAllProfiles() {
