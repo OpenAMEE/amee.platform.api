@@ -731,7 +731,7 @@
     <bean id="profileResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
         <property name="modifiable" value="true"/>
         <property name="allowDelete" value="true"/>
-        <property name="allowPut" value="true"/>
+        <property name="allowPut" value="false"/>
         <property name="allowPost" value="false"/>
         <property name="attributeNames">
             <set>
@@ -745,22 +745,12 @@
                           value="com.amee.platform.resource.profile.ProfileResource$Builder"/>
             </bean>
         </property>
-        <!--<property name="acceptors">-->
-            <!--<map>-->
-                <!--<entry key="application/x-www-form-urlencoded">-->
-                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
-                        <!--<property name="target"-->
-                                  <!--value="com.amee.platform.resource.tag.TagResource$FormAcceptor"/>-->
-                    <!--</bean>-->
-                <!--</entry>-->
-            <!--</map>-->
-        <!--</property>-->
-        <!--<property name="remover">-->
-            <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
-                <!--<property name="target"-->
-                          <!--value="com.amee.platform.resource.tag.TagResource$Remover"/>-->
-            <!--</bean>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.profile.ProfileResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Search. -->
