@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 @Since("3.6.0")
-public class ProfilesJSONRenderer implements ProfilesResource.Renderer {
+public class ProfilesJSONRenderer_3_6_0 implements ProfilesResource.Renderer {
 
     protected JSONObject rootObj;
     protected JSONArray profilesArr;
@@ -40,6 +40,11 @@ public class ProfilesJSONRenderer implements ProfilesResource.Renderer {
     }
 
     @Override
+    public void setTruncated(boolean truncated) {
+        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
+    }
+
+    @Override
     public String getMediaType() {
         return "application/json";
     }
@@ -47,10 +52,5 @@ public class ProfilesJSONRenderer implements ProfilesResource.Renderer {
     @Override
     public JSONObject getObject() {
         return rootObj;
-    }
-
-    @Override
-    public void setTruncated(boolean truncated) {
-        // TODO
     }
 }

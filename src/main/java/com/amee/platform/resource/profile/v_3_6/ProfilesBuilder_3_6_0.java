@@ -1,5 +1,6 @@
 package com.amee.platform.resource.profile.v_3_6;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -33,16 +34,28 @@ public class ProfilesBuilder_3_6_0 implements ProfilesResource.Builder {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Object handle(RequestWrapper requestWrapper) {
 
-        // Authorisation? We only get the current user's profiles so should need authorisation here.
-        // We will for a single profile?
-
         // Start Renderer
         ProfilesResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
 
         // Add Profiles
+        int resultStart;
+        int resultLimit;
+        if (requestWrapper.getQueryParameters().containsKey("resultStart")) {
+            resultStart = Integer.parseInt(requestWrapper.getQueryParameters().get("resultStart"));
+        } else {
+            resultStart = 0;
+        }
+        if (requestWrapper.getQueryParameters().containsKey("resultLimit")) {
+            resultLimit = Integer.parseInt(requestWrapper.getQueryParameters().get("resultLimit"));
+        } else {
+            resultLimit = 0;
+        }
+        ResultsWrapper<Profile> profiles = profileService.getProfilesByUserUid(
+            requestWrapper.getAttributes().get("activeUserUid"), resultStart, resultLimit);
+        renderer.setTruncated(profiles.isTruncated());
         ProfileResource.Builder profileBuilder = getProfileBuilder(requestWrapper);
-        for (Profile profile : profileService.getProfilesByUserUid(requestWrapper.getAttributes().get("activeUserUid"))) {
+        for (Profile profile : profiles.getResults()) {
             profileBuilder.handle(requestWrapper, profile);
             renderer.newProfile(profileBuilder.getRenderer(requestWrapper));
         }

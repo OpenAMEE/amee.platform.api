@@ -34,6 +34,11 @@ public class ProfilesDOMRenderer_3_6_0 implements ProfilesResource.Renderer {
     }
 
     @Override
+    public void setTruncated(boolean truncated) {
+        profilesElem.setAttribute("truncated", truncated + "");
+    }
+
+    @Override
     public String getMediaType() {
         return "application/xml";
     }
@@ -41,11 +46,5 @@ public class ProfilesDOMRenderer_3_6_0 implements ProfilesResource.Renderer {
     @Override
     public Object getObject() {
         return new Document(rootElem);
-    }
-
-    @Override
-    public void setTruncated(boolean truncated) {
-        
-        // TODO
     }
 }
