@@ -60,7 +60,9 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
             if (entry.getKey().equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
-            amountElem.setText(Double.toString(entry.getValue().getValue()));
+            if (entry.getValue().getValue() != null) {
+                amountElem.setText(Double.toString(entry.getValue().getValue()));
+            }
             returnValuesElem.addContent(amountElem);
         }
         if (returnValuesElem.getChildren().size() > 0) {
