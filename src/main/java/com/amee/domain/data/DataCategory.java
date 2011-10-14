@@ -212,7 +212,7 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
 
     @Override
     public String getName() {
-        return getLocaleService().getLocaleNameValue(this, name);
+        return name;
     }
 
     public void setName(String name) {

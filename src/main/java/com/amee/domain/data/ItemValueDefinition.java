@@ -167,7 +167,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     }
 
     public String getName() {
-        return getLocaleService().getLocaleNameValue(this, name);
+        return name;
     }
 
     @Override

@@ -181,7 +181,7 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
     }
 
     public String getName() {
-        return getLocaleService().getLocaleNameValue(this, name);
+        return name;
     }
 
     @Override

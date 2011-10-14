@@ -59,11 +59,7 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
     }
 
     public String getValue() {
-        if (getItemValueDefinition().isText() && !LocaleHolder.isDefaultLocale()) {
-            return getLocaleService().getLocaleNameValue(this, value);
-        } else {
-            return value;
-        }
+        return value;
     }
 
     @Override
