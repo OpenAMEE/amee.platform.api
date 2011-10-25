@@ -395,7 +395,8 @@ public class DataSeries {
             log.debug("integrate() Integrating, time range: " + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length: " + dataPoints.size());
         }
 
-        if (seriesTimeInMillis == null) {
+        // If there is no defined time period or, in the case of data (non-profile) calculations, just an instant in time.
+        if (seriesTimeInMillis == null || (seriesTimeInMillis == 0 && dataPoints.size() == 1)) {
             integral = dataPoints.last().getValue().getValue();
         } else if (seriesTimeInMillis > 0) {
             DataPoint[] pointArray = dataPoints.toArray(new DataPoint[dataPoints.size()]);
