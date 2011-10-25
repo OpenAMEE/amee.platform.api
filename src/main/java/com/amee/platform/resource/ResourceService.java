@@ -13,6 +13,10 @@ import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
 
+/**
+ * A service to retrieve resources based on the request.
+ * These will usually be retrieved from the database using request attributes.
+ */
 public interface ResourceService {
 
     public DataCategory getDataCategory(RequestWrapper requestWrapper);
