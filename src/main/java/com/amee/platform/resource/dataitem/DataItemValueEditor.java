@@ -11,9 +11,6 @@ import java.beans.PropertyEditorSupport;
  */
 public class DataItemValueEditor extends PropertyEditorSupport {
 
-    @Autowired
-    private DataService dataService;
-
     private ItemValueDefinition itemValueDefinition;
 
     public DataItemValueEditor() {

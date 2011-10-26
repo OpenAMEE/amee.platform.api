@@ -23,9 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlgorithmsBuilder_3_4_0 implements AlgorithmsResource.Builder {
 
     @Autowired
-    private DefinitionService definitionService;
-
-    @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired

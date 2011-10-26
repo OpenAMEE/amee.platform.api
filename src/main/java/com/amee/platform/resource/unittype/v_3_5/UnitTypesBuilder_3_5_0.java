@@ -30,9 +30,6 @@ public class UnitTypesBuilder_3_5_0 implements UnitTypesResource.Builder {
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
 
-    @Autowired
-    private ResourceService resourceService;
-
     private UnitTypesResource.Renderer unitTypesRenderer;
 
     @Override

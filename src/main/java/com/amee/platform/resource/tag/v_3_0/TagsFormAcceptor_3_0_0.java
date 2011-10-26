@@ -35,9 +35,6 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
     private InvalidationService invalidationService;
 
     @Autowired
-    private DataService dataService;
-
-    @Autowired
     private TagService tagService;
 
     @Autowired

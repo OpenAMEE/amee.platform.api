@@ -39,9 +39,6 @@ import java.util.Map;
 public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationResource.Builder {
 
     @Autowired
-    private DataService dataService;
-
-    @Autowired
     private ResourceService resourceService;
 
     @Autowired

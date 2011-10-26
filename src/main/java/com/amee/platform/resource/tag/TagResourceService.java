@@ -16,9 +16,6 @@ public class TagResourceService {
     @Autowired
     private DataService dataService;
 
-    @Autowired
-    private TagService tagService;
-
     /**
      * Get the entity that Tags should belong to.
      * <p/>
