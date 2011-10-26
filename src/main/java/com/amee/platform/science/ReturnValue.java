@@ -65,7 +65,7 @@ public class ReturnValue {
      * @return a CO2Amount with this ReturnValue's values.
      */
     public CO2Amount toAmount() {
-        if (value == 0.0 || value == null) {
+        if (value == null || value.equals(0.0)) {
             return CO2Amount.ZERO;
         }
         return newAmount(unit, perUnit, value);
