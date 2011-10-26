@@ -4,9 +4,9 @@ import org.restlet.data.Status;
 
 public interface Fault {
 
-    public String getMessage();
+    String getMessage();
 
-    public Status getStatus();
+    Status getStatus();
 
-    public String getCode();
+    String getCode();
 }
