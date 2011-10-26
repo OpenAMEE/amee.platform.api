@@ -6,14 +6,14 @@ import com.amee.base.resource.ResourceRenderer;
 
 public interface ReturnValueDefinitionsResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newReturnValueDefinition(ReturnValueDefinitionResource.Renderer renderer);
+        void newReturnValueDefinition(ReturnValueDefinitionResource.Renderer renderer);
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
     }
 }

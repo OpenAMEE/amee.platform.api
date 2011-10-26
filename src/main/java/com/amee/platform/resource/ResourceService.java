@@ -19,31 +19,31 @@ import com.amee.domain.unit.AMEEUnitType;
  */
 public interface ResourceService {
 
-    public DataCategory getDataCategory(RequestWrapper requestWrapper);
+    DataCategory getDataCategory(RequestWrapper requestWrapper);
 
-    public DataCategory getDataCategory(RequestWrapper requestWrapper, AMEEStatus status);
+    DataCategory getDataCategory(RequestWrapper requestWrapper, AMEEStatus status);
 
-    public DataCategory getDataCategoryWhichHasItemDefinition(RequestWrapper requestWrapper);
+    DataCategory getDataCategoryWhichHasItemDefinition(RequestWrapper requestWrapper);
 
-    public DataItem getDataItem(RequestWrapper requestWrapper, DataCategory dataCategory);
+    DataItem getDataItem(RequestWrapper requestWrapper, DataCategory dataCategory);
 
-    public BaseDataItemValue getDataItemValue(RequestWrapper requestWrapper, DataItem dataItem, ItemValueDefinition itemValueDefinition);
+    BaseDataItemValue getDataItemValue(RequestWrapper requestWrapper, DataItem dataItem, ItemValueDefinition itemValueDefinition);
 
-    public ItemDefinition getItemDefinition(RequestWrapper requestWrapper);
+    ItemDefinition getItemDefinition(RequestWrapper requestWrapper);
 
-    public ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
+    ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
 
-    public ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, DataItem dataItem);
+    ItemValueDefinition getItemValueDefinition(RequestWrapper requestWrapper, DataItem dataItem);
 
-    public ReturnValueDefinition getReturnValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
+    ReturnValueDefinition getReturnValueDefinition(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
 
-    public Algorithm getAlgorithm(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
+    Algorithm getAlgorithm(RequestWrapper requestWrapper, ItemDefinition itemDefinition);
 
-    public Tag getTag(RequestWrapper requestWrapper);
+    Tag getTag(RequestWrapper requestWrapper);
 
-    public AMEEUnitType getUnitType(RequestWrapper requestWrapper);
+    AMEEUnitType getUnitType(RequestWrapper requestWrapper);
 
-    public AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType);
+    AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType);
 
-    public AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType);
+    AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType);
 }

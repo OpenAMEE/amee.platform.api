@@ -11,7 +11,7 @@ public interface AlgorithmsResource {
 
     interface Renderer extends ResourceRenderer {
 
-        public void newAlgorithm(AlgorithmResource.Renderer renderer);
+        void newAlgorithm(AlgorithmResource.Renderer renderer);
     }
 
     interface FormAcceptor extends ResourceAcceptor {

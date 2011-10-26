@@ -5,25 +5,25 @@ import com.amee.domain.tag.Tag;
 
 public interface TagResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, Tag tag);
+        void handle(RequestWrapper requestWrapper, Tag tag);
 
-        public TagResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        TagResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newTag(Tag tag);
+        void newTag(Tag tag);
 
-        public void addBasic();
+        void addBasic();
 
-        public Object getObject();
+        Object getObject();
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
     }
 
-    public static interface Remover extends ResourceRemover {
+    interface Remover extends ResourceRemover {
     }
 }

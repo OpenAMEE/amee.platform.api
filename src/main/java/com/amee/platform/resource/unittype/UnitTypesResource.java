@@ -8,22 +8,22 @@ import com.amee.domain.unit.AMEEUnitType;
 
 public interface UnitTypesResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
-        public UnitTypesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        UnitTypesResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newUnitType(UnitTypeResource.Renderer renderer);
+        void newUnitType(UnitTypeResource.Renderer renderer);
 
-        public Object getObject();
+        Object getObject();
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper, AMEEUnitType unitType);
+        Object handle(RequestWrapper requestWrapper, AMEEUnitType unitType);
 
-        public UnitTypeResource.UnitTypeValidator getValidator(RequestWrapper requestWrapper);
+        UnitTypeResource.UnitTypeValidator getValidator(RequestWrapper requestWrapper);
     }
 }

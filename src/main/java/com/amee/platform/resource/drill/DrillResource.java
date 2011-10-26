@@ -8,19 +8,19 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public interface DrillResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+        final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
-        public void startSelections();
+        void startSelections();
 
-        public void newSelection(Choice selection);
+        void newSelection(Choice selection);
 
-        public void startChoices(String name);
+        void startChoices(String name);
 
-        public void newChoice(Choice choice);
+        void newChoice(Choice choice);
     }
 }
