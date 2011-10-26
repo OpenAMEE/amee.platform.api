@@ -2,9 +2,9 @@ package com.amee.domain.cache;
 
 public interface CacheableFactory {
 
-    public String getKey();
+    String getKey();
 
-    public String getCacheName();
+    String getCacheName();
 
-    public Object create();
+    Object create();
 }

@@ -6,5 +6,5 @@ import java.util.Date;
 
 public interface HistoryValue extends ExternalHistoryValue {
 
-    public void setStartDate(Date startDate);
+    void setStartDate(Date startDate);
 }

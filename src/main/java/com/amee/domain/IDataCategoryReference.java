@@ -2,13 +2,13 @@ package com.amee.domain;
 
 public interface IDataCategoryReference extends IAMEEEntityReference {
 
-    public String getName();
+    String getName();
 
-    public String getPath();
+    String getPath();
 
-    public String getFullPath();
+    String getFullPath();
 
-    public String getWikiName();
+    String getWikiName();
 
-    public boolean isItemDefinitionPresent();
+    boolean isItemDefinitionPresent();
 }
