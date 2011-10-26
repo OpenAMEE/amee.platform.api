@@ -2,23 +2,23 @@ package com.amee.platform.science;
 
 public interface ExternalNumberValue {
 
-    public Double getValueAsDouble();
+    Double getValueAsDouble();
 
-    public AmountUnit getUnit();
+    AmountUnit getUnit();
 
-    public AmountPerUnit getPerUnit();
+    AmountPerUnit getPerUnit();
 
-    public AmountUnit getCanonicalUnit();
+    AmountUnit getCanonicalUnit();
 
-    public AmountPerUnit getCanonicalPerUnit();
+    AmountPerUnit getCanonicalPerUnit();
 
-    public AmountCompoundUnit getCompoundUnit();
+    AmountCompoundUnit getCompoundUnit();
 
-    public AmountCompoundUnit getCanonicalCompoundUnit();
+    AmountCompoundUnit getCanonicalCompoundUnit();
 
-    public boolean hasUnit();
+    boolean hasUnit();
 
-    public boolean hasPerUnit();
+    boolean hasPerUnit();
 
-    public String getLabel();
+    String getLabel();
 }

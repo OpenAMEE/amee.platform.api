@@ -2,9 +2,9 @@ package com.amee.platform.science;
 
 public interface ExternalGenericValue {
 
-    public boolean isDouble();
+    boolean isDouble();
 
-    public boolean isConvertible();
+    boolean isConvertible();
 
-    public String getLabel();
+    String getLabel();
 }

@@ -6,9 +6,9 @@ import javax.script.ScriptException;
 
 public interface Algorithm {
 
-    public String getLabel();
+    String getLabel();
 
-    public String getContent();
+    String getContent();
 
-    public CompiledScript getCompiledScript(ScriptEngine engine) throws ScriptException;
+    CompiledScript getCompiledScript(ScriptEngine engine) throws ScriptException;
 }
