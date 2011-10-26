@@ -130,13 +130,13 @@ public class Cell implements Serializable, Comparable {
                 Integer a = null;
                 Integer b = null;
                 try {
-                    a = new Integer(getValueAsString());
+                    a = Integer.valueOf(getValueAsString());
                 } catch (NumberFormatException e) {
                     // swallow, push non integer to the end of list
                     result = 1;
                 }
                 try {
-                    b = new Integer(other.getValueAsString());
+                    b = Integer.valueOf(other.getValueAsString());
                 } catch (NumberFormatException e) {
                     // swallow, push non integer to the end of list
                     result = -1;
@@ -287,7 +287,7 @@ public class Cell implements Serializable, Comparable {
             return (Integer) value;
         } else {
             try {
-                return new Integer(value.toString());
+                return Integer.valueOf(value.toString());
             } catch (NumberFormatException e) {
                 return 0;
             }
