@@ -93,10 +93,16 @@ public class UidGen implements Serializable {
      * @return true if the supplied UID matches the rules
      */
     public boolean isValid(String uid) {
-        if (uid == null) return false;
-        if (uid.length() != (parts * partSize)) return false;
+        if (uid == null) {
+            return false;
+        }
+        if (uid.length() != (parts * partSize)) {
+            return false;
+        }
         for (int i = 0; i < uid.length(); i++) {
-            if (Character.digit(uid.charAt(i), radix) == -1) return false;
+            if (Character.digit(uid.charAt(i), radix) == -1) {
+                return false;
+            }
         }
         return true;
     }

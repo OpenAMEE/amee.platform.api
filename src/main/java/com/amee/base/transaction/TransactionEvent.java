@@ -12,7 +12,7 @@ public class TransactionEvent extends ApplicationEvent {
 
     public TransactionEvent(Object source, TransactionEventType type) {
         super(source);
-        setType(type);
+        this.type = type;
     }
 
     public TransactionEventType getType() {
