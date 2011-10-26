@@ -33,9 +33,8 @@ public class Sheet implements Serializable {
             JSONObject rowObj = new JSONObject();
             rowObj.put("label", row.getLabel());
             Map<Column, Cell> cells = row.getCells();
-            for (Column col : cells.keySet()) {
-                Cell cell = cells.get(col);
-                rowObj.put(col.getName(), cell.getValueAsString());
+            for (Map.Entry<Column, Cell> entry : cells.entrySet()) {
+                rowObj.put(entry.getKey().getName(), entry.getValue().getValueAsString());
             }
             rowsArr.put(rowObj);
         }
@@ -48,15 +47,15 @@ public class Sheet implements Serializable {
         for (Row row : getRows()) {
             Element rowElement = document.createElement(row.getLabel());
             Map<Column, Cell> cells = row.getCells();
-            for (Column col : cells.keySet()) {
-                Cell cell = cells.get(col);
+            for (Map.Entry<Column, Cell> entry : cells.entrySet()) {
+                Cell cell = entry.getValue();
                 if (genericView) {
                     rowElement.appendChild(cell.getElement(document));
                 } else {
-                    if (col.isAttribute()) {
-                        rowElement.setAttribute(col.getName(), cell.getValueAsString());
+                    if (entry.getKey().isAttribute()) {
+                        rowElement.setAttribute(entry.getKey().getName(), cell.getValueAsString());
                     } else {
-                        Element columnElement = document.createElement(col.getName());
+                        Element columnElement = document.createElement(entry.getKey().getName());
                         columnElement.setTextContent(cell.getValueAsString());
                         rowElement.appendChild(columnElement);
                     }
@@ -205,11 +204,11 @@ public class Sheet implements Serializable {
         Map<String, Column> newColumns = sheet.getColumnsMap();
         Row newRow = new Row(sheet, row.getUid(), row.getLabel());
         Map<Column, Cell> cells = row.getCells();
-        for (Column column : cells.keySet()) {
-            Cell cell = cells.get(column);
+        for (Map.Entry<Column, Cell> entry : cells.entrySet()) {
+            Cell cell = entry.getValue();
             if (cell != null) {
                 new Cell(
-                        newColumns.get(column.getName().toLowerCase()),
+                        newColumns.get(entry.getKey().getName().toLowerCase()),
                         newRow,
                         cell.getValue(),
                         cell.getUid(),
