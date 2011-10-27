@@ -32,8 +32,6 @@ public interface DataItemValueResource {
         public void addAudit();
 
         public void addItemValueDefinition(ItemValueDefinition itemValueDefinition);
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

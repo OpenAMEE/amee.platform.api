@@ -48,8 +48,6 @@ public interface ItemValueDefinitionResource {
         public void addUnits();
 
         public void addVersions();
-
-        public Object getObject();
     }
 
     public static interface DOMAcceptor extends ResourceAcceptor {

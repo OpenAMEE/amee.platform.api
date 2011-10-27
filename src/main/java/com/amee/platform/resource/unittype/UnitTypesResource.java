@@ -16,8 +16,6 @@ public interface UnitTypesResource {
     interface Renderer extends ResourceRenderer {
 
         void newUnitType(UnitTypeResource.Renderer renderer);
-
-        Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

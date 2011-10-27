@@ -33,8 +33,6 @@ public interface UnitResource {
         public void startAlternativeUnits();
 
         public void newAlternativeUnit(AMEEUnit u);
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

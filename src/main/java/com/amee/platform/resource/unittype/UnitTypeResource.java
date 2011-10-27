@@ -23,8 +23,6 @@ public interface UnitTypeResource {
         public void addBasic();
 
         public void addAudit();
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

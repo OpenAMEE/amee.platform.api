@@ -31,8 +31,6 @@ public interface ItemDefinitionResource {
         public void addUsages();
 
         public void addAlgorithms();
-
-        public Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

@@ -47,9 +47,6 @@ public interface DataItemResource {
         void startValues();
 
         void newValue(BaseItemValue itemValue);
-
-        // TODO: remove this
-        Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

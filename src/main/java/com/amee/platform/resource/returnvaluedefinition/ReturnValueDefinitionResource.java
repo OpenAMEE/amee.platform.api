@@ -35,8 +35,6 @@ public interface ReturnValueDefinitionResource {
         public void addFlags();
 
         public void addAudit();
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

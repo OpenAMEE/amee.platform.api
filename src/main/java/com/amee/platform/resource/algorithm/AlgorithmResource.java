@@ -30,8 +30,6 @@ public interface AlgorithmResource {
         public void addContent();
 
         public void addItemDefinition(ItemDefinition itemDefinition);
-
-        public Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

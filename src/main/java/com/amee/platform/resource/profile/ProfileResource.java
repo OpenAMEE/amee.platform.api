@@ -26,8 +26,6 @@ public interface ProfileResource {
         public void startCategories();
 
         public void newCategory(DataCategory category);
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {
