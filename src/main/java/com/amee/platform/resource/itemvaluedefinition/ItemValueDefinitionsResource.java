@@ -10,7 +10,7 @@ public interface ItemValueDefinitionsResource {
 
     interface Renderer extends ResourceRenderer {
 
-        public void newItemValueDefinition(ItemValueDefinitionResource.Renderer renderer);
+        void newItemValueDefinition(ItemValueDefinitionResource.Renderer renderer);
     }
 
     interface FormAcceptor extends ResourceAcceptor {}

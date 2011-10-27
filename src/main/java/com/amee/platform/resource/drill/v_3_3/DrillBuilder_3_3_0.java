@@ -27,9 +27,6 @@ import java.util.List;
 public class DrillBuilder_3_3_0 implements DrillResource.Builder {
 
     @Autowired
-    private DataService dataService;
-
-    @Autowired
     private SearchDrillDownService searchDrillDownService;
 
     @Autowired

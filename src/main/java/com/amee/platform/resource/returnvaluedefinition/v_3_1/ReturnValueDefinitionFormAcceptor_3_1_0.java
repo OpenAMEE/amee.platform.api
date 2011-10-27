@@ -43,7 +43,7 @@ public class ReturnValueDefinitionFormAcceptor_3_1_0 implements ReturnValueDefin
         // Get ItemDefinition.
         ItemDefinition itemDefinition = resourceService.getItemDefinition(requestWrapper);
 
-        // Get ItemValueDefinition.
+        // Get ReturnValueDefinition.
         ReturnValueDefinition returnValueDefinition = resourceService.getReturnValueDefinition(requestWrapper, itemDefinition);
 
         // Authorized?

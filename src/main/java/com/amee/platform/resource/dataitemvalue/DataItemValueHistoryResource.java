@@ -16,7 +16,7 @@ public interface DataItemValueHistoryResource {
     /**
      * A {@link ResourceBuilder} implementation for this resource.
      */
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
         /**
          * Handle a request.
@@ -24,7 +24,7 @@ public interface DataItemValueHistoryResource {
          * @param requestWrapper the current {@link RequestWrapper}
          * @param filter         the {@link com.amee.domain.DataItemValuesFilter} for this request
          */
-        public void handle(RequestWrapper requestWrapper, DataItemValuesFilter filter);
+        void handle(RequestWrapper requestWrapper, DataItemValuesFilter filter);
 
         /**
          * Get a {@link DataItemValuesResource.Renderer} for this {@link ResourceBuilder}.
@@ -34,7 +34,7 @@ public interface DataItemValueHistoryResource {
          * @param requestWrapper the current {@link RequestWrapper}
          * @return a {@link DataItemValuesResource.Renderer}
          */
-        public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
 
         /**
          * Get a {@link DataItemValueResource.Builder} for this {@link ResourceBuilder}.
@@ -44,7 +44,7 @@ public interface DataItemValueHistoryResource {
          * @param requestWrapper the current {@link RequestWrapper}
          * @return a {@link DataItemValueResource.Builder}
          */
-        public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
+        DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
 
         /**
          * Get a {@link DataItemValuesResource.DataItemValuesFilterValidator} for this {@link ResourceBuilder}.
@@ -54,13 +54,13 @@ public interface DataItemValueHistoryResource {
          * @param requestWrapper the current {@link RequestWrapper}
          * @return a {@link DataItemValuesResource.DataItemValuesFilterValidator}
          */
-        public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     /**
      * A {@link ResourceAcceptor} implementation for this resource. Handles POSTing item values to a {@link DataItem}.
      */
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
 
         /**
          * Handle POSTing of an item value to a {@link DataItem} history.
@@ -69,6 +69,6 @@ public interface DataItemValueHistoryResource {
          * @return the response object
          * @throws ValidationException encapsulates {@link com.amee.base.resource.ValidationResult}s
          */
-        public Object handle(RequestWrapper requestWrapper) throws ValidationException;
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }

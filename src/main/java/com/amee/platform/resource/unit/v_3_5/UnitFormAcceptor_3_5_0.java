@@ -28,9 +28,6 @@ public class UnitFormAcceptor_3_5_0 implements UnitResource.FormAcceptor {
     private final Log log = LogFactory.getLog(getClass());
 
     @Autowired
-    private UnitService unitService;
-
-    @Autowired
     private ResourceService resourceService;
 
     @Autowired

@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 @Since("3.0.0")
 public class TagsJSONRenderer_3_0_0 extends TagsJSONRenderer_3_2_0 {
 
-    private JSONObject rootObj;
-
     @Override
     public void newTag(Tag tag) {
         JSONObject tagObj = new JSONObject();

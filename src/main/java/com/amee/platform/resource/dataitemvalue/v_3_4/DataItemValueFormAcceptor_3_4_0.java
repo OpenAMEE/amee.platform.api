@@ -37,9 +37,6 @@ public class DataItemValueFormAcceptor_3_4_0 implements DataItemValueResource.Fo
     private ResourceService resourceService;
 
     @Autowired
-    private DataItemService dataItemService;
-
-    @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired

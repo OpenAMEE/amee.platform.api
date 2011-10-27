@@ -21,9 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemDefinitionBuilder_3_1_0 implements ItemDefinitionResource.Builder {
 
     @Autowired
-    private DefinitionService definitionService;
-
-    @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
