@@ -8,19 +8,19 @@ import com.amee.domain.profile.Profile;
 
 public interface ProfilesResource {
 
-    public static interface Builder extends ResourceBuilder {
-        public ProfilesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+    interface Builder extends ResourceBuilder {
+        ProfilesResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newProfile(ProfileResource.Renderer renderer);
+        void newProfile(ProfileResource.Renderer renderer);
 
-        public void setTruncated(boolean truncated);
+        void setTruncated(boolean truncated);
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper, Profile profile);
+        Object handle(RequestWrapper requestWrapper, Profile profile);
     }
 }

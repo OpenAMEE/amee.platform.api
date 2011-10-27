@@ -13,62 +13,63 @@ import java.util.Map;
 
 public interface DataItemResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, DataItem dataItem);
+        void handle(RequestWrapper requestWrapper, DataItem dataItem);
 
-        public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
 
-        public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newDataItem(DataItem dataItem);
+        void newDataItem(DataItem dataItem);
 
-        public void addBasic();
+        void addBasic();
 
-        public void addName();
+        void addName();
 
-        public void addLabel();
+        void addLabel();
 
-        public void addPath();
+        void addPath();
 
-        public void addParent();
+        void addParent();
 
-        public void addAudit();
+        void addAudit();
 
-        public void addWikiDoc();
+        void addWikiDoc();
 
-        public void addProvenance();
+        void addProvenance();
 
-        public void addItemDefinition(ItemDefinition id);
+        void addItemDefinition(ItemDefinition id);
 
-        public void startValues();
+        void startValues();
 
-        public void newValue(BaseItemValue itemValue);
+        void newValue(BaseItemValue itemValue);
 
-        public Object getObject();
+        // TODO: remove this
+        Object getObject();
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
     }
 
-    public static interface DataItemValidator {
+    interface DataItemValidator {
 
-        public void initialise();
+        void initialise();
 
-        public boolean isValid(Map<String, String> queryParameters);
+        boolean isValid(Map<String, String> queryParameters);
 
-        public DataItem getObject();
+        DataItem getObject();
 
-        public void setObject(DataItem object);
+        void setObject(DataItem object);
 
-        public ValidationResult getValidationResult();
+        ValidationResult getValidationResult();
 
-        public void setDataItemService(DataItemService dataItemService);
+        void setDataItemService(DataItemService dataItemService);
     }
 
-    public static interface Remover extends ResourceRemover {
+    interface Remover extends ResourceRemover {
     }
 }
