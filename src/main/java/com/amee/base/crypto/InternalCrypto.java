@@ -9,7 +9,7 @@ import java.io.File;
  * <p/>
  * See the {@link BaseCrypto} class for detailed information on cryptography used in this class.
  */
-public abstract class InternalCrypto extends BaseCrypto {
+public class InternalCrypto extends BaseCrypto {
 
     private final static String KEY_FILE = "amee.keyFile";
     private final static String SALT_FILE = "amee.saltFile";
@@ -18,13 +18,20 @@ public abstract class InternalCrypto extends BaseCrypto {
     private static IvParameterSpec iv = null;
 
     /**
+     * Private constructor to prevent direct instantiation.
+     */
+    private InternalCrypto() {
+        throw new AssertionError();
+    }
+    
+    /**
      * Initialise the static properties of this Class from the key and salt files. The key file is identified by
      * the amee.keyFile system property and the salt file by the amee.saltFile system property. See
      * {@link BaseCrypto} for details on how key and salt files should be formed.
      *
      * @throws CryptoException encapsulates various potential cryptography exceptions
      */
-    private synchronized static void initialise() throws CryptoException {
+    private synchronized static void initialise() throws CryptoException {//NOPMD
         if (InternalCrypto.secretKeySpec == null) {
             String keyFileName = System.getProperty(KEY_FILE);
             String saltFileName = System.getProperty(SALT_FILE);

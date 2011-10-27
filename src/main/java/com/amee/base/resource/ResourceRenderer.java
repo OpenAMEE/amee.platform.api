@@ -15,19 +15,19 @@ public interface ResourceRenderer {
     /**
      * Callback to indicate that the renderer implementation can start work.
      */
-    public void start();
+    void start();
 
     /**
      * Callback to indicate that the request succeeded.
      */
-    public void ok();
+    void ok();
 
     /**
      * Return the media-type for the output representation from the renderer.
      *
      * @return the media-type as a string
      */
-    public String getMediaType();
+    String getMediaType();
 
     /**
      * Return the object of the output representation. Typically this will be a {@link org.json.JSONObject} or a
@@ -35,5 +35,5 @@ public interface ResourceRenderer {
      *
      * @return the output representation object
      */
-    public Object getObject();
+    Object getObject();
 }

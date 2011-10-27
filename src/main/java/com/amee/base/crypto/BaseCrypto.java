@@ -19,11 +19,18 @@ import java.security.NoSuchAlgorithmException;
  * Supports encryption with AES using CBC mode and PKCS #5 padding. Strings are encoded into UTF-8 before encryption
  * and decoded after decryption. There are no String length or content limitations.
  * <p/>
- * All methods are static and this class is abstract, no instances are expected.
+ * All methods are static and no instances are expected.
  * <p/>
  * The {@link InternalCrypto} sub-class provides extra utility functions.
  */
-public abstract class BaseCrypto {
+public class BaseCrypto {
+
+    /**
+     * Protected constructor to prevent direct instantiation but allow inheritance.
+     */
+    protected BaseCrypto() {
+        throw new AssertionError();
+    }
 
     public static final int KEY_SIZE = 256;
 

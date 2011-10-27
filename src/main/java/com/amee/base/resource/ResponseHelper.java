@@ -8,7 +8,14 @@ import org.json.JSONObject;
 /**
  * A utility class containing helper methods for producing response representation.
  */
-public abstract class ResponseHelper {
+public class ResponseHelper {
+
+    /**
+     * Private constructor to prevent direct instantiation.
+     */
+    private ResponseHelper() {
+        throw new AssertionError();
+    }
 
     /**
      * Get an 'OK' response representation.
