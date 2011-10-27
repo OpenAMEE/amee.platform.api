@@ -2,15 +2,15 @@ package com.amee.domain.site;
 
 public interface ISite {
 
-    public String getActiveSkinPath();
+    String getActiveSkinPath();
 
-    public boolean isSecureAvailable();
+    boolean isSecureAvailable();
 
-    public boolean isCheckRemoteAddress();
+    boolean isCheckRemoteAddress();
 
-    public String getAuthCookieDomain();
+    String getAuthCookieDomain();
 
-    public Long getMaxAuthDuration();
+    Long getMaxAuthDuration();
 
-    public Long getMaxAuthIdle();
+    Long getMaxAuthIdle();
 }

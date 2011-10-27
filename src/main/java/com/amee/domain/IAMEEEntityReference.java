@@ -12,21 +12,21 @@ public interface IAMEEEntityReference {
      *
      * @return the entity id
      */
-    public Long getEntityId();
+    Long getEntityId();
 
     /**
      * Fetches the UID of the referenced entity.
      *
      * @return entity UID
      */
-    public String getEntityUid();
+    String getEntityUid();
 
     /**
      * Fetches the ObjectTyoe of the referenced entity.
      *
      * @return the ObjectType
      */
-    public ObjectType getObjectType();
+    ObjectType getObjectType();
 
     /**
      * Returns the transient AccessSpecification for this entity. This will only be present if
@@ -34,16 +34,16 @@ public interface IAMEEEntityReference {
      *
      * @return the AccessSpecification for this entity in the current thread
      */
-    public AccessSpecification getAccessSpecification();
+    AccessSpecification getAccessSpecification();
 
     /**
      * Sets the AccessSpecification for this entity.
      *
      * @param accessSpecification for this entity
      */
-    public void setAccessSpecification(AccessSpecification accessSpecification);
+    void setAccessSpecification(AccessSpecification accessSpecification);
 
-    public IAMEEEntity getEntity();
+    IAMEEEntity getEntity();
 
-    public void setEntity(IAMEEEntity entity);
+    void setEntity(IAMEEEntity entity);
 }

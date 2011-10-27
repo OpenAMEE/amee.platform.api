@@ -80,4 +80,14 @@ public class DataCategoryReference extends AMEEEntityReference implements IDataC
     public void setItemDefinitionPresent(boolean itemDefinitionPresent) {
         this.itemDefinitionPresent = itemDefinitionPresent;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
