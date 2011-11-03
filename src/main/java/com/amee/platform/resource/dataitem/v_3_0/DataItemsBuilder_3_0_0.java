@@ -64,7 +64,7 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
                 requestWrapper.getMatrixParameters().containsKey("full") ||
                         requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
                         requestWrapper.getMatrixParameters().containsKey("provenance"));
-        validationHelper.setDataItemFilter(filter);
+        validationHelper.setDataItemsFilter(filter);
 
         // Do validation.
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
