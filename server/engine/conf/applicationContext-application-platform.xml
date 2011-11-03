@@ -695,6 +695,18 @@
                         <property name="since" value="3.6.0"/>
                     </bean>
                 </entry>
+                <entry key="/{profileIdentifier}/items">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="profileItemsResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
+                <!--<entry key="/{profileIdentifier}/items/{itemIdentifier}">-->
+                    <!--<bean class="com.amee.restlet.version.VersionFinder">-->
+                        <!--<lookup-method name="createResource" bean="profileItemResource"/>-->
+                        <!--<property name="since" value="3.6.0"/>-->
+                    <!--</bean>-->
+                <!--</entry>-->
             </map>
         </property>
     </bean>
@@ -751,6 +763,70 @@
                           value="com.amee.platform.resource.profile.ProfileResource$Remover"/>
             </bean>
         </property>
+    </bean>
+
+    <bean id="profileItemsResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowDelete" value="false"/>
+        <property name="allowPost" value="true"/>
+        <property name="allowPut" value="false"/>
+        <property name="lastSegment" value="items"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>profileIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.profileitem.ProfileItemsResource$Builder"/>
+            </bean>
+        </property>
+        <!--<property name="acceptors">-->
+            <!--<map>-->
+                <!--<entry key="application/x-www-form-urlencoded">-->
+                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+                        <!--<property name="target"-->
+                                  <!--value="com.amee.platform.resource.profileitem.ProfileItemsResource$FormAcceptor"/>-->
+                    <!--</bean>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
+
+    <bean id="profileItemResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="true"/>
+        <property name="allowPost" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>profileIdentifier</value>
+                <value>itemIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.profileitem.ProfileItemResource$Builder"/>
+            </bean>
+        </property>
+        <!--<property name="acceptors">-->
+            <!--<map>-->
+                <!--<entry key="application/x-www-form-urlencoded">-->
+                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
+                        <!--<property name="target"-->
+                                  <!--value="com.amee.platform.resource.profileitem.ProfileItemResource$FormAcceptor"/>-->
+                    <!--</bean>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+        <!--<property name="remover">-->
+            <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
+                <!--<property name="target"-->
+                          <!--value="com.amee.platform.resource.profileitem.ProfileItemResource$Remover"/>-->
+            <!--</bean>-->
+        <!--</property>-->
     </bean>
 
     <!-- Search. -->
