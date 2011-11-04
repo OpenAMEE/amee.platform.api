@@ -356,35 +356,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Runtime Dependencies. -->
         <dependency>
             <groupId>code.lucamarrocco</groupId>
             <artifactId>hoptoad-notifier</artifactId>
             <version>${hoptoad-notifier.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>runtime</scope>
         </dependency>
-
-        <!-- Runtime Dependencies. -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.jms</groupId>
-                    <artifactId>jms</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>${javax.mail.version}</version>
             <scope>runtime</scope>
         </dependency>
 
