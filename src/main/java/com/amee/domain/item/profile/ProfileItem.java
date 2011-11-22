@@ -259,7 +259,7 @@ public class ProfileItem extends BaseItem {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.NPI;
+        return ObjectType.PI;
     }
 
     @Transient
