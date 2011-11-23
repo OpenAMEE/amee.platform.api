@@ -5,16 +5,45 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+/**
+ * A ReturnValue represents a particular type of GHG emission.
+ * It must have a type and value. It may also have a unit and perUnit.
+ *
+ * This class is immutable.
+ */
 public class ReturnValue {
-    private String type;
-    private String unit;
-    private String perUnit;
-    private Double value;
+    private final String type;
+    private final String unit;
+    private final String perUnit;
+    private final double value;
 
-    public ReturnValue(String type, String unit, String perUnit, Double value) {
+    /**
+     * Constructs a ReturnValue.
+     *
+     * @param type the GHG type.
+     * @param unit optional unit. Passing null will store empty string.
+     * @param perUnit optional perUnit. Passing null will store empty string.
+     * @param value the value.
+     * @throws NullPointerException if type is null.
+     */
+    public ReturnValue(String type, String unit, String perUnit, double value) {
+        if (type == null) {
+            throw new NullPointerException("ReturnValue type cannot be null.");
+        }
         this.type = type;
-        this.unit = unit;
-        this.perUnit = perUnit;
+
+        if (unit == null) {
+            this.unit = "";
+        } else {
+            this.unit = unit;
+        }
+
+        if (perUnit == null) {
+            this.perUnit = "";
+        } else {
+            this.perUnit = perUnit;
+        }
+
         this.value = value;
     }
 
@@ -22,40 +51,15 @@ public class ReturnValue {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getUnit() {
         return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public String getPerUnit() {
         return perUnit;
     }
 
-    public void setPerUnit(String perUnit) {
-        this.perUnit = perUnit;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    /**
-     * Converts this ReturnValue to a double.
-     *
-     * @return the double value of this ReturnValue.
-     */
-    public Double toDouble() {
+    public double getValue() {
         return value;
     }
 
@@ -65,7 +69,7 @@ public class ReturnValue {
      * @return a CO2Amount with this ReturnValue's values.
      */
     public CO2Amount toAmount() {
-        if (value == null || value.equals(0.0)) {
+        if (value == 0.0) {
             return CO2Amount.ZERO;
         }
         return newAmount(unit, perUnit, value);
@@ -86,7 +90,7 @@ public class ReturnValue {
             append("type", type).
             append("unit", unit).
             append("perUnit", perUnit).
-            append("value", value != null ? f.format(value) : "").
+            append("value", f.format(value)).
             toString();
     }
 }
