@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * Not thread-safe.
  *
- * TODO: Make this iterable.
+ * TODO: Consider implementing Map interface.
  */
 public class ReturnValues {
 
