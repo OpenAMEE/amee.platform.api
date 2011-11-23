@@ -53,16 +53,17 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
 
         // Add the return values
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
+            String type = entry.getKey();
+            ReturnValue value = entry.getValue();
+
             Element amountElem = new Element("Amount");
-            amountElem.setAttribute("type", entry.getValue().getType());
-            amountElem.setAttribute("unit", entry.getValue().getUnit());
-            amountElem.setAttribute("perUnit", entry.getValue().getPerUnit());
-            if (entry.getKey().equals(returnValues.getDefaultType())) {
+            amountElem.setAttribute("type", type);
+            amountElem.setAttribute("unit", value != null ? value.getUnit() : "");
+            amountElem.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
+            if (type.equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
-            if (entry.getValue().getValue() != null) {
-                amountElem.setText(Double.toString(entry.getValue().getValue()));
-            }
+            amountElem.setText(value != null ? value.getValue() + "" : "");
             returnValuesElem.addContent(amountElem);
         }
         if (returnValuesElem.getChildren().size() > 0) {
