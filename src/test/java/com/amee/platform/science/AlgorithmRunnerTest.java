@@ -193,7 +193,7 @@ public class AlgorithmRunnerTest {
         Map<String, Object> values = new HashMap<String, Object>();
 
         ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
-        assertEquals("Should have 2 amounts in result", 2, result.getReturnValues().size());
+        assertEquals("Should have 2 amounts in result", 2, result.size());
         assertEquals("Incorrect default amount", 5.43, result.defaultValueAsDouble(), 0.000001);
         assertEquals("Should have 1 note", 1, result.getNotes().size());
         assertEquals("Incorrect note value", "Note 1", result.getNotes().get(0).getValue());
@@ -212,7 +212,7 @@ public class AlgorithmRunnerTest {
         Map<String, Object> values = new HashMap<String, Object>();
 
         ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
-        assertEquals("Should have 1 result", 1, result.getReturnValues().size());
+        assertEquals("Should have 1 result", 1, result.size());
         assertEquals("Incorrect return value", 1.23, result.defaultValueAsDouble(), 0.000001);
         assertTrue("Notes should be empty", result.getNotes().isEmpty());
     }
@@ -242,9 +242,9 @@ public class AlgorithmRunnerTest {
         Map<String, Object> values = new HashMap<String, Object>();
 
         ReturnValues result = algorithmRunner.evaluate(mockAlgorithm, values);
-        assertEquals("Should have 2 return values", 2, result.getReturnValues().size());
+        assertEquals("Should have 2 return values", 2, result.size());
         assertEquals("Should have 1 error note", 1, result.getNotes().size());
-        assertNull("Should have an empty value for CH4", result.getReturnValues().get("CH4").getValue());
+        assertNull("Should have an empty value for CH4", result.getReturnValues().get("CH4"));
     } 
 
     private void stubGetCompiledScript(final String AlgorithmContent) throws ScriptException {

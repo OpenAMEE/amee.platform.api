@@ -18,7 +18,7 @@ public class ReturnValuesTest {
     @Test
     public void putAmount() {
         values.putValue("CO2e", "kg", "month", 123.45);
-        assertTrue("Failed to add amount", values.getReturnValues().size() == 1);
+        assertTrue("Failed to add amount", values.size() == 1);
     }
 
     @Test(expected = IllegalArgumentException.class)

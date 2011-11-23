@@ -168,4 +168,13 @@ public class ReturnValues {
     public boolean hasReturnValues() {
         return !returnValues.isEmpty();
     }
+
+    /**
+     * Returns the number of ReturnValues in this collection.
+     *
+     * @return the number of ReturnValues in this collection.
+     */
+    public int size() {
+        return returnValues.size();
+    }
 }
