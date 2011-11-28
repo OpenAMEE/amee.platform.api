@@ -46,7 +46,7 @@ class DataItemIT extends BaseApiTest {
     /**
      * Tests for creation, fetch and deletion of a Data Item using JSON responses.
      *
-     * Create a new Data Item by POSTing to '/categories/{UID|wikiName}' (since 3.4.0).
+     * Create a new Data Item by POSTing to '/categories/{UID|wikiName}/items' (since 3.4.0).
      *
      * Supported POST parameters are:
      *
