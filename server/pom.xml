@@ -35,7 +35,7 @@
         <groovy.version>1.7.10</groovy.version>
         <h2.version>1.3.154</h2.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
-        <hoptoad-notifier.version>1.8</hoptoad-notifier.version>
+        <hoptoad-notifier.version>1.9</hoptoad-notifier.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
@@ -360,9 +360,11 @@
         </dependency>
 
         <!-- Runtime Dependencies. -->
+
+        <!-- Airbrake. Was Hoptoad. -->
         <dependency>
-            <groupId>code.lucamarrocco</groupId>
-            <artifactId>hoptoad-notifier</artifactId>
+            <groupId>hoptoad</groupId>
+            <artifactId>hoptoad-java-notifier</artifactId>
             <version>${hoptoad-notifier.version}</version>
             <scope>runtime</scope>
         </dependency>
