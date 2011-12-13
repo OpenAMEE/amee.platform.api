@@ -50,7 +50,6 @@ abstract class BaseSmokeTest {
         client.auth.basic config.api.standard.user, config.api.standard.password
 
         // Can't use the built-in RESTClient auth handling as we don't send the WWW-Authenticate header in v2
-        // TODO: Remove this once PL-11076 is deployed.
         if (apiVersion == 2) {
             def auth = 'Basic ' + (config.api.standard.user + ':' + config.api.standard.password).bytes.encodeBase64().toString()
             client.headers.Authorization = auth
@@ -60,7 +59,6 @@ abstract class BaseSmokeTest {
     def setAdminUser() {
         client.auth.basic config.api.admin.user, config.api.admin.password
 
-        // TODO: Remove this once PL-11076 is deployed.
         if (apiVersion == 2) {
             def auth = 'Basic ' + (config.api.admin.user + ':' + config.api.admin.password).bytes.encodeBase64().toString()
             client.headers.Authorization = auth
