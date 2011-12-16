@@ -83,6 +83,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
@@ -110,13 +111,11 @@ public class ProfileItemBuilder implements ItemBuilder {
 
             // Create an Amount object
             JSONObject amountObj = new JSONObject();
-            Double returnValue = entry.getValue().getValue();
+            double returnValue = entry.getValue().getValue();
 
-            if (returnValue == null) {
-                amountObj.put("value", JSONObject.NULL);
-            } else if (returnValue.isInfinite()) {
+            if (Double.isInfinite(returnValue)) {
                 amountObj.put("value", "Infinity");
-            } else if (returnValue.isNaN()) {
+            } else if (Double.isNaN(returnValue)) {
                 amountObj.put("value", "NaN");
             } else {
                 amountObj.put("value", returnValue);
@@ -175,6 +174,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public JSONObject getIdentityJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("uid", item.getUid());
@@ -182,6 +182,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         return obj;
     }
 
+    @Override
     public Element getElement(Document document, boolean detailed) {
         Element element = document.createElement("ProfileItem");
         buildElement(document, element, detailed);
@@ -195,6 +196,8 @@ public class ProfileItemBuilder implements ItemBuilder {
         // Multiple return values
         Element amounts = document.createElement("Amounts");
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
+
+            // Create an Amount element
             Element multiAmount = document.createElement("Amount");
             multiAmount.setAttribute("type", entry.getKey());
             multiAmount.setAttribute("unit", entry.getValue().getUnit());
@@ -202,9 +205,7 @@ public class ProfileItemBuilder implements ItemBuilder {
             if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
                 multiAmount.setAttribute("default", "true");
             }
-            if (entry.getValue().getValue() != null) {
-                multiAmount.setTextContent(entry.getValue().getValue() + "");
-            }
+            multiAmount.setTextContent(entry.getValue().getValue() + "");
             amounts.appendChild(multiAmount);
         }
         for (Note note : item.getAmounts().getNotes()) {
@@ -234,6 +235,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         return element;
     }
 
+    @Override
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, "ItemValue", item);
     }
