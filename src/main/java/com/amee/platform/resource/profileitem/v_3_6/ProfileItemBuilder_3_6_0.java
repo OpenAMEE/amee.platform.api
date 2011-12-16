@@ -75,8 +75,6 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
         // Get rendering options from matrix parameters
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
-
-        // TODO: should this parameter be amounts or returnValues
         boolean amounts = requestWrapper.getMatrixParameters().containsKey("amounts");
         boolean name = requestWrapper.getMatrixParameters().containsKey("name");
         boolean dates = requestWrapper.getMatrixParameters().containsKey("dates");

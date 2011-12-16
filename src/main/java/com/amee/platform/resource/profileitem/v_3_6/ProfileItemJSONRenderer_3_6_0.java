@@ -131,18 +131,21 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
             ResponseHelper.put(profileItemObj, "amounts", amountsObj);
         }
 
-        JSONArray noteArr = new JSONArray();
+        JSONArray notesArr = new JSONArray();
 
         // Add the notes
         for (Note note : returnValues.getNotes()) {
             JSONObject noteObj = new JSONObject();
             ResponseHelper.put(noteObj, "type", note.getType());
             ResponseHelper.put(noteObj, "value", note.getValue());
+
+            // Add the note to the notes array.
+            notesArr.put(noteObj);
         }
 
         // TODO: Check this condition
-        if (noteArr.length() > 0) {
-            ResponseHelper.put(amountsObj, "notes", noteArr);
+        if (notesArr.length() > 0) {
+            ResponseHelper.put(amountsObj, "notes", notesArr);
         }
     }
 

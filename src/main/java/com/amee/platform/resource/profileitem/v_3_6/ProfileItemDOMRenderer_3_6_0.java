@@ -2,7 +2,6 @@ package com.amee.platform.resource.profileitem.v_3_6;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.ProfileItemService;
-import com.amee.domain.TimeZoneHolder;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.resource.ResourceService;
@@ -34,7 +33,7 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
     protected ProfileItem profileItem;
     protected Element rootElem;
     protected Element profileItemElem;
-    protected Element returnValuesElem;
+    protected Element amountsElem;
     protected Element notesElem;
 
     @Override
@@ -90,9 +89,11 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
 
     @Override
     public void addReturnValues(ReturnValues returnValues) {
-        returnValuesElem = new Element("Amounts");
 
-        // Add the return values
+        // Create the Amounts element.
+        amountsElem = new Element("Amounts");
+
+        // Add the return values to it.
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
             Element amountElem = new Element("Amount");
             amountElem.setAttribute("type", entry.getKey());
@@ -115,17 +116,18 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
             if (entry.getKey().equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
-            returnValuesElem.addContent(amountElem);
+            amountsElem.addContent(amountElem);
         }
 
         // TODO: check this. Will the returnvalues ever be empty?
-        if (returnValuesElem.getChildren().size() > 0) {
-            rootElem.addContent(returnValuesElem);
+        if (amountsElem.getChildren().size() > 0) {
+            profileItemElem.addContent(amountsElem);
         }
 
+        // Create the Notes element.
         notesElem = new Element("Notes");
 
-        // Add the notes
+        // Add the notes to it.
         for (Note note : returnValues.getNotes()) {
             Element noteElem = new Element("Note");
             noteElem.setAttribute("type", note.getType());
@@ -135,7 +137,7 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
 
         // TODO: This should be part of the returnValues element (Amounts) not at the same level.
         if (notesElem.getChildren().size() > 0) {
-            rootElem.addContent(notesElem);
+            amountsElem.addContent(notesElem);
         }
     }
 
