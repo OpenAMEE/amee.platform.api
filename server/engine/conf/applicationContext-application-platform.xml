@@ -701,12 +701,12 @@
                         <property name="since" value="3.6.0"/>
                     </bean>
                 </entry>
-                <!--<entry key="/{profileIdentifier}/items/{itemIdentifier}">-->
-                    <!--<bean class="com.amee.restlet.version.VersionFinder">-->
-                        <!--<lookup-method name="createResource" bean="profileItemResource"/>-->
-                        <!--<property name="since" value="3.6.0"/>-->
-                    <!--</bean>-->
-                <!--</entry>-->
+                <entry key="/{profileIdentifier}/items/{itemIdentifier}">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="profileItemResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
