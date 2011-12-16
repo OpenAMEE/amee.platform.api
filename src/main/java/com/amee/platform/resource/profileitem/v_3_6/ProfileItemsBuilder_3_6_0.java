@@ -69,6 +69,7 @@ public class ProfileItemsBuilder_3_6_0 implements ProfileItemsResource.Builder {
     }
 
     public void handle(RequestWrapper requestWrapper, Profile profile, ProfileItemsFilter filter) {
+
         // Start renderer
         ProfileItemsResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();

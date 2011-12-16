@@ -96,23 +96,32 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     public void addReturnValues(ReturnValues returnValues) {
         amountsObj = new JSONObject();
 
+        // Create an array of amount objects
         JSONArray amountArr = new JSONArray();
         ResponseHelper.put(amountsObj, "amount", amountArr);
 
         // Add the return values
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
 
-            // TODO: update to deal with the PL-11105 stuff
+            // Create an Amount object
             JSONObject amountObj = new JSONObject();
+            double returnValue = entry.getValue().getValue();
+
+            if (Double.isInfinite(returnValue)) {
+                ResponseHelper.put(amountObj, "value", "Infinity");
+            } else if (Double.isNaN(returnValue)) {
+                ResponseHelper.put(amountObj, "value", "NaN");
+            } else {
+                ResponseHelper.put(amountObj, "value", returnValue);
+            }
             ResponseHelper.put(amountObj, "type", entry.getKey());
             ResponseHelper.put(amountObj, "unit", entry.getValue().getUnit());
             ResponseHelper.put(amountObj, "perUnit", entry.getValue().getPerUnit());
             if (entry.getKey().equals(returnValues.getDefaultType())) {
                 ResponseHelper.put(amountObj, "default", true);
             }
-            if (entry.getValue().getValue() != null) {
-                ResponseHelper.put(amountObj, "value", entry.getValue().getValue());
-            }
+
+            // Add the object to the amounts array
             amountArr.put(amountObj);
         }
 

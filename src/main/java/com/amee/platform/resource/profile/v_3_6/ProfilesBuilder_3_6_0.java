@@ -51,12 +51,20 @@ public class ProfilesBuilder_3_6_0 implements ProfilesResource.Builder {
 
             // Add Profiles
             // TODO: Should we include the user ID in the filter rather than a separate param?
-            ResultsWrapper<Profile> profiles = profileService.getProfilesByUserUid(
-                requestWrapper.getAttributes().get("activeUserUid"), filter);
+            String userUid = requestWrapper.getAttributes().get("activeUserUid");
+            ResultsWrapper<Profile> profiles = profileService.getProfilesByUserUid(userUid, filter);
+
+            // Have the results been truncated?
             renderer.setTruncated(profiles.isTruncated());
+
+            // Delegate rendering of each profile to the ProfileBuilder.
             ProfileResource.Builder profileBuilder = getProfileBuilder(requestWrapper);
             for (Profile profile : profiles.getResults()) {
+
+                // Render the profile
                 profileBuilder.handle(requestWrapper, profile);
+
+                // Uses the Profile element from the ProfileRender
                 renderer.newProfile(profileBuilder.getRenderer(requestWrapper));
             }
 

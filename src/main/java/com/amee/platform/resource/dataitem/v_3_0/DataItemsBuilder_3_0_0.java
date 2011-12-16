@@ -77,10 +77,7 @@ public class DataItemsBuilder_3_0_0 implements DataItemsResource.Builder {
         }
     }
 
-    protected void handle(
-            RequestWrapper requestWrapper,
-            DataCategory dataCategory,
-            DataItemsFilter filter) {
+    protected void handle(RequestWrapper requestWrapper, DataCategory dataCategory, DataItemsFilter filter) {
 
         // Setup Renderer.
         DataItemsResource.Renderer renderer = getRenderer(requestWrapper);
