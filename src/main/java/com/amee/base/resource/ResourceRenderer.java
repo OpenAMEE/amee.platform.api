@@ -1,11 +1,16 @@
 package com.amee.base.resource;
 
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 /**
  * An interface defining a basic structure that all 'renderers' can conform to. A renderer is intended to transform
  * domain model entities and other required objects into an output representation of a specific media-type. For
  * example, a result list of objects from a database could be represented as a JSON output document.
  */
 public interface ResourceRenderer {
+
+    DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
     /**
      * Callback to indicate that the renderer implementation can start work.
