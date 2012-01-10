@@ -23,7 +23,7 @@ class ProfileIT extends BaseApiTest {
      * Supported POST parameters are:
      *
      * <ul>
-     * <li>profile=true
+     * <li>profile=true (required)
      * </ul>
      *
      * Note: the submitted profile parameter is just to provide a body to the request. It is not used in creation.
@@ -33,7 +33,7 @@ class ProfileIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveProfile() {
-        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveProfile(version) };
+        versions.each { version -> createAndRemoveProfile(version) };
     }
 
     def createAndRemoveProfile(version) {
@@ -133,7 +133,7 @@ class ProfileIT extends BaseApiTest {
      */
     @Test
     void getSingleProfile() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getSingleProfile(version) }
+        versions.each { version -> getSingleProfile(version) }
     }
 
     def getSingleProfile(version) {
@@ -185,10 +185,12 @@ class ProfileIT extends BaseApiTest {
      *     <li>resultLimit - Limit the number of entries in the result-set. Defaults to 50 there is no max.
      * </ul>
      *
+     * The order in which profiles are returned is undefined.
+     *
      */
     @Test
     void getAllProfiles() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAllProfiles(version) }
+        versions.each { version -> getAllProfiles(version) }
     }
 
     def getAllProfiles(version) {
@@ -234,4 +236,47 @@ class ProfileIT extends BaseApiTest {
             assertEquals nameList.sort(), categoryNames.sort()
         }
     }
+
+    /**
+     * Tests fetching a subset of profiles by using the resultStart and resultLimit parameters.
+     *
+     */
+    @Test
+    void getSomeProfiles() {
+        versions.each { version -> getSomeProfiles(version) }
+    }
+
+    def getSomeProfiles(version) {
+        getSomeProfilesJson(version)
+        getSomeProfilesXml(version)
+    }
+
+    def getSomeProfilesJson(version) {
+        if (version >= 3.6) {
+            def response = client.get(
+                path: "/${version}/profiles",
+                query: [resultStart:'1', resultLimit: '1'],
+                contentType: JSON)
+            assertEquals 200, response.status;
+            assertEquals 'application/json', response.contentType;
+            assertTrue response.data instanceof net.sf.json.JSON;
+            assertEquals 'OK', response.data.status;
+            assertEquals 1, response.data.profiles.size()
+        }
+    }
+
+    def getSomeProfilesXml(version) {
+        if (version >= 3.6) {
+            def response = client.get(
+                path: "/${version}/profiles",
+                query: [resultStart:'1', resultLimit: '1'],
+                contentType: XML)
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def profiles = response.data.Profiles.Profile
+            assertEquals 1, profiles.size()
+        }
+    }
+
 }
