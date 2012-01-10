@@ -137,40 +137,38 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getSingleProfile(version) {
-        getSingleProfileJson(version);
-        getSingleProfileXml(version);
+        if (version >= 3.6) {
+            getSingleProfileJson(version);
+            getSingleProfileXml(version);
+        }
     }
 
     def getSingleProfileJson(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles/${profileUids[0]};full",
-                contentType: JSON)
-            assertEquals 200, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals profileUids[0], response.data.profile.uid
-            assertEquals 1, response.data.profile.categories.size()
-            assertEquals categoryNames[0], response.data.profile.categories[0].name
-            assertEquals categoryWikiNames[0], response.data.profile.categories[0].wikiName
-        }
+        def response = client.get(
+            path: "/${version}/profiles/${profileUids[0]};full",
+            contentType: JSON)
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals profileUids[0], response.data.profile.uid
+        assertEquals 1, response.data.profile.categories.size()
+        assertEquals categoryNames[0], response.data.profile.categories[0].name
+        assertEquals categoryWikiNames[0], response.data.profile.categories[0].wikiName
     }
 
     def getSingleProfileXml(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles/${profileUids[1]};full",
-                contentType: XML)
-            assertEquals 200, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals profileUids[1], response.data.Profile.@uid.text()
-            def allCategories = response.data.Profile.Categories.Category
-            assertEquals 1, allCategories.size()
-            assertEquals categoryNames[1], allCategories[0].Name.text()
-            assertEquals categoryWikiNames[1], allCategories[0].WikiName.text()
-        }
+        def response = client.get(
+            path: "/${version}/profiles/${profileUids[1]};full",
+            contentType: XML)
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals profileUids[1], response.data.Profile.@uid.text()
+        def allCategories = response.data.Profile.Categories.Category
+        assertEquals 1, allCategories.size()
+        assertEquals categoryNames[1], allCategories[0].Name.text()
+        assertEquals categoryWikiNames[1], allCategories[0].WikiName.text()
     }
 
     /**
@@ -194,47 +192,45 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getAllProfiles(version) {
-        getAllProfilesJson(version)
-        getAllProfilesXml(version)
+        if (version >= 3.6) {
+            getAllProfilesJson(version)
+            getAllProfilesXml(version)
+        }
     }
 
     def getAllProfilesJson(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles;full",
-                contentType: JSON)
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals profileUids.size(), response.data.profiles.size()
-            assertEquals profileUids.sort(), response.data.profiles.collect { it.uid }.sort()
+        def response = client.get(
+            path: "/${version}/profiles;full",
+            contentType: JSON)
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals profileUids.size(), response.data.profiles.size()
+        assertEquals profileUids.sort(), response.data.profiles.collect { it.uid }.sort()
 
-            def nameList = []
-            response.data.profiles.each { profile -> profile.categories.each { nameList.add(it.name) } }
-            assertEquals nameList.sort(), categoryNames.sort()
-            def wikiNameList = []
-            response.data.profiles.each { profile -> profile.categories.each { wikiNameList.add(it.wikiName) } }
-            assertEquals wikiNameList.sort(), categoryWikiNames.sort()
-        }
+        def nameList = []
+        response.data.profiles.each { profile -> profile.categories.each { nameList.add(it.name) } }
+        assertEquals nameList.sort(), categoryNames.sort()
+        def wikiNameList = []
+        response.data.profiles.each { profile -> profile.categories.each { wikiNameList.add(it.wikiName) } }
+        assertEquals wikiNameList.sort(), categoryWikiNames.sort()
     }
 
     def getAllProfilesXml(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles;full",
-                contentType: XML)
-            assertEquals 200, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            def allProfiles = response.data.Profiles.Profile
-            assertEquals profileUids.size(), allProfiles.size()
-            assertEquals profileUids.sort(), allProfiles.@uid*.text().sort()
+        def response = client.get(
+            path: "/${version}/profiles;full",
+            contentType: XML)
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        def allProfiles = response.data.Profiles.Profile
+        assertEquals profileUids.size(), allProfiles.size()
+        assertEquals profileUids.sort(), allProfiles.@uid*.text().sort()
 
-            def nameList = []
-            allProfiles.each { profile -> profile.Categories.Category.each { nameList.add(it.Name.text()) } }
-            assertEquals nameList.sort(), categoryNames.sort()
-        }
+        def nameList = []
+        allProfiles.each { profile -> profile.Categories.Category.each { nameList.add(it.Name.text()) } }
+        assertEquals nameList.sort(), categoryNames.sort()
     }
 
     /**
@@ -247,36 +243,33 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getSomeProfiles(version) {
-        getSomeProfilesJson(version)
-        getSomeProfilesXml(version)
+        if (version >= 3.6) {
+            getSomeProfilesJson(version)
+            getSomeProfilesXml(version)
+        }
     }
 
     def getSomeProfilesJson(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles",
-                query: [resultStart:'1', resultLimit: '1'],
-                contentType: JSON)
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 1, response.data.profiles.size()
-        }
+        def response = client.get(
+            path: "/${version}/profiles",
+            query: [resultStart:'1', resultLimit: '1'],
+            contentType: JSON)
+        assertEquals 200, response.status;
+        assertEquals 'application/json', response.contentType;
+        assertTrue response.data instanceof net.sf.json.JSON;
+        assertEquals 'OK', response.data.status;
+        assertEquals 1, response.data.profiles.size()
     }
 
     def getSomeProfilesXml(version) {
-        if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles",
-                query: [resultStart:'1', resultLimit: '1'],
-                contentType: XML)
-            assertEquals 200, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            def profiles = response.data.Profiles.Profile
-            assertEquals 1, profiles.size()
-        }
+        def response = client.get(
+            path: "/${version}/profiles",
+            query: [resultStart:'1', resultLimit: '1'],
+            contentType: XML)
+        assertEquals 200, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        def profiles = response.data.Profiles.Profile
+        assertEquals 1, profiles.size()
     }
-
 }
