@@ -76,8 +76,12 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
     public void addDates(TimeZone timeZone) {
         String startDate = StartEndDate.getLocalStartEndDate(profileItem.getStartDate(), timeZone).toString();
         profileItemElem.addContent(new Element("StartDate").setText(startDate));
-        String endDate = StartEndDate.getLocalStartEndDate(profileItem.getEndDate(), timeZone).toString();
-        profileItemElem.addContent(new Element("EndDate").setText(endDate));
+        if (profileItem.getEndDate() != null) {
+            String endDate = StartEndDate.getLocalStartEndDate(profileItem.getEndDate(), timeZone).toString();
+            profileItemElem.addContent(new Element("EndDate").setText(endDate));
+        } else {
+            profileItemElem.addContent(new Element("EndDate"));
+        }
     }
 
     @Override

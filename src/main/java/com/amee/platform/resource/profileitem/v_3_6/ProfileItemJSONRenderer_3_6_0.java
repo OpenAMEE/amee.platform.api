@@ -76,7 +76,10 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     public void addDates(TimeZone timeZone) {
         String startDate = StartEndDate.getLocalStartEndDate(profileItem.getStartDate(), timeZone).toString();
         ResponseHelper.put(profileItemObj, "startDate", startDate);
-        String endDate = StartEndDate.getLocalStartEndDate(profileItem.getEndDate(), timeZone).toString();
+        String endDate = "";
+        if (profileItem.getEndDate() != null) {
+            endDate = StartEndDate.getLocalStartEndDate(profileItem.getEndDate(), timeZone).toString();
+        }
         ResponseHelper.put(profileItemObj, "endDate", endDate);
     }
 
