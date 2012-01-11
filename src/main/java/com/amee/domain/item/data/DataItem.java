@@ -91,7 +91,7 @@ public class DataItem extends BaseItem {
 
     @Override
     public ObjectType getObjectType() {
-        return ObjectType.NDI;
+        return ObjectType.DI;
     }
 
     /**

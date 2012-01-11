@@ -123,7 +123,7 @@ public class PermissionEntry implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!PermissionEntry.class.isAssignableFrom(o.getClass())) return false;
+        if (!(o instanceof PermissionEntry)) return false;
         PermissionEntry entry = (PermissionEntry) o;
         return (value.equals(OWN.value) && entry.value.equals(OWN.value)) ||
             (value.equals(entry.value) && allow == entry.allow && status.equals(entry.status));

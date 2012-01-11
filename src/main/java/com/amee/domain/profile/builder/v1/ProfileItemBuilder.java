@@ -23,9 +23,7 @@ import java.text.SimpleDateFormat;
 
 public class ProfileItemBuilder implements ItemBuilder {
 
-    private static final String DAY_DATE = "yyyyMMdd";
-    private static DateFormat DAY_DATE_FMT = new SimpleDateFormat(DAY_DATE);
-
+    private DateFormat dayDateFormat = new SimpleDateFormat("yyyyMMdd");
     private ProfileItem item;
     private ProfileItemService profileItemService;
     private DataItemService dataItemService;
@@ -94,7 +92,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         } else {
             obj.put("amountPerMonth", value);
         }
-        obj.put("validFrom", DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
+        obj.put("validFrom", dayDateFormat.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone())));
         obj.put("end", Boolean.toString(item.isEnd()));
         obj.put("dataItem", new DataItemBuilder(item.getDataItem(), dataItemService).getIdentityJSONObject());
         if (detailed) {
@@ -126,7 +124,7 @@ public class ProfileItemBuilder implements ItemBuilder {
             element.appendChild(XMLUtils.getElement(document, "AmountPerMonth", item.getAmounts().defaultValueAsDouble() + ""));
         }
         element.appendChild(XMLUtils.getElement(document, "ValidFrom",
-                DAY_DATE_FMT.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()))));
+                dayDateFormat.format(StartEndDate.getLocalStartEndDate(item.getStartDate(), TimeZoneHolder.getTimeZone()))));
         element.appendChild(XMLUtils.getElement(document, "End", Boolean.toString(item.isEnd())));
         element.appendChild(new DataItemBuilder(item.getDataItem(), dataItemService).getIdentityElement(document));
         if (detailed) {

@@ -47,8 +47,8 @@ public enum PagerSetType implements Serializable {
     public static JSONObject getJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         Map<String, String> choices = getChoices();
-        for (String key : choices.keySet()) {
-            obj.put(key, choices.get(key));
+        for (Map.Entry<String, String> entry : choices.entrySet()) {
+            obj.put(entry.getKey(), entry.getValue());
         }
         return obj;
     }
@@ -56,10 +56,10 @@ public enum PagerSetType implements Serializable {
     public static Element getElement(Document document) {
         Element element = document.createElement("PagerSets");
         Map<String, String> choices = getChoices();
-        for (String name : choices.keySet()) {
+        for (Map.Entry<String, String> entry : choices.entrySet()) {
             Element elem = document.createElement("PagerSetType");
-            elem.setAttribute("name", name);
-            elem.setAttribute("label", choices.get(name));
+            elem.setAttribute("name", entry.getKey());
+            elem.setAttribute("label", entry.getValue());
         }
         return element;
     }
