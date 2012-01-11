@@ -8,9 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Holds a collection of ReturnValue objects added by Algorithms.
+ * Holds a collection of {@link ReturnValue} objects added by Algorithms.
  * The first ReturnValue added is marked as the default but this may be changed by calling setDefaultType.
- * A list of Note objects may be added containing additional information about the ReturnValues.
+ * A list of Note objects may be added containing additional textual information about the ReturnValues.
+ *
+ * A new ReturnValues object is provided to each Algorithm. See: {@link AlgorithmRunner}.
+ *
+ * Note: if an algorithm is unable to calculate a result for a particular GHG null will be stored.
+ *
+ * Not thread-safe.
+ *
+ * TODO: Consider implementing Map interface.
  */
 public class ReturnValues {
 
@@ -30,6 +38,8 @@ public class ReturnValues {
     /**
      * Add an amount to the return values.
      *
+     * This method is called by algorithms.
+     *
      * @param type the GHG type to add, eg 'CO2'.
      * @param unit the unit, eg 'kg'.
      * @param perUnit the per unit, eg 'month'.
@@ -47,18 +57,15 @@ public class ReturnValues {
 
     /**
      * Add an empty amount to the return values.
-     * This should be used when we cannot calculate a value for a certain type.
      *
-     * Some code duplication here. We don't delegate to the double putValue method here because we need to use
-     * a primitive double there rather than Double.
+     * This method is called by algorithms when we cannot calculate a value for a certain type.
      *
      * @param type the GHG type to add, eg 'CH4'.
      */
     public void putEmptyValue(String type) {
-        ReturnValue returnValue = new ReturnValue(type, null, null, null);
-        returnValues.put(type, returnValue);
+        returnValues.put(type, null);
 
-        // We make the first added amount the default.
+        // We still make the first added amount the default even if null.
         if (returnValues.size() == 1) {
             setDefaultType(type);
         }
@@ -91,6 +98,11 @@ public class ReturnValues {
         return defaultType;
     }
 
+    /**
+     * Get the default value.
+     *
+     * @return the default ReturnValue. May return null.
+     */
     public ReturnValue getDefaultValue() {
         if (defaultType == null) {
             throw new IllegalStateException("There is no default type");
@@ -105,14 +117,18 @@ public class ReturnValues {
     /**
      * Get the default value as an Amount
      *
-     * @return the default Amount or ZERO if there are no ReturnValues.
+     * @return the default Amount or ZERO if there are no ReturnValues or the default value is null.
      * @throws IllegalStateException if there is no default type set.
      */
     public CO2Amount defaultValueAsAmount() {
         if (returnValues.isEmpty()) {
             return CO2Amount.ZERO;
-        } else if (defaultType == null) {
+        }
+        if (defaultType == null) {
             throw new IllegalStateException("There is no default type");
+        }
+        if (returnValues.get(defaultType) == null) {
+            return CO2Amount.ZERO;
         }
         ReturnValue defaultValue = returnValues.get(defaultType);
         return defaultValue.toAmount();
@@ -124,12 +140,14 @@ public class ReturnValues {
      * @return the value of the default Amount.
      */
     public double defaultValueAsDouble() {
-        if (returnValues.isEmpty()) {
-            return 0.0;
-        } else if (defaultType == null) {
+        if (defaultType == null) {
             throw new IllegalStateException("There is no default type");
         }
-        return returnValues.get(defaultType).toDouble();
+        if (returnValues.get(defaultType) == null) {
+            return 0.0;
+        } else {
+            return returnValues.get(defaultType).getValue();
+        }
     }
 
     /**
@@ -167,5 +185,14 @@ public class ReturnValues {
 
     public boolean hasReturnValues() {
         return !returnValues.isEmpty();
+    }
+
+    /**
+     * Returns the number of ReturnValues in this collection.
+     *
+     * @return the number of ReturnValues in this collection.
+     */
+    public int size() {
+        return returnValues.size();
     }
 }

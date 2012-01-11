@@ -203,11 +203,32 @@ public class DataPoint implements Comparable<DataPoint> {
 
     /**
      * Sorted collections of DataPoints are ordered by date.
+     * Note: this class has a natural ordering that is inconsistent with equals.
      * 
      * @param that
      * @return
      */
     public int compareTo(DataPoint that) {
         return getDateTime().compareTo(that.getDateTime());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DataPoint)) {
+            return false;
+        }
+        DataPoint dp = (DataPoint) o;
+        return dp.getDateTime().equals(getDateTime()) && dp.getValue().equals(getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + getDateTime().hashCode();
+        result = 31 * result + getValue().hashCode();
+        return result;
     }
 }
