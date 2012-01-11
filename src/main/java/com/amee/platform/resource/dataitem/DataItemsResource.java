@@ -8,18 +8,18 @@ import com.amee.base.validation.ValidationException;
 
 public interface DataItemsResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public void newDataItem(DataItemResource.Renderer renderer);
+        void newDataItem(DataItemResource.Renderer renderer);
 
-        public void setTruncated(boolean truncated);
+        void setTruncated(boolean truncated);
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper) throws ValidationException;
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }

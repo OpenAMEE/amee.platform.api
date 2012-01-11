@@ -29,13 +29,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
     private final static String WIKI_NAME_PATTERN_STRING = PATH_PATTERN_STRING;
 
     @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
     private DataService dataService;
-
-    @Autowired
-    private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired
     protected DataCategoryEditor dataCategoryEditor;

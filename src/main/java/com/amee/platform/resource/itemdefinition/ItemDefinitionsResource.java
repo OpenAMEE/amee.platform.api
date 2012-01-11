@@ -13,13 +13,13 @@ public interface ItemDefinitionsResource {
 
     interface Renderer extends ResourceRenderer {
 
-        public void newItemDefinition(ItemDefinitionResource.Renderer renderer);
+        void newItemDefinition(ItemDefinitionResource.Renderer renderer);
 
-        public void setTruncated(boolean truncated);
+        void setTruncated(boolean truncated);
     }
 
     interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper) throws ValidationException;
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }

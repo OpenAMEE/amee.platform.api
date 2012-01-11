@@ -33,15 +33,12 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
 
     private final Namespace XSI_NS = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
     private final Namespace NS = Namespace.getNamespace("http://www.EcoInvent.org/EcoSpold01");
-    private final String SCHEMA_LOCATION = "http://www.EcoInvent.org/EcoSpold01 EcoSpold01Dataset.xsd";
+    private static final String SCHEMA_LOCATION = "http://www.EcoInvent.org/EcoSpold01 EcoSpold01Dataset.xsd";
 
     private DataCategory dataCategory;
     private Element rootElem;
     private Element datasetElem;
     private Element flowDataElem;
-
-    @Autowired
-    private DataService dataService;
 
     @Autowired
     private DataItemService dataItemService;
@@ -106,9 +103,7 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
 
         // Add the flowData (data items)
         flowDataElem = new Element("flowData", NS);
-        if (datasetElem != null) {
-            datasetElem.addContent(flowDataElem);
-        }
+        datasetElem.addContent(flowDataElem);
 
         // Pre-cache metadata and locales for the Data Items.
         metadataService.loadMetadatasForItemValueDefinitions(dataCategory.getItemDefinition().getItemValueDefinitions());

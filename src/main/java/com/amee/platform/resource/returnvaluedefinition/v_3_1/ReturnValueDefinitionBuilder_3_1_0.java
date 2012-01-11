@@ -22,9 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinitionResource.Builder {
 
     @Autowired
-    private DefinitionService definitionService;
-
-    @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
     @Autowired

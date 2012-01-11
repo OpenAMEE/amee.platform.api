@@ -11,19 +11,19 @@ public interface DataItemCalculationResource {
 
     interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, DataItem dataItem);
+        void handle(RequestWrapper requestWrapper, DataItem dataItem);
 
-        public DataItemCalculationResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemCalculationResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
     interface Renderer extends ResourceRenderer {
 
-        public void addDataItem(DataItem dataItem);
+        void addDataItem(DataItem dataItem);
 
-        public void addReturnValues(ReturnValues returnValues);
+        void addReturnValues(ReturnValues returnValues);
 
-        public void addValues(Choices values);
+        void addValues(Choices values);
 
-        public Object getObject();
+        Object getObject();
     }
 }

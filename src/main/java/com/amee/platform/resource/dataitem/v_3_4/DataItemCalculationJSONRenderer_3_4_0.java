@@ -29,15 +29,30 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
         // Create an array of multiple amount objects.
         JSONArray multipleAmountsArr = new JSONArray();
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
+
             // Create a multiple amount object.
             JSONObject multipleAmountObj = new JSONObject();
-            ResponseHelper.put(multipleAmountObj, "value",
-                entry.getValue().getValue() == null ? JSONObject.NULL : entry.getValue().getValue());
-            ResponseHelper.put(multipleAmountObj, "type", entry.getKey());
-            ResponseHelper.put(multipleAmountObj, "unit", entry.getValue().getUnit());
-            ResponseHelper.put(multipleAmountObj, "perUnit", entry.getValue().getPerUnit());
+
+            String type = entry.getKey();
+            ReturnValue returnValue = entry.getValue();
+
+            ResponseHelper.put(multipleAmountObj, "type", type);
+            ResponseHelper.put(multipleAmountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
+            ResponseHelper.put(multipleAmountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+
             // Flag for default type.
-            ResponseHelper.put(multipleAmountObj, "default", entry.getKey().equals(returnValues.getDefaultType()));
+            ResponseHelper.put(multipleAmountObj, "default", type.equals(returnValues.getDefaultType()));
+
+            if (returnValue == null) {
+                ResponseHelper.put(multipleAmountObj, "value", JSONObject.NULL);
+            } else if (Double.isInfinite(returnValue.getValue())) {
+                ResponseHelper.put(multipleAmountObj, "value", "Infinity");
+            } else if (Double.isNaN(returnValue.getValue())) {
+                ResponseHelper.put(multipleAmountObj, "value", "NaN");
+            } else {
+                ResponseHelper.put(multipleAmountObj, "value", returnValue.getValue());
+            }
+            
             // Add the object to the amounts array
             multipleAmountsArr.put(multipleAmountObj);
         }
