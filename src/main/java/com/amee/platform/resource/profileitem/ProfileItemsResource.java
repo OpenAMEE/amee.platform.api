@@ -22,6 +22,6 @@ public interface ProfileItemsResource {
 
     interface FormAcceptor extends ResourceAcceptor {
 
-        Object handle(RequestWrapper requestWrapper, ProfileItem profileItem);
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }
