@@ -220,8 +220,8 @@ public class RequestWrapper implements Serializable {
     private static void setMapFromMap(Map<String, String> target, Map<String, String> source) {
         target.clear();
         if (source != null) {
-            for (String key : source.keySet()) {
-                target.put(key, source.get(key) != null ? source.get(key) : "");
+            for (Map.Entry<String, String> entry : source.entrySet()) {
+                target.put(entry.getKey(), entry.getValue() != null ? entry.getValue() : "");
             }
         }
     }

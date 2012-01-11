@@ -22,7 +22,7 @@ public class MemcachedCacheService implements CacheService {
             client = new MemcachedClient(new InetSocketAddress("localhost", 11211));
         } catch (IOException e) {
             log.error("CacheService() Caught IOException: " + e.getMessage(), e);
-            throw new RuntimeException("CacheService() Caught IOException: " + e.getMessage());
+            throw new RuntimeException("CacheService() Caught IOException: " + e.getMessage(), e);
         }
     }
 

@@ -10,14 +10,14 @@ public interface IdentityObject {
      *
      * @return the entity ID as a Long
      */
-    public Long getId();
+    Long getId();
 
     /**
      * Set the entity ID.
      *
      * @param id the entity ID as a Long
      */
-    public void setId(Long id);
+    void setId(Long id);
 
     /**
      * Set the entity UID.
@@ -25,7 +25,7 @@ public interface IdentityObject {
      * @return the entity UID.
      * @see com.amee.base.utils.UidGen
      */
-    public String getUid();
+    String getUid();
 
     /**
      * Get the entity UID.
@@ -33,19 +33,19 @@ public interface IdentityObject {
      * @param uid the entity UID
      *            * @see com.amee.base.utils.UidGen
      */
-    public void setUid(String uid);
+    void setUid(String uid);
 
     /**
      * Get a friendly String value representing the identity of the entity. This would normally be the UID.
      *
      * @return String identity value
      */
-    public String getIdentityValue();
+    String getIdentityValue();
 
     /**
      * Get a friendly String value representing the identity of the entity. This would normally be the UID.
      *
      * @param value String identity value
      */
-    public void setIdentityValue(String value);
+    void setIdentityValue(String value);
 }

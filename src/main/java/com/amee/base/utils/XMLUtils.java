@@ -9,7 +9,14 @@ import org.w3c.dom.Element;
 /**
  * A collection of utility methods for working with XML documents.
  */
-public abstract class XMLUtils {
+public class XMLUtils {
+
+    /**
+     * Private constructor to prevent direct instantiation.
+     */
+    private XMLUtils() {
+        throw new AssertionError();
+    }
 
     /**
      * Get a new {@link Element} for the {@link Document} with the given name and value.
