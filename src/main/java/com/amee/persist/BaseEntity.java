@@ -67,7 +67,7 @@ public abstract class BaseEntity implements DatedObject, Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!BaseEntity.class.isAssignableFrom(o.getClass())) return false;
+        if (!(o instanceof BaseEntity)) return false;
         BaseEntity baseEntity = (BaseEntity) o;
         return getUid().equals(baseEntity.getUid());
     }
