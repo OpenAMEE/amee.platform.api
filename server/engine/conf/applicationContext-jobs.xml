@@ -78,7 +78,7 @@
     <!-- Search index Searcher check: Fire every minute at 30 seconds past the minute. -->
     <bean id="searchIndexCheckSearcherCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="searchIndexCheckSearcherJobDetail"/>
-        <property name="cronExpression" value="30 0/1 * * * ?"/>
+        <property name="cronExpression" value="30 * * * * ?"/>
     </bean>
 
 </beans>
