@@ -74,7 +74,7 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
                     dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
                     renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
                     break;
-                case NDI:
+                case DI:
                     dataItemBuilder.handle(requestWrapper, (DataItem) entity);
                     renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
                     break;
