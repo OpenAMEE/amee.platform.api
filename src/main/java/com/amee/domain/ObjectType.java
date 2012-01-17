@@ -23,17 +23,13 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Change NDI to DI and NPI to PI
-
 public enum ObjectType implements Serializable {
 
-    // NOTE: These are stored in the database as strings.
+    // NOTE: These are stored in the database as strings. See: com.amee.domain.AMEEEntityReference.entityType
     DC("DC", "DataCategory") { public Class toClass() {return DataCategory.class;} },
     AL("AL", "Algorithm") { public Class toClass() {return Algorithm.class;} },
     ID("ID", "ItemDefinition") { public Class toClass() {return ItemDefinition.class;} },
     IVD("IVD", "ItemValueDefinition") { public Class toClass() {return ItemValueDefinition.class;} },
-    DI("DI", "DataItem") { public Class toClass() {return DataItem.class;} },
-    PI("PI", "ProfileItem") { public Class toClass() {return ProfileItem.class;} },
     PR("PR", "Profile") { public Class toClass() {return Profile.class;} },
     ALC("ALC", "AlgorithmContext") { public Class toClass() {return AlgorithmContext.class;} },
     USR("USR", "User") { public Class toClass() {return User.class;} },
@@ -54,8 +50,8 @@ public enum ObjectType implements Serializable {
     DITVH("DITVH", "DataItemTextValueHistory") { public Class toClass() {return DataItemTextValueHistory.class;} },
     PINV("PINV", "ProfileItemNumberValue") { public Class toClass() {return ProfileItemNumberValue.class;} },
     PITV("PITV", "ProfileItemTextValue") { public Class toClass() {return ProfileItemTextValue.class;} },
-    NPI("NPI", "NewProfileItem") { public Class toClass() {return ProfileItem.class;} },
-    NDI("NDI", "NewDataItem") { public Class toClass() {return DataItem.class;} },
+    PI("PI", "ProfileItem") { public Class toClass() {return ProfileItem.class;} },
+    DI("DI", "DataItem") { public Class toClass() {return DataItem.class;} },
     UN("UN", "Unit") { public Class toClass() {return AMEEUnit.class;} },
     UT("UT", "UnitType") { public Class toClass() {return AMEEUnitType.class;} };
 

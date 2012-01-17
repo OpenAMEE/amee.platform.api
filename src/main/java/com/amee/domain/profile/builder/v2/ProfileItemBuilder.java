@@ -108,23 +108,26 @@ public class ProfileItemBuilder implements ItemBuilder {
         // Create an array of amount objects
         JSONArray amountArray = new JSONArray();
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
+            String type = entry.getKey();
+            ReturnValue returnValue = entry.getValue();
 
             // Create an Amount object
             JSONObject amountObj = new JSONObject();
-            double returnValue = entry.getValue().getValue();
+            amountObj.put("type", type);
+            amountObj.put("unit", returnValue != null ? returnValue.getUnit() : "");
+            amountObj.put("perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+            if (type.equals(item.getAmounts().getDefaultType())) {
+                amountObj.put("default", "true");
+            }
 
-            if (Double.isInfinite(returnValue)) {
+            if (returnValue == null) {
+                amountObj.put("value", JSONObject.NULL);
+            } else if (Double.isInfinite(returnValue.getValue())) {
                 amountObj.put("value", "Infinity");
-            } else if (Double.isNaN(returnValue)) {
+            } else if (Double.isNaN(returnValue.getValue())) {
                 amountObj.put("value", "NaN");
             } else {
-                amountObj.put("value", returnValue);
-            }
-            amountObj.put("type", entry.getKey());
-            amountObj.put("unit", entry.getValue().getUnit());
-            amountObj.put("perUnit", entry.getValue().getPerUnit());
-            if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
-                amountObj.put("default", "true");
+                amountObj.put("value", returnValue.getValue());
             }
 
             // Add the object to the amounts array
@@ -197,15 +200,17 @@ public class ProfileItemBuilder implements ItemBuilder {
         Element amounts = document.createElement("Amounts");
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
 
-            // Create an Amount element
+            String type = entry.getKey();
+            ReturnValue value = entry.getValue();
+
             Element multiAmount = document.createElement("Amount");
-            multiAmount.setAttribute("type", entry.getKey());
-            multiAmount.setAttribute("unit", entry.getValue().getUnit());
-            multiAmount.setAttribute("perUnit", entry.getValue().getPerUnit());
-            if (entry.getKey().equals(item.getAmounts().getDefaultType())) {
+            multiAmount.setAttribute("type", type);
+            multiAmount.setAttribute("unit", value != null ? value.getUnit() : "");
+            multiAmount.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
+            if (type.equals(item.getAmounts().getDefaultType())) {
                 multiAmount.setAttribute("default", "true");
             }
-            multiAmount.setTextContent(entry.getValue().getValue() + "");
+            multiAmount.setTextContent(value != null ? value.getValue() + "" : "");
             amounts.appendChild(multiAmount);
         }
         for (Note note : item.getAmounts().getNotes()) {
