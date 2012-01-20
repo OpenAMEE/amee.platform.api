@@ -55,6 +55,7 @@ public class DataItemNumberValueHistory extends BaseDataItemNumberValue implemen
         this.startDate = startDate;
     }
 
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
     public void setStartDate(StartEndDate startDate) {
         this.startDate = startDate;
     }

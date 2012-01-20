@@ -117,6 +117,11 @@ public class ProfileItem extends BaseItem {
         this.startDate = startDate;
     }
 
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setStartDate(StartEndDate startDate) {
+        this.startDate = startDate;
+    }
+
     public StartEndDate getEndDate() {
         if (endDate != null) {
             return new StartEndDate(endDate);
@@ -126,6 +131,12 @@ public class ProfileItem extends BaseItem {
     }
 
     public void setEndDate(Date endDate) {
+        // May be null.
+        this.endDate = endDate;
+    }
+
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setEndDate(StartEndDate endDate) {
         // May be null.
         this.endDate = endDate;
     }
