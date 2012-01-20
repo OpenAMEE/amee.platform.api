@@ -47,7 +47,7 @@ public interface ProfileItemResource {
 
         ProfileItem getObject();
 
-        void setObject(Profile object);
+        void setObject(ProfileItem object);
 
         ValidationResult getValidationResult();
 

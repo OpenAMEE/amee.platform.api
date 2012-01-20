@@ -8,6 +8,8 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * An Editor implementation for validating values associated with a given {@link ItemValueDefinition}.
+ *
+ * TODO: Should this be moved to the com.amee.platform.resource.dataitemvalue package?
  */
 public class DataItemValueEditor extends PropertyEditorSupport {
 
