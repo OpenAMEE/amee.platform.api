@@ -2,6 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <comment>Validation Messages</comment>
+
     <!-- Default messages for any parameters. -->
     <entry key="empty">The value is empty.</entry>
     <entry key="short">The value is too short.</entry>
@@ -12,12 +13,20 @@
     <entry key="format">The value does not match the required format.</entry>
     <entry key="typeMismatch">The value is not of the correct type.</entry>
     <entry key="duplicate">The value duplicates another value.</entry>
+
     <!-- Messages for a 'dataCategory' parameter. -->
     <entry key="same.dataCategory">The new parent category cannot be the same category.</entry>
     <entry key="child.dataCategory">The new category parents cannot include this category.</entry>
+
     <!-- Messages for a 'startDate' parameter. -->
     <entry key="epoch.startDate">The startDate value cannot be on or before the epoch.</entry>
-    <entry key="end_of_epoch.startDate">The startDate value cannot be an or after the epoch end.</entry>
+    <entry key="end_of_epoch.startDate">The startDate value cannot be on or after the epoch end.</entry>
+
+    <!-- Messages for an 'endDate' parameter. -->
+    <entry key="epoch.endDate">The endDate value cannot be on or before the epoch.</entry>
+    <entry key="end_of_epoch.endDate">The endDate value cannot be on or after the epoch end.</entry>
+    <entry key="end_before_start.endDate">The endDate value cannot be before the startDate value.</entry>
+
     <!-- Messages for a 'defaultType' parameter. -->
     <entry key="no_default_type.defaultType">The Item Definition must have a default type.</entry>
 </properties>
