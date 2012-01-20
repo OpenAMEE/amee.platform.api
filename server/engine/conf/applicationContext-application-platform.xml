@@ -783,16 +783,16 @@
                           value="com.amee.platform.resource.profileitem.ProfileItemsResource$Builder"/>
             </bean>
         </property>
-        <!--<property name="acceptors">-->
-            <!--<map>-->
-                <!--<entry key="application/x-www-form-urlencoded">-->
-                    <!--<bean class="com.amee.base.resource.LocalResourceAcceptor">-->
-                        <!--<property name="target"-->
-                                  <!--value="com.amee.platform.resource.profileitem.ProfileItemsResource$FormAcceptor"/>-->
-                    <!--</bean>-->
-                <!--</entry>-->
-            <!--</map>-->
-        <!--</property>-->
+        <property name="acceptors">
+            <map>
+                <entry key="application/x-www-form-urlencoded">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target"
+                                  value="com.amee.platform.resource.profileitem.ProfileItemsResource$FormAcceptor"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
     </bean>
 
     <bean id="profileItemResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
