@@ -9,22 +9,27 @@ import java.util.List;
 
 public interface Pathable extends IdentityObject {
 
-    public String getPath();
+    String getPath();
 
-    public String getName();
+    String getName();
 
-    public String getDisplayName();
+    String getDisplayName();
 
-    public String getDisplayPath();
+    String getDisplayPath();
 
-    public String getFullPath();
+    String getFullPath();
 
-    public boolean isDeprecated();
+    boolean isDeprecated();
 
-    public ObjectType getObjectType();
+    ObjectType getObjectType();
 
-    public IAMEEEntity getEntity();
+    IAMEEEntity getEntity();
 
-    public List<IAMEEEntityReference> getHierarchy();
+    /**
+     * Gets the ownership hierarchy for the entity. Eg, DC -> DC -> DI or PR -> PI. Used for permissions.
+     *
+     * @return a List of entities in the hierarchy. The first entry is the root, the last entry is the current entity.
+     */
+    List<IAMEEEntityReference> getHierarchy();
 }
 
