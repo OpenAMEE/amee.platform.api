@@ -2,6 +2,7 @@ package com.amee.domain.item.profile;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.DataCategory;
@@ -17,7 +18,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.Duration;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PROFILE_ITEM")
@@ -321,5 +324,12 @@ public class ProfileItem extends BaseItem {
             values = getItemDefinition().getProfileItemValuesBean();
         }
         return values;
+    }
+
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(getProfile());
+        entities.add(this);
+        return entities;
     }
 }
