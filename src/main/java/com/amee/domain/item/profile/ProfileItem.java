@@ -41,6 +41,12 @@ public class ProfileItem extends BaseItem {
     @Transient
     private ReturnValues amounts = new ReturnValues();
 
+    /**
+     * A temporary and transient object for use in validation. See the getValues() method below.
+     */
+    @Transient
+    private Object values;
+
     public ProfileItem() {
         super();
     }
@@ -302,4 +308,18 @@ public class ProfileItem extends BaseItem {
         return ThreadBeanHolder.get(ProfileItemService.class);
     }
 
+    /**
+     * Returns a temporary and transient JavaBean related to the Item Values associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link com.amee.domain.data.ItemDefinition#getProfileItemValuesBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getValues() {
+        if (values == null) {
+            values = getItemDefinition().getProfileItemValuesBean();
+        }
+        return values;
+    }
 }

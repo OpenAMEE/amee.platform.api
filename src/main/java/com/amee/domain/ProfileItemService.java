@@ -44,4 +44,6 @@ public interface ProfileItemService extends ItemService {
     void persist(BaseItemValue itemValue);
 
     void remove(BaseItemValue itemValue);
+    
+    void updateProfileItemValues(ProfileItem profileItem);
 }
