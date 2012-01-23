@@ -70,6 +70,8 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
             requestWrapper.getAttributes().get("activeUserUid"), profile);
         
         ProfileItem profileItem = new ProfileItem(profile, dataItem);
+
+        // This will generate all profile item values.
         profileItemService.persist(profileItem);
         return handle(requestWrapper, profileItem);
     }
@@ -79,7 +81,7 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
         validator.setObject(profileItem);
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
-//            profileItemService.updateProfileItemValues(profileItem);
+            profileItemService.updateProfileItemValues(profileItem);
             return ResponseHelper.getOK(
                 requestWrapper,
                 "/" + requestWrapper.getVersion() +

@@ -8,7 +8,7 @@ import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.data.BaseDataItemTextValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
-import com.amee.platform.resource.dataitem.DataItemValueEditor;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,39 +117,36 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
         for (ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
             if (ivd.isFromData()) {
                 String paramName = "values." + ivd.getPath();
+
+                // Allow parameter for this ItemValueDefinition.
+                allowedFields.add(paramName);
                 if (ivd.isDouble()) {
                     // Double values.
-                    // Allow parameter for this ItemValueDefinition.
-                    allowedFields.add(paramName);
                     // Add ValidationSpecification.
                     add(new ValidationSpecification()
                             .setName(paramName)
                             .setDoubleNumber(true)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(Double.class, paramName, new DataItemValueEditor(ivd));
+                    add(Double.class, paramName, new ItemValueEditor(ivd));
                 } else if (ivd.isInteger()) {
                     // Integer values.
-                    // Allow parameter for this ItemValueDefinition.
-                    allowedFields.add(paramName);
                     // Add ValidationSpecification.
                     add(new ValidationSpecification()
                             .setName(paramName)
                             .setIntegerNumber(true)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(Integer.class, paramName, new DataItemValueEditor(ivd));
+                    add(Integer.class, paramName, new ItemValueEditor(ivd));
                 } else {
                     // String values.
-                    // Allow parameter for this ItemValueDefinition.
-                    allowedFields.add(paramName);
                     // Add ValidationSpecification.
                     add(new ValidationSpecification()
                             .setName(paramName)
                             .setMaxSize(BaseDataItemTextValue.VALUE_SIZE)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(String.class, paramName, new DataItemValueEditor(ivd));
+                    add(String.class, paramName, new ItemValueEditor(ivd));
                 }
             }
         }
@@ -167,7 +164,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
 
     @Override
     public String[] getAllowedFields() {
-        return allowedFields.toArray(new String[]{});
+        return allowedFields.toArray(new String[allowedFields.size()]);
     }
 
     @Override

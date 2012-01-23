@@ -5,10 +5,12 @@ import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.DataItemService;
 import com.amee.domain.ProfileItemService;
+import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.platform.resource.StartEndDateEditor;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
-import com.amee.platform.science.StartEndDate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +139,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                     @Override
                     public int validate(Object object, Object value, Errors errors) {
                         ProfileItem thisProfileItem = (ProfileItem) object;
-                        if (thisProfileItem != null & thisProfileItem.getEndDate() != null) {
+                        if (thisProfileItem != null && thisProfileItem.getEndDate() != null) {
                             if (thisProfileItem.getEndDate().before(thisProfileItem.getStartDate())) {
                                 errors.rejectValue("endDate", "end_before_start.endDate");
                             }
@@ -156,6 +158,39 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
     }
     
     protected void addValues() {
-        //To change body of created methods use File | Settings | File Templates.
+        for (ItemValueDefinition ivd : profileItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromProfile()) {
+                String paramName = "values." + ivd.getPath();
+                
+                // Allow this field.
+                allowedFields.add(paramName);
+                
+                if (ivd.isDouble()) {
+                    
+                    // Valdation spec.
+                    add(new ValidationSpecification()
+                        .setName(paramName)
+                        .setDoubleNumber(true)
+                        .setAllowEmpty(true));
+                    
+                    // Property editor.
+                    add(Double.class, paramName, new ItemValueEditor(ivd));
+                } else if (ivd.isInteger()) {
+                    add(new ValidationSpecification()
+                        .setName(paramName)
+                        .setIntegerNumber(true)
+                        .setAllowEmpty(true));
+                    
+                    add(Integer.class, paramName, new ItemValueEditor(ivd));
+                } else {
+                    add(new ValidationSpecification()
+                        .setName(paramName)
+                        .setMaxSize(ProfileItemTextValue.VALUE_SIZE)
+                        .setAllowEmpty(true));
+                    
+                    add(String.class, paramName, new ItemValueEditor(ivd));
+                }
+            }
+        }
     }
 }

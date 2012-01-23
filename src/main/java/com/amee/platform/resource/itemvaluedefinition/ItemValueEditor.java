@@ -1,25 +1,22 @@
-package com.amee.platform.resource.dataitem;
+package com.amee.platform.resource.itemvaluedefinition;
 
 import com.amee.domain.data.ItemValueDefinition;
-import com.amee.service.data.DataService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.beans.PropertyEditorSupport;
 
 /**
  * An Editor implementation for validating values associated with a given {@link ItemValueDefinition}.
  *
- * TODO: Should this be moved to the com.amee.platform.resource.dataitemvalue package?
  */
-public class DataItemValueEditor extends PropertyEditorSupport {
+public class ItemValueEditor extends PropertyEditorSupport {
 
     private ItemValueDefinition itemValueDefinition;
 
-    public DataItemValueEditor() {
+    public ItemValueEditor() {
         super();
     }
 
-    public DataItemValueEditor(ItemValueDefinition itemValueDefinition) {
+    public ItemValueEditor(ItemValueDefinition itemValueDefinition) {
         this();
         this.itemValueDefinition = itemValueDefinition;
     }
