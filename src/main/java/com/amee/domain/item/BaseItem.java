@@ -84,18 +84,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
         return fullPath;
     }
 
-    public List<IAMEEEntityReference> getHierarchy() {
-        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
-        entities.add(this);
-        DataCategory dc = getDataCategory();
-        while (dc != null) {
-            entities.add(dc);
-            dc = dc.getDataCategory();
-        }
-        Collections.reverse(entities);
-        return entities;
-    }
-
     public ItemDefinition getItemDefinition() {
         return itemDefinition;
     }
