@@ -821,12 +821,12 @@
                 </entry>
             </map>
         </property>
-        <!--<property name="remover">-->
-            <!--<bean class="com.amee.base.resource.LocalResourceRemover">-->
-                <!--<property name="target"-->
-                          <!--value="com.amee.platform.resource.profileitem.ProfileItemResource$Remover"/>-->
-            <!--</bean>-->
-        <!--</property>-->
+        <property name="remover">
+            <bean class="com.amee.base.resource.LocalResourceRemover">
+                <property name="target"
+                          value="com.amee.platform.resource.profileitem.ProfileItemResource$Remover"/>
+            </bean>
+        </property>
     </bean>
 
     <!-- Search. -->
