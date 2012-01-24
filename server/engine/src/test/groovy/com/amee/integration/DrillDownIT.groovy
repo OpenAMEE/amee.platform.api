@@ -23,13 +23,13 @@ class DrillDownIT extends BaseApiTest {
      */
     @Test
     void canDrillDownJson() {
-        doDrillDownJson(['nothing_to_see': 'here'], 21, 'numberOfPeople');
-        doDrillDownJson(['numberOfPeople': '5'], 5, 'fuel');
-        doDrillDownJson(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid');
+        doDrillDownJson(['nothing_to_see': 'here'], 21, 'numberOfPeople')
+        doDrillDownJson(['numberOfPeople': '5'], 5, 'fuel')
+        doDrillDownJson(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid')
     }
 
     def doDrillDownJson(query, choicesSize, choicesName) {
-        versions.each { version -> doDrillDownJson(query, choicesSize, choicesName, version) };
+        versions.each { version -> doDrillDownJson(query, choicesSize, choicesName, version) }
     }
 
     def doDrillDownJson(query, choicesSize, choicesName, version) {
@@ -37,13 +37,13 @@ class DrillDownIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/categories/Cooking/drill",
                     query: query,
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals choicesSize, response.data.drill.choices.values.size();
-            assertEquals choicesName, response.data.drill.choices.name;
+                    contentType: JSON)
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals choicesSize, response.data.drill.choices.values.size()
+            assertEquals choicesName, response.data.drill.choices.name
         }
     }
 
@@ -54,13 +54,13 @@ class DrillDownIT extends BaseApiTest {
      */
     @Test
     void canDrillDownXml() {
-        doDrillDownXml(['nothing_to_see': 'here'], 21, 'numberOfPeople');
-        doDrillDownXml(['numberOfPeople': '5'], 5, 'fuel');
-        doDrillDownXml(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid');
+        doDrillDownXml(['nothing_to_see': 'here'], 21, 'numberOfPeople')
+        doDrillDownXml(['numberOfPeople': '5'], 5, 'fuel')
+        doDrillDownXml(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid')
     }
 
     def doDrillDownXml(query, choicesSize, choicesName) {
-        versions.each { version -> doDrillDownXml(query, choicesSize, choicesName, version) };
+        versions.each { version -> doDrillDownXml(query, choicesSize, choicesName, version) }
     }
 
     def doDrillDownXml(query, choicesSize, choicesName, version) {
@@ -68,12 +68,36 @@ class DrillDownIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/categories/Cooking/drill",
                     query: query,
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            assertEquals choicesSize, response.data.Drill.Choices.Values.Value.size();
-            assertEquals choicesName, response.data.Drill.Choices.Name.text();
+                    contentType: XML)
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            assertEquals choicesSize, response.data.Drill.Choices.Values.Value.size()
+            assertEquals choicesName, response.data.Drill.Choices.Name.text()
+        }
+    }
+
+    /**
+     * Tests a UID is retrieved when one of the drilldowns has an empty value.
+     */
+    @Test
+    void emptyDrillDownValue() {
+        versions.each { version -> emptyDrillDownValue(version) }
+    }
+
+    def emptyDrillDownValue(version) {
+        if (version >= 3.3) {
+            def response = client.get(
+                path: "/${version}/categories/ICE_v2_by_mass/drill",
+                query: [material: 'Lime', type: 'General'],
+                contentType: JSON);
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 1, response.data.drill.choices.values.size()
+            assertEquals 'uid', response.data.drill.choices.name
+            assertEquals 'NX9WAFL8MUCL', response.data.drill.choices.values[0]
         }
     }
 }
