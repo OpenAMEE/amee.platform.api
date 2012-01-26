@@ -254,7 +254,7 @@ class ItemDefinitionIT extends BaseApiTest {
             assertEquals 200, response.status;
             assertEquals 'application/xml', response.contentType;
             assertEquals 'OK', response.data.Status.text();
-            assertEquals 'false', response.data.ItemDefinitions.@truncated.text();
+            assertEquals 'true', response.data.ItemDefinitions.@truncated.text();
             def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition;
             assertEquals itemDefinitionNames2.size(), allItemDefinitions.size();
             assert itemDefinitionNames2 == allItemDefinitions.Name*.text();
