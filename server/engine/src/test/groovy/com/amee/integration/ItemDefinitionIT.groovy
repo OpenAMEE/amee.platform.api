@@ -22,7 +22,7 @@ class ItemDefinitionIT extends BaseApiTest {
             'GHGElectricity',
             'GHGP international grid electricity',
             'GHGUSSubregion',
-            'Kitchen Generic'];
+            'ICE v2 by mass'];
 
     def static expectedUsageNames = ['usage1', 'usage2'];
     def static expectedUsagePresents = ['false', 'true'];
@@ -149,7 +149,7 @@ class ItemDefinitionIT extends BaseApiTest {
             assertEquals 'application/json', response.contentType;
             assertTrue response.data instanceof net.sf.json.JSON;
             assertEquals 'OK', response.data.status;
-            assertFalse response.data.resultsTruncated;
+            assertTrue response.data.resultsTruncated;
             assertEquals itemDefinitionNames2.size(), response.data.itemDefinitions.size();
             assert itemDefinitionNames2 == response.data.itemDefinitions.collect {it.name};
         }
