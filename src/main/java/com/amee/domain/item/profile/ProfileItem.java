@@ -45,6 +45,12 @@ public class ProfileItem extends BaseItem {
     private ReturnValues amounts = new ReturnValues();
 
     /**
+     * A temporary and transient variable used in validation to set the endDate.
+     */
+    @Transient
+    private String duration;
+
+    /**
      * A temporary and transient object for use in validation. See the getValues() method below.
      */
     @Transient
@@ -267,9 +273,11 @@ public class ProfileItem extends BaseItem {
      * Returns a Duration for the Item which is based on the startDate and endDate values. If there is no
      * endDate then null is returned.
      *
+     * Strange method name so it doesn't conflict with the duration getter/setter required for bean binding in validation.
+     *
      * @return the Duration or null
      */
-    public Duration getDuration() {
+    public Duration getDurationInternal() {
         if (getEndDate() != null) {
             return new Duration(getStartDate().getTime(), getEndDate().getTime());
         } else {
@@ -331,5 +339,13 @@ public class ProfileItem extends BaseItem {
         entities.add(getProfile());
         entities.add(this);
         return entities;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }
