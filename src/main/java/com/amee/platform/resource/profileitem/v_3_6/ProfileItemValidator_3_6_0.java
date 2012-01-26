@@ -115,6 +115,8 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                     public int validate(Object object, Object value, Errors errors) {
                         ProfileItem thisProfileItem = (ProfileItem) object;
                         if (thisProfileItem != null) {
+
+                            // Date must be in allowed range.
                             if (thisProfileItem.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
                                 errors.rejectValue("startDate", "epoch");
                             }
@@ -140,9 +142,13 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                     public int validate(Object object, Object value, Errors errors) {
                         ProfileItem thisProfileItem = (ProfileItem) object;
                         if (thisProfileItem != null && thisProfileItem.getEndDate() != null) {
+
+                            // End date must be after start date
                             if (thisProfileItem.getEndDate().before(thisProfileItem.getStartDate())) {
                                 errors.rejectValue("endDate", "end_before_start.endDate");
                             }
+
+                            // Date must be in allowed range.
                             if (thisProfileItem.getEndDate().compareTo(DataItemService.EPOCH) <= 0) {
                                 errors.rejectValue("endDate", "epoch.endDate");
                             }
@@ -155,6 +161,24 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                 }
             )
         );
+        
+        // Duration (period)
+        allowedFields.add("duration");
+        add(new ValidationSpecification()
+            .setName("duration")
+            .setAllowEmpty(true)
+            .setCustomValidation(
+                new ValidationSpecification.CustomValidation() {
+                    @Override
+                    public int validate(Object object, Object value, Errors errors) {
+                        ProfileItem thisProfileItem = (ProfileItem) object;
+                        if (thisProfileItem != null && thisProfileItem.getDuration() != null) {
+                            thisProfileItem.setEndDate(thisProfileItem.getStartDate().plus((String) value));
+                        }
+                        return ValidationSpecification.CONTINUE;
+                    }
+                }
+            ));
     }
     
     protected void addValues() {
