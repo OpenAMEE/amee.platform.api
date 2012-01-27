@@ -234,6 +234,7 @@ class DataItemIT extends BaseApiTest {
                         body: ['path': 'testPath'],
                         requestContentType: URLENC,
                         contentType: JSON);
+                fail 'Should have been rejected'
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
