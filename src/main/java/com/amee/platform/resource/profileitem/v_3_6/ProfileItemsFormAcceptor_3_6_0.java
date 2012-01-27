@@ -16,6 +16,7 @@ import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
 import com.amee.platform.resource.profileitem.ProfileItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
+import com.amee.service.profile.ProfileService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,9 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
 
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
+
+    @Autowired
+    private ProfileService profileService;
 
     @Override
     @AMEETransaction
@@ -82,6 +86,9 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             profileItemService.updateProfileItemValues(profileItem);
+            profileItemService.clearItemValues();
+            profileService.clearCaches(profileItem.getProfile());
+
             return ResponseHelper.getOK(
                 requestWrapper,
                 "/" + requestWrapper.getVersion() +
