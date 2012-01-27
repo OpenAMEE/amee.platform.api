@@ -4,13 +4,20 @@ import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import groovyx.net.http.HttpResponseException
 
 /**
  * Tests for the Profile Item API.
  */
 class ProfileItemIT extends BaseApiTest {
 
+    def profileUid = 'UCP4SKANF6CS'
     def profileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
+
+    // ICE_v2_by_mass; material=Lime, type=General
+    def dataItemUid = 'NX9WAFL8MUCL'
+    def categoryUid = 'IPQZMZPFQBDB'
+    def categoryWikiName = 'ICE_v2_by_mass'
 
     /**
      * Tests for creation, fetch and deletion of a Profile Item using JSON responses.
@@ -35,15 +42,70 @@ class ProfileItemIT extends BaseApiTest {
      * Delete (TRASH) a Profile Item by sending a DELETE request to '/profiles/{UID}/items/{UID}' (since 3.6.0).
      */
     @Test
-    @Ignore("Profile Item creation not yet implemented")
     void createAndRemoveProfileItemJson() {
         versions.each { version -> createAndRemoveProfileItemJson(version) }
     }
     
     def createAndRemoveProfileItemJson(version) {
         if (version >= 3.6) {
+            
+            // Create the profile item
+            def responsePost = client.post(
+                path: "/${version}/profiles/${profileUid}/items",
+                body: [
+                    name: 'test1',
+                    dataItemUid: dataItemUid,
+                    startDate: '2012-01-26T10:00:00Z',
+                    endDate: '2012-02-26T12:00:00Z',
+                    'values.mass': '5'],
+                requestContentType: URLENC,
+                contentType: JSON)
 
-            // TODO
+            assertEquals 201, responsePost.status
+
+            // Is Location available?
+            assertNotNull responsePost.headers['Location']
+            assertNotNull responsePost.headers['Location'].value
+            def location = responsePost.headers['Location'].value
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
+            // Get new ProfileItem UID.
+            def uid = location.split('/')[7]
+            assertNotNull uid
+
+            // Get the profile item
+            def responseGet = client.get(
+                path: "/${version}/profiles/${profileUid}/items/${uid};full",
+                contentType: JSON)
+
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'test1', responseGet.data.item.name
+            assertEquals '2012-01-26T10:00:00Z', responseGet.data.item.startDate
+            assertEquals '2012-02-26T12:00:00Z', responseGet.data.item.endDate
+            assertEquals categoryUid, responseGet.data.item.categoryUid
+            assertEquals categoryWikiName, responseGet.data.item.categoryWikiName
+
+            // Amounts
+            assertEquals 3, responseGet.data.item.amounts.amount.size()
+            assertContainsAmount(responseGet.data.item.amounts.amount, 'CO2', 3.8, 'kg', '', true)
+            assertContainsAmount(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
+            assertContainsAmount(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+
+            // Delete the profile item
+            def responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
+            assertEquals 200, responseDelete.status
+
+            // Check it was deleted
+            // We should get a 404 here.
+            try {
+                client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals 404, e.response.status
+            }
         }
     }
 
@@ -75,7 +137,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getProfileItemsJson(version) {
-        def response = client.get(path: "/${version}/profiles/UCP4SKANF6CS/items;full", contentType: JSON)
+        def response = client.get(path: "/${version}/profiles/${profileUid}/items;full", contentType: JSON)
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -89,7 +151,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getProfileItemsXml(version) {
-        def response = client.get(path: "/${version}/profiles/UCP4SKANF6CS/items;full", contentType: XML)
+        def response = client.get(path: "/${version}/profiles/${profileUid}/items;full", contentType: XML)
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -131,7 +193,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getSingleProfileItemJson(version) {
-        def response = client.get(path: "/${version}/profiles/UCP4SKANF6CS/items/J7TICQCEMGEA;full", contentType: JSON)
+        def response = client.get(path: "/${version}/profiles/${profileUid}/items/J7TICQCEMGEA;full", contentType: JSON)
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -160,7 +222,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getSingleProfileItemXml(version) {
-        def response = client.get(path: "/${version}/profiles/UCP4SKANF6CS/items/J7TICQCEMGEA;full", contentType: XML)
+        def response = client.get(path: "/${version}/profiles/${profileUid}/items/J7TICQCEMGEA;full", contentType: XML)
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -185,5 +247,28 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals 1, response.data.Item.Amounts.Notes.Note.size()
         assertEquals 'comment', response.data.Item.Amounts.Notes.Note[0].@type.text()
         assertEquals 'This is a comment', response.data.Item.Amounts.Notes.Note[0].text()
+    }
+
+    /**
+     * Helper method to check an amount. Designed for json. Check with xml...
+     *
+     * @param amounts the array of amounts to check.
+     * @param type the expected type, eg CO2.
+     * @param value the expected value, eg 5.83.
+     * @param unit the expected unit, eg kg.
+     * @param perUnit the expected perUnit, eg month.
+     * @param isDefault is this amount the default type?
+     */
+    def assertContainsAmount(amounts, type, value, unit, perUnit, isDefault) {
+        def amount = amounts.find { it.type == type }
+        assertNotNull amount
+        assertEquals value, amount.value, 0.000001
+        assertEquals unit, amount.unit
+        assertEquals perUnit, amount.perUnit
+        if (isDefault) {
+            assertEquals isDefault, amount.default
+        } else {
+            assertNull amount.default
+        }
     }
 }
