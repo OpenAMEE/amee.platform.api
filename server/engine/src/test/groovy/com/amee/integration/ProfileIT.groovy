@@ -272,4 +272,30 @@ class ProfileIT extends BaseApiTest {
         def profiles = response.data.Profiles.Profile
         assertEquals 1, profiles.size()
     }
+
+    /**
+     * Tests getting a single profile the user is not authorised for.
+     */
+    @Test
+    void getSingleProfileUnauthorised() {
+        versions.each { version -> getSingleProfileUnauthorised(version) }
+    }
+
+    def getSingleProfileUnauthorised(version) {
+        if (version >= 3.6) {
+
+            // We just use the ecoinvent user because it is a different user.
+            setEcoinventUser()
+            try {
+                client.get(path: "/${version}/profiles/UCP4SKANF6CS", contentType: JSON)
+                fail 'Expected 403'
+            } catch (HttpResponseException e) {
+                def response = e.response;
+                assertEquals 403, response.status;
+                assertEquals 403, response.data.status.code;
+                assertEquals 'Forbidden', response.data.status.name;
+            }
+        }
+    }
+
 }
