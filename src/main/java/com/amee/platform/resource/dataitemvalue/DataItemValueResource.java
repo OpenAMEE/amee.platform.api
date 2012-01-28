@@ -10,51 +10,51 @@ import java.util.Map;
 
 public interface DataItemValueResource {
 
-    public static interface Builder extends ResourceBuilder {
+    static interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, BaseDataItemValue itemValue);
+        void handle(RequestWrapper requestWrapper, BaseDataItemValue itemValue);
 
-        public DataItemValueResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemValueResource.Renderer getRenderer(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    static interface Renderer extends ResourceRenderer {
 
-        public void newDataItemValue(BaseDataItemValue dataItemValue);
+        void newDataItemValue(BaseDataItemValue dataItemValue);
 
-        public void addBasic();
+        void addBasic();
 
-        public void addPath();
+        void addPath();
 
-        public void addDataCategory();
+        void addDataCategory();
 
-        public void addDataItem();
+        void addDataItem();
 
-        public void addAudit();
+        void addAudit();
 
-        public void addItemValueDefinition(ItemValueDefinition itemValueDefinition);
+        void addItemValueDefinition(ItemValueDefinition itemValueDefinition);
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    static interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper, BaseDataItemValue dataItemValue);
+        Object handle(RequestWrapper requestWrapper, BaseDataItemValue dataItemValue);
     }
 
-    public static interface DataItemValueValidator {
+    static interface DataItemValueValidator {
 
-        public void initialise();
+        void initialise();
 
-        public boolean isValid(Map<String, String> queryParameters);
+        boolean isValid(Map<String, String> queryParameters);
 
-        public BaseDataItemValue getObject();
+        BaseDataItemValue getObject();
 
-        public void setObject(BaseDataItemValue object);
+        void setObject(BaseDataItemValue object);
 
-        public ValidationResult getValidationResult();
+        ValidationResult getValidationResult();
     }
 
     /**
      * A {@link ResourceRemover} implementation for this resource.
      */
-    public static interface Remover extends ResourceRemover {
+    static interface Remover extends ResourceRemover {
     }
 }
