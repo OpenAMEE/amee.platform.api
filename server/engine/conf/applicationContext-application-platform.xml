@@ -707,6 +707,12 @@
                         <property name="since" value="3.6.0"/>
                     </bean>
                 </entry>
+                <entry key="/{profileIdentifier}/items/{itemIdentifier}/values">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="profileItemValuesResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
@@ -825,6 +831,23 @@
             <bean class="com.amee.base.resource.LocalResourceRemover">
                 <property name="target"
                           value="com.amee.platform.resource.profileitem.ProfileItemResource$Remover"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="profileItemValuesResource" class="com.amee.restlet.resource.GenericResource" scope="prototype">
+        <property name="modifiable" value="false"/>
+        <property name="attributeNames">
+            <set>
+                <value>activeUserUid</value>
+                <value>profileIdentifier</value>
+                <value>itemIdentifier</value>
+            </set>
+        </property>
+        <property name="builder">
+            <bean class="com.amee.base.resource.LocalResourceBuilder">
+                <property name="target"
+                          value="com.amee.platform.resource.profileitemvalue.ProfileItemValuesResource$Builder"/>
             </bean>
         </property>
     </bean>
