@@ -10,46 +10,46 @@ import java.util.Map;
 
 public interface DataItemValuesResource {
 
-    public static interface Builder extends ResourceBuilder {
+    static interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter);
+        void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter);
 
-        public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
 
-        public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
+        DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
 
-        public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     /**
      * Note that this Renderer is also used by DataItemValueHistoryResource.
      */
-    public static interface Renderer extends ResourceRenderer {
+    static interface Renderer extends ResourceRenderer {
 
-        public void newDataItemValue(DataItemValueResource.Renderer renderer);
+        void newDataItemValue(DataItemValueResource.Renderer renderer);
 
-        public void setTruncated(boolean truncated);
+        void setTruncated(boolean truncated);
     }
 
-    public static interface DataItemValuesFilterValidator {
+    static interface DataItemValuesFilterValidator {
 
-        public void initialise();
+        void initialise();
 
-        public boolean isValid(Map<String, String> queryParameters);
+        boolean isValid(Map<String, String> queryParameters);
 
-        public DataItemValuesFilter getObject();
+        DataItemValuesFilter getObject();
 
-        public void setObject(DataItemValuesFilter object);
+        void setObject(DataItemValuesFilter object);
 
-        public Date getDefaultStartDate();
+        Date getDefaultStartDate();
 
-        public void setDefaultStartDate(Date defaultStartDate);
+        void setDefaultStartDate(Date defaultStartDate);
 
-        public ValidationResult getValidationResult();
+        ValidationResult getValidationResult();
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    static interface FormAcceptor extends ResourceAcceptor {
 
-        public Object handle(RequestWrapper requestWrapper) throws ValidationException;
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }
