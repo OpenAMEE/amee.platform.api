@@ -12,6 +12,7 @@ import com.amee.domain.profile.Profile;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
+import com.amee.service.profile.ProfileService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,10 @@ public class ProfileItemFormAcceptor_3_6_0 implements ProfileItemResource.FormAc
 
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
-    
+
+    @Autowired
+    private ProfileService profileService;
+
     @Override
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -62,6 +66,8 @@ public class ProfileItemFormAcceptor_3_6_0 implements ProfileItemResource.FormAc
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             profileItemService.updateProfileItemValues(profileItem);
+            profileItemService.clearItemValues();
+            profileService.clearCaches(profileItem.getProfile());
             return ResponseHelper.getOK(requestWrapper);
         } else {
             throw new ValidationException(validator.getValidationResult());

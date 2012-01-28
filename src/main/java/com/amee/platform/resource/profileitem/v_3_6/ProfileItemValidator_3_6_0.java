@@ -11,6 +11,7 @@ import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
+import com.amee.platform.science.StartEndDate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,10 +119,10 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
 
                             // Date must be in allowed range.
                             if (thisProfileItem.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
-                                errors.rejectValue("startDate", "epoch");
+                                errors.rejectValue("startDate", "epoch.startDate");
                             }
                             if (thisProfileItem.getStartDate().compareTo(DataItemService.Y2038) >= 0) {
-                                errors.rejectValue("startDate", "end_of_epoch");
+                                errors.rejectValue("startDate", "end_of_epoch.startDate");
                             }
                         }
                         return ValidationSpecification.CONTINUE;
@@ -148,10 +149,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                 errors.rejectValue("endDate", "end_before_start.endDate");
                             }
 
-                            // Date must be in allowed range.
-                            if (thisProfileItem.getEndDate().compareTo(DataItemService.EPOCH) <= 0) {
-                                errors.rejectValue("endDate", "epoch.endDate");
-                            }
+                            // Date must be in allowed range (don't need to check < EPOCH as previous test will catch)
                             if (thisProfileItem.getEndDate().compareTo(DataItemService.Y2038) >= 0) {
                                 errors.rejectValue("endDate", "end_of_epoch.endDate");
                             }
@@ -173,7 +171,19 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                     public int validate(Object object, Object value, Errors errors) {
                         ProfileItem thisProfileItem = (ProfileItem) object;
                         if (thisProfileItem != null && thisProfileItem.getDuration() != null) {
-                            thisProfileItem.setEndDate(thisProfileItem.getStartDate().plus((String) value));
+                            StartEndDate endDate = thisProfileItem.getStartDate().plus((String) value);
+
+                            // End date must be after start date
+                            if (endDate.before(thisProfileItem.getStartDate())) {
+                                errors.rejectValue("duration", "end_before_start.endDate");
+                            }
+
+                            // Date must be in allowed range.
+                            if (endDate.compareTo(DataItemService.Y2038) >= 0) {
+                                errors.rejectValue("duration", "end_of_epoch.endDate");
+                            }
+
+                            thisProfileItem.setEndDate(endDate);
                         }
                         return ValidationSpecification.CONTINUE;
                     }
@@ -191,7 +201,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                 
                 if (ivd.isDouble()) {
                     
-                    // Valdation spec.
+                    // Validation spec.
                     add(new ValidationSpecification()
                         .setName(paramName)
                         .setDoubleNumber(true)
