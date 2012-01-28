@@ -11,8 +11,9 @@ import groovyx.net.http.HttpResponseException
  */
 class ProfileItemIT extends BaseApiTest {
 
-    def profileUid = 'UCP4SKANF6CS'
-    def profileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
+    def cookingProfileUid = 'UCP4SKANF6CS'
+    def cookingProfileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
+    def computersGenericProfileUid = '46OLHG2D9LWM'
 
     // ICE_v2_by_mass; material=Lime, type=General
     def dataItemUid = 'NX9WAFL8MUCL'
@@ -51,7 +52,7 @@ class ProfileItemIT extends BaseApiTest {
             
             // Create the profile item
             def responsePost = client.post(
-                path: "/${version}/profiles/${profileUid}/items",
+                path: "/${version}/profiles/${cookingProfileUid}/items",
                 body: [
                     name: 'test1',
                     dataItemUid: dataItemUid,
@@ -75,7 +76,7 @@ class ProfileItemIT extends BaseApiTest {
 
             // Get the profile item
             def responseGet = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${uid};full",
+                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
                 contentType: JSON)
 
             assertEquals 200, responseGet.status
@@ -95,17 +96,138 @@ class ProfileItemIT extends BaseApiTest {
             assertContainsAmount(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
 
             // Delete the profile item
-            def responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
+            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
             assertEquals 200, responseDelete.status
 
             // Check it was deleted
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
+                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
                 assertEquals 404, e.response.status
             }
+        }
+    }
+
+    /**
+     * Tests creating a duplicate profile item. A profile item is considered duplicate if it has the same:
+     * profile ID, data category ID, data item ID, start date, name.
+     */
+    @Test
+    void createDuplicateProfileItem() {
+        versions.each { version -> createDuplicateProfileItem(version) }
+    }
+    
+    def createDuplicateProfileItem(version) {
+        if (version >= 3.6) {
+
+            // Create a profile item
+            def responsePost = client.post(
+                path: "/${version}/profiles/${cookingProfileUid}/items",
+                body: [
+                    name: 'dupe',
+                    dataItemUid: dataItemUid,
+                    startDate: '2012-01-26T10:00:00Z'],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+            def uid = responsePost.headers['Location'].value.split('/')[7]
+
+            // Try creating a duplicate
+            try {
+                client.post(
+                    path: "/${version}/profiles/${cookingProfileUid}/items",
+                    body: [
+                        name: 'dupe',
+                        dataItemUid: dataItemUid,
+                        startDate: '2012-01-26T10:00:00Z'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+                fail 'Should have thrown exception'
+            } catch (HttpResponseException e) {
+
+                // Should have been rejected.
+                assertEquals 400, e.response.status;
+            }
+
+            // Clean up
+            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
+
+            // Should have been deleted
+            assertEquals 200, responseDelete.status
+        }
+    }
+
+    /**
+     * Tests creating a profile item with overlapping dates and the same name.
+     * Two profile items cannot have the same dataItemUid and overlapping dates unless they also have different names.
+     */
+    @Test
+    @Ignore("See: PL-11203")
+    void createOverlappingProfileItem() {
+        versions.each { version -> createOverlappingProfileItem(version) }
+    }
+    
+    def createOverlappingProfileItem(version) {
+        if (version >= 3.6) {
+
+            // Create a profile item
+            def responsePost = client.post(
+                path: "/${version}/profiles/${cookingProfileUid}/items",
+                body: [
+                    name: 'overlap',
+                    dataItemUid: dataItemUid,
+                    startDate: '2012-01-26T10:00:00Z',
+                    endDate: '2012-05-10T12:00:00Z'],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+            def uid1 = responsePost.headers['Location'].value.split('/')[7]
+
+            // Try creating an overlapping item with the same name
+            try {
+                client.post(
+                    path: "/${version}/profiles/${cookingProfileUid}/items",
+                    body: [
+                        name: 'overlap',
+                        dataItemUid: dataItemUid,
+                        startDate: '2012-03-26T10:00:00Z',
+                        endDate: '2012-10-15T13:00:00Z'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+                fail 'Should have thrown exception'
+            } catch (HttpResponseException e) {
+
+                // Should have been rejected.
+                assertEquals 400, e.response.status;
+            }
+
+            // Create an overlapping item with a different name
+            responsePost = client.post(
+                path: "/${version}/profiles/${cookingProfileUid}/items",
+                body: [
+                    name: 'overlap with different name',
+                    dataItemUid: dataItemUid,
+                    startDate: '2012-03-26T10:00:00Z',
+                    endDate: '2012-10-15T13:00:00Z'],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            assertEquals 201, responsePost.status
+            def uid2 = responsePost.headers['Location'].value.split('/')[7]
+
+            // Clean up
+            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid1}")
+            assertEquals 200, responseDelete.status
+
+            responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid2}")
+            assertEquals 200, responseDelete.status
         }
     }
 
@@ -137,28 +259,28 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getProfileItemsJson(version) {
-        def response = client.get(path: "/${version}/profiles/${profileUid}/items;full", contentType: JSON)
+        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: JSON)
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
         assertFalse response.data.resultsTruncated
-        assertEquals profileItemUids.size(), response.data.items.size()
-        assert profileItemUids.sort() == response.data.items.collect { it.uid }.sort()
+        assertEquals cookingProfileItemUids.size(), response.data.items.size()
+        assert cookingProfileItemUids.sort() == response.data.items.collect { it.uid }.sort()
 
         // Should  be sorted by creation date
         assertTrue response.data.items.first().created < response.data.items.last().created
     }
 
     def getProfileItemsXml(version) {
-        def response = client.get(path: "/${version}/profiles/${profileUid}/items;full", contentType: XML)
+        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: XML)
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals 'false', response.data.Items.@truncated.text()
         def profileItems = response.data.Items.Item
-        assertEquals profileItemUids.size(), profileItems.size()
-        assert profileItemUids.sort() == profileItems.@uid*.text().sort()
+        assertEquals cookingProfileItemUids.size(), profileItems.size()
+        assert cookingProfileItemUids.sort() == profileItems.@uid*.text().sort()
 
         // Should be sorted by creation date
         assertTrue profileItems[0].@created.text() < profileItems[-1].@created.text()
@@ -193,7 +315,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getSingleProfileItemJson(version) {
-        def response = client.get(path: "/${version}/profiles/${profileUid}/items/J7TICQCEMGEA;full", contentType: JSON)
+        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: JSON)
         assertEquals 200, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
@@ -206,7 +328,6 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '2011-10-12T17:13:00+01:00', response.data.item.startDate
         assertEquals '', response.data.item.endDate
 
-        // TODO: update calculations to return more than one GHG type.
         // Amounts
         assertEquals 1, response.data.item.amounts.amount.size()
         assertEquals 'CO2', response.data.item.amounts.amount[0].type
@@ -222,7 +343,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getSingleProfileItemXml(version) {
-        def response = client.get(path: "/${version}/profiles/${profileUid}/items/J7TICQCEMGEA;full", contentType: XML)
+        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: XML)
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -234,7 +355,6 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '2011-10-12T17:13:00+01:00', response.data.Item.StartDate.text()
         assertEquals '', response.data.Item.EndDate.text()
 
-        // TODO: update calculations to return more than one GHG type.
         // Amounts
         assertEquals 1, response.data.Item.Amounts.Amount.size()
         assertEquals 'CO2', response.data.Item.Amounts.Amount[0].@type.text()
@@ -250,7 +370,166 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     /**
-     * Helper method to check an amount. Designed for json. Check with xml...
+     * Tests getting a list of profile items the user is not authorised for.
+     */
+    @Test
+    void getProfileItemsUnauthorised() {
+        versions.each { version -> getProfileItemsUnauthorised(version) }
+    }
+
+    def getProfileItemsUnauthorised(version) {
+        if (version >= 3.6) {
+
+            // We just use the ecoinvent user because it is a different user.
+            setEcoinventUser()
+            try {
+                client.get(path: "/${version}/profiles/${cookingProfileUid}/items", contentType: JSON)
+                fail 'Expected 403'
+            } catch (HttpResponseException e) {
+                def response = e.response
+                assertEquals 403, response.status
+                assertEquals 403, response.data.status.code
+                assertEquals 'Forbidden', response.data.status.name
+            }
+        }
+    }
+
+    /**
+     * Tests getting a single profile item the user is not authorised for.
+     */
+    @Test
+    void getSingleProfileItemUnauthorised() {
+        versions.each { version -> getSingleProfileItemUnauthorised(version) }
+    }
+    
+    def getSingleProfileItemUnauthorised(version) {
+        if (version >= 3.6) {
+
+            // We just use the ecoinvent user because it is a different user.
+            setEcoinventUser()
+            try {
+                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA", contentType: JSON)
+                fail 'Expected 403'
+            } catch (HttpResponseException e) {
+                def response = e.response
+                assertEquals 403, response.status
+                assertEquals 403, response.data.status.code
+                assertEquals 'Forbidden', response.data.status.name
+            }
+        }
+    }
+
+
+    /**
+     * Tests the validation rules for the Profile Item name field.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>Optional.
+     * <li>Duplicates are allowed.
+     * <li>No longer than 255 chars.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidName() {
+        updateProfileItemFieldJson('name', 'long', String.randomString(256), 3.6)
+    }
+
+    /**
+     * Tests the validation rules for the Profile Item date fields.
+     *
+     * The rules are as follows:
+     *
+     * <ul>
+     * <li>All are optional.
+     * <li>startDate must be before endDate.
+     * <li>dates must be within 1970-01-01 00:00:00 => Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07.
+     *     This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
+     * </ul>
+     */
+    @Test
+    void updateWithInvalidDates() {
+        updateProfileItemFieldJson('startDate', 'epoch.startDate', '1950-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'end_of_epoch.startDate', '2040-01-01T12:00:00Z', 3.6)
+
+        updateProfileItemFieldJson('endDate', 'end_of_epoch.endDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
+
+        updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
+    }
+
+    /**
+     * Tests the validation rules for the Profile Item values.
+     *
+     * The rules depend on the Item Value Definition for the value being updated.
+     *
+     * <ul>
+     * <li>integer values must not be empty and must be a Java integer.
+     * <li>double values must not be empty and must be a Java double.
+     * <li>text values are optional and must be no longer than 32767 characters.
+     * </ul>
+     */
+    @Test
+    void updateWithValues() {
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6);
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6); // Not an integer either.
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6);
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
+
+        // TODO: test doubles?
+    }
+
+    /**
+     * Submits a single Profile Item field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     */
+    def updateProfileItemFieldJson(field, code, value, since) {
+        versions.each { version -> updateProfileItemFieldJson(field, code, value, since, version) }
+    }
+
+    /**
+     * Submits a single Profile Item field value and tests the result. An error is expected.
+     *
+     * @param field that is being updated
+     * @param code expected upon error
+     * @param value to submit
+     * @param since only to versions on or after this since value
+     * @param version version to test
+     */
+    void updateProfileItemFieldJson(field, code, value, since, version) {
+        if (version >= since) {
+            try {
+                // Create form body.
+                def body = [:]
+                body[field] = value
+                // Update ProfileItem.
+                client.put(
+                    path: "/${version}/profiles/${computersGenericProfileUid}/items/J5OCT81E66FT",
+                    body: body,
+                    requestContentType: URLENC,
+                    contentType: JSON)
+                fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
+            } catch (HttpResponseException e) {
+                // Handle error response containing a ValidationResult.
+                def response = e.response
+                assertEquals 400, response.status
+                assertEquals 'application/json', response.contentType
+                assertTrue response.data instanceof net.sf.json.JSON
+                assertEquals 'INVALID', response.data.status
+                assert [field] == response.data.validationResult.errors.collect {it.field}
+                assert [code] == response.data.validationResult.errors.collect {it.code}
+            }
+        }
+    }
+
+    /**
+     * Helper method to check an amount is present and correct. Designed for json. Check with xml...
      *
      * @param amounts the array of amounts to check.
      * @param type the expected type, eg CO2.
