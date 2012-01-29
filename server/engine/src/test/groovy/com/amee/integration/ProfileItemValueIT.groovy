@@ -56,7 +56,8 @@ class ProfileItemValueIT extends BaseApiTest {
             assertEquals 'OK', response.data.Status.text()
 
             def itemValues = response.data.Values.Value
-            assertValueXml(itemValues, 'numberOwned', 1, profileItemUid, 'Computers_generic', 'Number Owned')
+            assertValueXml(itemValues, 'numberOwned', '1', profileItemUid, 'Computers_generic', 'Number Owned')
+            assertValueXml(itemValues, 'onStandby', 'mostly', profileItemUid, 'Computers_generic', 'On standby')
         }
     }
 
@@ -68,9 +69,9 @@ class ProfileItemValueIT extends BaseApiTest {
      * @param value the expected value, eg 5.83.
      * @param itemUid the expected profile item UID.
      * @param wikiName the expected wikiName.
-     * @param itemDefName the expected item definition name.
+     * @param itemValueDefName the expected item value definition name.
      */
-    def assertValueJson(itemValues, path, value, itemUid, wikiName, itemDefName) {
+    def assertValueJson(itemValues, path, value, itemUid, wikiName, itemValueDefName) {
         def itemValue = itemValues.find { it.itemValueDefinition.path == path }
         assertNotNull itemValue
         if (itemValue.value instanceof Double) {
@@ -80,7 +81,7 @@ class ProfileItemValueIT extends BaseApiTest {
         }
         assertEquals itemUid, itemValue.item.uid
         assertEquals wikiName, itemValue.category.wikiName
-        assertEquals itemDefName, itemValue.itemValueDefinition.name
+        assertEquals itemValueDefName, itemValue.itemValueDefinition.name
     }
 
     /**
@@ -91,10 +92,14 @@ class ProfileItemValueIT extends BaseApiTest {
      * @param value the expected value, eg 5.83.
      * @param itemUid the expected profile item UID.
      * @param wikiName the expected wikiName.
-     * @param itemDefName the expected item definition name.
+     * @param itemValueDefName the expected item value definition name.
      */
-    def assertValueXml(itemValues, path, value, itemUid, wikiName, itemDefName) {
-        def itemValue = itemValues.find { it.ItemValueDefinition.Path.text() == path }
+    def assertValueXml(itemValues, path, value, itemUid, wikiName, itemValueDefName) {
+        def itemValue = itemValues.find { it.ItemValueDefinition.Path == path }
         assertNotNull itemValue
+        assertEquals value, itemValue.Value.text()
+        assertEquals itemUid, itemValue.Item.@uid.text()
+        assertEquals wikiName, itemValue.Category.WikiName.text()
+        assertEquals itemValueDefName, itemValue.ItemValueDefinition.Name.text()
     }
 }
