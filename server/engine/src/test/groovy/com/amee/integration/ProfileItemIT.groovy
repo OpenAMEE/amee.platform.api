@@ -7,7 +7,7 @@ import static org.junit.Assert.*
 import groovyx.net.http.HttpResponseException
 
 /**
- * Tests for the Profile Item API.
+ * Tests for the Profile Item API. This API has been available since version 3.6.
  */
 class ProfileItemIT extends BaseApiTest {
 
