@@ -45,7 +45,6 @@ public class ProfileItemValueBuilder_3_6_0 implements ProfileItemValueResource.B
 
         // Collect rendering options from matrix parameters
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
-        boolean path = requestWrapper.getMatrixParameters().containsKey("path");
         boolean category = requestWrapper.getMatrixParameters().containsKey("category");
         boolean item = requestWrapper.getMatrixParameters().containsKey("item");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
@@ -56,9 +55,6 @@ public class ProfileItemValueBuilder_3_6_0 implements ProfileItemValueResource.B
         renderer.addBasic();
 
         // Optionals.
-        if (path || full) {
-            renderer.addPath();
-        }
         if (category || full) {
             renderer.addDataCategory();
         }
@@ -68,7 +64,7 @@ public class ProfileItemValueBuilder_3_6_0 implements ProfileItemValueResource.B
         if (audit || full) {
             renderer.addAudit();
         }
-        if ((itemValueDefinition || full) && (profileItemValue.getItemValueDefinition() != null)) {
+        if (itemValueDefinition || full) {
             renderer.addItemValueDefinition(profileItemValue.getItemValueDefinition());
         }
     }

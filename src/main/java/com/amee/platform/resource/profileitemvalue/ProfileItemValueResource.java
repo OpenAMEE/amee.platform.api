@@ -23,8 +23,6 @@ public interface ProfileItemValueResource {
 
         void addAudit();
 
-        void addPath();
-
         void addItemValueDefinition(ItemValueDefinition itemValueDefinition);
 
         void addProfileItem();

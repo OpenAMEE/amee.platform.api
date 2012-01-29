@@ -3,6 +3,7 @@ package com.amee.platform.resource.profileitemvalue.v_3_6;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.ProfileItemService;
+import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.profile.BaseProfileItemValue;
@@ -46,9 +47,9 @@ public class ProfileItemValueJSONRenderer_3_6_0 implements ProfileItemValueResou
     @Override
     public void addBasic() {
         ResponseHelper.put(profileItemValueObj, "uid", profileItemValue.getUid());
-        ResponseHelper.put(profileItemValueObj, "value", profileItemValue.getValueAsString());
         if (NumberValue.class.isAssignableFrom(profileItemValue.getClass())) {
             NumberValue nv = (NumberValue) profileItemValue;
+            ResponseHelper.put(profileItemValueObj, "value", nv.getValueAsDouble());
             if (nv.hasUnit()) {
                 ResponseHelper.put(profileItemValueObj, "unit", nv.getUnit().toString());
                 if (nv.hasPerUnit()) {
@@ -56,6 +57,8 @@ public class ProfileItemValueJSONRenderer_3_6_0 implements ProfileItemValueResou
                     ResponseHelper.put(profileItemValueObj, "compoundUnit", nv.getCompoundUnit().toString());
                 }
             }
+        } else {
+            ResponseHelper.put(profileItemValueObj, "value", profileItemValue.getValueAsString());
         }
     }
 
@@ -64,12 +67,6 @@ public class ProfileItemValueJSONRenderer_3_6_0 implements ProfileItemValueResou
         ResponseHelper.put(profileItemValueObj, "status", profileItemValue.getStatus().getName());
         ResponseHelper.put(profileItemValueObj, "created", DATE_FORMAT.print(profileItemValue.getCreated().getTime()));
         ResponseHelper.put(profileItemValueObj, "modified", DATE_FORMAT.print(profileItemValue.getModified().getTime()));
-    }
-
-    @Override
-    public void addPath() {
-        ResponseHelper.put(profileItemValueObj, "path", profileItemValue.getPath());
-        ResponseHelper.put(profileItemValueObj, "fullPath", profileItemValue.getFullPath());
     }
 
     @Override

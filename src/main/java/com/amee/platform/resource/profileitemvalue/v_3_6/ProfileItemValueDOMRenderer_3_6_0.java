@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class ProfileItemValueDOMRenderer_3_6_0 implements ProfileItemValueResource.Renderer {
 
     @Autowired
-    ProfileItemService profileItemService;
+    protected ProfileItemService profileItemService;
     
     protected BaseProfileItemValue profileItemValue;
     protected Element rootElem;
@@ -64,13 +64,6 @@ public class ProfileItemValueDOMRenderer_3_6_0 implements ProfileItemValueResour
         profileItemValueElem.setAttribute("status", profileItemValue.getStatus().getName());
         profileItemValueElem.setAttribute("created", DATE_FORMAT.print(profileItemValue.getCreated().getTime()));
         profileItemValueElem.setAttribute("modified", DATE_FORMAT.print(profileItemValue.getModified().getTime()));
-    }
-
-    @Override
-    public void addPath() {
-        profileItemValueElem.addContent(new Element("Path").setText(profileItemValue.getPath()));
-        profileItemValueElem.addContent(new Element("FullPath").setText(profileItemValue.getFullPath()));
-
     }
 
     @Override
