@@ -89,7 +89,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         super.validate(object, errors);
 
         // Check for duplicates (as long as we don't have errors already)
-        if (!errors.hasErrors() && profileItemService.equivalentProfileItemExists(profileItem)) {
+        if (!errors.hasErrors() && !profileItemService.isUnique(profileItem)) {
             errors.reject("duplicate");
         }
     }
