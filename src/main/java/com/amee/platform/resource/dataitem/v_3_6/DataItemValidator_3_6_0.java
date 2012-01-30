@@ -188,7 +188,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
         super.validate(object, errors);
 
         // Check for duplicates (as long as we don't have errors already)
-        if (!errors.hasErrors() && dataItemService.equivalentDataItemExists(dataItem)) {
+        if (!errors.hasErrors() && !dataItemService.isUnique(dataItem)) {
             errors.reject("duplicate");
         }
     }

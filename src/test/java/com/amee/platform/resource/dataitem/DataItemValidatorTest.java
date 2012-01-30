@@ -45,6 +45,8 @@ public class DataItemValidatorTest {
         validator.initialise();
         when(mockMetadataService.getMetadataForEntity(good, "*"))
             .thenReturn(new Metadata());
+        when(mockDataItemService.isUnique(any(DataItem.class)))
+            .thenReturn(true);
         when(mockDataItemService.isDataItemUniqueByPath(any(DataItem.class)))
             .thenReturn(true);
 
@@ -170,8 +172,8 @@ public class DataItemValidatorTest {
             .thenReturn(new Metadata());
         when(mockDataItemService.isDataItemUniqueByPath(any(DataItem.class)))
             .thenReturn(true);
-        when(mockDataItemService.equivalentDataItemExists(any(DataItem.class)))
-            .thenReturn(true);
+        when(mockDataItemService.isUnique(any(DataItem.class)))
+            .thenReturn(false);
 
         BindException errorsBad = new BindException(bad, "bad");
 
