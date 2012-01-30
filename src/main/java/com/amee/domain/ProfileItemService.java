@@ -33,8 +33,6 @@ public interface ProfileItemService extends ItemService {
 
     boolean isUnique(ProfileItem pi);
 
-    boolean equivalentProfileItemExists(ProfileItem profileItem);
-
     Collection<Long> getProfileDataCategoryIds(Profile profile);
 
     void persist(ProfileItem profileItem);
