@@ -41,8 +41,6 @@ public interface DataItemService extends ItemService {
 
     ItemValueMap getDrillDownValuesMap(DataItem dataItem);
 
-    boolean equivalentDataItemExists(DataItem dataItem);
-
     DataItem getDataItemByUid(DataCategory parent, String uid);
 
     DataItem getDataItemByPath(DataCategory parent, String path);
@@ -54,6 +52,8 @@ public interface DataItemService extends ItemService {
     void checkDataItem(DataItem dataItem);
 
     Date getDataItemsModified(DataCategory dataCategory);
+
+    boolean isUnique(DataItem dataItem);
 
     boolean isDataItemUniqueByPath(DataItem dataItem);
 
