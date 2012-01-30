@@ -4,9 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
-import com.amee.base.validation.ValidationException;
 import com.amee.domain.ProfileItemService;
-import com.amee.domain.ProfileItemValuesFilter;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.profile.BaseProfileItemValue;
 import com.amee.domain.item.profile.ProfileItem;
@@ -54,30 +52,18 @@ public class ProfileItemValuesBuilder_3_6_0 implements ProfileItemValuesResource
         resourceAuthorizationService.ensureAuthorizedForBuild(
             requestWrapper.getAttributes().get("activeUserUid"), profileItem);
         
-        // Create filter
-        ProfileItemValuesFilter filter = new ProfileItemValuesFilter();
+        // resultStart and resultLimit parameters are not implemented for this resource
+        // as the list of values should never be very long.
+        // If required in future see com.amee.service.item.DataItemServiceImpl.getAllItemValues() for an example.
 
-        // TODO: Update filter to include dates?
-
-        // Create validator
-        ProfileItemValuesResource.ProfileItemValuesFilterValidator validator = getValidator(requestWrapper);
-        validator.setObject(filter);
-        validator.initialise();
-        
-        // Is the filter valid
-        if (validator.isValid(requestWrapper.getQueryParameters())) {
-            handle(requestWrapper, profileItem, filter);
-            ProfileItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
-            renderer.ok();
-            return renderer.getObject();
-        } else {
-            throw new ValidationException(validator.getValidationResult());
-        }
-
+        handle(requestWrapper, profileItem);
+        ProfileItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
+        renderer.ok();
+        return renderer.getObject();
     }
 
     @Override
-    public void handle(RequestWrapper requestWrapper, ProfileItem profileItem, ProfileItemValuesFilter filter) {
+    public void handle(RequestWrapper requestWrapper, ProfileItem profileItem) {
 
         // Setup renderer
         ProfileItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
