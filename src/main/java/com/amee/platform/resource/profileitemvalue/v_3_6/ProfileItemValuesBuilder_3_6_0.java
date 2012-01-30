@@ -92,11 +92,4 @@ public class ProfileItemValuesBuilder_3_6_0 implements ProfileItemValuesResource
         return (ProfileItemValueResource.Builder)
             resourceBeanFinder.getBuilder(ProfileItemValueResource.Builder.class, requestWrapper);
     }
-
-    @Override
-    public ProfileItemValuesResource.ProfileItemValuesFilterValidator getValidator(RequestWrapper requestWrapper) {
-        return (ProfileItemValuesResource.ProfileItemValuesFilterValidator)
-            resourceBeanFinder.getValidator(
-                ProfileItemValuesResource.ProfileItemValuesFilterValidator.class, requestWrapper);
-    }
 }

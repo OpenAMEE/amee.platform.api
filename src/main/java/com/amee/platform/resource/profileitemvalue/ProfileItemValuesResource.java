@@ -19,7 +19,5 @@ public interface ProfileItemValuesResource {
     static interface Renderer extends ResourceRenderer {
         
         void newProfileItemValue(ProfileItemValueResource.Renderer renderer);
-        
-        void setTruncated(boolean truncated);
     }
 }

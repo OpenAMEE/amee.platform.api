@@ -40,11 +40,6 @@ public class ProfileItemValuesJSONRenderer_3_6_0 implements ProfileItemValuesRes
     }
 
     @Override
-    public void setTruncated(boolean truncated) {
-        ResponseHelper.put(rootObj, "resultsTruncated", truncated);
-    }
-
-    @Override
     public String getMediaType() {
         return "application/json";
     }

@@ -34,11 +34,6 @@ public class ProfileItemValuesDOMRenderer_3_6_0 implements ProfileItemValuesReso
     }
 
     @Override
-    public void setTruncated(boolean truncated) {
-        valuesElem.setAttribute("truncated", "" + truncated);
-    }
-
-    @Override
     public String getMediaType() {
         return "application/xml";
     }
