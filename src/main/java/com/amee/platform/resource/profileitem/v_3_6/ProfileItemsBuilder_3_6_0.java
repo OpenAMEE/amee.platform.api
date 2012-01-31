@@ -12,14 +12,16 @@ import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
-import com.amee.platform.resource.profileitem.ProfileItemsFilterValidationHelper;
 import com.amee.platform.resource.profileitem.ProfileItemsResource;
+import com.amee.platform.science.StartEndDate;
 import com.amee.service.auth.ResourceAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.TimeZone;
 
 @Service
 @Scope("prototype")
@@ -34,13 +36,10 @@ public class ProfileItemsBuilder_3_6_0 implements ProfileItemsResource.Builder {
 
     @Autowired
     private ProfileItemService profileItemService;
-    
+
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
     
-    @Autowired
-    private ProfileItemsFilterValidationHelper validationHelper;
-
     private ProfileItemsResource.Renderer profileItemsRenderer;
 
     @Override
@@ -56,18 +55,26 @@ public class ProfileItemsBuilder_3_6_0 implements ProfileItemsResource.Builder {
             requestWrapper.getAttributes().get("activeUserUid"), profile);
 
         // Set up filter and validate
+
+        // May need to pass the user's timezone into the filter if this doesn't work.
         ProfileItemsFilter filter = new ProfileItemsFilter();
-        validationHelper.setProfileItemsFilter(filter);
-        if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
+
+        ProfileItemsResource.FilterValidator validator = getValidator(requestWrapper);
+        validator.setObject(filter);
+        TimeZone userTimeZone = resourceService.getCurrentUser(requestWrapper).getTimeZone();
+        validator.setDefaultStartDate(StartEndDate.getStartOfMonthDate(userTimeZone));
+        validator.initialise();
+        if (validator.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, profile, filter);
             ProfileItemsResource.Renderer renderer = getRenderer(requestWrapper);
             renderer.ok();
             return renderer.getObject();
         } else {
-            throw new ValidationException(validationHelper.getValidationResult());
+            throw new ValidationException(validator.getValidationResult());
         }
     }
 
+    @Override
     public void handle(RequestWrapper requestWrapper, Profile profile, ProfileItemsFilter filter) {
 
         // Start renderer
@@ -93,8 +100,15 @@ public class ProfileItemsBuilder_3_6_0 implements ProfileItemsResource.Builder {
         return profileItemsRenderer;
     }
 
-    private ProfileItemResource.Builder getProfileItemBuilder(RequestWrapper requestWrapper) {
+    @Override
+    public ProfileItemResource.Builder getProfileItemBuilder(RequestWrapper requestWrapper) {
         return (ProfileItemResource.Builder)
             resourceBeanFinder.getBuilder(ProfileItemResource.Builder.class, requestWrapper);
+    }
+
+    @Override
+    public ProfileItemsResource.FilterValidator getValidator(RequestWrapper requestWrapper) {
+        return (ProfileItemsResource.FilterValidator)
+            resourceBeanFinder.getValidator(ProfileItemsResource.FilterValidator.class, requestWrapper);
     }
 }
