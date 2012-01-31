@@ -6,8 +6,6 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.Map;
 
@@ -19,7 +17,7 @@ public interface DataItemResource {
 
         DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
 
-        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     interface Renderer extends ResourceRenderer {

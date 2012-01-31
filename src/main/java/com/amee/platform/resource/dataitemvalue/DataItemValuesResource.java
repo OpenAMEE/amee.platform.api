@@ -10,28 +10,28 @@ import java.util.Map;
 
 public interface DataItemValuesResource {
 
-    static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
         void handle(RequestWrapper requestWrapper, DataItem dataItem, DataItemValuesFilter filter);
 
-        DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        Renderer getRenderer(RequestWrapper requestWrapper);
 
         DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
 
-        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        FilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     /**
      * Note that this Renderer is also used by DataItemValueHistoryResource.
      */
-    static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
         void newDataItemValue(DataItemValueResource.Renderer renderer);
 
         void setTruncated(boolean truncated);
     }
 
-    static interface DataItemValuesFilterValidator {
+    interface FilterValidator {
 
         void initialise();
 
