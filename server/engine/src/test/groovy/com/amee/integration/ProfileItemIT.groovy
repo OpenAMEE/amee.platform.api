@@ -14,6 +14,9 @@ class ProfileItemIT extends BaseApiTest {
     def cookingProfileUid = 'UCP4SKANF6CS'
     def cookingProfileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
     def computersGenericProfileUid = '46OLHG2D9LWM'
+    
+    def selectByProfileUid = 'TP437QW12VEV'
+    def selectByProfileItemUids = [start: '8G534LCOMF8Z', end: '5W6K9PWM5OXD', span: '7LXKYQAY237H']
 
     // ICE_v2_by_mass; material=Lime, type=General
     def dataItemUid = 'NX9WAFL8MUCL'
@@ -234,6 +237,24 @@ class ProfileItemIT extends BaseApiTest {
     /**
      * Test fetching a number of profile items with JSON and XML responses.
      *
+     * Get a list of profile items by sending a GET request to /profiles/{UID}/items.
+     * The startDate and endDate query parameters can be used to define a "query window" for the request.
+     * Profile items are sorted by creation date.
+     *
+     * Profile item list GET requests support the following query parameters.
+     *
+     * <ul>
+     *     <li>startDate - start date for query window. Defaults to start of current month.
+     *     <li>endDate - end date for query window. Defaults to infinitely far in the future.
+     *     <li>duration - alternative to specifying endDate.
+     *     <li>selectBy - Setting this to 'start' will only include items which start during the query window.
+     *                    Setting 'end' will include only items which end during the window.
+     *                    The default behaviour is to include any item that intersects the query window.
+     *     <li>mode - Set the calculation mode used. By default, emission values for items are for the whole item,
+     *                not just the part of the item that intersects the query window.
+     *                To get just the emissions that took place during the query window, set this parameter to 'prorata'.
+     *</ul>
+     *
      * Profile item GET requests support the following matrix parameters to modify the response.
      *
      * <ul>
@@ -284,6 +305,57 @@ class ProfileItemIT extends BaseApiTest {
 
         // Should be sorted by creation date
         assertTrue profileItems[0].@created.text() < profileItems[-1].@created.text()
+    }
+
+    @Test
+    void getProfileItemsSelectBy() {
+        versions.each { version -> getProfileItemsSelectByJson(version) }
+    }
+
+    def getProfileItemsSelectByJson(version) {
+        if (version >= 3.6) {
+            
+            // Query window is from April to June
+
+            // Default is to get all items that intersect query window
+            def response = client.get(
+                path: "/${version}/profiles/${selectByProfileUid}/items",
+                query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z'],
+                contentType: JSON)
+            assertEquals 200, response.status
+            assertFalse response.data.resultsTruncated
+            assertEquals selectByProfileItemUids.size(), response.data.items.size()
+            assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
+
+            // selectBy=startDate selects items that start in the window
+            response = client.get(
+                path: "/${version}/profiles/${selectByProfileUid}/items",
+                query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'start'],
+                contentType: JSON)
+            assertEquals 200, response.status
+            assertFalse response.data.resultsTruncated
+            assertEquals 1, response.data.items.size()
+            assert selectByProfileItemUids['start'] == response.data.items[0].uid
+
+            // selectBy=endDate selects items that end in the window
+            response = client.get(
+                path: "/${version}/profiles/${selectByProfileUid}/items",
+                query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'end'],
+                contentType: JSON)
+            assertEquals 200, response.status
+            assertFalse response.data.resultsTruncated
+            assertEquals 1, response.data.items.size()
+            assert selectByProfileItemUids['end'] == response.data.items[0].uid
+
+            // No items in the window
+            response = client.get(
+                path: "/${version}/profiles/${selectByProfileUid}/items",
+                query: [startDate: '2000-04-01T09:00:00Z', endDate: '2000-06-01T09:00:00Z'],
+                contentType: JSON)
+            assertEquals 200, response.status
+            assertFalse response.data.resultsTruncated
+            assertEquals 0, response.data.items.size()
+        }
     }
 
     /**
