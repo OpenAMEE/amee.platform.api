@@ -258,6 +258,8 @@
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                         <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
+
+                        <!-- Set this to 0 to disable timeouts when debugging (default is 15) -->
                         <amee.resourceDefaultTimeout>15</amee.resourceDefaultTimeout>
                     </systemPropertyVariables>
                     <additionalClasspathElements>
