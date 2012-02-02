@@ -329,6 +329,17 @@ class DataItemValueIT extends BaseApiTest {
      * The list of values will by default only include values applicable NOW. This can be altered using the startDate
      * parameter, see the various tests above for examples of this.
      *
+     * Data Item Value GET requests support the following matrix parameters to modify the response.
+     *
+     * <ul>
+     * <li>full - include all values.
+     * <li>audit - include the status, created and modified values.
+     * <li>path - include the data item value's path and full path.
+     * <li>category - include the data item value's data category UID and wiki name.
+     * <li>item - include the data item's UID.
+     * <li>itemValueDefinition - include the item value definition UID, name and path.
+     * </ul>
+     *
      * @param uid of the expected historical DataItemValue
      * @param value of the expected historical DataItemValue
      * @param actualStartDate of the expected historical DataItemValue
