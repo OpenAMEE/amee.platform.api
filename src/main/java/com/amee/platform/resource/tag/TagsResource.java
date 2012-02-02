@@ -22,8 +22,6 @@ public interface TagsResource {
 
         @Deprecated
         public void newTag(Tag tag);
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

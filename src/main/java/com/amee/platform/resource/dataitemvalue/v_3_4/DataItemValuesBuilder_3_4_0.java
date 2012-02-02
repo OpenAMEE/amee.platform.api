@@ -60,7 +60,7 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
         filter.setStartDate(new Date());
 
         // Create validator.
-        DataItemValuesResource.DataItemValuesFilterValidator validator = getValidator(requestWrapper);
+        DataItemValuesResource.FilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
         validator.setDefaultStartDate(new Date());
         validator.initialise();
@@ -110,9 +110,9 @@ public class DataItemValuesBuilder_3_4_0 implements DataItemValuesResource.Build
     }
 
     @Override
-    public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper) {
-        return (DataItemValuesResource.DataItemValuesFilterValidator)
+    public DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper) {
+        return (DataItemValuesResource.FilterValidator)
                 resourceBeanFinder.getValidator(
-                        DataItemValuesResource.DataItemValuesFilterValidator.class, requestWrapper);
+                        DataItemValuesResource.FilterValidator.class, requestWrapper);
     }
 }

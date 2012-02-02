@@ -22,8 +22,6 @@ public interface DataCategoryResource {
 
     public static interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newDataCategory(DataCategory dataCategory);
 
         public void addBasic();

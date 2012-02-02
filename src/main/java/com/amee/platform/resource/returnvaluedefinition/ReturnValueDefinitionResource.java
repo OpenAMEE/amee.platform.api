@@ -20,8 +20,6 @@ public interface ReturnValueDefinitionResource {
 
     public static interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newReturnValueDefinition(ReturnValueDefinition returnValueDefinition);
 
         public void addBasic();
@@ -37,8 +35,6 @@ public interface ReturnValueDefinitionResource {
         public void addFlags();
 
         public void addAudit();
-
-        public Object getObject();
     }
 
     public static interface FormAcceptor extends ResourceAcceptor {

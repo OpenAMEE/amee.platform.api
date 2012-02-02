@@ -19,8 +19,6 @@ public interface AlgorithmResource {
 
     interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newAlgorithm(Algorithm algorithm);
 
         public void addBasic();
@@ -32,8 +30,6 @@ public interface AlgorithmResource {
         public void addContent();
 
         public void addItemDefinition(ItemDefinition itemDefinition);
-
-        public Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

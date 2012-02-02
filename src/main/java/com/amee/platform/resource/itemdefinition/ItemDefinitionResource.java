@@ -18,8 +18,6 @@ public interface ItemDefinitionResource {
 
     interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-
         public void newItemDefinition(ItemDefinition itemDefinition);
 
         public void addBasic();
@@ -33,8 +31,6 @@ public interface ItemDefinitionResource {
         public void addUsages();
 
         public void addAlgorithms();
-
-        public Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

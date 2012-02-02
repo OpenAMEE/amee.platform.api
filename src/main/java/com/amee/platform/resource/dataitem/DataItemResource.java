@@ -6,71 +6,65 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.Map;
 
 public interface DataItemResource {
 
-    public static interface Builder extends ResourceBuilder {
+    interface Builder extends ResourceBuilder {
 
-        public void handle(RequestWrapper requestWrapper, DataItem dataItem);
+        void handle(RequestWrapper requestWrapper, DataItem dataItem);
 
-        public DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
+        DataItemResource.Renderer getRenderer(RequestWrapper requestWrapper);
 
-        public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
-    public static interface Renderer extends ResourceRenderer {
+    interface Renderer extends ResourceRenderer {
 
-        public final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+        void newDataItem(DataItem dataItem);
 
-        public void newDataItem(DataItem dataItem);
+        void addBasic();
 
-        public void addBasic();
+        void addName();
 
-        public void addName();
+        void addLabel();
 
-        public void addLabel();
+        void addPath();
 
-        public void addPath();
+        void addParent();
 
-        public void addParent();
+        void addAudit();
 
-        public void addAudit();
+        void addWikiDoc();
 
-        public void addWikiDoc();
+        void addProvenance();
 
-        public void addProvenance();
+        void addItemDefinition(ItemDefinition id);
 
-        public void addItemDefinition(ItemDefinition id);
+        void startValues();
 
-        public void startValues();
-
-        public void newValue(BaseItemValue itemValue);
-
-        public Object getObject();
+        void newValue(BaseItemValue itemValue);
     }
 
-    public static interface FormAcceptor extends ResourceAcceptor {
+    interface FormAcceptor extends ResourceAcceptor {
     }
 
-    public static interface DataItemValidator {
+    interface DataItemValidator {
 
-        public void initialise();
+        void initialise();
 
-        public boolean isValid(Map<String, String> queryParameters);
+        boolean isValid(Map<String, String> queryParameters);
 
-        public DataItem getObject();
+        DataItem getObject();
 
-        public void setObject(DataItem object);
+        void setObject(DataItem object);
 
-        public ValidationResult getValidationResult();
+        ValidationResult getValidationResult();
 
-        public void setDataItemService(DataItemService dataItemService);
+        void setDataItemService(DataItemService dataItemService);
     }
 
-    public static interface Remover extends ResourceRemover {
+    interface Remover extends ResourceRemover {
     }
 }

@@ -45,6 +45,7 @@ public class UnitsFormAcceptor_3_5_0 implements UnitsResource.FormAcceptor {
         AMEEUnitType unitType = resourceService.getUnitType(requestWrapper, true);
 
         // Authorised?
+        // TODO: should this be ensureAuthotizedForAccept?
         if (unitType != null) {
             resourceAuthorizationService.ensureAuthorizedForBuild(
                     requestWrapper.getAttributes().get("activeUserUid"), unitType);

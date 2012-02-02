@@ -18,7 +18,7 @@ import java.util.Set;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implements DataItemValuesResource.DataItemValuesFilterValidator {
+public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implements DataItemValuesResource.FilterValidator {
 
     protected DataItemValuesFilter object;
     protected Set<String> allowedFields = new HashSet<String>();
@@ -70,7 +70,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
 
     @Override
     public String[] getAllowedFields() {
-        return allowedFields.toArray(new String[]{});
+        return allowedFields.toArray(new String[allowedFields.size()]);
     }
 
     @Override

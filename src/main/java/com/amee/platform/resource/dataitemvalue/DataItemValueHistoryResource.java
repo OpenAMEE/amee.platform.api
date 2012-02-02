@@ -47,14 +47,14 @@ public interface DataItemValueHistoryResource {
         DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper);
 
         /**
-         * Get a {@link DataItemValuesResource.DataItemValuesFilterValidator} for this {@link ResourceBuilder}.
+         * Get a {@link com.amee.platform.resource.dataitemvalue.DataItemValuesResource.FilterValidator} for this {@link ResourceBuilder}.
          * <p/>
          * Note: This borrows the validator from {@link DataItemValuesResource}.
          *
          * @param requestWrapper the current {@link RequestWrapper}
-         * @return a {@link DataItemValuesResource.DataItemValuesFilterValidator}
+         * @return a {@link com.amee.platform.resource.dataitemvalue.DataItemValuesResource.FilterValidator}
          */
-        DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper);
+        DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
     /**
