@@ -36,6 +36,9 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
     protected ProfileItem profileItem;
     protected Set<String> allowedFields = new HashSet<String>();
 
+    // IS0 8601 duration. (https://secure.wikimedia.org/wikipedia/en/wiki/ISO_8601#Durations)
+    private static final String DURATION_PATTERN_STRING = "^P\\d*Y?\\d*M?\\d*D?T?\\d*H?\\d*M?\\d*S?";
+
     @Override
     public void initialise() {
         addName();
@@ -165,6 +168,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         add(new ValidationSpecification()
             .setName("duration")
             .setAllowEmpty(true)
+            .setFormat(DURATION_PATTERN_STRING)
             .setCustomValidation(
                 new ValidationSpecification.CustomValidation() {
                     @Override

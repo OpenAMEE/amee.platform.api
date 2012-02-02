@@ -5,8 +5,6 @@ import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.DataItemService;
 import com.amee.domain.ProfileItemsFilter;
-import com.amee.domain.TimeZoneHolder;
-import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.profileitem.ProfileItemsResource;
 import com.amee.platform.science.StartEndDate;
@@ -14,10 +12,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TimeZone;
 
 @Service
 @Scope("prototype")
@@ -30,6 +26,9 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
     private static final String SELECT_BY_PATTERN_STRING = "(start)|(end)";
     private static final String MODE_PATTERN_STRING = "prorata";
 
+    // IS0 8601 duration. (https://secure.wikimedia.org/wikipedia/en/wiki/ISO_8601#Durations)
+    private static final String DURATION_PATTERN_STRING = "^P\\d*Y?\\d*M?\\d*D?T?\\d*H?\\d*M?\\d*S?";
+
     public ProfileItemsFilterValidator_3_6_0() {
         super();
     }
@@ -41,6 +40,7 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
 
         addStartDate();
         addEndDate();
+        addDuration();
         addSelectBy();
         addMode();
     }
@@ -65,6 +65,39 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
         add(new ValidationSpecification()
             .setName("endDate")
             .setAllowEmpty(true));
+    }
+
+    protected void addDuration() {
+        allowedFields.add("duration");
+        add(new ValidationSpecification()
+            .setName("duration")
+            .setAllowEmpty(true)
+            .setFormat(DURATION_PATTERN_STRING)
+            .setCustomValidation(
+                new ValidationSpecification.CustomValidation() {
+                    @Override
+                    public int validate(Object object, Object value, Errors errors) {
+                        ProfileItemsFilter thisProfileItemsFilter = (ProfileItemsFilter) object;
+                        if (thisProfileItemsFilter != null && thisProfileItemsFilter.getDuration() != null) {
+                            StartEndDate endDate = thisProfileItemsFilter.getStartDate().plus((String) value);
+
+                            // End date must be after start date
+                            if (endDate.before(thisProfileItemsFilter.getStartDate())) {
+                                errors.rejectValue("duration", "end_before_start.endDate");
+                            }
+
+                            // Date must be in allowed range.
+                            if (endDate.compareTo(DataItemService.Y2038) >= 0) {
+                                errors.rejectValue("duration", "end_of_epoch.endDate");
+                            }
+
+                            thisProfileItemsFilter.setEndDate(endDate);
+                        }
+                        return ValidationSpecification.CONTINUE;
+                    }
+                }
+            )
+        );
     }
 
     /**
