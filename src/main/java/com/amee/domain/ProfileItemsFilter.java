@@ -1,11 +1,12 @@
 package com.amee.domain;
 
-import java.util.Date;
+import com.amee.platform.science.StartEndDate;
 
 public class ProfileItemsFilter extends LimitFilter {
 
-    private Date startDate = new Date();
-    private Date endDate = null;
+    private StartEndDate startDate = new StartEndDate();
+    private StartEndDate endDate = null;
+    private String duration;
 
     /**
      * Setting this to 'start' will only include items which start during the query window.
@@ -31,22 +32,34 @@ public class ProfileItemsFilter extends LimitFilter {
         return 100;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public StartEndDate getEndDate() {
+        if (endDate != null) {
+            return new StartEndDate(endDate);
+        } else {
+            return null;
+        }
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(StartEndDate endDate) {
         this.endDate = endDate;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public StartEndDate getStartDate() {
+        return new StartEndDate(startDate);
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(StartEndDate startDate) {
         if (startDate != null) {
             this.startDate = startDate;
         }
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public String getSelectBy() {
