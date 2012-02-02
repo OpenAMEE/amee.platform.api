@@ -11,9 +11,9 @@ import groovyx.net.http.HttpResponseException
 class ProfileIT extends BaseApiTest {
 
     // See import.sql
-    def profileUids = ['UCP4SKANF6CS', '46OLHG2D9LWM']
-    def categoryNames = ['Cooking', 'Generic']
-    def categoryWikiNames = ['Cooking', 'Computers_generic']
+    def profileUids = ['UCP4SKANF6CS', '46OLHG2D9LWM', 'TP437QW12VEV']
+    def categoryNames = ['Cooking', 'Generic', 'Generic']
+    def categoryWikiNames = ['Cooking', 'Computers_generic', 'Computers_generic']
 
     /**
      * Tests for creation, fetch and deletion of a Profile using JSON & XML responses.
@@ -211,10 +211,10 @@ class ProfileIT extends BaseApiTest {
 
         def nameList = []
         response.data.profiles.each { profile -> profile.categories.each { nameList.add(it.name) } }
-        assertEquals nameList.sort(), categoryNames.sort()
+        assertEquals categoryNames.sort(), nameList.sort()
         def wikiNameList = []
         response.data.profiles.each { profile -> profile.categories.each { wikiNameList.add(it.wikiName) } }
-        assertEquals wikiNameList.sort(), categoryWikiNames.sort()
+        assertEquals categoryWikiNames.sort(), wikiNameList.sort()
     }
 
     def getAllProfilesXml(version) {

@@ -12,17 +12,17 @@ class ItemDefinitionIT extends BaseApiTest {
 
     // Page one when sorted by name, resultStart is 0 and resultLimit is 4.
     static def itemDefinitionNames1 = [
-            'Computers Generic',
-            'Cooking',
-            'EcoSpold',
-            'Entertainment Generic'];
+        'APITestDimlessHistory',
+        'APITestGHGElectricity',
+        'Computers Generic',
+        'Cooking'];
 
     // Page two when sorted by name, resultStart is 4 and resultLimit is 4.
     static def itemDefinitionNames2 = [
-            'GHGElectricity',
-            'GHGP international grid electricity',
-            'GHGUSSubregion',
-            'ICE v2 by mass'];
+        'EcoSpold',
+        'Entertainment Generic',
+        'GHGElectricity',
+        'GHGP international grid electricity'];
 
     def static expectedUsageNames = ['usage1', 'usage2'];
     def static expectedUsagePresents = ['false', 'true'];
