@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Permission represents the permissions (rights) that a 'principal' has over an 'entity'.
+ * A Permission represents the permissions (rights) that a 'principal' has over an 'entity'.
  * The entity can be any persistent entity within AMEE, such as a Profile or DataCategory. A
  * principal can be a User, Group or other entity that needs to own or access an entity.
  * <p/>

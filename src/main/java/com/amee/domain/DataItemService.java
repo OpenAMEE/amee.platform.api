@@ -18,61 +18,62 @@ import java.util.Set;
 public interface DataItemService extends ItemService {
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
-    public final static Date EPOCH = new Date(0);
+    final static Date EPOCH = new Date(0);
 
     // Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07. See: http://en.wikipedia.org/wiki/Year_2038_problem
     // This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
-    public final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
+    final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
 
-    public long getDataItemCount(IDataCategoryReference dataCategory);
+    @Override
+    DataItem getItemByUid(String uid);
 
-    public List<DataItem> getDataItems(IDataCategoryReference dataCategory);
+    long getDataItemCount(IDataCategoryReference dataCategory);
 
-    public List<DataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
+    List<DataItem> getDataItems(IDataCategoryReference dataCategory);
 
-    public List<DataItem> getDataItems(Set<Long> dataItemIds);
+    List<DataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
 
-    public DataItem getDataItemByIdentifier(DataCategory parent, String path);
+    List<DataItem> getDataItems(Set<Long> dataItemIds);
 
-    public Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+    DataItem getDataItemByIdentifier(DataCategory parent, String path);
 
-    public ItemValueMap getDrillDownValuesMap(DataItem dataItem);
+    Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
 
-    public boolean equivalentDataItemExists(DataItem dataItem);
+    ItemValueMap getDrillDownValuesMap(DataItem dataItem);
 
-    public DataItem getDataItemByUid(DataCategory parent, String uid);
+    DataItem getDataItemByUid(DataCategory parent, String uid);
 
-    public DataItem getItemByUid(String uid);
+    DataItem getDataItemByPath(DataCategory parent, String path);
 
-    public DataItem getDataItemByPath(DataCategory parent, String path);
+    String getLabel(DataItem dataItem);
 
-    public String getLabel(DataItem dataItem);
+    Choices getUserValueChoices(DataItem dataItem, APIVersion apiVersion);
 
-    public Choices getUserValueChoices(DataItem dataItem, APIVersion apiVersion);
+    void checkDataItem(DataItem dataItem);
 
-    public void checkDataItem(DataItem dataItem);
+    Date getDataItemsModified(DataCategory dataCategory);
 
-    public Date getDataItemsModified(DataCategory dataCategory);
+    boolean isUnique(DataItem dataItem);
 
-    public boolean isDataItemUniqueByPath(DataItem dataItem);
+    boolean isDataItemUniqueByPath(DataItem dataItem);
 
-    public boolean isDataItemValueUniqueByStartDate(BaseDataItemValue itemValue);
+    boolean isDataItemValueUniqueByStartDate(BaseDataItemValue itemValue);
 
-    public ResultsWrapper<BaseDataItemValue> getAllItemValues(DataItemValuesFilter filter);
+    ResultsWrapper<BaseDataItemValue> getAllItemValues(DataItemValuesFilter filter);
 
-    public void persist(DataItem dataItem);
+    void persist(DataItem dataItem);
 
-    public void persist(DataItem dataItem, boolean checkDataItem);
+    void persist(DataItem dataItem, boolean checkDataItem);
 
-    public void remove(DataItem dataItem);
+    void remove(DataItem dataItem);
 
-    public void persist(BaseItemValue itemValue);
+    void persist(BaseItemValue itemValue);
 
-    public void remove(BaseItemValue itemValue);
+    void remove(BaseItemValue itemValue);
 
-    public StartEndDate getStartDate(DataItem dataItem);
+    StartEndDate getStartDate(DataItem dataItem);
 
-    public StartEndDate getEndDate(DataItem dataItem);
+    StartEndDate getEndDate(DataItem dataItem);
 
-    public void updateDataItemValues(DataItem dataitem);
+    void updateDataItemValues(DataItem dataitem);
 }

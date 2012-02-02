@@ -1,10 +1,7 @@
 package com.amee.domain.item.data;
 
 import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.AMEEStatus;
-import com.amee.domain.DataItemService;
-import com.amee.domain.Metadata;
-import com.amee.domain.ObjectType;
+import com.amee.domain.*;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItem;
@@ -17,6 +14,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -146,5 +145,17 @@ public class DataItem extends BaseItem {
     @Transient
     private DataItemService getDataItemService() {
         return ThreadBeanHolder.get(DataItemService.class);
+    }
+
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(this);
+        DataCategory dc = getDataCategory();
+        while (dc != null) {
+            entities.add(dc);
+            dc = dc.getDataCategory();
+        }
+        Collections.reverse(entities);
+        return entities;
     }
 }

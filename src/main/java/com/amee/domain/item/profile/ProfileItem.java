@@ -2,6 +2,7 @@ package com.amee.domain.item.profile;
 
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.DataCategory;
@@ -17,7 +18,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.joda.time.Duration;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PROFILE_ITEM")
@@ -40,6 +43,18 @@ public class ProfileItem extends BaseItem {
 
     @Transient
     private ReturnValues amounts = new ReturnValues();
+
+    /**
+     * A temporary and transient variable used in validation to set the endDate.
+     */
+    @Transient
+    private String duration;
+
+    /**
+     * A temporary and transient object for use in validation. See the getValues() method below.
+     */
+    @Transient
+    private Object values;
 
     public ProfileItem() {
         super();
@@ -117,6 +132,11 @@ public class ProfileItem extends BaseItem {
         this.startDate = startDate;
     }
 
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setStartDate(StartEndDate startDate) {
+        this.startDate = startDate;
+    }
+
     public StartEndDate getEndDate() {
         if (endDate != null) {
             return new StartEndDate(endDate);
@@ -126,6 +146,12 @@ public class ProfileItem extends BaseItem {
     }
 
     public void setEndDate(Date endDate) {
+        // May be null.
+        this.endDate = endDate;
+    }
+
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setEndDate(StartEndDate endDate) {
         // May be null.
         this.endDate = endDate;
     }
@@ -247,9 +273,11 @@ public class ProfileItem extends BaseItem {
      * Returns a Duration for the Item which is based on the startDate and endDate values. If there is no
      * endDate then null is returned.
      *
+     * Strange method name so it doesn't conflict with the duration getter/setter required for bean binding in validation.
+     *
      * @return the Duration or null
      */
-    public Duration getDuration() {
+    public Duration getDurationInternal() {
         if (getEndDate() != null) {
             return new Duration(getStartDate().getTime(), getEndDate().getTime());
         } else {
@@ -291,4 +319,33 @@ public class ProfileItem extends BaseItem {
         return ThreadBeanHolder.get(ProfileItemService.class);
     }
 
+    /**
+     * Returns a temporary and transient JavaBean related to the Item Values associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link com.amee.domain.data.ItemDefinition#getProfileItemValuesBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getValues() {
+        if (values == null) {
+            values = getItemDefinition().getProfileItemValuesBean();
+        }
+        return values;
+    }
+
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(getProfile());
+        entities.add(this);
+        return entities;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 }

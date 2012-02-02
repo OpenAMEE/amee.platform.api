@@ -83,6 +83,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
@@ -176,6 +177,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public JSONObject getIdentityJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("uid", item.getUid());
@@ -183,6 +185,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         return obj;
     }
 
+    @Override
     public Element getElement(Document document, boolean detailed) {
         Element element = document.createElement("ProfileItem");
         buildElement(document, element, detailed);
@@ -196,6 +199,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         // Multiple return values
         Element amounts = document.createElement("Amounts");
         for (Map.Entry<String, ReturnValue> entry : item.getAmounts().getReturnValues().entrySet()) {
+
             String type = entry.getKey();
             ReturnValue value = entry.getValue();
 
@@ -236,6 +240,7 @@ public class ProfileItemBuilder implements ItemBuilder {
         return element;
     }
 
+    @Override
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, "ItemValue", item);
     }

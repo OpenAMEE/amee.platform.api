@@ -76,18 +76,16 @@ public class ProfileItemBuilder implements ItemBuilder {
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         JSONObject obj = new JSONObject();
         buildElement(obj, detailed);
-        Double value;
+        double value;
         if (profileItemService.isSingleFlight(item)) {
             value = item.getAmounts().defaultValueAsDouble();
         } else {
             value = item.getAmounts().defaultValueAsAmount().convert(AmountPerUnit.MONTH).getValue();
         }
 
-        if (value == null) {
-            obj.put("amountPerMonth", JSONObject.NULL);
-        } else if (value.isInfinite()) {
+        if (Double.isInfinite(value)) {
             obj.put("amountPerMonth", "Infinity");
-        } else if (value.isNaN()) {
+        } else if (Double.isNaN(value)) {
             obj.put("amountPerMonth", "NaN");
         } else {
             obj.put("amountPerMonth", value);

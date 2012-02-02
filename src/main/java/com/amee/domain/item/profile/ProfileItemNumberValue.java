@@ -153,7 +153,7 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
     public AmountPerUnit getPerUnit() {
         if (StringUtils.isNotBlank(perUnit)) {
             if (perUnit.equals("none")) {
-                return AmountPerUnit.valueOf(getProfileItem().getDuration());
+                return AmountPerUnit.valueOf(getProfileItem().getDurationInternal());
             } else {
                 return AmountPerUnit.valueOf(perUnit);
             }
