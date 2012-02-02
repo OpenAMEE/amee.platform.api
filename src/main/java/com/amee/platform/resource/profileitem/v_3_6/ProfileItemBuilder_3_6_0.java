@@ -99,7 +99,6 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
             renderer.addCategory();
         }
         if (amounts || full) {
-            calculationService.calculate(profileItem);
             renderer.addReturnValues(profileItem.getAmounts());
         }
     }

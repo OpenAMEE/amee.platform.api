@@ -55,10 +55,7 @@ public class ProfileItemsBuilder_3_6_0 implements ProfileItemsResource.Builder {
             requestWrapper.getAttributes().get("activeUserUid"), profile);
 
         // Set up filter and validate
-
-        // May need to pass the user's timezone into the filter if this doesn't work.
         ProfileItemsFilter filter = new ProfileItemsFilter();
-
         ProfileItemsResource.FilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
         TimeZone userTimeZone = resourceService.getCurrentUser(requestWrapper).getTimeZone();

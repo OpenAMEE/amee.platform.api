@@ -27,6 +27,8 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
     protected ProfileItemsFilter object;
     protected Set<String> allowedFields = new HashSet<String>();
     private StartEndDate defaultStartDate;
+    private static final String SELECT_BY_PATTERN_STRING = "(start)|(end)";
+    private static final String MODE_PATTERN_STRING = "prorata";
 
     public ProfileItemsFilterValidator_3_6_0() {
         super();
@@ -40,6 +42,7 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
         addStartDate();
         addEndDate();
         addSelectBy();
+        addMode();
     }
 
     /**
@@ -72,23 +75,18 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
         add(new ValidationSpecification()
             .setName("selectBy")
             .setAllowEmpty(true)
-            .setCustomValidation(new ValidationSpecification.CustomValidation() {
-                @Override
-                public int validate(Object object, Object value, Errors errors) {
+            .setFormat(SELECT_BY_PATTERN_STRING));
+    }
 
-                    ProfileItemsFilter thisProfileItemsFilter = (ProfileItemsFilter) object;
-                    if (thisProfileItemsFilter != null && thisProfileItemsFilter.getSelectBy() != null) {
-
-                        // Valid values are "start" or "end"
-                        if (!("start".equalsIgnoreCase(thisProfileItemsFilter.getSelectBy()) ||
-                            "end".equalsIgnoreCase(thisProfileItemsFilter.getSelectBy()))) {
-                            errors.rejectValue("selectBy", "format", "The value must be either 'start' or 'end'");
-                        }
-                    }
-                    return ValidationSpecification.CONTINUE;
-                }
-            })
-        );
+    /**
+     * Configure the validator for the mode property.
+     */
+    protected void addMode() {
+        allowedFields.add("mode");
+        add(new ValidationSpecification()
+            .setName("mode")
+            .setAllowEmpty(true)
+            .setFormat(MODE_PATTERN_STRING));
     }
 
     @Override
