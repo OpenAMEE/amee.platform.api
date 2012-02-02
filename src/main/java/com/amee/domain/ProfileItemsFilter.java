@@ -14,7 +14,12 @@ public class ProfileItemsFilter extends LimitFilter {
      */
     private String selectBy;
 
-    // TODO: Handle mode (prorata)
+    /**
+     * Set the calculation mode used. By default, emission values for items are for the whole item,
+     * not just the part of the item that intersects the query window. To get just the emissions that took place
+     * during the query window, set this parameter to 'prorata'.
+     */
+    private String mode;
 
     @Override
     public int getResultLimitDefault() {
@@ -50,5 +55,13 @@ public class ProfileItemsFilter extends LimitFilter {
 
     public void setSelectBy(String selectBy) {
         this.selectBy = selectBy;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }
