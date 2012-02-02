@@ -336,6 +336,16 @@ class ProfileItemIT extends BaseApiTest {
             assertEquals selectByProfileItemUids.size(), response.data.items.size()
             assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
 
+            // duration parameter can be used instead of endDate
+            response = client.get(
+                path: "/${version}/profiles/${selectByProfileUid}/items",
+                query: [startDate: '2012-04-01T09:00:00Z', duration: 'P2M'],
+                contentType: JSON)
+            assertEquals 200, response.status
+            assertFalse response.data.resultsTruncated
+            assertEquals selectByProfileItemUids.size(), response.data.items.size()
+            assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
+
             // selectBy=startDate selects items that start in the window
             response = client.get(
                 path: "/${version}/profiles/${selectByProfileUid}/items",
@@ -538,6 +548,9 @@ class ProfileItemIT extends BaseApiTest {
         updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
 
         updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
+        
+        // Invalid format for duration
+        updateProfileItemFieldJson('duration', 'format', '10Y', 3.6)
     }
 
     /**
