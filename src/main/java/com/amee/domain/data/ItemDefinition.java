@@ -195,6 +195,10 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
                 } else {
                     bg.addProperty(ivd.getPath(), String.class);
                 }
+                
+                // Add the unit and perUnit properties
+                bg.addProperty(ivd.getPath() + "Unit", String.class);
+                bg.addProperty(ivd.getPath() + "PerUnit", String.class);
             }
         }
         return bg.create();
