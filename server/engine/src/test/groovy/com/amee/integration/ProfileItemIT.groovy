@@ -625,6 +625,8 @@ class ProfileItemIT extends BaseApiTest {
         }
     }
 
+    // TODO: updateProfileItemJson see: updateDataItemJson
+
     /**
      * Tests calculations are performed correctly with different query ranges.
      * This test taken from the v2 time_resolution_spec.rb test.

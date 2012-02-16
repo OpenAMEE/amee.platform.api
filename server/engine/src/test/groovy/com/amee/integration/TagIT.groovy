@@ -11,8 +11,6 @@ import static org.junit.Assert.*
  */
 class TagIT extends BaseApiTest {
 
-    static def versions = [3.0, 3.2]
-
     def tagUids = [
             '932FD23CD3A2',
             '5708D3DBF601',
@@ -774,23 +772,25 @@ class TagIT extends BaseApiTest {
 
     def updateTagJson(version) {
         if (version >= 3.2) {
-            setAdminUser();
+            setAdminUser()
+
             // 1) Do the update.
             def responsePut = client.put(
                     path: "/${version}/tags/002FD23CD3A2",
                     body: ['tag': 'tag_updated'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 204, responsePut.status;
+                    contentType: JSON)
+            assertEquals 200, responsePut.status
+
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: "/${version}/tags/002FD23CD3A2",
-                    contentType: JSON);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/json', responseGet.contentType;
-            assertTrue responseGet.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', responseGet.data.status;
-            assertEquals 'tag_updated', responseGet.data.tag.tag;
+                    contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'tag_updated', responseGet.data.tag.tag
         }
     }
 

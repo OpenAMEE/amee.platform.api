@@ -317,7 +317,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
     }
 
     def updateItemValueDefinitionJson(version) {
-        setAdminUser();
+        setAdminUser()
 
         // 1) Do the update.
         def responsePut = client.put(
@@ -326,20 +326,20 @@ class ItemValueDefinitionIT extends BaseApiTest {
                         'path': 'newPath',
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 204, responsePut.status;
+                contentType: JSON)
+        assertEquals 200, responsePut.status
 
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'New Name', responseGet.data.itemValueDefinition.name;
-        assertEquals 'newPath', responseGet.data.itemValueDefinition.path;
-        assertEquals 'New WikiDoc.', responseGet.data.itemValueDefinition.wikiDoc;
+                contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'application/json', responseGet.contentType
+        assertTrue responseGet.data instanceof net.sf.json.JSON
+        assertEquals 'OK', responseGet.data.status
+        assertEquals 'New Name', responseGet.data.itemValueDefinition.name
+        assertEquals 'newPath', responseGet.data.itemValueDefinition.path
+        assertEquals 'New WikiDoc.', responseGet.data.itemValueDefinition.wikiDoc
     }
 
     /**
@@ -359,7 +359,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     body: itemValueDefinitionUpdateXml(),
                     requestContentType: XML,
                     contentType: XML)
-            assertEquals 204, responsePut.status
+            assertEquals 200, responsePut.status
 
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",

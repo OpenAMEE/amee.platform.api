@@ -181,38 +181,44 @@ class DataItemValueIT extends BaseApiTest {
 
     def modifyDataItemValueJson(version) {
         if (version >= 3.4) {
-            setAdminUser();
+            setAdminUser()
+
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000);
+            sleep(1000)
+
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
-                    contentType: JSON);
-            assertEquals 200, responseGetDIV1.status;
-            assertTrue responseGetDIV1.data.value.value.startsWith('United Kingdom');
+                    contentType: JSON)
+            assertEquals 200, responseGetDIV1.status
+            assertTrue responseGetDIV1.data.value.value.startsWith('United Kingdom')
+
             // Update the DataItemValue.
-            def responsePost = client.put(
+            def responsePut = client.put(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
                     body: ['value': "United Kingdom (modified by createDataItemValueJson_${version})"],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 204, responsePost.status
+                    contentType: JSON)
+            assertEquals 200, responsePut.status
+
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
-                    contentType: JSON);
-            assertEquals 200, responseGetDIV2.status;
-            assertTrue "United Kingdom (modified by createDataItemValueJson_${version})" == responseGetDIV2.data.value.value;
+                    contentType: JSON)
+            assertEquals 200, responseGetDIV2.status
+            assertTrue "United Kingdom (modified by createDataItemValueJson_${version})" == responseGetDIV2.data.value.value
+
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
-                    contentType: JSON);
-            assertEquals 200, responseGetDI.status;
-            def modifiedDI = new DateTime(responseGetDI.data.item.modified);
-            def modifiedDIV = new DateTime(responseGetDIV2.data.value.modified);
-            assertTrue isNear(modifiedDIV, modifiedDI);
+                    contentType: JSON)
+            assertEquals 200, responseGetDI.status
+            def modifiedDI = new DateTime(responseGetDI.data.item.modified)
+            def modifiedDIV = new DateTime(responseGetDIV2.data.value.modified)
+            assertTrue isNear(modifiedDIV, modifiedDI)
+
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(1000)
         }
     }
 
@@ -228,38 +234,44 @@ class DataItemValueIT extends BaseApiTest {
 
     def modifyDataItemValueXml(version) {
         if (version >= 3.4) {
-            setAdminUser();
+            setAdminUser()
+
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000);
+            sleep(1000)
+
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
-                    contentType: XML);
-            assertEquals 200, responseGetDIV1.status;
-            assertTrue responseGetDIV1.data.Value.Value.text().startsWith('United Kingdom');
+                    contentType: XML)
+            assertEquals 200, responseGetDIV1.status
+            assertTrue responseGetDIV1.data.Value.Value.text().startsWith('United Kingdom')
+
             // Update the DataItemValue.
-            def responsePost = client.put(
+            def responsePut = client.put(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
                     body: ['value': "United Kingdom (modified by createDataItemValueXml_${version})"],
                     requestContentType: URLENC,
-                    contentType: XML);
-            assertEquals 204, responsePost.status
+                    contentType: XML)
+            assertEquals 200, responsePut.status
+
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
-                    contentType: XML);
-            assertEquals 200, responseGetDIV2.status;
-            assertTrue "United Kingdom (modified by createDataItemValueXml_${version})" == responseGetDIV2.data.Value.Value.text();
+                    contentType: XML)
+            assertEquals 200, responseGetDIV2.status
+            assertTrue "United Kingdom (modified by createDataItemValueXml_${version})" == responseGetDIV2.data.Value.Value.text()
+
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
-                    contentType: XML);
-            assertEquals 200, responseGetDI.status;
-            def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text());
-            def modifiedDIV = new DateTime(responseGetDIV2.data.Value.@modified.text());
-            assertTrue isNear(modifiedDIV, modifiedDI);
+                    contentType: XML)
+            assertEquals 200, responseGetDI.status
+            def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
+            def modifiedDIV = new DateTime(responseGetDIV2.data.Value.@modified.text())
+            assertTrue isNear(modifiedDIV, modifiedDI)
+
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000);
+            sleep(1000)
         }
     }
 

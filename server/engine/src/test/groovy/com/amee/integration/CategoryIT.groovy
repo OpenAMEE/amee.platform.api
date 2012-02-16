@@ -503,6 +503,7 @@ class CategoryIT extends BaseApiTest {
 
     def updateCategoryJson(version) {
         setAdminUser();
+
         // 1) Do the update (CO2_Benchmark).
         def responsePut = client.put(
                 path: "/${version}/categories/245CBD734418",
@@ -516,7 +517,8 @@ class CategoryIT extends BaseApiTest {
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
                 contentType: JSON);
-        assertEquals 204, responsePut.status;
+        assertEquals 200, responsePut.status;
+
         // 2) Check values have been updated (CO2_Benchmark).
         def responseGet = client.get(
                 path: "/${version}/categories/245CBD734418;full",

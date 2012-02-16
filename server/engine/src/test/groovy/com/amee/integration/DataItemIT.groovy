@@ -519,16 +519,20 @@ class DataItemIT extends BaseApiTest {
     def updateDataItemJson(version) {
         if (version >= 3.4) {
             setAdminUser();
+
             // Create a DataItem.
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
                     body: ['path': 'aTestDataItem'],
                     requestContentType: URLENC,
                     contentType: JSON);
+
             // Should have been created.
             assertEquals 201, responsePost.status
+
             // Sleep a little to give the index a chance to be updated.
             sleep(2000);
+
             // Update the DataItem.
             def responsePut = client.put(
                     path: "/${version}/categories/Cooking/items/aTestDataItem",
@@ -540,10 +544,13 @@ class DataItemIT extends BaseApiTest {
                             'values.kgCO2PerYear': '123'],
                     requestContentType: URLENC,
                     contentType: JSON);
+
             // Should have been updated.
-            assertEquals 204, responsePut.status;
+            assertEquals 200, responsePut.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(2000);
+
             // Get the DataItem and check values.
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/aTestDataItem;full",
@@ -556,10 +563,13 @@ class DataItemIT extends BaseApiTest {
             assertEquals 4, responseGet.data.item.values.size();
             assertTrue(['20', 'Petrol', '', '123'].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem");
+
             // Should have been deleted.
             assertEquals 200, responseDelete.status;
+
             // Sleep a little to give the index a chance to be updated.
             sleep(2000);
         }

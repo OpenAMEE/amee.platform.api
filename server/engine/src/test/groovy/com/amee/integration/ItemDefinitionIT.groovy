@@ -379,7 +379,7 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def updateItemDefinitionJson(version) {
         if (version >= 3.1) {
-            setAdminUser();
+            setAdminUser()
 
             // 1) Do the update.
             def responsePut = client.put(
@@ -389,26 +389,26 @@ class ItemDefinitionIT extends BaseApiTest {
                             'drillDown': 'newDrillDownA,newDrillDownB',
                             'usages': 'usage1,usage2,usage3'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 204, responsePut.status;
+                    contentType: JSON)
+            assertEquals 200, responsePut.status
 
             // We added a usage.
-            expectedUsageNames[2] = 'usage3';
-            expectedUsagePresents[2] = 'true';
+            expectedUsageNames[2] = 'usage3'
+            expectedUsagePresents[2] = 'true'
 
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2;full",
-                    contentType: JSON);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/json', responseGet.contentType;
-            assertTrue responseGet.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', responseGet.data.status;
-            assertEquals 'newName', responseGet.data.itemDefinition.name;
-            assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown;
-            assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size();
-            assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name});
-            assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present});
+                    contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'newName', responseGet.data.itemDefinition.name
+            assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown
+            assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size()
+            assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name})
+            assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present})
         }
     }
 
