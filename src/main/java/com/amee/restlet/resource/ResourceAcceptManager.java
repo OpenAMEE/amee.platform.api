@@ -70,7 +70,7 @@ public class ResourceAcceptManager extends ResourceManager {
                 getResponse().setStatus(Status.SUCCESS_CREATED);
             } else if (getRequest().getMethod().equals(Method.PUT)) {
                 handleLocation(result);
-                getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+                getResponse().setStatus(Status.SUCCESS_OK);
             } else {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }
@@ -132,7 +132,7 @@ public class ResourceAcceptManager extends ResourceManager {
                     getResponse().setStatus(Status.SUCCESS_CREATED);
                 } else if (getRequest().getMethod().equals(Method.PUT)) {
                     handleLocation(result);
-                    getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+                    getResponse().setStatus(Status.SUCCESS_OK);
                 } else {
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 }
