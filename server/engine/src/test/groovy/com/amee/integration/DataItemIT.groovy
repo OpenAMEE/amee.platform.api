@@ -33,7 +33,7 @@ class DataItemIT extends BaseApiTest {
 
     static def tenElectricItemValueValues = [
             '10',
-            '620',
+            620,
             'BRE/MTP/dgen/defra 2007',
             'Electric']
 
@@ -109,7 +109,13 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'OK', responseGet.data.status;
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
             assertEquals 4, responseGet.data.item.values.size();
-            assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort());
+            Object[] list = responseGet.data.item.values.collect{it.value}.sort();
+            assert '' == list[0]
+            assert 200 == list[1]
+            assert '10' == list[2]
+            assert 'Methane' == list[3]
+            
+            //assertTrue(['10', 'Methane', '', 200].sort() == responseGet.data.item.values.collect {it.value}.sort());
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
 
             // Sleep a little to give the index a chance to be updated.
@@ -409,7 +415,11 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'Cooking', response.data.item.itemDefinition.name;
         assertEquals '/home/appliances/cooking/004CF30590A5', response.data.item.fullPath;
         assertEquals oneGasItemValueValues.size(), response.data.item.values.size();
-        assertTrue(oneGasItemValueValues == response.data.item.values.collect {it.value});
+        assert oneGasItemValueValues[0] == response.data.item.values.collect{it.value}[0]
+        // This is used for different versions, which return different types - so we convert to String for the comparison
+        assert oneGasItemValueValues[1].toString() == response.data.item.values.collect{it.value}[1].toString()
+        assert oneGasItemValueValues[2] == response.data.item.values.collect{it.value}[2]
+        assert oneGasItemValueValues[3] == response.data.item.values.collect{it.value}[3]
         assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path});
     }
 
@@ -467,7 +477,11 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'Cooking', response.data.item.itemDefinition.name;
         assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.item.fullPath;
         assertEquals tenElectricItemValueValues.size(), response.data.item.values.size();
-        assertTrue(tenElectricItemValueValues == response.data.item.values.collect {it.value});
+        //assertTrue(tenElectricItemValueValues == response.data.item.values.collect {it.value});
+        assertTrue(tenElectricItemValueValues[0] == response.data.item.values.collect {it.value}[0]);
+        assertTrue(tenElectricItemValueValues[1] == Integer.valueOf(response.data.item.values.collect {it.value}[1]));
+        assertTrue(tenElectricItemValueValues[2] == response.data.item.values.collect {it.value}[2]);
+        assertTrue(tenElectricItemValueValues[3] == response.data.item.values.collect {it.value}[3]);
         assertTrue(tenElectricItemValuePaths == response.data.item.values.collect {it.path});
     }
 
@@ -496,7 +510,11 @@ class DataItemIT extends BaseApiTest {
         assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.Item.FullPath.text();
         def allValues = response.data.Item.Values.Value;
         assertEquals tenElectricItemValueValues.size(), allValues.size();
-        assertTrue(tenElectricItemValueValues == allValues.Value*.text());
+        assertTrue(tenElectricItemValueValues[0] == allValues.Value[0].text());
+        // in XML everything is text
+        assertTrue(tenElectricItemValueValues[1] == Integer.valueOf(allValues.Value[1].text()));
+        assertTrue(tenElectricItemValueValues[2] == allValues.Value[2].text());
+        assertTrue(tenElectricItemValueValues[3] == allValues.Value[3].text());
         assertTrue(tenElectricItemValuePaths == allValues.Path*.text());
     }
 
@@ -553,9 +571,9 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'Test Name', responseGet.data.item.name;
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc;
             assertEquals 'Test Provenance', responseGet.data.item.provenance;
-            assertEquals 4, responseGet.data.item.values.size();
-            assertTrue(['20', 'Petrol', '', '123'].sort() == responseGet.data.item.values.collect {it.value}.sort());
-            assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort());
+            assert 4 == responseGet.data.item.values.size();
+            assert [20, 'Petrol', '', 123].sort() == responseGet.data.item.values.collect {it.value}.sort()
+            assert ['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort()
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem");
             // Should have been deleted.
