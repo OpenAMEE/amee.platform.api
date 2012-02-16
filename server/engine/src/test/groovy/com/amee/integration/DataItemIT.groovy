@@ -592,69 +592,188 @@ class DataItemIT extends BaseApiTest {
     /**
      * Tests an algorithm is applied to calculate a result with JSON response.
      *
-     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * The default units and perUnits are used.
+     *
+     * NB: The amount calculated is not the same as for a real API result as the algorithm has been
+     * simplified for testing.
+     *
+     * Perform a data or 'profileless' calculation by sending a GET request to:
+     * '/categories/{UID|wikiName}/items/{UID}/calculation' (since 3.4.0).
+     *
+     * Supply the input values with the values.{PATH} query params, eg values.energyPerTime=10.
+     * Supply the input units with the units.{PATH} query params, eg units.energyPerTime=MWh.
+     * Supply the input perUnits with the perUnits.{PATH} query params, eg perUnits.energyPerTime=month.
      */
     @Test
-    void getDataItemCalculationJson() {
-        versions.each { version -> getDataItemCalculationJson(version) }
+    void getDataItemCalculationDefaultUnitsJson() {
+        versions.each { version -> getDataItemCalculationDefaultUnitsJson(version) }
     }
 
-    def getDataItemCalculationJson(version) {
+    def getDataItemCalculationDefaultUnitsJson(version) {
         if (version >= 3.4) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
-                    query: [foo: 'bar'])
+
+            // Default units
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
+                query: ['values.energyPerTime': '10'])
             assertEquals 200, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
+
+            // Output amounts
             assertEquals 1, response.data.amounts.size()
             def amount = response.data.amounts[0]
-            assertEquals 'year', amount.perUnit
-            assertEquals 'kg', amount.unit
-            assertEquals true, amount.default
-            assertEquals("", 233.3, amount.value, 0.5)
             assertEquals 'CO2', amount.type
+            assertEquals 'kg', amount.unit
+            assertEquals 'year', amount.perUnit
+            assertEquals true, amount.default
+            assertEquals "", 20.0, amount.value, 0.000001
+
+            // Notes
             assertEquals 1, response.data.notes.size()
             assertEquals 'comment', response.data.notes[0].type
             assertEquals 'This is a comment', response.data.notes[0].value
-            assertEquals 1, response.data.values.size()
-            assertEquals 'foo', response.data.values[0].name
-            assertEquals 'bar', response.data.values[0].value
+
+            // Input values
+            assertEquals 3, response.data.values.size()
+            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals '10', itemValue.value
+            assertEquals 'kWh', itemValue.unit
+            assertEquals 'year', itemValue.perUnit
         }
     }
 
     /**
      * Tests an algorithm is applied to calculate a result with XML response.
      *
-     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * The default units and perUnits are used.
+     *
+     * NB: The amount calculated is not the same as for a real API result as the algorithm has been
+     * simplified for testing.
      */
     @Test
-    void getDataItemCalculationXml() {
-        versions.each { version -> getDataItemCalculationXml(version) }
+    void getDataItemCalculationDefaultUnitsXml() {
+        versions.each { version -> getDataItemCalculationDefaultUnitsXml(version) }
     }
 
-    def getDataItemCalculationXml(version) {
+    def getDataItemCalculationDefaultUnitsXml(version) {
         if (version >= 3.4) {
             client.contentType = XML
-            def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5/calculation;full",
-                    query: [foo: 'bar'])
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
+                query: ['values.energyPerTime': '10'])
             assertEquals 200, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
             assertEquals 1, response.data.Amounts.Amount.size()
             def amount = response.data.Amounts.Amount[0]
-            assertEquals 'year', amount.@perUnit.text()
-            assertEquals 'kg', amount.@unit.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals("", 233.3D, Double.parseDouble(amount.text()), 0.5D)
             assertEquals 'CO2', amount.@type.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
+
+            // Notes
             assertEquals 1, response.data.Notes.size()
             assertEquals 'comment', response.data.Notes.Note[0].@type.text()
             assertEquals 'This is a comment', response.data.Notes.Note[0].text()
-            assertEquals 1, response.data.Values.size()
-            assertEquals 'foo', response.data.Values.Value[0].@name.text()
-            assertEquals 'bar', response.data.Values.Value[0].text()
+
+            // Input values
+            assertEquals 3, response.data.Values.Value.size()
+            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
+            assertEquals 'kWh', itemValue.@unit.text()
+            assertEquals 'year', itemValue.@perUnit.text()
+        }
+    }
+
+    /**
+     * Tests a calculation using custom units and perUnits.
+     */
+    @Test
+    void getDataItemCalculationCustomUnitsJson() {
+        versions.each { version -> getDataItemCalculationCustomUnitsJson(version) }
+    }
+
+    def getDataItemCalculationCustomUnitsJson(version) {
+        if (version >= 3.4) {
+            client.contentType = JSON
+
+            // Default units
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
+                query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            assertEquals 1, response.data.amounts.size()
+            def amount = response.data.amounts[0]
+            assertEquals 'CO2', amount.type
+            assertEquals 'kg', amount.unit
+            assertEquals 'year', amount.perUnit
+            assertEquals true, amount.default
+            assertEquals "", 240000.0, amount.value, 0.000001
+
+            // Notes
+            assertEquals 1, response.data.notes.size()
+            assertEquals 'comment', response.data.notes[0].type
+            assertEquals 'This is a comment', response.data.notes[0].value
+
+            // Input values
+            assertEquals 3, response.data.values.size()
+            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals '10', itemValue.value
+            assertEquals 'MWh', itemValue.unit
+            assertEquals 'month', itemValue.perUnit
+        }
+    }
+
+    @Test
+    void getDataItemCalculationCustomUnitsXml() {
+        versions.each { version -> getDataItemCalculationCustomUnitsXml(version) }
+    }
+
+    def getDataItemCalculationCustomUnitsXml(version) {
+        if (version >= 3.4) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
+                query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            assertEquals 1, response.data.Amounts.Amount.size()
+            def amount = response.data.Amounts.Amount[0]
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
+
+            // Notes
+            assertEquals 1, response.data.Notes.size()
+            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
+            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+
+            // Input values
+            assertEquals 3, response.data.Values.Value.size()
+            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
+            assertEquals 'MWh', itemValue.@unit.text()
+            assertEquals 'month', itemValue.@perUnit.text()
         }
     }
 
