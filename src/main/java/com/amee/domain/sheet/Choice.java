@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Choice is a name value pair. Eg, used for data item value selections.
+ */
 public class Choice implements Serializable, Comparable, APIObject {
 
     private String name = "";
@@ -32,6 +35,7 @@ public class Choice implements Serializable, Comparable, APIObject {
         this.value = value;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
@@ -45,19 +49,29 @@ public class Choice implements Serializable, Comparable, APIObject {
         return getName().equalsIgnoreCase(other.getName());
     }
 
+    @Override
     public int compareTo(Object o) {
         Choice other = (Choice) o;
         return getName().compareToIgnoreCase(other.getName());
     }
 
+    @Override
     public int hashCode() {
         return getName().toLowerCase().hashCode();
     }
 
+    @Override
     public String toString() {
         return getName();
     }
 
+    /**
+     * Converts the given name/value pair to a choice.
+     *
+     * @param nameAndValue a name/value String in the format name=value. A single value may also be provided in which
+     *                     case the returned Choice's name and value fields will be equal.
+     * @return a Choice representing the given name/value String.
+     */
     public static Choice parseNameAndValue(String nameAndValue) {
         Choice choice = new Choice();
         if (nameAndValue != null) {
@@ -71,6 +85,13 @@ public class Choice implements Serializable, Comparable, APIObject {
         return choice;
     }
 
+    /**
+     * Converts a list of name/value pairs to a List of Choices.
+     *
+     * @param c a comma separated list of name/value pairs in the format name=value. A single value may also be
+     *          provided for each choice in which case the name and value fields will be equal.
+     * @return a List of Choices representing the given name/value pairs.
+     */
     public static List<Choice> parseChoices(String c) {
         List<Choice> choices = new ArrayList<Choice>();
         if ((c != null) && !c.isEmpty()) {
