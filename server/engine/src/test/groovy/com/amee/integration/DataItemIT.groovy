@@ -791,9 +791,9 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithValues() {
         setAdminUser();
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', 'not_an_integer', 3.4);
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '1.1', 3.4); // Not an integer either.
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '', 3.4);
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4);
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4);
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4);
         updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', 'not_a_double', 3.4);
         updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', '', 3.4);
         updateDataItemFieldJson('values.fuel', 'long', String.randomString(32768), 3.4);
@@ -839,12 +839,13 @@ class DataItemIT extends BaseApiTest {
                 def body = [:];
                 body[field] = value;
                 // Update DataItem.
-                client.put(
+                def response = client.put(
                         path: "/${version}/categories/Cooking/items/AE884BA62089",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON);
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+				println '####'+" "+version+" "+response.getStatus()+" "+response.getStatusLine()
+                fail 'Response status code should have been 400 (' + field + ', ' + code + '). version: '+version+', body: '+body;
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response;
