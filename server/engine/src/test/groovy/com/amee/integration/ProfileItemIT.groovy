@@ -46,6 +46,9 @@ class ProfileItemIT extends BaseApiTest {
      * </ul>
      *
      * The 'values.{path}' parameter can be used to set Profile Item Values.
+     * The 'units.{path}' parameter can be used to set Profile Item Value units.
+     * The 'perUnits.{path}' parameter can be used to set Profile Item Value perUnits.
+     * See {@link ProfileItemValueIT} tests for examples of supplying different units and perUnits.
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
