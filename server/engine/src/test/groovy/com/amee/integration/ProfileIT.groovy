@@ -33,13 +33,13 @@ class ProfileIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveProfile() {
-        versions.each { version -> createAndRemoveProfile(version) };
+        versions.each { version -> createAndRemoveProfile(version) }
     }
 
     def createAndRemoveProfile(version) {
         if (version >= 3.6) {
-            createAndRemoveProfileJson(version);
-            createAndRemoveProfileXml(version);
+            createAndRemoveProfileJson(version)
+            createAndRemoveProfileXml(version)
         }
     }
 
@@ -138,8 +138,8 @@ class ProfileIT extends BaseApiTest {
 
     def getSingleProfile(version) {
         if (version >= 3.6) {
-            getSingleProfileJson(version);
-            getSingleProfileXml(version);
+            getSingleProfileJson(version)
+            getSingleProfileXml(version)
         }
     }
 
@@ -202,10 +202,10 @@ class ProfileIT extends BaseApiTest {
         def response = client.get(
             path: "/${version}/profiles;full",
             contentType: JSON)
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
         assertEquals profileUids.size(), response.data.profiles.size()
         assertEquals profileUids.sort(), response.data.profiles.collect { it.uid }.sort()
 
@@ -254,10 +254,10 @@ class ProfileIT extends BaseApiTest {
             path: "/${version}/profiles",
             query: [resultStart:'1', resultLimit: '1'],
             contentType: JSON)
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
+        assertEquals 200, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
         assertEquals 1, response.data.profiles.size()
     }
 
@@ -290,10 +290,10 @@ class ProfileIT extends BaseApiTest {
                 client.get(path: "/${version}/profiles/UCP4SKANF6CS", contentType: JSON)
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
-                def response = e.response;
-                assertEquals 403, response.status;
-                assertEquals 403, response.data.status.code;
-                assertEquals 'Forbidden', response.data.status.name;
+                def response = e.response
+                assertEquals 403, response.status
+                assertEquals 403, response.data.status.code
+                assertEquals 'Forbidden', response.data.status.name
             }
         }
     }

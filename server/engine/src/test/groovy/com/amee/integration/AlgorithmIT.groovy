@@ -43,21 +43,21 @@ class AlgorithmIT extends BaseApiTest {
                     body: ['name': 'test',
                             'content': 'xxx'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, responsePost.status;
-            def location = responsePost.headers['Location'].value;
-            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}");
+                    contentType: JSON)
+            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value
+            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
 
             // Get the new Algorithm.
             def responseGet = client.get(
                     path: "${location};full",
-                    contentType: JSON);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/json', responseGet.contentType;
-            assertTrue responseGet.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', responseGet.data.status;
-            assertEquals 'test', responseGet.data.algorithm.name;
-            assertEquals 'xxx', responseGet.data.algorithm.content;
+                    contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'test', responseGet.data.algorithm.name
+            assertEquals 'xxx', responseGet.data.algorithm.content
 
             // Delete it
             def responseDelete = client.delete(path: location)
@@ -95,7 +95,7 @@ class AlgorithmIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: XML)
             assertEquals 201, responsePost.status
-            def location = responsePost.headers['Location'].value;
+            def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
 
             // Get the new Algorithm.
@@ -132,21 +132,21 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmsJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsJson(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsJson(version) }
     }
 
     def getAlgorithmsJson(version) {
         if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms;full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 2, response.data.algorithms.size();
+                    contentType: JSON)
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 2, response.data.algorithms.size()
             // Should be sorted by name
-            assertTrue response.data.algorithms.first().name.compareToIgnoreCase(response.data.algorithms.last().name) < 0;
+            assertTrue response.data.algorithms.first().name.compareToIgnoreCase(response.data.algorithms.last().name) < 0
         }
     }
 
@@ -157,21 +157,21 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void getAlgorithmsXml() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsXml(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> getAlgorithmsXml(version) }
     }
 
     def getAlgorithmsXml(version) {
         if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms;full",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            def allAlgorithms = response.data.Algorithms.Algorithm;
-            assertEquals 2, allAlgorithms.size();
+                    contentType: XML)
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def allAlgorithms = response.data.Algorithms.Algorithm
+            assertEquals 2, allAlgorithms.size()
             // Should be sorted by name
-            assertTrue allAlgorithms[0].Name.text().compareToIgnoreCase(allAlgorithms[-1].Name.text()) < 0;
+            assertTrue allAlgorithms[0].Name.text().compareToIgnoreCase(allAlgorithms[-1].Name.text()) < 0
         }
     }
 
@@ -199,14 +199,14 @@ class AlgorithmIT extends BaseApiTest {
         if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 'default', response.data.algorithm.name;
-            assertEquals '1B3B44CAE90C', response.data.algorithm.itemDefinition.uid;
-            assertEquals 'Cooking', response.data.algorithm.itemDefinition.name;
+                    contentType: JSON)
+            assertEquals 200, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 'default', response.data.algorithm.name
+            assertEquals '1B3B44CAE90C', response.data.algorithm.itemDefinition.uid
+            assertEquals 'Cooking', response.data.algorithm.itemDefinition.name
         }
     }
 
@@ -224,13 +224,13 @@ class AlgorithmIT extends BaseApiTest {
         if (version >= 3.4) {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387D2B7;full",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            assertEquals 'default', response.data.Algorithm.Name.text();
-            assertEquals '1B3B44CAE90C', response.data.Algorithm.ItemDefinition.@uid.text();
-            assertEquals 'Cooking', response.data.Algorithm.ItemDefinition.Name.text();
+                    contentType: XML)
+            assertEquals 200, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            assertEquals 'default', response.data.Algorithm.Name.text()
+            assertEquals '1B3B44CAE90C', response.data.Algorithm.ItemDefinition.@uid.text()
+            assertEquals 'Cooking', response.data.Algorithm.ItemDefinition.Name.text()
         }
     }
 
@@ -244,12 +244,12 @@ class AlgorithmIT extends BaseApiTest {
      */
     @Test
     void updateAlgorithmJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmJson(version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmJson(version) }
     }
 
     def updateAlgorithmJson(version) {
         if (version >= 3.4) {
-            setAdminUser();
+            setAdminUser()
 
             // 1) Do the update.
             def responsePut = client.put(
@@ -257,19 +257,19 @@ class AlgorithmIT extends BaseApiTest {
                     body: ['name': 'ZZZ New Name JSON',
                             'content': 'New content JSON.'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 200, responsePut.status;
+                    contentType: JSON)
+            assertEquals 200, responsePut.status
 
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C/algorithms/8A852387DAAA;full",
-                    contentType: JSON);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/json', responseGet.contentType;
-            assertTrue responseGet.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', responseGet.data.status;
-            assertEquals 'ZZZ New Name JSON', responseGet.data.algorithm.name;
-            assertEquals 'New content JSON.', responseGet.data.algorithm.content;
+                    contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
+            assertEquals 'ZZZ New Name JSON', responseGet.data.algorithm.name
+            assertEquals 'New content JSON.', responseGet.data.algorithm.content
         }
     }
 
@@ -327,9 +327,9 @@ class AlgorithmIT extends BaseApiTest {
 
     def updateWithInvalidName(version) {
         if (version >= 3.4) {
-            setAdminUser();
-            updateAlgorithmFieldJson('name', 'empty', '');
-            updateAlgorithmFieldJson('name', 'long', String.randomString(256));
+            setAdminUser()
+            updateAlgorithmFieldJson('name', 'empty', '')
+            updateAlgorithmFieldJson('name', 'long', String.randomString(256))
         }
     }
 
@@ -350,8 +350,8 @@ class AlgorithmIT extends BaseApiTest {
 
     def updateWithInvalidContent(version) {
         if (version >= 3.4) {
-            setAdminUser();
-            updateAlgorithmFieldJson('content', 'long', String.randomString(32768));
+            setAdminUser()
+            updateAlgorithmFieldJson('content', 'long', String.randomString(32768))
         }
     }
 
@@ -375,7 +375,7 @@ class AlgorithmIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateAlgorithmFieldJson(field, code, value, since) {
-        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmFieldJson(field, code, value, since, version) };
+        com.amee.integration.BaseApiTest.versions.each { version -> updateAlgorithmFieldJson(field, code, value, since, version) }
     }
 
     /**

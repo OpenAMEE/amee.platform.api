@@ -76,12 +76,12 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void createCategoryJson() {
-        versions.each { version -> createCategoryJson(version) };
+        versions.each { version -> createCategoryJson(version) }
     }
 
     def createCategoryJson(version) {
         if (version >= 3.3) {
-            setAdminUser();
+            setAdminUser()
 
             // Create a DataCategory.
             def responsePost = client.post(
@@ -92,30 +92,30 @@ class CategoryIT extends BaseApiTest {
                             name: 'Test Name',
                             wikiName: 'Test_Wiki_Name'],
                     requestContentType: URLENC,
-                    contentType: JSON);
+                    contentType: JSON)
             assertEquals 201, responsePost.status
 
             // Get the new DataCategory.
             def responseGet = client.get(
                     path: "/${version}/categories/Test_Wiki_Name",
-                    contentType: JSON);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/json', responseGet.contentType;
-            assertTrue responseGet.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', responseGet.data.status;
+                    contentType: JSON)
+            assertEquals 200, responseGet.status
+            assertEquals 'application/json', responseGet.contentType
+            assertTrue responseGet.data instanceof net.sf.json.JSON
+            assertEquals 'OK', responseGet.data.status
             assertEquals "Test Name", responseGet.data.category.name
             assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
 
             // Then delete it.
-            def responseDelete = client.delete(path: "/${version}/categories/Test_Wiki_Name");
-            assertEquals 200, responseDelete.status;
+            def responseDelete = client.delete(path: "/${version}/categories/Test_Wiki_Name")
+            assertEquals 200, responseDelete.status
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/categories/Test_Wiki_Name");
-                fail 'Should have thrown an exception';
+                client.get(path: "/${version}/categories/Test_Wiki_Name")
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals 404, e.response.status
             }
         }
     }
@@ -159,7 +159,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getCategoryByWikiNameJson() {
-        versions.each { version -> getCategoryByWikiNameJson(version) };
+        versions.each { version -> getCategoryByWikiNameJson(version) }
     }
 
     def getCategoryByWikiNameJson(version) {
@@ -180,7 +180,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getCategoryByUidJson() {
-        versions.each { version -> getCategoryByUidJson(version) };
+        versions.each { version -> getCategoryByUidJson(version) }
     }
 
     def getCategoryByUidJson(version) {
@@ -201,11 +201,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getTrashedCategoryByWikiNameJson() {
-        versions.each { version -> getTrashedCategoryByWikiNameJson(version) };
+        versions.each { version -> getTrashedCategoryByWikiNameJson(version) }
     }
 
     def getTrashedCategoryByWikiNameJson(version) {
-        setRootUser();
+        setRootUser()
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Kitchen_generic;audit",
@@ -225,11 +225,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getTrashedCategoryByUidJson() {
-        versions.each { version -> getTrashedCategoryByUidJson(version) };
+        versions.each { version -> getTrashedCategoryByUidJson(version) }
     }
 
     def getTrashedCategoryByUidJson(version) {
-        setRootUser();
+        setRootUser()
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/3C03A03B5F1A;audit",
@@ -249,11 +249,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getInferredTrashedCategoryByUidJson() {
-        versions.each { version -> getInferredTrashedCategoryByUidJson(version) };
+        versions.each { version -> getInferredTrashedCategoryByUidJson(version) }
     }
 
     def getInferredTrashedCategoryByUidJson(version) {
-        setRootUser();
+        setRootUser()
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/3C03A03B5F4A;audit",
@@ -273,15 +273,15 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getMissingCategoryByWikiName() {
-        versions.each { version -> getMissingCategoryByWikiName(version) };
+        versions.each { version -> getMissingCategoryByWikiName(version) }
     }
 
     def getMissingCategoryByWikiName(version) {
         try {
             client.get(path: "/${version}/categories/Wibble")
-            fail 'Should have thrown an exception';
+            fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status;
+            assertEquals 404, e.response.status
         }
     }
 
@@ -292,7 +292,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getCategoriesJson() {
-        versions.each { version -> getCategoriesJson(version) };
+        versions.each { version -> getCategoriesJson(version) }
     }
 
     def getCategoriesJson(version) {
@@ -314,7 +314,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getCategoriesWithTagsExcludedJson() {
-        versions.each { version -> getCategoriesWithTagsExcludedJson(version) };
+        versions.each { version -> getCategoriesWithTagsExcludedJson(version) }
     }
 
     def getCategoriesWithTagsExcludedJson(version) {
@@ -339,12 +339,12 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void getCategoriesXml() {
-        versions.each { version -> getCategoriesXml(version) };
+        versions.each { version -> getCategoriesXml(version) }
     }
 
     def getCategoriesXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories");
+        def response = client.get(path: "/${version}/categories")
         assertEquals 200, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
@@ -361,7 +361,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByAuthorityJson() {
-        versions.each { version -> filterByAuthorityJson(version) };
+        versions.each { version -> filterByAuthorityJson(version) }
     }
 
     def filterByAuthorityJson(version) {
@@ -383,7 +383,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByAuthorityXml() {
-        versions.each { version -> filterByAuthorityXml(version) };
+        versions.each { version -> filterByAuthorityXml(version) }
     }
 
     def filterByAuthorityXml(version) {
@@ -405,7 +405,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByTagsJson() {
-        versions.each { version -> filterByTagsJson(version) };
+        versions.each { version -> filterByTagsJson(version) }
     }
 
     def filterByTagsJson(version) {
@@ -427,7 +427,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByTagsXml() {
-        versions.each { version -> filterByTagsXml(version) };
+        versions.each { version -> filterByTagsXml(version) }
     }
 
     def filterByTagsXml(version) {
@@ -449,7 +449,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByFullPathJson() {
-        versions.each { version -> filterByFullPathJson(version) };
+        versions.each { version -> filterByFullPathJson(version) }
     }
 
     def filterByFullPathJson(version) {
@@ -472,7 +472,7 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void filterByPathXml() {
-        versions.each { version -> filterByPathXml(version) };
+        versions.each { version -> filterByPathXml(version) }
     }
 
     def filterByPathXml(version) {
@@ -498,11 +498,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateCategoryJson() {
-        versions.each { version -> updateCategoryJson(version) };
+        versions.each { version -> updateCategoryJson(version) }
     }
 
     def updateCategoryJson(version) {
-        setAdminUser();
+        setAdminUser()
 
         // 1) Do the update (CO2_Benchmark).
         def responsePut = client.put(
@@ -516,25 +516,25 @@ class CategoryIT extends BaseApiTest {
                         'history': 'New History.', // This parameter will be ignored pre version 3.3.
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 200, responsePut.status;
+                contentType: JSON)
+        assertEquals 200, responsePut.status
 
         // 2) Check values have been updated (CO2_Benchmark).
         def responseGet = client.get(
                 path: "/${version}/categories/245CBD734418;full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'newPath', responseGet.data.category.path;
-        assertEquals 'New Name', responseGet.data.category.name;
-        assertEquals 'New_Wiki_Name', responseGet.data.category.wikiName;
-        assertEquals 'New Provenance.', responseGet.data.category.provenance;
-        assertEquals 'New Authority.', responseGet.data.category.authority;
-        assertEquals 'New WikiDoc.', responseGet.data.category.wikiDoc;
+                contentType: JSON)
+        assertEquals 200, responseGet.status
+        assertEquals 'application/json', responseGet.contentType
+        assertTrue responseGet.data instanceof net.sf.json.JSON
+        assertEquals 'OK', responseGet.data.status
+        assertEquals 'newPath', responseGet.data.category.path
+        assertEquals 'New Name', responseGet.data.category.name
+        assertEquals 'New_Wiki_Name', responseGet.data.category.wikiName
+        assertEquals 'New Provenance.', responseGet.data.category.provenance
+        assertEquals 'New Authority.', responseGet.data.category.authority
+        assertEquals 'New WikiDoc.', responseGet.data.category.wikiDoc
         if (version >= 3.3) {
-            assertEquals 'New History.', responseGet.data.category.history;
+            assertEquals 'New History.', responseGet.data.category.history
         }
     }
 
@@ -544,11 +544,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateInvalidCategoryJson() {
-        versions.each { version -> updateInvalidCategoryJson(version) };
+        versions.each { version -> updateInvalidCategoryJson(version) }
     }
 
     def updateInvalidCategoryJson(version) {
-        setAdminUser();
+        setAdminUser()
         try {
             // 1) Do the update (CO2_Benchmark).
             client.put(
@@ -558,15 +558,15 @@ class CategoryIT extends BaseApiTest {
                             'provenance': String.randomString(256), // too long
                             'wikiDoc': String.randomString(32768)], // too long
                     requestContentType: URLENC,
-                    contentType: JSON);
-            fail 'Response status code should have been 400 (' + field + ', ' + code + ').';
+                    contentType: JSON)
+            fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
         } catch (HttpResponseException e) {
             // Handle error response containing a ValidationResult.
-            def response = e.response;
-            assertEquals 400, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'INVALID', response.data.status;
+            def response = e.response
+            assertEquals 400, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'INVALID', response.data.status
         }
     }
 
@@ -575,11 +575,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateRootCategoryJson() {
-        versions.each { version -> updateRootCategoryJson(version) };
+        versions.each { version -> updateRootCategoryJson(version) }
     }
 
     def updateRootCategoryJson(version) {
-        setAdminUser();
+        setAdminUser()
         try {
             // Should not be allowed to update the root Data Category.
             client.put(
@@ -589,12 +589,12 @@ class CategoryIT extends BaseApiTest {
                             'provenance': 'bad',
                             'wikiDoc': 'bad'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            fail 'Response status code should have been 403';
+                    contentType: JSON)
+            fail 'Response status code should have been 403'
         } catch (HttpResponseException e) {
             // Expect a 403.
-            def response = e.response;
-            assertEquals 403, response.status;
+            def response = e.response
+            assertEquals 403, response.status
         }
     }
 
@@ -603,22 +603,22 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void shouldBehaveWhenItemDefinitionIsTrashed() {
-        versions.each { version -> shouldBehaveWhenItemDefinitionIsTrashed(version) };
+        versions.each { version -> shouldBehaveWhenItemDefinitionIsTrashed(version) }
     }
 
     def shouldBehaveWhenItemDefinitionIsTrashed(version) {
         if (version >= 3.4) {
-            setAdminUser();
+            setAdminUser()
 
             // Create Item Definition.
             def itemDefinitionPost = client.post(
                     path: "/${version}/definitions",
                     body: ['name': 'Test Item Definition'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, itemDefinitionPost.status;
-            def itemDefinitionLocation = itemDefinitionPost.headers['Location'].value;
-            def itemDefinitionUid = itemDefinitionLocation.split('/')[5];
+                    contentType: JSON)
+            assertEquals 201, itemDefinitionPost.status
+            def itemDefinitionLocation = itemDefinitionPost.headers['Location'].value
+            def itemDefinitionUid = itemDefinitionLocation.split('/')[5]
 
             // Create Item Value Definition.
             def itemValueDefinitionPost = client.post(
@@ -633,8 +633,8 @@ class CategoryIT extends BaseApiTest {
                             'perUnit': 'month',
                             'apiVersions': '2.0'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, itemValueDefinitionPost.status;
+                    contentType: JSON)
+            assertEquals 201, itemValueDefinitionPost.status
 
             // Create Data Category.
             def dataCategoryPost = client.post(
@@ -646,68 +646,68 @@ class CategoryIT extends BaseApiTest {
                             name: 'Test Name',
                             wikiName: 'Test_Wiki_Name'],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, dataCategoryPost.status;
-            def dataCategoryLocation = dataCategoryPost.headers['Location'].value;
+                    contentType: JSON)
+            assertEquals 201, dataCategoryPost.status
+            def dataCategoryLocation = dataCategoryPost.headers['Location'].value
 
             // Check Data Category is available.
             def dataCategoryGet1 = client.get(
                     path: "${dataCategoryLocation};full",
-                    contentType: JSON);
-            assertEquals 200, dataCategoryGet1.status;
-            assertEquals "Test Item Definition", dataCategoryGet1.data.category.itemDefinition.name;
+                    contentType: JSON)
+            assertEquals 200, dataCategoryGet1.status
+            assertEquals "Test Item Definition", dataCategoryGet1.data.category.itemDefinition.name
 
             // Create Data Item.
             def dataItemPost = client.post(
                     path: "${dataCategoryLocation}/items",
                     body: ['values.test_item_value_definition': 10],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, dataItemPost.status;
-            def dataItemLocation = dataItemPost.headers['Location'].value;
+                    contentType: JSON)
+            assertEquals 201, dataItemPost.status
+            def dataItemLocation = dataItemPost.headers['Location'].value
 
             // Check Data Item is available.
             def dataItemGet = client.get(
                     path: "${dataItemLocation};full",
-                    contentType: JSON);
-            assertEquals 200, dataItemGet.status;
-            assertEquals 1, dataItemGet.data.item.values.size();
-            assertTrue(['10'].sort() == dataItemGet.data.item.values.collect {it.value}.sort());
-            assertTrue(['test_item_value_definition'].sort() == dataItemGet.data.item.values.collect {it.path}.sort());
+                    contentType: JSON)
+            assertEquals 200, dataItemGet.status
+            assertEquals 1, dataItemGet.data.item.values.size()
+            assertTrue(['10'].sort() == dataItemGet.data.item.values.collect {it.value}.sort())
+            assertTrue(['test_item_value_definition'].sort() == dataItemGet.data.item.values.collect {it.path}.sort())
 
             // Delete Item Definition.
-            def itemDefinitionDelete = client.delete(path: itemDefinitionLocation);
-            assertEquals 200, itemDefinitionDelete.status;
+            def itemDefinitionDelete = client.delete(path: itemDefinitionLocation)
+            assertEquals 200, itemDefinitionDelete.status
             try {
-                client.get(path: itemDefinitionLocation);
-                fail 'Should have thrown an exception';
+                client.get(path: itemDefinitionLocation)
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals 404, e.response.status
             }
 
             // Check Data Category is available and there is no Item Definition.
             def dataCategoryGet2 = client.get(
                     path: "${dataCategoryLocation};full",
-                    contentType: JSON);
-            assertEquals 200, dataCategoryGet2.status;
-            assertNull dataCategoryGet2.data.category.itemDefinition;
+                    contentType: JSON)
+            assertEquals 200, dataCategoryGet2.status
+            assertNull dataCategoryGet2.data.category.itemDefinition
 
             // Check Data Item is not available.
             try {
-                client.get(path: dataItemLocation);
-                fail 'Should have thrown an exception';
+                client.get(path: dataItemLocation)
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals 404, e.response.status
             }
 
             // Delete Data Category.
-            def dataCategoryDelete = client.delete(path: dataCategoryLocation);
-            assertEquals 200, dataCategoryDelete.status;
+            def dataCategoryDelete = client.delete(path: dataCategoryLocation)
+            assertEquals 200, dataCategoryDelete.status
             try {
-                client.get(path: itemDefinitionLocation);
-                fail 'Should have thrown an exception';
+                client.get(path: itemDefinitionLocation)
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals 404, e.response.status
             }
         }
     }
@@ -726,10 +726,10 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidName() {
-        setAdminUser();
-        updateCategoryFieldJson('name', 'empty', '');
-        updateCategoryFieldJson('name', 'short', 'a');
-        updateCategoryFieldJson('name', 'long', String.randomString(256));
+        setAdminUser()
+        updateCategoryFieldJson('name', 'empty', '')
+        updateCategoryFieldJson('name', 'short', 'a')
+        updateCategoryFieldJson('name', 'long', String.randomString(256))
     }
 
     /**
@@ -753,10 +753,10 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidPath() {
-        setAdminUser();
-        updateCategoryFieldJson('path', 'long', String.randomString(256));
-        updateCategoryFieldJson('path', 'format', 'n o t v a l i d');
-        updateCategoryFieldJson('path', 'duplicate', 'co2benchmark2');
+        setAdminUser()
+        updateCategoryFieldJson('path', 'long', String.randomString(256))
+        updateCategoryFieldJson('path', 'format', 'n o t v a l i d')
+        updateCategoryFieldJson('path', 'duplicate', 'co2benchmark2')
     }
 
     /**
@@ -778,11 +778,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidWikiName() {
-        setAdminUser();
-        updateCategoryFieldJson('wikiName', 'empty', '');
-        updateCategoryFieldJson('wikiName', 'short', '12');
-        updateCategoryFieldJson('wikiName', 'long', String.randomString(256));
-        updateCategoryFieldJson('wikiName', 'duplicate', 'CLM_food_life_cycle_database');
+        setAdminUser()
+        updateCategoryFieldJson('wikiName', 'empty', '')
+        updateCategoryFieldJson('wikiName', 'short', '12')
+        updateCategoryFieldJson('wikiName', 'long', String.randomString(256))
+        updateCategoryFieldJson('wikiName', 'duplicate', 'CLM_food_life_cycle_database')
     }
 
     /**
@@ -798,11 +798,11 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidMetadata() {
-        setAdminUser();
-        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768));
-        updateCategoryFieldJson('provenance', 'long', String.randomString(256));
-        updateCategoryFieldJson('authority', 'long', String.randomString(256));
-        updateCategoryFieldJson('history', 'long', String.randomString(32768), 3.3);
+        setAdminUser()
+        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768))
+        updateCategoryFieldJson('provenance', 'long', String.randomString(256))
+        updateCategoryFieldJson('authority', 'long', String.randomString(256))
+        updateCategoryFieldJson('history', 'long', String.randomString(32768), 3.3)
     }
 
     /**
@@ -821,10 +821,10 @@ class CategoryIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidParentCategory() {
-        setAdminUser();
-        updateCategoryFieldJson('dataCategory', 'same', '245CBD734418', 3.3);
-        updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child', 3.3);
-        updateCategoryFieldJson('dataCategory', 'empty', 'XXX', 3.3);
+        setAdminUser()
+        updateCategoryFieldJson('dataCategory', 'same', '245CBD734418', 3.3)
+        updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child', 3.3)
+        updateCategoryFieldJson('dataCategory', 'empty', 'XXX', 3.3)
     }
 
     /**
