@@ -572,7 +572,15 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc;
             assertEquals 'Test Provenance', responseGet.data.item.provenance;
             assert 4 == responseGet.data.item.values.size();
-            assert [20, 'Petrol', '', 123].sort() == responseGet.data.item.values.collect {it.value}.sort()
+            //assert ['20', 'Petrol', '', 123].sort() == responseGet.data.item.values.collect {it.value}.sort()
+			println responseGet.data.item.values.collect{it.value}.sort()[0].dump()
+			println responseGet.data.item.values.collect{it.value}.sort()[1].dump()
+			println responseGet.data.item.values.collect{it.value}.sort()[2].dump()
+			println responseGet.data.item.values.collect{it.value}.sort()[3].dump()
+			assert '' == responseGet.data.item.values.collect{it.value}.sort()[0]
+			assert 123 == responseGet.data.item.values.collect{it.value}.sort()[1]
+			assert '20' == responseGet.data.item.values.collect{it.value}.sort()[2]
+			assert 'Petrol' == responseGet.data.item.values.collect{it.value}.sort()[3]
             assert ['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort()
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem");
