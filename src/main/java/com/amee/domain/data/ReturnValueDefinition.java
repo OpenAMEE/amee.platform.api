@@ -1,22 +1,35 @@
 package com.amee.domain.data;
 
-import com.amee.domain.*;
-import com.amee.domain.path.Pathable;
-import com.amee.platform.science.AmountCompoundUnit;
-import com.amee.platform.science.AmountPerUnit;
-import com.amee.platform.science.AmountUnit;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import java.util.List;
+import com.amee.domain.AMEEEntity;
+import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
+import com.amee.domain.ObjectType;
+import com.amee.domain.ValueDefinition;
+import com.amee.domain.path.Pathable;
+import com.amee.platform.science.AmountCompoundUnit;
+import com.amee.platform.science.AmountPerUnit;
+import com.amee.platform.science.AmountUnit;
 
 @Entity
 @Table(name = "RETURN_VALUE_DEFINITION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
+	public static final int NAME_MAX_SIZE = 255;
     public static final int TYPE_MIN_SIZE = 1;
     public static final int TYPE_MAX_SIZE = 255;
     public static final int UNIT_MAX_SIZE = 255;
@@ -38,6 +51,9 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
     @Column(name = "PER_UNIT", length = PER_UNIT_MAX_SIZE, nullable = false)
     private String perUnit = "";
+    
+    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    private String name = "";
 
     @Column(name = "DEFAULT_TYPE")
     private boolean defaultType = false;
@@ -115,7 +131,15 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
     @Override
     public String getName() {
-        return getUid();
+        return name;
+    }
+    
+    public void setName(String name){
+    	if(name == null){
+    		this.name = "";
+    	}else{
+			this.name = name;
+    	}
     }
 
     @Override
