@@ -1,13 +1,16 @@
 package com.amee.platform.resource.returnvaluedefinition;
 
-import com.amee.base.resource.*;
+import java.util.Map;
+
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.ValidationResult;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
-import java.util.Map;
 
 public interface ReturnValueDefinitionResource {
 
@@ -23,6 +26,8 @@ public interface ReturnValueDefinitionResource {
         public void newReturnValueDefinition(ReturnValueDefinition returnValueDefinition);
 
         public void addBasic();
+        
+        public void addName();
 
         public void addItemDefinition(ItemDefinition id);
 

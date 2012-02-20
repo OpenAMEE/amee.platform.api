@@ -45,6 +45,11 @@ public class ReturnValueDefinitionDOMRenderer_3_4_0 implements ReturnValueDefini
     }
 
     @Override
+	public void addName() {
+		returnValueDefinitionElem.addContent(new Element("Name").setText(returnValueDefinition.getName()));
+	}
+    
+    @Override
     public void addType() {
         returnValueDefinitionElem.addContent(new Element("Type").setText(returnValueDefinition.getType()));
     }
@@ -85,7 +90,7 @@ public class ReturnValueDefinitionDOMRenderer_3_4_0 implements ReturnValueDefini
         returnValueDefinitionElem.setAttribute("modified", DATE_FORMAT.print(returnValueDefinition.getModified().getTime()));
     }
 
-    public String getMediaType() {
+	public String getMediaType() {
         return "application/xml";
     }
 
