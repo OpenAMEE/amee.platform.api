@@ -4,6 +4,7 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import groovyx.net.http.HttpResponseException
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile API. This API has been available since version 3.6.
@@ -52,16 +53,15 @@ class ProfileIT extends BaseApiTest {
             requestContentType: URLENC,
             contentType: JSON)
 
-        assertEquals 201, responsePost.status
-
         // Get and check the Location.
         def profileLocation = responsePost.headers['Location'].value
         def profileUid = profileLocation.split('/')[5]
         assertEquals 12, profileUid.size()
+        assertOkJson responsePost, SUCCESS_CREATED.code, profileUid
 
         // Fetch the Profile.
         def responseGet = client.get(path: "${profileLocation};full", contentType: JSON)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'application/json', responseGet.contentType
         assertTrue responseGet.data instanceof net.sf.json.JSON
         assertEquals 'OK', responseGet.data.status
@@ -70,14 +70,14 @@ class ProfileIT extends BaseApiTest {
 
         // Delete it
         def responseDelete = client.delete(path: profileLocation)
-        assertEquals 200, responseDelete.status
+        assertOkJson responseDelete, SUCCESS_OK.code, profileUid
 
         // Check it has been deleted
         try {
             client.get(path: profileLocation)
             fail 'Should have thrown Exception'
         } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
         }
     }
 
@@ -90,31 +90,30 @@ class ProfileIT extends BaseApiTest {
             requestContentType: URLENC,
             contentType: XML)
 
-        assertEquals 201, responsePost.status
-
         // Get and check the Location.
         def profileLocation = responsePost.headers['Location'].value
         def profileUid = profileLocation.split('/')[5]
         assertEquals 12, profileUid.size()
+        assertOkXml responsePost, SUCCESS_CREATED.code, profileUid
 
         // Fetch the Profile.
         def responseGet = client.get(path: "${profileLocation};full", contentType: XML)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'application/xml', responseGet.contentType
         assertEquals 'OK', responseGet.data.Status.text()
         assertEquals profileUid, responseGet.data.Profile.@uid.text()
         assertTrue responseGet.data.Profile.Categories.Category.isEmpty()
 
         // Delete it
-        def responseDelete = client.delete(path: profileLocation)
-        assertEquals 200, responseDelete.status
+        def responseDelete = client.delete(path: profileLocation, contentType: XML)
+        assertOkXml responseDelete, SUCCESS_OK.code, profileUid
 
         // Check it has been deleted
         try {
             client.get(path: profileLocation)
             fail 'Should have thrown Exception'
         } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
         }
     }
 
@@ -147,7 +146,7 @@ class ProfileIT extends BaseApiTest {
         def response = client.get(
             path: "/${version}/profiles/${profileUids[0]};full",
             contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -161,7 +160,7 @@ class ProfileIT extends BaseApiTest {
         def response = client.get(
             path: "/${version}/profiles/${profileUids[1]};full",
             contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals profileUids[1], response.data.Profile.@uid.text()
@@ -202,7 +201,7 @@ class ProfileIT extends BaseApiTest {
         def response = client.get(
             path: "/${version}/profiles;full",
             contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -221,7 +220,7 @@ class ProfileIT extends BaseApiTest {
         def response = client.get(
             path: "/${version}/profiles;full",
             contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         def allProfiles = response.data.Profiles.Profile
@@ -254,7 +253,7 @@ class ProfileIT extends BaseApiTest {
             path: "/${version}/profiles",
             query: [resultStart:'1', resultLimit: '1'],
             contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -266,7 +265,7 @@ class ProfileIT extends BaseApiTest {
             path: "/${version}/profiles",
             query: [resultStart:'1', resultLimit: '1'],
             contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         def profiles = response.data.Profiles.Profile
@@ -291,11 +290,10 @@ class ProfileIT extends BaseApiTest {
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 403, response.status
-                assertEquals 403, response.data.status.code
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
                 assertEquals 'Forbidden', response.data.status.name
             }
         }
     }
-
 }

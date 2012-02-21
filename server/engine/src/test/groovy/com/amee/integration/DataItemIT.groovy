@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Data Item API.
@@ -84,7 +85,6 @@ class DataItemIT extends BaseApiTest {
                             'values.kgCO2PerYear': 200],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
 
             // Is Location available?
             assertTrue responsePost.headers['Location'] != null
@@ -96,6 +96,9 @@ class DataItemIT extends BaseApiTest {
             def uid = location.split('/')[7]
             assertTrue uid != null
 
+            // Success response
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
 
@@ -103,7 +106,7 @@ class DataItemIT extends BaseApiTest {
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/${uid};full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -117,7 +120,7 @@ class DataItemIT extends BaseApiTest {
 
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -127,7 +130,7 @@ class DataItemIT extends BaseApiTest {
                 client.get(path: "/${version}/categories/Cooking/items/${uid}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -152,13 +155,13 @@ class DataItemIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            // Should have been created
-            assertEquals 201, responsePost.status
-
             // Get the UID
             def location = responsePost.headers['Location'].value
             def uid = location.split('/')[7]
             assertNotNull uid
+
+            // Should have been created
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -173,12 +176,12 @@ class DataItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals 400, e.response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Delete it
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Create another data item with different value for one drilldown.
             responsePost = client.post(
@@ -187,17 +190,17 @@ class DataItemIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            // Should have been created
-            assertEquals 201, responsePost.status
-
             // Get the UID
             location = responsePost.headers['Location'].value
             uid = location.split('/')[7]
             assertNotNull uid
 
+            // Should have been created
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+
             // Delete it
             responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
         }
     }
 
@@ -221,8 +224,9 @@ class DataItemIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON)
 
-            // Should have been created.
-            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value
+            def uid = location.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -238,14 +242,14 @@ class DataItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals 400, e.response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/testPath")
 
             // Should have been deleted.
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -285,7 +289,7 @@ class DataItemIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
                 query: [resultLimit: '6'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -315,7 +319,7 @@ class DataItemIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
                 query: [numberOfPeople: '1'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -343,7 +347,7 @@ class DataItemIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
                 query: [resultLimit: '6'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals 'true', response.data.Items.@truncated.text()
@@ -372,7 +376,7 @@ class DataItemIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/categories/Cooking/items;full",
                 query: [numberOfPeople: '1'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals 'false', response.data.Items.@truncated.text()
@@ -397,7 +401,7 @@ class DataItemIT extends BaseApiTest {
     def getDataItemOneGasJson(version) {
         client.contentType = JSON
         def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -426,7 +430,7 @@ class DataItemIT extends BaseApiTest {
     def getDataItemOneGasXml(version) {
         client.contentType = XML
         def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         if (version >= 3.2) {
@@ -455,7 +459,7 @@ class DataItemIT extends BaseApiTest {
     def getDataItemTenElectricJson(version) {
         client.contentType = JSON
         def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -484,7 +488,7 @@ class DataItemIT extends BaseApiTest {
     def getDataItemTenElectricXml(version) {
         client.contentType = XML
         def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         if (version >= 3.2) {
@@ -527,8 +531,9 @@ class DataItemIT extends BaseApiTest {
                     requestContentType: URLENC,
                     contentType: JSON)
 
-            // Should have been created.
-            assertEquals 201, responsePost.status
+            def location = responsePost.headers['Location'].value
+            def uid = location.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -546,7 +551,7 @@ class DataItemIT extends BaseApiTest {
                     contentType: JSON)
 
             // Should have been updated.
-            assertEquals 200, responsePut.status
+            assertOkJson responsePut, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -555,7 +560,7 @@ class DataItemIT extends BaseApiTest {
             def responseGet = client.get(
                     path: "/${version}/categories/Cooking/items/aTestDataItem;full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             println responseGet.data
             assertEquals 'Test Name', responseGet.data.item.name
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
@@ -568,7 +573,7 @@ class DataItemIT extends BaseApiTest {
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem")
 
             // Should have been deleted.
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(2000)
@@ -593,8 +598,8 @@ class DataItemIT extends BaseApiTest {
             fail 'Expected 403'
         } catch (HttpResponseException e) {
             def response = e.response
-            assertEquals 403, response.status
-            assertEquals 403, response.data.status.code
+            assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
+            assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
             assertEquals 'Forbidden', response.data.status.name
         }
     }
@@ -627,7 +632,7 @@ class DataItemIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
                 query: ['values.energyPerTime': '10'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -675,7 +680,7 @@ class DataItemIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
                 query: ['values.energyPerTime': '10'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
 
@@ -719,7 +724,7 @@ class DataItemIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
                 query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -759,7 +764,7 @@ class DataItemIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
                 query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
 
@@ -803,7 +808,7 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = JSON
             def response = client.get(path: "/${version}/categories/Computers_generic/items/651B5AE27940/calculation;full")
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -959,7 +964,7 @@ class DataItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status

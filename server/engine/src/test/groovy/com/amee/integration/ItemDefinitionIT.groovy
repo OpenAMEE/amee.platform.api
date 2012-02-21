@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Item Definition API.
@@ -62,15 +63,16 @@ class ItemDefinitionIT extends BaseApiTest {
                             'usages': 'baz,quux'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            def uid = location.split('/')[5]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Get the new ItemDefinition
             def responseGet = client.get(
                     path: "${location};full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -82,14 +84,14 @@ class ItemDefinitionIT extends BaseApiTest {
 
             // Delete it
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -125,7 +127,7 @@ class ItemDefinitionIT extends BaseApiTest {
                     path: "/${version}/definitions;name",
                     query: ['resultStart': 0, 'resultLimit': 4],
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -145,7 +147,7 @@ class ItemDefinitionIT extends BaseApiTest {
                     path: "/${version}/definitions;name",
                     query: ['resultStart': 4, 'resultLimit': 4],
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -171,7 +173,7 @@ class ItemDefinitionIT extends BaseApiTest {
                     path: "/${version}/definitions;name",
                     query: ['name': 'cooking'],
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -207,7 +209,7 @@ class ItemDefinitionIT extends BaseApiTest {
                 fail 'Response status code should have been 400 (' + code + ').'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
@@ -230,7 +232,7 @@ class ItemDefinitionIT extends BaseApiTest {
                     path: "/${version}/definitions;name",
                     query: ['resultStart': 0, 'resultLimit': 4],
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals 'true', response.data.ItemDefinitions.@truncated.text()
@@ -251,7 +253,7 @@ class ItemDefinitionIT extends BaseApiTest {
                     path: "/${version}/definitions;name",
                     query: ['resultStart': 4, 'resultLimit': 4],
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals 'true', response.data.ItemDefinitions.@truncated.text()
@@ -274,7 +276,7 @@ class ItemDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2;full",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -299,7 +301,7 @@ class ItemDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2;full",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals 'Computers Generic', response.data.ItemDefinition.Name.text()
@@ -324,7 +326,7 @@ class ItemDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C;full",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -351,7 +353,7 @@ class ItemDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/1B3B44CAE90C;full",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals 'Cooking', response.data.ItemDefinition.Name.text()
@@ -390,7 +392,7 @@ class ItemDefinitionIT extends BaseApiTest {
                             'usages': 'usage1,usage2,usage3'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 200, responsePut.status
+            assertOkJson responsePut, SUCCESS_OK.code, '11D3548466F2'
 
             // We added a usage.
             expectedUsageNames[2] = 'usage3'
@@ -400,7 +402,7 @@ class ItemDefinitionIT extends BaseApiTest {
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2;full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -475,7 +477,7 @@ class ItemDefinitionIT extends BaseApiTest {
                 fail "Response status code should have been 400 (${field}, ${code})."
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status

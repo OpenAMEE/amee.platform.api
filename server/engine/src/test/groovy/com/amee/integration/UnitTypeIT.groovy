@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Unit API.
@@ -57,18 +58,18 @@ class UnitTypeIT extends BaseApiTest {
                     body: [name: name],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
 
             // Get and check the location.
             def unitTypeLocation = responsePost.headers['Location'].value
             def unitTypeUid = unitTypeLocation.split('/')[6]
             assertTrue unitTypeUid.size() == 12
+            assertOkJson responsePost, SUCCESS_CREATED.code, unitTypeUid
 
             // Fetch the Unit Type.
             def response = client.get(
                     path: "/${version}/units/types/${name};full",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -76,14 +77,14 @@ class UnitTypeIT extends BaseApiTest {
 
             // Then delete the Unit Type.
             def responseDelete = client.delete(path: "/${version}/units/types/${name}")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, unitTypeUid
 
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/units/types/${name}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -101,32 +102,32 @@ class UnitTypeIT extends BaseApiTest {
                     body: [name: name],
                     requestContentType: URLENC,
                     contentType: XML)
-            assertEquals 201, responsePost.status
 
             // Get and check the location.
             def unitTypeLocation = responsePost.headers['Location'].value
             def unitTypeUid = unitTypeLocation.split('/')[6]
             assertTrue unitTypeUid.size() == 12
+            assertOkXml responsePost, SUCCESS_CREATED.code, unitTypeUid
 
             // Fetch the Unit Type.
             def response = client.get(
                     path: "/${version}/units/types/${name};full",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals name, response.data.UnitType.Name.text()
 
             // Then delete the Unit Type.
-            def responseDelete = client.delete(path: "/${version}/units/types/${name}")
-            assertEquals 200, responseDelete.status
+            def responseDelete = client.delete(path: "/${version}/units/types/${name}", contentType: XML)
+            assertOkXml responseDelete, SUCCESS_OK.code, unitTypeUid
 
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/units/types/${name}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -158,7 +159,7 @@ class UnitTypeIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/units/types",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -173,7 +174,7 @@ class UnitTypeIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/units/types",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def allUnitTypes = response.data.UnitTypes.UnitType

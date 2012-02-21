@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Item Value Definition API.
@@ -60,15 +61,16 @@ class ItemValueDefinitionIT extends BaseApiTest {
                             'apiVersions': '1.0,2.0'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            def uid = location.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
                     path: "${location};full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -86,14 +88,14 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
             // Delete it
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -123,12 +125,14 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals 201, responsePost.status
             def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            def uid = location.split('/')[7]
+            assertOkXml responsePost, SUCCESS_CREATED.code, uid
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
                     path: "${location};full",
                     contentType: XML)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/xml', responseGet.contentType
             assertEquals 'OK', responseGet.data.Status.text()
             assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text()
@@ -151,15 +155,15 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assert ['false', 'false'] == allUsages.@active*.text()
 
             // Delete it
-            def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            def responseDelete = client.delete(path: location, contentType: XML)
+            assertOkXml responseDelete, SUCCESS_OK.code, uid
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -197,7 +201,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2/values;full",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -221,7 +225,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2/values;full",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def allItemValueDefinitions = response.data.ItemValueDefinitions.ItemValueDefinition
@@ -244,7 +248,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
                 contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -282,7 +286,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
                 contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals 'KWh Per Year', response.data.ItemValueDefinition.Name.text()
@@ -327,13 +331,13 @@ class ItemValueDefinitionIT extends BaseApiTest {
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
                 contentType: JSON)
-        assertEquals 200, responsePut.status
+        assertOkJson responsePut, SUCCESS_OK.code, '64BC7A490F41'
 
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
                 contentType: JSON)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'application/json', responseGet.contentType
         assertTrue responseGet.data instanceof net.sf.json.JSON
         assertEquals 'OK', responseGet.data.status
@@ -359,12 +363,12 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     body: itemValueDefinitionUpdateXml(),
                     requestContentType: XML,
                     contentType: XML)
-            assertEquals 200, responsePut.status
+            assertOkXml responsePut, SUCCESS_OK.code, '64BC7A490F41'
 
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
                     contentType: XML)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/xml', responseGet.contentType
             assertEquals 'OK', responseGet.data.Status.text()
             assertEquals 'New Name XML', responseGet.data.ItemValueDefinition.Name.text()
@@ -447,7 +451,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status

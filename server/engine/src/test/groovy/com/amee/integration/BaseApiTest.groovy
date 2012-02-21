@@ -26,7 +26,7 @@ abstract class BaseApiTest {
     static def container
     static def luceneService
 
-    def client
+    RESTClient client
 
     @BeforeClass
     static void start() {
@@ -92,6 +92,10 @@ abstract class BaseApiTest {
     void setUp() {
         // Get the HTTP client
         client = new RESTClient("${config.api.protocol}://${config.api.host}:${config.api.port}");
+
+        // Accept JSON by default
+        client.contentType = JSON
+
         // Set standard user as default.
         setStandardUser();
     }
@@ -197,5 +201,20 @@ abstract class BaseApiTest {
                 assertTrue("The 'code' value should be '${code}' but was '${actualCode}' instead.", code == actualCode);
             }
         }
+    }
+
+    def assertOkJson(response, statusCode, uid) {
+        assertEquals statusCode, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals uid, response.data.entity.uid
+    }
+    
+    def assertOkXml(response, statusCode, uid) {
+        assertEquals statusCode, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals uid, response.data.Entity.@uid.text()
     }
 }

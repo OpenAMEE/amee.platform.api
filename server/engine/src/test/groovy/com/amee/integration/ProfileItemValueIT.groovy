@@ -4,6 +4,7 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import groovyx.net.http.HttpResponseException
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item Value API. This API has been available since version 3.6.
@@ -37,7 +38,7 @@ class ProfileItemValueIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/profiles/${profileUid}/items/${profileItemUid}/values;full",
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -53,7 +54,7 @@ class ProfileItemValueIT extends BaseApiTest {
             def response = client.get(
                 path: "/${version}/profiles/${profileUid}/items/${profileItemUid}/values;full",
                 contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
 
@@ -85,9 +86,8 @@ class ProfileItemValueIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            // Should have been created
-            assertEquals 201, responsePost.status
             def uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Get the profile item
             def responseGet = client.get(
@@ -95,7 +95,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 contentType: JSON)
 
             // Check the calculated amount
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 1, responseGet.data.item.amounts.amount.size()
             def amount = responseGet.data.item.amounts.amount[0]
             assertNotNull amount
@@ -113,7 +113,7 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertEquals SUCCESS_OK.code, responseDelete.status
 
             // Check it was deleted
             // We should get a 404 here.
@@ -121,7 +121,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
 
             // Create a profile item with different units (MWh/month)
@@ -136,9 +136,8 @@ class ProfileItemValueIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            // Should have been created
-            assertEquals 201, responsePost.status
             uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Get the profile item
             responseGet = client.get(
@@ -146,7 +145,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 contentType: JSON)
 
             // Check the calculated amount
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 1, responseGet.data.item.amounts.amount.size()
             amount = responseGet.data.item.amounts.amount[0]
             assertNotNull amount
@@ -164,7 +163,7 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Delete the profile item
             responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Check it was deleted
             // We should get a 404 here.
@@ -172,7 +171,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }

@@ -1,13 +1,14 @@
 package com.amee.integration
 
+import com.amee.domain.DataItemService
+import groovyx.net.http.HttpResponseException
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.format.ISODateTimeFormat
 import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
-import groovyx.net.http.HttpResponseException
-import com.amee.domain.DataItemService
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.ISODateTimeFormat
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item API. This API has been available since version 3.6.
@@ -74,24 +75,25 @@ class ProfileItemIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            assertEquals 201, responsePost.status
-
             // Is Location available?
             assertNotNull responsePost.headers['Location']
             assertNotNull responsePost.headers['Location'].value
-            def location = responsePost.headers['Location'].value
+            String location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
 
             // Get new ProfileItem UID.
             def uid = location.split('/')[7]
             assertNotNull uid
 
+            // Success response
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
+
             // Get the profile item
             def responseGet = client.get(
                 path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
                 contentType: JSON)
 
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -109,7 +111,7 @@ class ProfileItemIT extends BaseApiTest {
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
-            assertEquals 200, responseDelete.status
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Check it was deleted
             // We should get a 404 here.
@@ -117,7 +119,7 @@ class ProfileItemIT extends BaseApiTest {
                 client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -145,8 +147,8 @@ class ProfileItemIT extends BaseApiTest {
                 contentType: JSON)
 
             // Should have been created
-            assertEquals 201, responsePost.status
             def uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Try creating a duplicate
             try {
@@ -162,14 +164,14 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals 400, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
             }
 
             // Clean up
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
 
             // Should have been deleted
-            assertEquals 200, responseDelete.status
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
         }
     }
 
@@ -198,8 +200,8 @@ class ProfileItemIT extends BaseApiTest {
                 contentType: JSON)
 
             // Should have been created
-            assertEquals 201, responsePost.status
             def uid1 = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid1)
 
             // Try creating an overlapping item with the same name
             try {
@@ -216,7 +218,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals 400, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
             }
 
             // Create an overlapping item with a different name
@@ -231,15 +233,15 @@ class ProfileItemIT extends BaseApiTest {
                 contentType: JSON)
 
             // Should have been created
-            assertEquals 201, responsePost.status
             def uid2 = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid2)
 
             // Clean up
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid1}")
-            assertEquals 200, responseDelete.status
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid1)
 
             responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid2}")
-            assertEquals 200, responseDelete.status
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid2)
         }
     }
 
@@ -290,7 +292,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getProfileItemsJson(version) {
         def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -304,7 +306,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getProfileItemsXml(version) {
         def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals 'false', response.data.Items.@truncated.text()
@@ -334,7 +336,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${selectByProfileUid}/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z'],
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertFalse response.data.resultsTruncated
             assertEquals selectByProfileItemUids.size(), response.data.items.size()
             assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
@@ -344,7 +346,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${selectByProfileUid}/items",
                 query: [startDate: '2012-04-01T09:00:00Z', duration: 'P2M'],
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertFalse response.data.resultsTruncated
             assertEquals selectByProfileItemUids.size(), response.data.items.size()
             assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
@@ -354,7 +356,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${selectByProfileUid}/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'start'],
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertFalse response.data.resultsTruncated
             assertEquals 1, response.data.items.size()
             assert selectByProfileItemUids['start'] == response.data.items[0].uid
@@ -364,7 +366,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${selectByProfileUid}/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'end'],
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertFalse response.data.resultsTruncated
             assertEquals 1, response.data.items.size()
             assert selectByProfileItemUids['end'] == response.data.items[0].uid
@@ -374,7 +376,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${selectByProfileUid}/items",
                 query: [startDate: '2000-04-01T09:00:00Z', endDate: '2000-06-01T09:00:00Z'],
                 contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertFalse response.data.resultsTruncated
             assertEquals 0, response.data.items.size()
         }
@@ -410,7 +412,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getSingleProfileItemJson(version) {
         def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: JSON)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -438,7 +440,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getSingleProfileItemXml(version) {
         def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: XML)
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text()
@@ -481,8 +483,8 @@ class ProfileItemIT extends BaseApiTest {
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 403, response.status
-                assertEquals 403, response.data.status.code
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
                 assertEquals 'Forbidden', response.data.status.name
             }
         }
@@ -506,8 +508,8 @@ class ProfileItemIT extends BaseApiTest {
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 403, response.status
-                assertEquals 403, response.data.status.code
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
                 assertEquals 'Forbidden', response.data.status.name
             }
         }
@@ -615,7 +617,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
@@ -778,10 +780,10 @@ class ProfileItemIT extends BaseApiTest {
             requestContentType: URLENC,
             contentType: JSON)
         
-        assertEquals 201, responsePost.status
         def location = responsePost.headers['Location'].value
         def uid = location.split('/')[7]
         assertNotNull uid
+        assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
         
         // Fetch profile items and check values
         def queryParams = [:]
@@ -801,7 +803,7 @@ class ProfileItemIT extends BaseApiTest {
             query: queryParams,
             contentType: JSON)
 
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
 
         def item = responseGet.data.items.find { it.uid == uid }
         assertEquals code, item.name
@@ -812,7 +814,7 @@ class ProfileItemIT extends BaseApiTest {
 
         // Delete the profile item
         def responseDelete = client.delete(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
-        assertEquals 200, responseDelete.status
+        assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
         // Check it was deleted
         // We should get a 404 here.
@@ -820,7 +822,7 @@ class ProfileItemIT extends BaseApiTest {
             client.get(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
             fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals 404, e.response.status
+            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
         }
     }
 

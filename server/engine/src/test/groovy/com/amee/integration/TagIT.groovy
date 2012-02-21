@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Tag API.
@@ -129,18 +130,23 @@ class TagIT extends BaseApiTest {
                     body: [tag: 'tagtobedeleted'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
+
+            String location = responsePost.headers['Location'].value
+            def uid = location.split('/')[5]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+//            assertEquals SUCCESS_CREATED.code, responsePost.status
 
             // Then delete the Tag.
             def responseDelete = client.delete(path: "/${version}/tags/tagtobedeleted")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
+//            assertEquals SUCCESS_OK.code, responseDelete.status
 
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/tags/tagtobedeleted")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -183,15 +189,16 @@ class TagIT extends BaseApiTest {
 
             // The EntityTag should exist.
             def responseGet = client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag
+            def uid = responseGet.data.tag.uid
 
             // Check the category can be discovered via the tag.
             testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic'], version)
 
             // Then delete the EntityTag.
             def responseDelete = client.delete(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
@@ -201,7 +208,7 @@ class TagIT extends BaseApiTest {
                 client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
 
             // Check the category cannot be discovered via the tag.
@@ -215,15 +222,16 @@ class TagIT extends BaseApiTest {
 
             // The EntityTag should exist.
             responseGet = client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag
+            uid = responseGet.data.tag.uid
 
             // Check the category can be discovered via the tag.
             testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Entertainment_generic'], version)
 
             // Then delete the EntityTag.
             responseDelete = client.delete(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
@@ -233,7 +241,7 @@ class TagIT extends BaseApiTest {
                 client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
 
             // Check the category cannot be discovered via the tag.
@@ -241,19 +249,20 @@ class TagIT extends BaseApiTest {
 
             // The Tag should still exist.
             responseGet = client.get(path: "/${version}/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'entity_tag_to_be_deleted', responseGet.data.tag.tag
+            uid = responseGet.data.tag.uid
 
             // Now delete the Tag.
             responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // We should get a 404 here for the Tag.
             try {
                 client.get(path: "/${version}/tags/entity_tag_to_be_deleted")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -271,7 +280,7 @@ class TagIT extends BaseApiTest {
             testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version)
 
             // Create a new Tag & EntityTag on a DataCategory.
-            postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version)
+            def uid = postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version)
 
             // Create a new EntityTag on another DataCategory.
             postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version)
@@ -284,7 +293,8 @@ class TagIT extends BaseApiTest {
 
             // Now delete the Tag.
             def responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
+//            assertEquals SUCCESS_OK.code, responseDelete.status
 
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
@@ -317,7 +327,7 @@ class TagIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/tags")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -342,7 +352,7 @@ class TagIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/tags")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         def allTags = response.data.Tags.children()
@@ -369,7 +379,7 @@ class TagIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/tags",
                     query: ['incTags': 'inc_tag_1,inc_tag_2'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -394,7 +404,7 @@ class TagIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/tags",
                     query: ['incTags': 'inc_tag_1,inc_tag_2'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals incTagUids.size(), response.data.Tags.Tag.size()
@@ -418,7 +428,7 @@ class TagIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/tags",
                     query: ['excTags': 'inc_tag_1'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -443,7 +453,7 @@ class TagIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/tags",
                     query: ['excTags': 'inc_tag_1'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals excTagUids.size(), response.data.Tags.Tag.size()
@@ -521,7 +531,7 @@ class TagIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
@@ -556,7 +566,7 @@ class TagIT extends BaseApiTest {
             client.contentType = JSON
             def response = client.get(
                     path: "/${version}/tags/${path}")
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -590,7 +600,7 @@ class TagIT extends BaseApiTest {
             client.contentType = XML
             def response = client.get(
                     path: "/${version}/tags/${path}")
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals 'ZBDV9V20SI2C', response.data.Tag.@uid.text()
@@ -615,7 +625,7 @@ class TagIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories/Appliances/tags")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
@@ -640,7 +650,7 @@ class TagIT extends BaseApiTest {
         client.contentType = XML
         def response = client.get(
                 path: "/${version}/categories/Appliances/tags")
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         if (version >= 3.2) {
@@ -668,13 +678,15 @@ class TagIT extends BaseApiTest {
     def filterOnMultipleTagsJson(version) {
         setAdminUser()
         // Tag DataCategories.
-        postTagToCategory('Kitchen_generic', 'test_tag_1', version)
+        def uid1 = postTagToCategory('Kitchen_generic', 'test_tag_1', version)
         postTagToCategory('Entertainment_generic', 'test_tag_1', version)
-        postTagToCategory('Entertainment_generic', 'test_tag_2', version)
-        postTagToCategory('Entertainment_generic', 'test_tag_3', version)
+        def uid2 = postTagToCategory('Entertainment_generic', 'test_tag_2', version)
+        def uid3 = postTagToCategory('Entertainment_generic', 'test_tag_3', version)
         postTagToCategory('Computers_generic', 'test_tag_3', version)
+
         // Sleep a little to give the index a chance to be updated.
         sleep(1000)
+
         // Check the categories can be discovered.
         testFilterCategories(['tags': 'test_tag_1'], ['Kitchen_generic', 'Entertainment_generic'], version)
         testFilterCategories(['tags': 'test_tag_2'], ['Entertainment_generic'], version)
@@ -687,6 +699,7 @@ class TagIT extends BaseApiTest {
         testFilterCategories(['tags': 'test_tag_1 AND test_tag_2 AND test_tag_3'], ['Entertainment_generic'], version)
         testFilterCategories(['tags': 'test_tag_2 OR test_tag_3', 'excTags': 'test_tag_1'], ['Computers_generic'], version)
         testFilterCategories(['tags': '(test_tag_2 OR test_tag_3) NOT test_tag_1'], ['Computers_generic'], version)
+
         // Check the categories can be searched for.
         if (version >= 3.2) {
             testSearchForCategories(['q': 'kitchen', 'tags': 'test_tag_1'], ['Kitchen_generic'], version)
@@ -697,6 +710,7 @@ class TagIT extends BaseApiTest {
             testSearchForCategories(['q': 'generic', 'tags': '(test_tag_1 OR test_tag_3) NOT test_tag_2'], ['Kitchen_generic', 'Computers_generic'], version)
             testSearchForCategories(['q': 'blahblah', 'tags': 'test_tag_1'], [], version)
         }
+
         // Test tag counts.
         if (version >= 3.2) {
             testTags(['incTags': 'test_tag_1'],
@@ -709,15 +723,19 @@ class TagIT extends BaseApiTest {
                     ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'Ecoinvent', 'LCA', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste', 'grid'],
                     [1, 1, 2, 1, 1, 6, 2, 3, 3, 1, 2, 1, 7, 1, 1, 1], version)
         }
+
         // Now delete the Tags.
         // NOTE: For < 3.2 this leaves database in odd state.
         if (version >= 3.2) {
             def responseDelete = client.delete(path: "/${version}/tags/test_tag_1")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid1
+//            assertEquals SUCCESS_OK.code, responseDelete.status
             responseDelete = client.delete(path: "/${version}/tags/test_tag_2")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid2
+//            assertEquals SUCCESS_OK.code, responseDelete.status
             responseDelete = client.delete(path: "/${version}/tags/test_tag_3")
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid3
+//            assertEquals SUCCESS_OK.code, responseDelete.status
         }
     }
 
@@ -727,7 +745,15 @@ class TagIT extends BaseApiTest {
                 body: [tag: tag],
                 requestContentType: URLENC,
                 contentType: JSON)
-        assertEquals 201, responsePost.status
+
+//        assertEquals SUCCESS_CREATED.code, responsePost.status
+        String location = responsePost.headers['Location'].value
+        def uid = location.split('/')[5]
+        // TODO: When PL-11224 is completed we can get the UID from the Location header.
+//        sleep(3000)
+        assertOkJson responsePost, SUCCESS_CREATED.code, uid
+
+        uid
     }
 
     private def testFilterCategories(query, expected, version) {
@@ -735,7 +761,7 @@ class TagIT extends BaseApiTest {
                 path: "/${version}/categories",
                 query: query,
                 contentType: JSON)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'Unexpected result. Is RabbitMQ running?', expected.size(), responseGet.data.categories.size()
         assert expected.sort() == responseGet.data.categories.collect {it.wikiName}.sort()
     }
@@ -746,7 +772,7 @@ class TagIT extends BaseApiTest {
                 path: "/${version}/search",
                 query: query,
                 contentType: JSON)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'Unexpected result. Is RabbitMQ running?', expected.size(), responseGet.data.results.size()
         assert expected.sort() == responseGet.data.results.collect {it.wikiName}.sort()
     }
@@ -756,7 +782,7 @@ class TagIT extends BaseApiTest {
                 path: "/${version}/tags",
                 query: query,
                 contentType: JSON)
-        assertEquals 200, responseGet.status
+        assertEquals SUCCESS_OK.code, responseGet.status
         assertEquals 'Unexpected result. Is RabbitMQ running?', expectedTags.size(), responseGet.data.tags.size()
         assert expectedTags.sort() == responseGet.data.tags.collect {it.tag}.sort()
         assert expectedCounts.sort() == responseGet.data.tags.collect {it.count}.sort()
@@ -780,13 +806,14 @@ class TagIT extends BaseApiTest {
                     body: ['tag': 'tag_updated'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 200, responsePut.status
+
+            assertOkJson responsePut, SUCCESS_OK.code, '002FD23CD3A2'
 
             // 2) Check values have been updated.
             def responseGet = client.get(
                     path: "/${version}/tags/002FD23CD3A2",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -857,9 +884,10 @@ class TagIT extends BaseApiTest {
                         contentType: JSON)
                 fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
             } catch (HttpResponseException e) {
+
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status

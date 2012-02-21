@@ -5,6 +5,7 @@ import org.joda.time.DateTime
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Data Item Value API. This API has been available since version 3.4.
@@ -44,53 +45,63 @@ class DataItemValueIT extends BaseApiTest {
     def createDataItemValueJson(version) {
         if (version >= 3.4) {
             setAdminUser()
+
             // Sleep a little to ensure the isNear calculation below will be accurate.
             sleep(1000)
+
             // Create a DataItemValue.
             def responsePost = client.post(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                     body: ['value': 10],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
+
             // Is Location available?
             assertTrue responsePost.headers['Location'] != null
             assertTrue responsePost.headers['Location'].value != null
             def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
             // Get new DataItemValue UID.
             def uid = location.split('/')[10]
             assertTrue uid != null
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
+
             // Get the new DataItemValue.
             def responseGetDIV = client.get(
                     path: "${location};full",
                     contentType: JSON)
-            assertEquals 200, responseGetDIV.status
+            assertEquals SUCCESS_OK.code, responseGetDIV.status
             assertEquals 'application/json', responseGetDIV.contentType
             assertTrue responseGetDIV.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGetDIV.data.status
             assertEquals "10", responseGetDIV.data.value.value
+
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
                     contentType: JSON)
-            assertEquals 200, responseGetDI.status
+            assertEquals SUCCESS_OK.code, responseGetDI.status
             def modifiedDI = new DateTime(responseGetDI.data.item.modified)
             def modifiedDIV = new DateTime(responseGetDIV.data.value.modified)
             assertTrue isNear(modifiedDIV, modifiedDI)
+
             // Then delete the DIV.
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
+
             // We should get a 404 here.
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -108,52 +119,62 @@ class DataItemValueIT extends BaseApiTest {
     def createDataItemValueXml(version) {
         if (version >= 3.4) {
             setAdminUser()
+
             // Sleep a little to ensure the isNear calculation below will be accurate.
             sleep(1000)
+
             // Create a DataItemValue.
             def responsePost = client.post(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                     body: ['value': 10],
                     requestContentType: URLENC,
                     contentType: XML)
-            assertEquals 201, responsePost.status
+
             // Is Location available?
             assertTrue responsePost.headers['Location'] != null
             assertTrue responsePost.headers['Location'].value != null
             def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
             // Get new DataItemValue UID.
             def uid = location.split('/')[10]
             assertTrue uid != null
+            assertOkXml responsePost, SUCCESS_CREATED.code, uid
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
+
             // Get the new DataItemValue.
             def responseGetDIV = client.get(
                     path: "${location};full",
                     contentType: XML)
-            assertEquals 200, responseGetDIV.status
+            assertEquals SUCCESS_OK.code, responseGetDIV.status
             assertEquals 'application/xml', responseGetDIV.contentType
             assertEquals 'OK', responseGetDIV.data.Status.text()
             assertEquals "10", responseGetDIV.data.Value.Value.text()
+
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
                     contentType: XML)
-            assertEquals 200, responseGetDI.status
+            assertEquals SUCCESS_OK.code, responseGetDI.status
             def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
             def modifiedDIV = new DateTime(responseGetDIV.data.Value.@modified.text())
             assertTrue isNear(modifiedDIV, modifiedDI)
+
             // Then delete the DIV.
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
+
             // Sleep a little to give the index a chance to be updated.
             sleep(1000)
+
             // We should get a 404 here.
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -190,7 +211,7 @@ class DataItemValueIT extends BaseApiTest {
             def responseGetDIV1 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: JSON)
-            assertEquals 200, responseGetDIV1.status
+            assertEquals SUCCESS_OK.code, responseGetDIV1.status
             assertTrue responseGetDIV1.data.value.value.startsWith('United Kingdom')
 
             // Update the DataItemValue.
@@ -199,20 +220,20 @@ class DataItemValueIT extends BaseApiTest {
                     body: ['value': "United Kingdom (modified by createDataItemValueJson_${version})"],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 200, responsePut.status
+            assertOkJson responsePut, SUCCESS_OK.code, '902F1ED2C15F'
 
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: JSON)
-            assertEquals 200, responseGetDIV2.status
+            assertEquals SUCCESS_OK.code, responseGetDIV2.status
             assertTrue "United Kingdom (modified by createDataItemValueJson_${version})" == responseGetDIV2.data.value.value
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
                     contentType: JSON)
-            assertEquals 200, responseGetDI.status
+            assertEquals SUCCESS_OK.code, responseGetDI.status
             def modifiedDI = new DateTime(responseGetDI.data.item.modified)
             def modifiedDIV = new DateTime(responseGetDIV2.data.value.modified)
             assertTrue isNear(modifiedDIV, modifiedDI)
@@ -243,7 +264,7 @@ class DataItemValueIT extends BaseApiTest {
             def responseGetDIV1 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: XML)
-            assertEquals 200, responseGetDIV1.status
+            assertEquals SUCCESS_OK.code, responseGetDIV1.status
             assertTrue responseGetDIV1.data.Value.Value.text().startsWith('United Kingdom')
 
             // Update the DataItemValue.
@@ -252,20 +273,20 @@ class DataItemValueIT extends BaseApiTest {
                     body: ['value': "United Kingdom (modified by createDataItemValueXml_${version})"],
                     requestContentType: URLENC,
                     contentType: XML)
-            assertEquals 200, responsePut.status
+            assertOkXml responsePut, SUCCESS_OK.code, '902F1ED2C15F'
 
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
                     contentType: XML)
-            assertEquals 200, responseGetDIV2.status
+            assertEquals SUCCESS_OK.code, responseGetDIV2.status
             assertTrue "United Kingdom (modified by createDataItemValueXml_${version})" == responseGetDIV2.data.Value.Value.text()
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
                     contentType: XML)
-            assertEquals 200, responseGetDI.status
+            assertEquals SUCCESS_OK.code, responseGetDI.status
             def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
             def modifiedDIV = new DateTime(responseGetDIV2.data.Value.@modified.text())
             assertTrue isNear(modifiedDIV, modifiedDI)
@@ -376,7 +397,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
                     query: query,
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -408,7 +429,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
                     query: query,
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def values = testValuesResource ? response.data.Values.Value : response.data.Item.Values.Value
@@ -526,7 +547,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                     query: query,
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -543,7 +564,7 @@ class DataItemValueIT extends BaseApiTest {
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
                     query: query,
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals truncated, new Boolean(response.data.Values.@truncated.text())
@@ -629,7 +650,7 @@ class DataItemValueIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -651,7 +672,7 @@ class DataItemValueIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def itemValue = response.data.Value
@@ -768,7 +789,7 @@ class DataItemValueIT extends BaseApiTest {
             def responseBefore = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
                     contentType: JSON)
-            assertEquals 200, responseBefore.status
+            assertEquals SUCCESS_OK.code, responseBefore.status
             def valueBefore = responseBefore.data.value.value
             try {
                 // Create form body.
@@ -784,7 +805,7 @@ class DataItemValueIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
@@ -795,7 +816,7 @@ class DataItemValueIT extends BaseApiTest {
             def responseAfter = client.get(
                     path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
                     contentType: JSON)
-            assertEquals 200, responseAfter.status
+            assertEquals SUCCESS_OK.code, responseAfter.status
             def valueAfter = responseAfter.data.value.value
             assertEquals valueAfter, valueBefore
         }
