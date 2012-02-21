@@ -33,6 +33,8 @@ public interface ProfileItemResource {
         void addCategory();
 
         void addAudit();
+        
+        void addNote();
 
         void addReturnValues(ReturnValues returnValues);
     }
