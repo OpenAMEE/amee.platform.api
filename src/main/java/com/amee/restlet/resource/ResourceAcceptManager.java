@@ -68,9 +68,11 @@ public class ResourceAcceptManager extends ResourceManager {
             if (getRequest().getMethod().equals(Method.POST)) {
                 handleLocation(result);
                 getResponse().setStatus(Status.SUCCESS_CREATED);
+                getResponse().setEntity(getJsonRepresentation(result));
             } else if (getRequest().getMethod().equals(Method.PUT)) {
                 handleLocation(result);
                 getResponse().setStatus(Status.SUCCESS_OK);
+                getResponse().setEntity(getJsonRepresentation(result));
             } else {
                 getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
             }
@@ -130,9 +132,11 @@ public class ResourceAcceptManager extends ResourceManager {
                 if (getRequest().getMethod().equals(Method.POST)) {
                     handleLocation(result);
                     getResponse().setStatus(Status.SUCCESS_CREATED);
+                    getResponse().setEntity(getDomRepresentation(document));
                 } else if (getRequest().getMethod().equals(Method.PUT)) {
                     handleLocation(result);
                     getResponse().setStatus(Status.SUCCESS_OK);
+                    getResponse().setEntity(getDomRepresentation(document));
                 } else {
                     getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
                 }
