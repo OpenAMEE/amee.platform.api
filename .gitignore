@@ -4,3 +4,6 @@ release.properties
 pom.xml
 *.ipr
 pom.xml.releaseBackup
+.project
+.classpath
+.settings
