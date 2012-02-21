@@ -21,10 +21,6 @@ import java.util.List;
 
 import static junit.framework.Assert.*;
 
-/**
- * To run this test in IntelliJ IDEA create a run configuration with the following VM parameters:
- * -javaagent:/Users/david.keen/code/AMEE/amee.persist/target/dependency/spring-instrument-3.0.5.RELEASE.jar
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
 
@@ -196,8 +192,8 @@ public class TransactionalTest extends BaseTest {
             });
             fail("Should have thrown a TimedOutException.");
         } catch (TimedOutException e) {
-            // Let ten seconds pass before testing (to allow ResourceHandler to complete).
-            Thread.sleep(10 * 1000);
+            // Let 15 seconds pass before testing (to allow ResourceHandler to complete).
+            Thread.sleep(15 * 1000);
             assertNull("Result should be null.", result);
             assertFalse("Should not have completed.", slowResourceHandlerCompleted);
             assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
