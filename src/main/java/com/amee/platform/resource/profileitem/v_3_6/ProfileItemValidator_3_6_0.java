@@ -12,6 +12,7 @@ import com.amee.domain.item.profile.ProfileItemTextValue;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
+import com.amee.platform.science.AmountUnit;
 import com.amee.platform.science.StartEndDate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,6 +47,8 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         addDates();
         addValues();
         addNote();
+        addUnit();
+        addPerUnit();
     }
     
     @Override
@@ -240,5 +243,75 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
     		.setName("note")
     		.setMaxSize(Metadata.VALUE_MAX_SIZE)
     		.setAllowEmpty(true));
+    }
+
+    protected void addUnit() {
+        for (ItemValueDefinition ivd : profileItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromProfile()) {
+                final String unitName = "units." + ivd.getPath();
+
+                // Allow this field.
+                allowedFields.add(unitName);
+                add(new ValidationSpecification()
+                    .setName(unitName)
+                    .setAllowEmpty(true)
+                    .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+                                
+                                String unit = (String) value;
+
+                                // Ensure unit is valid
+                                if (unit != null) {
+                                    try {
+                                        AmountUnit.valueOf(unit);
+                                    } catch (IllegalArgumentException e) {
+                                        errors.rejectValue(unitName, "format");
+                                    }
+                                }
+
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        }
+                    )
+                );
+            }
+        }
+    }
+    
+    protected void addPerUnit() {
+        for (ItemValueDefinition ivd : profileItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromProfile()) {
+                final String perUnitName = "perUnits." + ivd.getPath();
+
+                // Allow this field
+                allowedFields.add(perUnitName);
+                add(new ValidationSpecification()
+                    .setName(perUnitName)
+                    .setAllowEmpty(true)
+                    .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+
+                                String perUnit = (String) value;
+
+                                // Ensure perUnit is valid
+                                if (perUnit != null) {
+                                    try {
+                                        AmountUnit.valueOf(perUnit);
+                                    } catch (IllegalArgumentException e) {
+                                        errors.rejectValue(perUnitName, "format");
+                                    }
+                                }
+
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        }
+                    )
+                );
+            }
+        }
     }
 }
