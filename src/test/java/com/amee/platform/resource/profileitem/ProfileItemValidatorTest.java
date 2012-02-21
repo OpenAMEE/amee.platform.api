@@ -1,5 +1,27 @@
 package com.amee.platform.resource.profileitem;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.validation.BindException;
+
+import com.amee.base.utils.ThreadBeanHolder;
+import com.amee.domain.DataItemService;
+import com.amee.domain.Metadata;
+import com.amee.domain.MetadataService;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.ValueDefinition;
 import com.amee.domain.ValueType;
@@ -7,22 +29,6 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.platform.resource.profileitem.v_3_6.ProfileItemValidator_3_6_0;
-import org.apache.commons.lang.RandomStringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.validation.BindException;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.Mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileItemValidatorTest {
@@ -32,6 +38,8 @@ public class ProfileItemValidatorTest {
 
     @Mock
     private ItemDefinition mockItemDefinition;
+    
+    @Mock MetadataService mockMetadataService;
 
     @Before
     public void setUp() {
@@ -45,6 +53,9 @@ public class ProfileItemValidatorTest {
             .thenCallRealMethod();
         when(mockItemDefinition.getProfileItemUnitsBean())
             .thenCallRealMethod();
+        
+        ThreadBeanHolder.clear();
+        ThreadBeanHolder.set(MetadataService.class, mockMetadataService);
     }
     
     @Test
@@ -62,6 +73,7 @@ public class ProfileItemValidatorTest {
         good.setName(RandomStringUtils.random(10));
         good.setStartDate(new DateTime(2010, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toDate());
         good.setDuration("P10Y3M2D");
+        good.setNote(RandomStringUtils.random(30));
 
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());
@@ -84,6 +96,108 @@ public class ProfileItemValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
+	
+	@Test
+	public void testEmptyName(){
+		ProfileItem bad = new ProfileItem();
+		bad.setName("");
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should not fail validation", !errorsBad.hasErrors());
+	}	 
+	
+	@Test
+	public void testStartDateTooEarly(){
+		ProfileItem bad = new ProfileItem();
+		bad.setStartDate(new Date(DataItemService.EPOCH.getTime() - 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());
+	}
+	
+	@Test
+	public void testStartDateTooLate(){
+		ProfileItem bad = new ProfileItem();
+		bad.setStartDate(new Date(DataItemService.Y2038.getTime() + 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());
+	}
+	
+	
+	@Test
+	public void testEndDateBeforeStartDate(){
+		ProfileItem bad = new ProfileItem();
+		bad.setStartDate(new Date());
+		bad.setEndDate(new Date(bad.getStartDate().getTime() - 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());	
+	}
+	
+	@Test
+	public void testEndDateTooLate(){
+		ProfileItem bad = new ProfileItem();
+		bad.setEndDate(new Date(DataItemService.Y2038.getTime() + 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());
+	}
 
     /**
      * Tests duration not in correct ISO 8601 format. Should fail validation.
@@ -105,6 +219,27 @@ public class ProfileItemValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
+	
+	@Test
+	public void testDurationTooLong(){
+		ProfileItem bad = new ProfileItem();
+		bad.setStartDate(new Date());
+		bad.setDuration("P1000Y");
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());
+	}
 
     /**
      * Tests start date after end date. Should fail validation.
@@ -127,7 +262,46 @@ public class ProfileItemValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
-    
+	@Test
+	public void testNoteGreaterThanMax(){
+		ProfileItem bad = new ProfileItem();
+		bad.setNote(RandomStringUtils.random(Metadata.VALUE_MAX_SIZE + 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());
+	}
+	
+	@Test
+	public void testEmptyNote(){
+		ProfileItem bad = new ProfileItem();
+		bad.setNote("");
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should not fail validation", !errorsBad.hasErrors());
+	}	
+	
     private ItemValueDefinition getItemValueDefinition(String name, String path, ValueDefinition valueDefinition) {
         ItemValueDefinition ivd = new ItemValueDefinition();
         ivd.setName(name);
