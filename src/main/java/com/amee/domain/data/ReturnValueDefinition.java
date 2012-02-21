@@ -29,6 +29,7 @@ import com.amee.platform.science.AmountUnit;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
+	public static final int NAME_MIN_SIZE = 2;
 	public static final int NAME_MAX_SIZE = 255;
     public static final int TYPE_MIN_SIZE = 1;
     public static final int TYPE_MAX_SIZE = 255;
