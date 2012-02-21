@@ -71,7 +71,7 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
             // DataItem was valid, we'll allow it to persist and invalidate the DataCategory.
             updateDataItemValues(dataItem);
             invalidationService.add(dataItem.getDataCategory());
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, dataItem.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

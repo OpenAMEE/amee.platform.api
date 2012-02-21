@@ -48,6 +48,6 @@ public class ReturnValueDefinitionRemover_3_1_0 implements ReturnValueDefinition
         // Handle ReturnValueDefinition removal.
         definitionService.remove(returnValueDefinition);
         definitionService.invalidate(returnValueDefinition.getItemDefinition());
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, returnValueDefinition.getUid());
     }
 }

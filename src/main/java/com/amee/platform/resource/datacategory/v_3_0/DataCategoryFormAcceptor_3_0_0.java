@@ -53,7 +53,7 @@ public class DataCategoryFormAcceptor_3_0_0 extends DataCategoryAcceptor impleme
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             invalidationService.add(dataCategory);
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, dataCategory.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

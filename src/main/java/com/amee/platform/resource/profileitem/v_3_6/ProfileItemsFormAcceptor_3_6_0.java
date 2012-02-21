@@ -93,7 +93,8 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
                 requestWrapper,
                 "/" + requestWrapper.getVersion() +
                     "/profiles/" + requestWrapper.getAttributes().get("profileIdentifier") +
-                    "/items/" + profileItem.getUid());
+                    "/items/" + profileItem.getUid(),
+                profileItem.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

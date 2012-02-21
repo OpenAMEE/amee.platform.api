@@ -52,7 +52,7 @@ public class ItemDefinitionFormAcceptor_3_1_0 extends ItemDefinitionAcceptor imp
         validator.setObject(itemDefinition);
         if (validator.isValid(requestWrapper.getFormParameters())) {
             definitionService.invalidate(itemDefinition);
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, itemDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

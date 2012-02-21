@@ -72,7 +72,7 @@ public class TagFormAcceptor_3_2_0 implements TagResource.FormAcceptor {
                 invalidationService.add(entityTag.getEntityReference());
             }
             // Woo!
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, tag.getUid());
         } else {
             throw new ValidationException(validationHelper.getValidationResult());
         }

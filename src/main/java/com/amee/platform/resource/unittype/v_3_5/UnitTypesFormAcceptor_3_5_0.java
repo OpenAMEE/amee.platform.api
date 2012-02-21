@@ -60,7 +60,7 @@ public class UnitTypesFormAcceptor_3_5_0 implements UnitTypesResource.FormAccept
         // Is the UnitType valid?
         if (validator.isValid(requestWrapper.getFormParameters())) {
             String location = "/" + requestWrapper.getVersion() + "/" + unitType.getFullPath();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, unitType.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

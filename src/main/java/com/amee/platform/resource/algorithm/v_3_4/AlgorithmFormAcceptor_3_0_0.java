@@ -58,7 +58,7 @@ public class AlgorithmFormAcceptor_3_0_0 implements AlgorithmResource.FormAccept
 
         // Do the validation.
         if (validator.isValid(requestWrapper.getFormParameters())) {
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, algorithm.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

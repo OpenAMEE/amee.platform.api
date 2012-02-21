@@ -44,7 +44,7 @@ public class ItemValueDefinitionDOMAcceptor_3_1_0 extends ItemValueDefinitionAcc
                 // ItemValueUsages validation passed.
                 // Invalidate and return a response.
                 definitionService.invalidate(itemValueDefinition.getItemDefinition());
-                return ResponseHelper.getOK(requestWrapper);
+                return ResponseHelper.getOK(requestWrapper, null, itemValueDefinition.getUid());
             } else {
                 // Validation failed.
                 throw new ValidationException(validator.getValidationResult());

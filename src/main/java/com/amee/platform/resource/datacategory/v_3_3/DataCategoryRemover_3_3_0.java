@@ -48,6 +48,6 @@ public class DataCategoryRemover_3_3_0 implements DataCategoryResource.Remover {
         // Handle DataCategory removal.
         dataService.remove(dataCategory);
         invalidationService.add(dataCategory);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, dataCategory.getUid());
     }
 }

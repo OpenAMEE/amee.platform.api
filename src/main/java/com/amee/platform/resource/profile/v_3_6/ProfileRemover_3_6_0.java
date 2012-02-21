@@ -43,7 +43,7 @@ public class ProfileRemover_3_6_0 implements ProfileResource.Remover {
 
         // Remove the profile
         profileService.remove(profile);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, profile.getUid());
     }
 
 }

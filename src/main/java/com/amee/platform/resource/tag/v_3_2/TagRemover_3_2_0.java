@@ -76,7 +76,7 @@ public class TagRemover_3_2_0 implements TagResource.Remover {
                     // Need to invalidate the Data Category.
                     invalidationService.add(dataCategory);
                     // Woo!
-                    return ResponseHelper.getOK(requestWrapper);
+                    return ResponseHelper.getOK(requestWrapper, null, tag.getUid());
                 } else {
                     log.debug("handle() EntityTag does not exist.");
                     throw new NotFoundException();
@@ -96,7 +96,7 @@ public class TagRemover_3_2_0 implements TagResource.Remover {
                 invalidationService.add(entityTag.getEntityReference());
             }
             // Woo!
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, tag.getUid());
         }
     }
 }
