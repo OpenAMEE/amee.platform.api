@@ -83,15 +83,14 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
                         }));
     }
 
-    private void addName(){
-    	allowedFields.add("name");
-    	ValidationSpecification vs = new ValidationSpecification();
-    	vs.setName("name");
-    	vs.setMinSize(ReturnValueDefinition.NAME_MIN_SIZE);
-    	vs.setMaxSize(ReturnValueDefinition.NAME_MAX_SIZE);
-    	add(vs);
-    }
-    
+	private void addName() {
+		allowedFields.add("name");
+		add(new ValidationSpecification()
+				.setName("name")
+				.setMinSize(ReturnValueDefinition.NAME_MIN_SIZE)
+				.setMaxSize(ReturnValueDefinition.NAME_MAX_SIZE));
+	}
+
     /**
      * Configure the validator for the unit property of the DataItem.
      */
