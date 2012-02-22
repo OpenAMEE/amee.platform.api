@@ -6,6 +6,7 @@ import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.DateTime;
@@ -36,6 +37,8 @@ public interface DataItemService extends ItemService {
     List<DataItem> getDataItems(Set<Long> dataItemIds);
 
     DataItem getDataItemByIdentifier(DataCategory parent, String path);
+
+    DataItem getDataItemByCategoryAndDrillDowns(DataCategory parent, List<Choice> selections);
 
     Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
 
