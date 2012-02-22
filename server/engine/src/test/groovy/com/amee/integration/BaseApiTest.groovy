@@ -217,4 +217,26 @@ abstract class BaseApiTest {
         assertEquals 'OK', response.data.Status.text()
         assertEquals uid, response.data.Entity.@uid.text()
     }
+
+    /**
+     * Returns true if contains infinity and NaN amounts.
+     * NB: This only works for json data.
+     *
+     * @param amounts
+     * @return
+     */
+    boolean hasInfinityAndNan(amounts) {
+        def hasInfinity = false
+        def hasNan = false
+
+        amounts.each {
+            if (it.type == 'infinity' && it.value == 'Infinity') {
+                hasInfinity = true
+            }
+            if (it.type == 'nan' && it.value == 'NaN') {
+                hasNan = true
+            }
+        }
+        return hasInfinity && hasNan
+    }
 }

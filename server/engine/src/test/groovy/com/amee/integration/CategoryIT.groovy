@@ -666,7 +666,6 @@ class CategoryIT extends BaseApiTest {
                             wikiName: 'Test_Wiki_Name'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, dataCategoryPost.status
             def dataCategoryLocation = dataCategoryPost.headers['Location'].value
             def dataCategoryUid = dataCategoryLocation.split('/')[5]
             assertOkJson(dataCategoryPost, SUCCESS_CREATED.code, dataCategoryUid)
@@ -870,5 +869,230 @@ class CategoryIT extends BaseApiTest {
      */
     def updateCategoryFieldJson(field, code, value, since) {
         updateInvalidFieldJson("/categories/245CBD734418", field, code, value, since)
+    }
+
+    /**
+     * Tests an algorithm is applied to calculate a result with JSON response.
+     *
+     * The default units and perUnits are used.
+     *
+     * NB: The amount calculated is not the same as for a real API result as the algorithm has been
+     * simplified for testing.
+     *
+     * Perform a data or 'profileless' calculation by sending a GET request to:
+     * '/categories/{UID|wikiName}/calculation' (since 3.6.0).
+     *
+     * Supply the drill down values to select a data item using drill paths, eg type=A-10A
+     * Supply the input values with the values.{PATH} query params, eg values.energyPerTime=10.
+     * Supply the input units with the units.{PATH} query params, eg units.energyPerTime=MWh.
+     * Supply the input perUnits with the perUnits.{PATH} query params, eg perUnits.energyPerTime=month.
+     *
+     * See {@link DataItemIT} for examples of performing calculations using drills to select the data item.
+     */
+    @Test
+    void getCategoryCalculationDefaultUnitsJson() {
+        versions.each { version -> getCategoryCalculationDefaultUnitsJson(version) }
+    }
+
+    def getCategoryCalculationDefaultUnitsJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+
+            // Default units
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                query: [country: 'Albania', 'values.energyPerTime': '10'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            assertEquals 1, response.data.amounts.size()
+            def amount = response.data.amounts[0]
+            assertEquals 'CO2', amount.type
+            assertEquals 'kg', amount.unit
+            assertEquals 'year', amount.perUnit
+            assertEquals true, amount.default
+            assertEquals "", 20.0, amount.value, 0.000001
+
+            // Notes
+            assertEquals 1, response.data.notes.size()
+            assertEquals 'comment', response.data.notes[0].type
+            assertEquals 'This is a comment', response.data.notes[0].value
+
+            // Input values
+            assertEquals 3, response.data.values.size()
+            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals '10', itemValue.value
+            assertEquals 'kWh', itemValue.unit
+            assertEquals 'year', itemValue.perUnit
+        }
+    }
+
+    /**
+     * Tests an algorithm is applied to calculate a result with XML response.
+     *
+     * The default units and perUnits are used.
+     *
+     * NB: The amount calculated is not the same as for a real API result as the algorithm has been
+     * simplified for testing.
+     */
+    @Test
+    void getCategoryCalculationDefaultUnitsXml() {
+        versions.each { version -> getCategoryCalculationDefaultUnitsXml(version) }
+    }
+
+    def getCategoryCalculationDefaultUnitsXml(version) {
+        if (version >= 3.6) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                query: [country: 'Albania', 'values.energyPerTime': '10'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            assertEquals 1, response.data.Amounts.Amount.size()
+            def amount = response.data.Amounts.Amount[0]
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
+
+            // Notes
+            assertEquals 1, response.data.Notes.size()
+            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
+            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+
+            // Input values
+            assertEquals 3, response.data.Values.Value.size()
+            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
+            assertEquals 'kWh', itemValue.@unit.text()
+            assertEquals 'year', itemValue.@perUnit.text()
+        }
+    }
+
+    /**
+     * Tests a calculation using custom units and perUnits.
+     */
+    @Test
+    void getCategoryCalculationCustomUnitsJson() {
+        versions.each { version -> getCategoryCalculationCustomUnitsJson(version) }
+    }
+
+    def getCategoryCalculationCustomUnitsJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+
+            // Default units
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                query: [
+                    country: 'Albania',
+                    'values.energyPerTime': '10',
+                    'units.energyPerTime': 'MWh',
+                    'perUnits.energyPerTime': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            assertEquals 1, response.data.amounts.size()
+            def amount = response.data.amounts[0]
+            assertEquals 'CO2', amount.type
+            assertEquals 'kg', amount.unit
+            assertEquals 'year', amount.perUnit
+            assertEquals true, amount.default
+            assertEquals "", 240000.0, amount.value, 0.000001
+
+            // Notes
+            assertEquals 1, response.data.notes.size()
+            assertEquals 'comment', response.data.notes[0].type
+            assertEquals 'This is a comment', response.data.notes[0].value
+
+            // Input values
+            assertEquals 3, response.data.values.size()
+            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals '10', itemValue.value
+            assertEquals 'MWh', itemValue.unit
+            assertEquals 'month', itemValue.perUnit
+        }
+    }
+
+    @Test
+    void getCategoryCalculationCustomUnitsXml() {
+        versions.each { version -> getCategoryCalculationCustomUnitsXml(version) }
+    }
+
+    def getCategoryCalculationCustomUnitsXml(version) {
+        if (version >= 3.6) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                query: [
+                    country: 'Albania',
+                    'values.energyPerTime': '10',
+                    'units.energyPerTime': 'MWh',
+                    'perUnits.energyPerTime': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            assertEquals 1, response.data.Amounts.Amount.size()
+            def amount = response.data.Amounts.Amount[0]
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'kg', amount.@unit.text()
+            assertEquals 'year', amount.@perUnit.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
+
+            // Notes
+            assertEquals 1, response.data.Notes.size()
+            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
+            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+
+            // Input values
+            assertEquals 3, response.data.Values.Value.size()
+            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+            assertNotNull itemValue
+            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
+            assertEquals 'MWh', itemValue.@unit.text()
+            assertEquals 'month', itemValue.@perUnit.text()
+        }
+    }
+
+    /**
+     * Tests an algorithm that returns Infinity or NaN return values.
+     *
+     * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.
+     * Algorithms should not normally return non-finite values however if they do the platform should handle them.
+     * JSON does not allow non-finite numbers so we return them as strings.
+     */
+    @Test
+    void getCategoryCalculationInfinityAndNanJson() {
+        versions.each { version -> getCategoryCalculationInfinityAndNanJson(version)}
+    }
+
+    def getCategoryCalculationInfinityAndNanJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+            def response = client.get(path: "/${version}/categories/Computers_generic/calculation;full",
+                query: [device: 'Personal Computers', rating: 'Desktop no monitor'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 2, response.data.amounts.size()
+            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.amounts)
+        }
     }
 }

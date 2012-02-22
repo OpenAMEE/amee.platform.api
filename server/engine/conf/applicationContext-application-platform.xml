@@ -81,6 +81,12 @@
                         <property name="since" value="3.0.0"/>
                     </bean>
                 </entry>
+                <entry key="/{categoryIdentifier}/calculation">
+                    <bean class="com.amee.restlet.version.VersionFinder">
+                        <lookup-method name="createResource" bean="dataItemCalculationResource"/>
+                        <property name="since" value="3.6.0"/>
+                    </bean>
+                </entry>
                 <entry key="/{categoryIdentifier}/items">
                     <bean class="com.amee.restlet.version.VersionFinder">
                         <lookup-method name="createResource" bean="dataItemsResource"/>

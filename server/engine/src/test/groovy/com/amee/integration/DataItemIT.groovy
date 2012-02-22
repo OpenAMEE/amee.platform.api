@@ -618,6 +618,8 @@ class DataItemIT extends BaseApiTest {
      * Supply the input values with the values.{PATH} query params, eg values.energyPerTime=10.
      * Supply the input units with the units.{PATH} query params, eg units.energyPerTime=MWh.
      * Supply the input perUnits with the perUnits.{PATH} query params, eg perUnits.energyPerTime=month.
+     *
+     * See {@link CategoryIT} for examples of performing calculations using drills to select the data item.
      */
     @Test
     void getDataItemCalculationDefaultUnitsJson() {
@@ -815,21 +817,6 @@ class DataItemIT extends BaseApiTest {
             assertEquals 2, response.data.amounts.size()
             assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.amounts)
         }
-    }
-
-    def hasInfinityAndNan(amounts) {
-        def hasInfinity = false
-        def hasNan = false
-
-        amounts.each {
-            if (it.type == 'infinity' && it.value == 'Infinity') {
-                hasInfinity = true
-            }
-            if (it.type == 'nan' && it.value == 'NaN') {
-                hasNan = true
-            }
-        }
-        return hasInfinity && hasNan
     }
 
     /**
