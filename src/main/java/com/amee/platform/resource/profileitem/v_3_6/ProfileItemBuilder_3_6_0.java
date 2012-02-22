@@ -1,27 +1,24 @@
 package com.amee.platform.resource.profileitem.v_3_6;
 
-import com.amee.base.domain.Since;
-import com.amee.base.resource.RequestWrapper;
-import com.amee.base.resource.ResourceBeanFinder;
-import com.amee.base.transaction.AMEETransaction;
-import com.amee.calculation.service.CalculationService;
-import com.amee.domain.APIVersion;
-import com.amee.domain.ProfileItemService;
-import com.amee.domain.item.profile.ProfileItem;
-import com.amee.domain.profile.Profile;
-import com.amee.domain.sheet.Choice;
-import com.amee.domain.sheet.Choices;
-import com.amee.platform.resource.ResourceService;
-import com.amee.platform.resource.profileitem.ProfileItemResource;
-import com.amee.platform.science.ReturnValues;
-import com.amee.service.auth.ResourceAuthorizationService;
+import java.util.TimeZone;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import com.amee.base.domain.Since;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.transaction.AMEETransaction;
+import com.amee.calculation.service.CalculationService;
+import com.amee.domain.ProfileItemService;
+import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.profile.Profile;
+import com.amee.platform.resource.ResourceService;
+import com.amee.platform.resource.profileitem.ProfileItemResource;
+import com.amee.service.auth.ResourceAuthorizationService;
 
 @Service
 @Scope("prototype")
@@ -79,6 +76,7 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
         boolean name = requestWrapper.getMatrixParameters().containsKey("name");
         boolean dates = requestWrapper.getMatrixParameters().containsKey("dates");
         boolean category = requestWrapper.getMatrixParameters().containsKey("category");
+        boolean notes = requestWrapper.getMatrixParameters().containsKey("notes");
 
         // New Profile Item and basic
         renderer.newProfileItem(profileItem);
@@ -100,6 +98,9 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
         }
         if (amounts || full) {
             renderer.addReturnValues(profileItem.getAmounts());
+        }
+        if(notes || full){
+        	renderer.addNote();
         }
     }
 
