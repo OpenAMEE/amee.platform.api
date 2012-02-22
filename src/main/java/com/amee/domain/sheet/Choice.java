@@ -62,7 +62,7 @@ public class Choice implements Serializable, Comparable, APIObject {
 
     @Override
     public String toString() {
-        return getName();
+        return getName() + ":" + getValue();
     }
 
     /**
