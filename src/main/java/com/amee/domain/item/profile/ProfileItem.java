@@ -391,4 +391,13 @@ public class ProfileItem extends BaseItem {
     public void setDuration(String duration) {
         this.duration = duration;
     }
+    
+    public String getNote(){
+    	return getMetadataValue("note");
+    }
+    
+    public void setNote(String note){
+    	getOrCreateMetadata("note").setValue(note);
+        onModify();
+    }
 }
