@@ -1,5 +1,14 @@
 package com.amee.platform.resource.profileitem.v_3_6;
 
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.ProfileItemService;
@@ -11,14 +20,6 @@ import com.amee.platform.science.Note;
 import com.amee.platform.science.ReturnValue;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.TimeZone;
 
 @Service
 @Scope("prototype")
@@ -160,5 +161,10 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     @Override
     public Object getObject() {
         return rootObj;
+    }
+    
+    @Override
+    public void addNote() {
+        ResponseHelper.put(profileItemObj, "note", profileItem.getNote());
     }
 }
