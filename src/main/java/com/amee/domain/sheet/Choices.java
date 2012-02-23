@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Container class for a List of Choice objects.
+ * Often used to group a List of choices for a particular item value.
+ */
 public class Choices implements Serializable, APIObject {
 
     private String name;
@@ -45,6 +49,12 @@ public class Choices implements Serializable, APIObject {
         return newChoices;
     }
 
+    /**
+     * Merges the supplied List of Choice objects with this Choices instance.
+     * New Choices will replace existing Choices of the same name.
+     *
+     * @param newChoices the List of Choices to merge.
+     */
     public void merge(List<Choice> newChoices) {
         Choice newChoice;
         List<Choice> existingChoices = getChoices();
@@ -106,6 +116,7 @@ public class Choices implements Serializable, APIObject {
         }
     }
 
+    @Override
     public JSONObject getJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("name", getName());
@@ -117,15 +128,17 @@ public class Choices implements Serializable, APIObject {
         return obj;
     }
 
+    @Override
     public JSONObject getJSONObject(boolean detailed) throws JSONException {
         return getJSONObject();
     }
 
-
+    @Override
     public JSONObject getIdentityJSONObject() throws JSONException {
         return new JSONObject();
     }
 
+    @Override
     public Element getElement(Document document) {
         Element element = document.createElement("Choices");
         element.appendChild(XMLUtils.getElement(document, "Name", getName()));
@@ -137,10 +150,12 @@ public class Choices implements Serializable, APIObject {
         return element;
     }
 
+    @Override
     public Element getElement(Document document, boolean detailed) {
         return getElement(document);
     }
 
+    @Override
     public Element getIdentityElement(Document document) {
         return document.createElement("Choices");
     }
