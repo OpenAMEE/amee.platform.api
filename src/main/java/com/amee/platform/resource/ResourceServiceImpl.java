@@ -118,8 +118,9 @@ public class ResourceServiceImpl implements ResourceService {
             // Try fetching by drill down
             List<Choice> selections = new ArrayList<Choice>();
             for (Choice choice : dataCategory.getItemDefinition().getDrillDownChoices()) {
-                if (requestWrapper.getQueryParameters().containsKey(choice.getName())) {
-                    selections.add(new Choice(choice.getName(), requestWrapper.getQueryParameters().get(choice.getName())));
+                String parameterName = choice.getName();
+                if (requestWrapper.getAllParameters().containsKey(parameterName)) {
+                    selections.add(new Choice(parameterName, requestWrapper.getAllParameters().get(parameterName)));
                 }
             }
 
