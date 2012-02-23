@@ -5,6 +5,7 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.fail
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Data Category API for ecoinvent data.
@@ -13,20 +14,20 @@ class EcospoldIT extends BaseApiTest {
 
     @Test
     void getEcospoldCategory() {
-        versions.each { version -> getEcospoldCategory(version) };
+        versions.each { version -> getEcospoldCategory(version) }
     }
 
     def getEcospoldCategory(version) {
         if (version >= 3.2) {
 
-            setEcoinventUser();
+            setEcoinventUser()
 
             // We parse the response as XML but request x.ecospold+xml
             def response = client.get(path: "/${version}/categories/Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg",
                     contentType: XML,
                     headers: [Accept: 'application/x.ecospold+xml'])
 
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/x.ecospold+xml', response.contentType
 
             assertEquals '2010-06-16T17:02:39', response.data.dataset.@timestamp.text()
@@ -65,7 +66,7 @@ class EcospoldIT extends BaseApiTest {
 
     @Test
     void getNonEcospoldCategory() {
-        versions.each { version -> getNonEcospoldCategory(version) };
+        versions.each { version -> getNonEcospoldCategory(version) }
     }
 
     def getNonEcospoldCategory(version) {
@@ -76,15 +77,15 @@ class EcospoldIT extends BaseApiTest {
                         headers: [Accept: 'application/x.ecospold+xml'])
                 fail 'Expected 415'
             } catch (HttpResponseException e) {
-                def response = e.response;
-                assertEquals 415, response.status
+                def response = e.response
+                assertEquals CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.code, response.status
             }
         }
     }
 
     @Test
     void getEcospoldCategoryNotAuthorized() {
-        versions.each { version -> getEcospoldCategoryNotAuthorized(version) };
+        versions.each { version -> getEcospoldCategoryNotAuthorized(version) }
     }
 
     def getEcospoldCategoryNotAuthorized(version) {
@@ -95,8 +96,8 @@ class EcospoldIT extends BaseApiTest {
                         headers: [Accept: 'application/x.ecospold+xml'])
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
-                def response = e.response;
-                assertEquals 403, response.status;
+                def response = e.response
+                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
             }
         }
     }

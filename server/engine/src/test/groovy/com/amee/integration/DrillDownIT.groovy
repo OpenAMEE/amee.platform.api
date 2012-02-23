@@ -5,6 +5,7 @@ import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Data Category drill down API. This API has been available since version 3.3.
@@ -38,7 +39,7 @@ class DrillDownIT extends BaseApiTest {
                     path: "/${version}/categories/Cooking/drill",
                     query: query,
                     contentType: JSON)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
@@ -69,7 +70,7 @@ class DrillDownIT extends BaseApiTest {
                     path: "/${version}/categories/Cooking/drill",
                     query: query,
                     contentType: XML)
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             assertEquals choicesSize, response.data.Drill.Choices.Values.Value.size()
@@ -91,7 +92,7 @@ class DrillDownIT extends BaseApiTest {
                 path: "/${version}/categories/ICE_v2_by_mass/drill",
                 query: [material: 'Lime', type: 'General'],
                 contentType: JSON);
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status

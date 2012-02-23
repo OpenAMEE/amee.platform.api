@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Unit API.
@@ -12,11 +13,11 @@ class UnitTypeIT extends BaseApiTest {
 
     def unitTypeUids = [
             'AAA3DAA7A390',
-            '1AA3DAA7A390'];
+            '1AA3DAA7A390']
 
     def unitTypeNames = [
             'Test Unit Type One',
-            'Test Unit Type Two'];
+            'Test Unit Type Two']
 
     /**
      * Tests for creation, fetch and deletion of a Unit Type using JSON & XML responses.
@@ -40,50 +41,50 @@ class UnitTypeIT extends BaseApiTest {
     }
 
     def createAndRemoveUnitType(version) {
-        createAndRemoveUnitTypeJson(version);
-        createAndRemoveUnitTypeXml(version);
+        createAndRemoveUnitTypeJson(version)
+        createAndRemoveUnitTypeXml(version)
     }
 
     def createAndRemoveUnitTypeJson(version) {
         if (version >= 3.5) {
 
-            setAdminUser();
+            setAdminUser()
 
-            def name = 'Unit Type To Be Deleted';
+            def name = 'Unit Type To Be Deleted'
 
             // Create a new Unit Type.
             def responsePost = client.post(
                     path: "/${version}/units/types",
                     body: [name: name],
                     requestContentType: URLENC,
-                    contentType: JSON);
-            assertEquals 201, responsePost.status;
+                    contentType: JSON)
 
             // Get and check the location.
-            def unitTypeLocation = responsePost.headers['Location'].value;
-            def unitTypeUid = unitTypeLocation.split('/')[6];
-            assertTrue unitTypeUid.size() == 12;
+            def unitTypeLocation = responsePost.headers['Location'].value
+            def unitTypeUid = unitTypeLocation.split('/')[6]
+            assertTrue unitTypeUid.size() == 12
+            assertOkJson responsePost, SUCCESS_CREATED.code, unitTypeUid
 
             // Fetch the Unit Type.
             def response = client.get(
                     path: "/${version}/units/types/${name};full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals name, response.data.unitType.name;
+                    contentType: JSON)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals name, response.data.unitType.name
 
             // Then delete the Unit Type.
-            def responseDelete = client.delete(path: "/${version}/units/types/${name}");
-            assertEquals 200, responseDelete.status;
+            def responseDelete = client.delete(path: "/${version}/units/types/${name}")
+            assertOkJson responseDelete, SUCCESS_OK.code, unitTypeUid
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/units/types/${name}");
-                fail 'Should have thrown an exception';
+                client.get(path: "/${version}/units/types/${name}")
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -91,42 +92,42 @@ class UnitTypeIT extends BaseApiTest {
     def createAndRemoveUnitTypeXml(version) {
         if (version >= 3.5) {
 
-            setAdminUser();
+            setAdminUser()
 
-            def name = 'Unit Type To Be Deleted';
+            def name = 'Unit Type To Be Deleted'
 
             // Create a new Unit Type.
             def responsePost = client.post(
                     path: "/${version}/units/types",
                     body: [name: name],
                     requestContentType: URLENC,
-                    contentType: XML);
-            assertEquals 201, responsePost.status;
+                    contentType: XML)
 
             // Get and check the location.
-            def unitTypeLocation = responsePost.headers['Location'].value;
-            def unitTypeUid = unitTypeLocation.split('/')[6];
-            assertTrue unitTypeUid.size() == 12;
+            def unitTypeLocation = responsePost.headers['Location'].value
+            def unitTypeUid = unitTypeLocation.split('/')[6]
+            assertTrue unitTypeUid.size() == 12
+            assertOkXml responsePost, SUCCESS_CREATED.code, unitTypeUid
 
             // Fetch the Unit Type.
             def response = client.get(
                     path: "/${version}/units/types/${name};full",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            assertEquals name, response.data.UnitType.Name.text();
+                    contentType: XML)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            assertEquals name, response.data.UnitType.Name.text()
 
             // Then delete the Unit Type.
-            def responseDelete = client.delete(path: "/${version}/units/types/${name}");
-            assertEquals 200, responseDelete.status;
+            def responseDelete = client.delete(path: "/${version}/units/types/${name}", contentType: XML)
+            assertOkXml responseDelete, SUCCESS_OK.code, unitTypeUid
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/units/types/${name}");
-                fail 'Should have thrown an exception';
+                client.get(path: "/${version}/units/types/${name}")
+                fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status;
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -149,22 +150,22 @@ class UnitTypeIT extends BaseApiTest {
     }
 
     def getAllUnitTypes(version) {
-        getAllUnitTypesJson(version);
-        getAllUnitTypesXml(version);
+        getAllUnitTypesJson(version)
+        getAllUnitTypesXml(version)
     }
 
     def getAllUnitTypesJson(version) {
         if (version >= 3.5) {
             def response = client.get(
                     path: "/${version}/units/types",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals unitTypeUids.size(), response.data.unitTypes.size();
-            assertEquals unitTypeUids.sort(), response.data.unitTypes.collect {it.uid}.sort();
-            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.unitTypes.collect {it.name};
+                    contentType: JSON)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals unitTypeUids.size(), response.data.unitTypes.size()
+            assertEquals unitTypeUids.sort(), response.data.unitTypes.collect {it.uid}.sort()
+            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.unitTypes.collect {it.name}
         }
     }
 
@@ -172,14 +173,14 @@ class UnitTypeIT extends BaseApiTest {
         if (version >= 3.5) {
             def response = client.get(
                     path: "/${version}/units/types",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            def allUnitTypes = response.data.UnitTypes.UnitType;
-            assertEquals unitTypeUids.size(), allUnitTypes.size();
-            assertEquals unitTypeUids.sort(), allUnitTypes.@uid*.text().sort();
-            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, allUnitTypes.Name*.text().sort();
+                    contentType: XML)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def allUnitTypes = response.data.UnitTypes.UnitType
+            assertEquals unitTypeUids.size(), allUnitTypes.size()
+            assertEquals unitTypeUids.sort(), allUnitTypes.@uid*.text().sort()
+            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, allUnitTypes.Name*.text().sort()
         }
     }
 
@@ -196,9 +197,9 @@ class UnitTypeIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidName() {
-        setAdminUser();
-        updateUnitTypeFieldJson('name', 'empty', '');
-        updateUnitTypeFieldJson('name', 'long', String.randomString(256));
+        setAdminUser()
+        updateUnitTypeFieldJson('name', 'empty', '')
+        updateUnitTypeFieldJson('name', 'long', String.randomString(256))
         updateUnitTypeFieldJson('name', 'duplicate', 'Test Unit Type Two'); // Normal case.
         updateUnitTypeFieldJson('name', 'duplicate', 'test unit type two'); // Lower case.
     }

@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseException
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Item Value Definition API.
@@ -60,15 +61,16 @@ class ItemValueDefinitionIT extends BaseApiTest {
                             'apiVersions': '1.0,2.0'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
-            def location = responsePost.headers['Location'].value;
+            def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            def uid = location.split('/')[7]
+            assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
                     path: "${location};full",
                     contentType: JSON)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/json', responseGet.contentType
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
@@ -86,14 +88,14 @@ class ItemValueDefinitionIT extends BaseApiTest {
 
             // Delete it
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -121,45 +123,47 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     requestContentType: XML,
                     contentType: XML)
             assertEquals 201, responsePost.status
-            def location = responsePost.headers['Location'].value;
+            def location = responsePost.headers['Location'].value
             assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            def uid = location.split('/')[7]
+            assertOkXml responsePost, SUCCESS_CREATED.code, uid
 
             // Get the new ItemValueDefinition
             def responseGet = client.get(
                     path: "${location};full",
-                    contentType: XML);
-            assertEquals 200, responseGet.status;
-            assertEquals 'application/xml', responseGet.contentType;
-            assertEquals 'OK', responseGet.data.Status.text();
-            assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text();
-            assertEquals 'foo', responseGet.data.ItemValueDefinition.Path.text();
-            assertEquals '11D3548466F2', responseGet.data.ItemValueDefinition.ItemDefinition.@uid.text();
-            assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text();
-            assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text();
-            assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text();
-            assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text();
-            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text();
-            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text();
-            def allVersions = responseGet.data.ItemValueDefinition.Versions.Version;
-            assertEquals 2, allVersions.size();
-            assertEquals '1.0', allVersions[0].text();
-            assertEquals '2.0', allVersions[1].text();
-            def allUsages = responseGet.data.ItemValueDefinition.Usages.Usage;
-            assertEquals 2, allUsages.size();
-            assert ['byResponsibleArea', 'totalEmissions'] == allUsages.Name*.text();
-            assert ['COMPULSORY', 'COMPULSORY'] == allUsages.Type*.text();
-            assert ['false', 'false'] == allUsages.@active*.text();
+                    contentType: XML)
+            assertEquals SUCCESS_OK.code, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'test', responseGet.data.ItemValueDefinition.Name.text()
+            assertEquals 'foo', responseGet.data.ItemValueDefinition.Path.text()
+            assertEquals '11D3548466F2', responseGet.data.ItemValueDefinition.ItemDefinition.@uid.text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.Value.text()
+            assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text()
+            assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text()
+            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text()
+            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text()
+            def allVersions = responseGet.data.ItemValueDefinition.Versions.Version
+            assertEquals 2, allVersions.size()
+            assertEquals '1.0', allVersions[0].text()
+            assertEquals '2.0', allVersions[1].text()
+            def allUsages = responseGet.data.ItemValueDefinition.Usages.Usage
+            assertEquals 2, allUsages.size()
+            assert ['byResponsibleArea', 'totalEmissions'] == allUsages.Name*.text()
+            assert ['COMPULSORY', 'COMPULSORY'] == allUsages.Type*.text()
+            assert ['false', 'false'] == allUsages.@active*.text()
 
             // Delete it
-            def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            def responseDelete = client.delete(path: location, contentType: XML)
+            assertOkXml responseDelete, SUCCESS_OK.code, uid
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
             }
         }
     }
@@ -189,19 +193,19 @@ class ItemValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getItemValueDefinitionsJson() {
-        versions.each { version -> getItemValueDefinitionsJson(version) };
+        versions.each { version -> getItemValueDefinitionsJson(version) }
     }
 
     def getItemValueDefinitionsJson(version) {
         if (version >= 3.1) {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2/values;full",
-                    contentType: JSON);
-            assertEquals 200, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'OK', response.data.status;
-            assertEquals 6, response.data.itemValueDefinitions.size();
+                    contentType: JSON)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+            assertEquals 6, response.data.itemValueDefinitions.size()
 
             // Should be sorted by name
             assertTrue response.data.itemValueDefinitions.first().name.compareToIgnoreCase(response.data.itemValueDefinitions.last().name) < 0
@@ -213,19 +217,19 @@ class ItemValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getItemValueDefinitionsXml() {
-        versions.each { version -> getItemValueDefinitionsXml(version) };
+        versions.each { version -> getItemValueDefinitionsXml(version) }
     }
 
     def getItemValueDefinitionsXml(version) {
         if (version >= 3.1) {
             def response = client.get(
                     path: "/${version}/definitions/11D3548466F2/values;full",
-                    contentType: XML);
-            assertEquals 200, response.status;
-            assertEquals 'application/xml', response.contentType;
-            assertEquals 'OK', response.data.Status.text();
-            def allItemValueDefinitions = response.data.ItemValueDefinitions.ItemValueDefinition;
-            assertEquals 6, allItemValueDefinitions.size();
+                    contentType: XML)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+            def allItemValueDefinitions = response.data.ItemValueDefinitions.ItemValueDefinition
+            assertEquals 6, allItemValueDefinitions.size()
 
             // Should be sorted by name
             assertTrue allItemValueDefinitions[0].Name.text().compareToIgnoreCase(allItemValueDefinitions[-1].Name.text()) < 0
@@ -243,29 +247,29 @@ class ItemValueDefinitionIT extends BaseApiTest {
     def getItemValueDefinitionJson(version) {
         def response = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
-                contentType: JSON);
-        assertEquals 200, response.status;
-        assertEquals 'application/json', response.contentType;
-        assertTrue response.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', response.data.status;
-        assertEquals 'KWh Per Year', response.data.itemValueDefinition.name;
-        assertEquals 'kWhPerYear', response.data.itemValueDefinition.path;
-        assertEquals '11D3548466F2', response.data.itemValueDefinition.itemDefinition.uid;
-        assertEquals 'Computers Generic', response.data.itemValueDefinition.itemDefinition.name;
+                contentType: JSON)
+        assertEquals SUCCESS_OK.code, response.status
+        assertEquals 'application/json', response.contentType
+        assertTrue response.data instanceof net.sf.json.JSON
+        assertEquals 'OK', response.data.status
+        assertEquals 'KWh Per Year', response.data.itemValueDefinition.name
+        assertEquals 'kWhPerYear', response.data.itemValueDefinition.path
+        assertEquals '11D3548466F2', response.data.itemValueDefinition.itemDefinition.uid
+        assertEquals 'Computers Generic', response.data.itemValueDefinition.itemDefinition.name
         if (version >= 3.1) {
-            assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid;
-            assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name;
-            assertEquals false, response.data.itemValueDefinition.fromProfile;
-            assertEquals true, response.data.itemValueDefinition.fromData;
-            assertEquals '', response.data.itemValueDefinition.choices;
-            assertEquals 2, response.data.itemValueDefinition.usages.size();
-            assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name};
-            assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type};
-            assert ['true', 'false'] == response.data.itemValueDefinition.usages.collect {it.active};
+            assertEquals '013466CB8A7D', response.data.itemValueDefinition.valueDefinition.uid
+            assertEquals 'kWhPerYear', response.data.itemValueDefinition.valueDefinition.name
+            assertEquals false, response.data.itemValueDefinition.fromProfile
+            assertEquals true, response.data.itemValueDefinition.fromData
+            assertEquals '', response.data.itemValueDefinition.choices
+            assertEquals 2, response.data.itemValueDefinition.usages.size()
+            assert ['usage2', 'usage3'] == response.data.itemValueDefinition.usages.collect {it.name}
+            assert ['OPTIONAL', 'COMPULSORY'] == response.data.itemValueDefinition.usages.collect {it.type}
+            assert ['true', 'false'] == response.data.itemValueDefinition.usages.collect {it.active}
             if (version >= 3.4) {
-                assertEquals 'DOUBLE', response.data.itemValueDefinition.valueDefinition.valueType;
+                assertEquals 'DOUBLE', response.data.itemValueDefinition.valueDefinition.valueType
             } else {
-                assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType;
+                assertEquals 'DECIMAL', response.data.itemValueDefinition.valueDefinition.valueType
             }
         }
     }
@@ -281,29 +285,29 @@ class ItemValueDefinitionIT extends BaseApiTest {
     def getItemValueDefinitionXml(version) {
         def response = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/7B8149D9ADE7;full",
-                contentType: XML);
-        assertEquals 200, response.status;
-        assertEquals 'application/xml', response.contentType;
-        assertEquals 'OK', response.data.Status.text();
-        assertEquals 'KWh Per Year', response.data.ItemValueDefinition.Name.text();
-        assertEquals 'kWhPerYear', response.data.ItemValueDefinition.Path.text();
-        assertEquals '11D3548466F2', response.data.ItemValueDefinition.ItemDefinition.@uid.text();
-        assertEquals 'Computers Generic', response.data.ItemValueDefinition.ItemDefinition.Name.text();
+                contentType: XML)
+        assertEquals SUCCESS_OK.code, response.status
+        assertEquals 'application/xml', response.contentType
+        assertEquals 'OK', response.data.Status.text()
+        assertEquals 'KWh Per Year', response.data.ItemValueDefinition.Name.text()
+        assertEquals 'kWhPerYear', response.data.ItemValueDefinition.Path.text()
+        assertEquals '11D3548466F2', response.data.ItemValueDefinition.ItemDefinition.@uid.text()
+        assertEquals 'Computers Generic', response.data.ItemValueDefinition.ItemDefinition.Name.text()
         if (version >= 3.1) {
-            assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text();
-            assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text();
-            assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text();
-            assertEquals 'true', response.data.ItemValueDefinition.FromData.text();
-            assertEquals '', response.data.ItemValueDefinition.Choices.text();
-            def allUsages = response.data.ItemValueDefinition.Usages.Usage;
-            assertEquals 2, allUsages.size();
-            assert ['usage2', 'usage3'] == allUsages.Name*.text();
-            assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text();
-            assert ['true', 'false'] == allUsages.@active*.text();
+            assertEquals '013466CB8A7D', response.data.ItemValueDefinition.ValueDefinition.@uid.text()
+            assertEquals 'kWhPerYear', response.data.ItemValueDefinition.ValueDefinition.Name.text()
+            assertEquals 'false', response.data.ItemValueDefinition.FromProfile.text()
+            assertEquals 'true', response.data.ItemValueDefinition.FromData.text()
+            assertEquals '', response.data.ItemValueDefinition.Choices.text()
+            def allUsages = response.data.ItemValueDefinition.Usages.Usage
+            assertEquals 2, allUsages.size()
+            assert ['usage2', 'usage3'] == allUsages.Name*.text()
+            assert ['OPTIONAL', 'COMPULSORY'] == allUsages.Type*.text()
+            assert ['true', 'false'] == allUsages.@active*.text()
             if (version >= 3.4) {
-                assertEquals 'DOUBLE', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
+                assertEquals 'DOUBLE', response.data.ItemValueDefinition.ValueDefinition.ValueType.text()
             } else {
-                assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text();
+                assertEquals 'DECIMAL', response.data.ItemValueDefinition.ValueDefinition.ValueType.text()
             }
         }
     }
@@ -313,11 +317,11 @@ class ItemValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void updateItemValueDefinitionJson() {
-        versions.each { version -> updateItemValueDefinitionJson(version) };
+        versions.each { version -> updateItemValueDefinitionJson(version) }
     }
 
     def updateItemValueDefinitionJson(version) {
-        setAdminUser();
+        setAdminUser()
 
         // 1) Do the update.
         def responsePut = client.put(
@@ -326,20 +330,20 @@ class ItemValueDefinitionIT extends BaseApiTest {
                         'path': 'newPath',
                         'wikiDoc': 'New WikiDoc.'],
                 requestContentType: URLENC,
-                contentType: JSON);
-        assertEquals 204, responsePut.status;
+                contentType: JSON)
+        assertOkJson responsePut, SUCCESS_OK.code, '64BC7A490F41'
 
         // 2) Check values have been updated.
         def responseGet = client.get(
                 path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
-                contentType: JSON);
-        assertEquals 200, responseGet.status;
-        assertEquals 'application/json', responseGet.contentType;
-        assertTrue responseGet.data instanceof net.sf.json.JSON;
-        assertEquals 'OK', responseGet.data.status;
-        assertEquals 'New Name', responseGet.data.itemValueDefinition.name;
-        assertEquals 'newPath', responseGet.data.itemValueDefinition.path;
-        assertEquals 'New WikiDoc.', responseGet.data.itemValueDefinition.wikiDoc;
+                contentType: JSON)
+        assertEquals SUCCESS_OK.code, responseGet.status
+        assertEquals 'application/json', responseGet.contentType
+        assertTrue responseGet.data instanceof net.sf.json.JSON
+        assertEquals 'OK', responseGet.data.status
+        assertEquals 'New Name', responseGet.data.itemValueDefinition.name
+        assertEquals 'newPath', responseGet.data.itemValueDefinition.path
+        assertEquals 'New WikiDoc.', responseGet.data.itemValueDefinition.wikiDoc
     }
 
     /**
@@ -359,12 +363,12 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     body: itemValueDefinitionUpdateXml(),
                     requestContentType: XML,
                     contentType: XML)
-            assertEquals 204, responsePut.status
+            assertOkXml responsePut, SUCCESS_OK.code, '64BC7A490F41'
 
             def responseGet = client.get(
                     path: "/${version}/definitions/11D3548466F2/values/64BC7A490F41;full",
                     contentType: XML)
-            assertEquals 200, responseGet.status
+            assertEquals SUCCESS_OK.code, responseGet.status
             assertEquals 'application/xml', responseGet.contentType
             assertEquals 'OK', responseGet.data.Status.text()
             assertEquals 'New Name XML', responseGet.data.ItemValueDefinition.Name.text()
@@ -386,18 +390,18 @@ class ItemValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void updateInvalidItemValueDefinition() {
-        setAdminUser();
-        updateItemValueDefinitionFieldJson('name', 'empty', '');
-        updateItemValueDefinitionFieldJson('name', 'short', 'a');
-        updateItemValueDefinitionFieldJson('name', 'long', String.randomString(256));
-        updateItemValueDefinitionFieldJson('path', 'empty', '');
-        updateItemValueDefinitionFieldJson('path', 'short', 'a');
-        updateItemValueDefinitionFieldJson('path', 'long', String.randomString(256));
-        updateItemValueDefinitionFieldJson('path', 'format', 'n o t v a l i d');
-        updateItemValueDefinitionFieldJson('path', 'duplicate', 'onStandby');
-        updateItemValueDefinitionFieldJson('wikiDoc', 'long', String.randomString(32768));
-        updateItemValueDefinitionFieldJson('value', 'long', String.randomString(256));
-        updateItemValueDefinitionFieldJson('choices', 'long', String.randomString(256));
+        setAdminUser()
+        updateItemValueDefinitionFieldJson('name', 'empty', '')
+        updateItemValueDefinitionFieldJson('name', 'short', 'a')
+        updateItemValueDefinitionFieldJson('name', 'long', String.randomString(256))
+        updateItemValueDefinitionFieldJson('path', 'empty', '')
+        updateItemValueDefinitionFieldJson('path', 'short', 'a')
+        updateItemValueDefinitionFieldJson('path', 'long', String.randomString(256))
+        updateItemValueDefinitionFieldJson('path', 'format', 'n o t v a l i d')
+        updateItemValueDefinitionFieldJson('path', 'duplicate', 'onStandby')
+        updateItemValueDefinitionFieldJson('wikiDoc', 'long', String.randomString(32768))
+        updateItemValueDefinitionFieldJson('value', 'long', String.randomString(256))
+        updateItemValueDefinitionFieldJson('choices', 'long', String.randomString(256))
     }
 
     /**
@@ -420,7 +424,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateItemValueDefinitionFieldJson(field, code, value, since) {
-        versions.each { version -> updateItemValueDefinitionFieldJson(field, code, value, since, version) };
+        versions.each { version -> updateItemValueDefinitionFieldJson(field, code, value, since, version) }
     }
 
     /**
@@ -447,7 +451,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals 400, response.status
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
