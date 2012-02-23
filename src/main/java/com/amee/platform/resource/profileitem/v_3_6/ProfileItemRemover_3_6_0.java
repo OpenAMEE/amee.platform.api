@@ -45,6 +45,6 @@ public class ProfileItemRemover_3_6_0 implements ProfileItemResource.Remover {
         
         // Handle profile item removal
         profileItemService.remove(profileItem);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, profileItem.getUid());
     }
 }

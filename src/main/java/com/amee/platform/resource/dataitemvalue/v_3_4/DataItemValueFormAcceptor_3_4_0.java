@@ -75,7 +75,7 @@ public class DataItemValueFormAcceptor_3_4_0 implements DataItemValueResource.Fo
             invalidationService.add(dataItemValue.getDataItem().getDataCategory());
             // Mark the DataItem as modified.
             dataItemValue.getDataItem().onModify();
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, dataItemValue.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

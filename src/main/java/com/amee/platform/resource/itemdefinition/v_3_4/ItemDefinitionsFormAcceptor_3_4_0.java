@@ -47,7 +47,7 @@ public class ItemDefinitionsFormAcceptor_3_4_0 extends ItemDefinitionAcceptor im
         validator.setObject(itemDefinition);
         if (validator.isValid(requestWrapper.getFormParameters())) {
             String location = "/" + requestWrapper.getVersion() + "/definitions/" + itemDefinition.getUid();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, itemDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

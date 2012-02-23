@@ -68,7 +68,7 @@ public class ProfileItemFormAcceptor_3_6_0 implements ProfileItemResource.FormAc
             profileItemService.updateProfileItemValues(profileItem);
             profileItemService.clearItemValues();
             profileService.clearCaches(profileItem.getProfile());
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, profileItem.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

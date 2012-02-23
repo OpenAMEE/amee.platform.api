@@ -16,6 +16,8 @@ import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
+import com.amee.domain.sheet.Choice;
+import com.amee.domain.sheet.Choices;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
@@ -31,7 +33,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -97,9 +101,11 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public DataItem getDataItem(RequestWrapper requestWrapper, DataCategory dataCategory) {
-        // Get DataItem identifier.
+
+        // First try the DataItem identifier (UID) from the URI.
         String itemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
         if (itemIdentifier != null) {
+
             // Get DataItem.
             DataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, itemIdentifier);
             if (dataItem != null) {
@@ -108,7 +114,21 @@ public class ResourceServiceImpl implements ResourceService {
                 throw new NotFoundException();
             }
         } else {
-            throw new MissingAttributeException("itemIdentifier");
+
+            // Try fetching by drill down
+            List<Choice> selections = new ArrayList<Choice>();
+            for (Choice choice : dataCategory.getItemDefinition().getDrillDownChoices()) {
+                if (requestWrapper.getQueryParameters().containsKey(choice.getName())) {
+                    selections.add(new Choice(choice.getName(), requestWrapper.getQueryParameters().get(choice.getName())));
+                }
+            }
+
+            DataItem dataItem = dataItemService.getDataItemByCategoryAndDrillDowns(dataCategory, selections);
+            if (dataItem != null) {
+                return dataItem;
+            } else {
+                throw new NotFoundException();
+            }
         }
     }
 

@@ -70,7 +70,7 @@ public class UnitsFormAcceptor_3_5_0 implements UnitsResource.FormAcceptor {
         if (validator.isValid(requestWrapper.getFormParameters())) {
             unitService.persist(unit);
             String location = "/" + requestWrapper.getVersion() + "/" + unit.getFullPath();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, unit.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

@@ -48,6 +48,6 @@ public class ItemValueDefinitionRemover_3_4_0 implements ItemValueDefinitionReso
         // Handle ItemValueDefinition removal.
         definitionService.remove(itemValueDefinition);
         definitionService.invalidate(itemDefinition);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, itemValueDefinition.getUid());
     }
 }

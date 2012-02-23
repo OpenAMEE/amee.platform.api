@@ -57,6 +57,6 @@ public class DataItemValueRemover_3_4_0 implements DataItemValueResource.Remover
         // Handle DataItem removal.
         dataItemService.remove(dataItemValue);
         invalidationService.add(dataItem.getDataCategory());
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, dataItemValue.getUid());
     }
 }

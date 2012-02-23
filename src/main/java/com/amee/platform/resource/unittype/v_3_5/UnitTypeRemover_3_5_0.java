@@ -43,6 +43,6 @@ public class UnitTypeRemover_3_5_0 implements UnitTypeResource.Remover {
 
         // Handle UnitType removal.
         unitService.remove(unitType);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, unitType.getUid());
     }
 }

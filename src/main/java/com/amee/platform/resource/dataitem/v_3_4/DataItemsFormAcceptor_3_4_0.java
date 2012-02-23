@@ -86,7 +86,7 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
                     requestWrapper,
                     "/" + requestWrapper.getVersion() +
                             "/categories/" + requestWrapper.getAttributes().get("categoryIdentifier") +
-                            "/items/" + dataItem.getUid());
+                            "/items/" + dataItem.getUid(), dataItem.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

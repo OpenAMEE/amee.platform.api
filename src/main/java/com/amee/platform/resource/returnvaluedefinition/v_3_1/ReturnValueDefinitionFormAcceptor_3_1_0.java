@@ -62,7 +62,7 @@ public class ReturnValueDefinitionFormAcceptor_3_1_0 implements ReturnValueDefin
             // If default is true, update the others.
             definitionService.unsetDefaultTypes(returnValueDefinition);
             definitionService.invalidate(returnValueDefinition.getItemDefinition());
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, returnValueDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

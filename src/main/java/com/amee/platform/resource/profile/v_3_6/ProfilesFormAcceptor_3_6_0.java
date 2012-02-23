@@ -50,6 +50,6 @@ public class ProfilesFormAcceptor_3_6_0 implements ProfilesResource.FormAcceptor
         // just so the POST body has some content. This parameter is not used.
         profileService.persist(profile);
         String location = "/" + requestWrapper.getVersion() + "/profiles/" + profile.getFullPath();
-        return ResponseHelper.getOK(requestWrapper, location);
+        return ResponseHelper.getOK(requestWrapper, location, profile.getUid());
     }
 }

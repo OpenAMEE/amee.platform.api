@@ -91,22 +91,34 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
         // Add the supplied values
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : values.getChoices()) {
-            Element valueElem = new Element("Value");
-            valueElem.setAttribute("name", choice.getName());
-            valueElem.setText(choice.getValue());
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+                Element valueElem = new Element("Value");
+                valueElem.setAttribute("name", choice.getName());
+                valueElem.setText(choice.getValue());
 
-            // Add details from the ItemValueDefinition.
-            ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
-            if (itemValueDefinition != null) {
-                if (itemValueDefinition.hasUnit()) {
-                    valueElem.setAttribute("unit", itemValueDefinition.getUnit().toString());
+                // Add details from the ItemValueDefinition.
+                ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
+                if (itemValueDefinition != null) {
+                    if (itemValueDefinition.hasUnit()) {
+                        if (values.containsKey("units." + choice.getName())) {
+                            valueElem.setAttribute("unit", values.get("units." + choice.getName()).getValue());
+                        } else {
+                            valueElem.setAttribute("unit", itemValueDefinition.getUnit().toString());
+                        }
+                    }
+                    if (itemValueDefinition.hasPerUnit()) {
+                        if (values.containsKey("perUnits." + choice.getName())) {
+                            valueElem.setAttribute("perUnit", values.get("perUnits." + choice.getName()).getValue());
+                        } else {
+                            valueElem.setAttribute("perUnit", itemValueDefinition.getPerUnit().toString());
+                        }
+                    }
                 }
-                if (itemValueDefinition.hasPerUnit()) {
-                    valueElem.setAttribute("perUnit", itemValueDefinition.getPerUnit().toString());
-                }
+                valuesElem.addContent(valueElem);
             }
-            valuesElem.addContent(valueElem);
         }
+
+        // Only add the element if we have values.
         if (valuesElem.getChildren().size() > 0) {
             rootElem.addContent(valuesElem);
         }
