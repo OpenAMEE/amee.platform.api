@@ -15,8 +15,8 @@ set.AMEE_INSTANCE_NAME=local
 # Log levels
 set.LOG_LEVEL=DEBUG
 set.DEFAULT_LOG_LEVEL=INFO
-set.MAILLOG=true
-set.AIRBRAKE=true
+set.MAILLOG=false
+set.AIRBRAKE=false
 
 # Extra Java Parameters
 wrapper.java.additional.100=-Xdebug
@@ -35,7 +35,7 @@ set.MESSAGING_RUN_SLEEP=30000
 set.MESSAGING_SCOPE=live
 
 # Scheduler
-set.AUTO_START_SCHEDULER=true
+set.AUTO_START_SCHEDULER=false
 
 # Host names
 set.HOST_NAME=platform-api-local.amee.com
@@ -62,10 +62,10 @@ set.DB_DRIVER=net.sf.log4jdbc.DriverSpy
 set.VALIDATION_QUERY=SELECT 1 FROM DUAL
 
 # Search index.
-set.CLEAR_INDEX=false
-set.CHECK_DATA_CATEGORIES=false
-set.INDEX_DATA_CATEGORIES=false
-set.INDEX_DATA_ITEMS=false
+set.CLEAR_INDEX=true
+set.CHECK_DATA_CATEGORIES=true
+set.INDEX_DATA_CATEGORIES=true
+set.INDEX_DATA_ITEMS=true
 set.INDEX_DATA_CATEGORY_PATH_PREFIX=/
 set.INDEX_CHECK_SEARCHER_ON_COMMIT=false
 
