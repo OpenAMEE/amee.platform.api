@@ -157,9 +157,4 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
     public Object getObject() {
         return new Document(rootElem);
     }
-    
-    @Override
-    public void addNote() {
-        profileItemElem.addContent(new Element("Note").setText(profileItem.getNote()));
-    }
 }

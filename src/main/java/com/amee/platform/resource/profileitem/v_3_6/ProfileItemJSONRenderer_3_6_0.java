@@ -167,9 +167,4 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     public Object getObject() {
         return rootObj;
     }
-    
-    @Override
-    public void addNote() {
-        ResponseHelper.put(profileItemObj, "note", profileItem.getNote());
-    }
 }
