@@ -73,7 +73,7 @@ public class ProfileItemValidatorTest {
         good.setName(RandomStringUtils.random(10));
         good.setStartDate(new DateTime(2010, 1, 1, 12, 0, 0, 0, DateTimeZone.UTC).toDate());
         good.setDuration("P10Y3M2D");
-        //good.setNote(RandomStringUtils.random(30));
+        good.setNote(RandomStringUtils.random(30));
 
         validator.validate(good, errorsGood);
         assertFalse("Object should not fail validation: (" + errorsGood.getMessage() + ")", errorsGood.hasErrors());
@@ -99,22 +99,22 @@ public class ProfileItemValidatorTest {
 
 	@Test
 	public void testEmptyName(){
-		ProfileItem bad = new ProfileItem();
-		bad.setName("");
-		bad.setItemDefinition(mockItemDefinition);
+		ProfileItem good = new ProfileItem();
+		good.setName("");
+		good.setItemDefinition(mockItemDefinition);
 		
-		BindException errorsBad = new BindException(bad, "bad");
+		BindException errorsGood = new BindException(good, "bad");
 		
 		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
 		validator.setProfileItemService(mockProfileItemService);
-		validator.setObject(bad);
+		validator.setObject(good);
 		validator.initialise();
 		
-		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		when(mockProfileItemService.isUnique(good)).thenReturn(true);
 		
-		validator.validate(bad, errorsBad);
+		validator.validate(good, errorsGood);
 		
-		assertTrue("Object should not fail validation", !errorsBad.hasErrors());
+		assertFalse("Object should not fail validation", errorsGood.hasErrors());
 	}	 
 	
 	@Test
@@ -155,28 +155,6 @@ public class ProfileItemValidatorTest {
 		validator.validate(bad, errorsBad);
 		
 		assertTrue("Object should fail validation", errorsBad.hasErrors());
-	}
-	
-	
-	@Test
-	public void testEndDateBeforeStartDate(){
-		ProfileItem bad = new ProfileItem();
-		bad.setStartDate(new Date());
-		bad.setEndDate(new Date(bad.getStartDate().getTime() - 1));
-		bad.setItemDefinition(mockItemDefinition);
-		
-		BindException errorsBad = new BindException(bad, "bad");
-		
-		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
-		validator.setProfileItemService(mockProfileItemService);
-		validator.setObject(bad);
-		validator.initialise();
-		
-		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
-		
-		validator.validate(bad, errorsBad);
-		
-		assertTrue("Object should fail validation", errorsBad.hasErrors());	
 	}
 	
 	@Test
