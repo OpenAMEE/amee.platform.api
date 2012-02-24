@@ -179,20 +179,20 @@
                     <environmentVariables>
 
                         <!-- H2 -->
-                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
-                        <DB_URL>h2:mem:amee_test</DB_URL>
-                        <DB_DRIVER>org.h2.Driver</DB_DRIVER>
-                        <DB_USERNAME>sa</DB_USERNAME>
-                        <DB_PSWD>NULL</DB_PSWD>
-                        <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
-
-                        <!-- HSQLDB -->
                         <!--<DB_URL_PREFIX>jdbc</DB_URL_PREFIX>-->
-                        <!--<DB_URL>hsqldb:mem:amee_test</DB_URL>-->
-                        <!--<DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>-->
+                        <!--<DB_URL>h2:mem:amee_test</DB_URL>-->
+                        <!--<DB_DRIVER>org.h2.Driver</DB_DRIVER>-->
                         <!--<DB_USERNAME>sa</DB_USERNAME>-->
                         <!--<DB_PSWD>NULL</DB_PSWD>-->
-                        <!--<VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>-->
+                        <!--<VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>-->
+
+                        <!-- HSQLDB -->
+                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <DB_URL>hsqldb:mem:amee_test</DB_URL>
+                        <DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>
+                        <DB_USERNAME>sa</DB_USERNAME>
+                        <DB_PSWD>NULL</DB_PSWD>
+                        <VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>
 
                         <!-- MySQL -->
                         <!--<DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>-->
