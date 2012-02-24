@@ -44,6 +44,7 @@ class ProfileItemIT extends BaseApiTest {
      * <li>endDate
      * <li>duration
      * <li>values.{path}*
+     * <li>note</li>
      * </ul>
      *
      * The 'values.{path}' parameter can be used to set Profile Item Values.
@@ -71,7 +72,8 @@ class ProfileItemIT extends BaseApiTest {
                     dataItemUid: dataItemUid,
                     startDate: '2012-01-26T10:00:00Z',
                     endDate: '2012-02-26T12:00:00Z',
-                    'values.mass': '5'],
+                    'values.mass': '5',
+                    note: 'Test note'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
@@ -102,6 +104,7 @@ class ProfileItemIT extends BaseApiTest {
             assertEquals '2012-02-26T12:00:00Z', responseGet.data.item.endDate
             assertEquals categoryUid, responseGet.data.item.categoryUid
             assertEquals categoryWikiName, responseGet.data.item.categoryWikiName
+            assert responseGet.data.item.note == 'Test note'
 
             // Amounts
             assertEquals 3, responseGet.data.item.amounts.amount.size()
@@ -275,6 +278,7 @@ class ProfileItemIT extends BaseApiTest {
      * <li>name - include the profile item name.
      * <li>dates - include the profile item start and end dates.
      * <li>category - include the data category UID and wikiName values.
+     * <li>note</li>
      * </ul>
      *
      */
@@ -396,6 +400,7 @@ class ProfileItemIT extends BaseApiTest {
      * <li>name - include the profile item's name.
      * <li>dates - include the profile item's start and end dates.
      * <li>category - include the category used by this profile item.
+     * <li>note - include the item's note
      * </ul>
      */
     @Test
