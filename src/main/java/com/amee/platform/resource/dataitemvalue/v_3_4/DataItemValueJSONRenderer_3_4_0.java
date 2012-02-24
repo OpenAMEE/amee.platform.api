@@ -50,25 +50,26 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
         ResponseHelper.put(dataItemValueObj, "history", dataItemValue.isHistoryAvailable());
 
         if (NumberValue.class.isAssignableFrom(dataItemValue.getClass())) {
-        	
-        	// If the value is a number, format the JSON appropriately, otherwise use a String
-        	try{
-        		Double doubleValue = Double.valueOf(dataItemValue.getValueAsString());
-        		if(doubleValue == null){
-        			// This shouldn't be possible
-        			ResponseHelper.put(dataItemValueObj, "value", JSONObject.NULL);
-        		}else if(Double.isInfinite(doubleValue)){
-        			ResponseHelper.put(dataItemValueObj, "value", "Infinity");
-        		}else if(Double.isNaN(doubleValue)){
-        			ResponseHelper.put(dataItemValueObj, "value", "NaN");
-        		}else{
-        			ResponseHelper.put(dataItemValueObj, "value", doubleValue);
-        		}
-        	}catch(NumberFormatException e){
-        		// Not a numeric value, use a String
-        		ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
-        	}
-        	
+
+            // If the value is a number, format the JSON appropriately,
+            // otherwise use a String
+            try {
+                Double doubleValue = Double.valueOf(dataItemValue.getValueAsString());
+                if (doubleValue == null) {
+                    // This shouldn't be possible
+                    ResponseHelper.put(dataItemValueObj, "value", JSONObject.NULL);
+                } else if (Double.isInfinite(doubleValue)) {
+                    ResponseHelper.put(dataItemValueObj, "value", "Infinity");
+                } else if (Double.isNaN(doubleValue)) {
+                    ResponseHelper.put(dataItemValueObj, "value", "NaN");
+                } else {
+                    ResponseHelper.put(dataItemValueObj, "value", doubleValue);
+                }
+            } catch (NumberFormatException e) {
+                // Not a numeric value, use a String
+                ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
+            }
+
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
                 ResponseHelper.put(dataItemValueObj, "unit", nv.getUnit().toString());
@@ -78,10 +79,10 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
                 }
             }
         } else {
-        	// Not a numeric value, use a String
-    		ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
+            // Not a numeric value, use a String
+            ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
         }
-        
+
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
             HistoryValue hv = (HistoryValue) dataItemValue;
             ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(hv.getStartDate().getTime()));
