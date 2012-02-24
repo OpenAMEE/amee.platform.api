@@ -41,8 +41,6 @@ public interface ProfileItemResource {
         void addNote();
 
         void addReturnValues(ReturnValues returnValues);
-        
-        void addNote();
     }
 
     interface FormAcceptor extends ResourceAcceptor {
