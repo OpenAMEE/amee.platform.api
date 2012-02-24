@@ -31,7 +31,8 @@ class ProfileItemIT extends BaseApiTest {
     def categoryWikiName = 'ICE_v2_by_mass'
 
     /**
-     * Tests for creation, fetch and deletion of a Profile Item using JSON responses.
+     * Tests for creation, fetch and deletion of a Profile Item using JSON and XML responses.
+     * Tests creation by uid and category + drill downs.
      *
      * Create a new Profile Item by POSTing to '/profiles/{UID}/items' (since 3.6.0).
      *
@@ -39,18 +40,27 @@ class ProfileItemIT extends BaseApiTest {
      *
      * <ul>
      * <li>name
-     * <li>either dataItemUid or category path and drills (see PL-260).
+     * <li>dataItemUid
+     * <li>category
+     * <li>{drill_path}*
      * <li>startDate
      * <li>endDate
      * <li>duration
      * <li>values.{path}*
      * <li>note</li>
+     * <li>units.{path}*
+     * <li>perUnits.{path}*
      * </ul>
      *
      * The 'values.{path}' parameter can be used to set Profile Item Values.
      * The 'units.{path}' parameter can be used to set Profile Item Value units.
      * The 'perUnits.{path}' parameter can be used to set Profile Item Value perUnits.
+     *
      * See {@link ProfileItemValueIT} tests for examples of supplying different units and perUnits.
+     *
+     * You may specify the data item using either the dataItemUid parameter or a combination of the
+     * category parameter and drill values. Category wiki name and drills have been supported since 3.6.0.
+     * Eg, category=Electricity_by_Country&country=Albania
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
@@ -58,10 +68,11 @@ class ProfileItemIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveProfileItemJson() {
-        versions.each { version -> createAndRemoveProfileItemJson(version) }
+        versions.each { version -> createAndRemoveProfileItemByUidJson(version) }
+        versions.each { version -> createAndRemoveProfileItemByCategoryXml(version) }
     }
     
-    def createAndRemoveProfileItemJson(version) {
+    def createAndRemoveProfileItemByUidJson(version) {
         if (version >= 3.6) {
             
             // Create the profile item
@@ -108,9 +119,9 @@ class ProfileItemIT extends BaseApiTest {
 
             // Amounts
             assertEquals 3, responseGet.data.item.amounts.amount.size()
-            assertContainsAmount(responseGet.data.item.amounts.amount, 'CO2', 3.8, 'kg', '', true)
-            assertContainsAmount(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
-            assertContainsAmount(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2', 3.8, 'kg', '', true)
+            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
+            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
@@ -120,6 +131,71 @@ class ProfileItemIT extends BaseApiTest {
             // We should get a 404 here.
             try {
                 client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            }
+        }
+    }
+
+    def createAndRemoveProfileItemByCategoryXml(version) {
+        if (version >= 3.6) {
+
+            // Create the profile item
+            def responsePost = client.post(
+                path: "/${version}/profiles/${cookingProfileUid}/items",
+                body: [
+                    name: 'test2',
+                    category: 'ICE_v2_by_mass',
+                    material: 'Lime',
+                    type: 'General',
+                    startDate: '2012-01-26T10:00:00Z',
+                    endDate: '2012-02-26T12:00:00Z',
+                    'values.mass': '5'],
+                requestContentType: URLENC,
+                contentType: XML)
+
+            // Is Location available?
+            assertNotNull responsePost.headers['Location']
+            assertNotNull responsePost.headers['Location'].value
+            String location = responsePost.headers['Location'].value
+            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+
+            // Get new ProfileItem UID.
+            def uid = location.split('/')[7]
+            assertNotNull uid
+
+            // Success response
+            assertOkXml(responsePost, SUCCESS_CREATED.code, uid)
+
+            // Get the profile item
+            def responseGet = client.get(
+                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
+                contentType: XML)
+
+            assertEquals SUCCESS_OK.code, responseGet.status
+            assertEquals 'application/xml', responseGet.contentType
+            assertEquals 'OK', responseGet.data.Status.text()
+            assertEquals 'test2', responseGet.data.Item.Name.text()
+            assertEquals '2012-01-26T10:00:00Z', responseGet.data.Item.StartDate.text()
+            assertEquals '2012-02-26T12:00:00Z', responseGet.data.Item.EndDate.text()
+            assertEquals categoryUid, responseGet.data.Item.CategoryUid.text()
+            assertEquals categoryWikiName, responseGet.data.Item.CategoryWikiName.text()
+
+            // Amounts
+            assertEquals 3, responseGet.data.Item.Amounts.Amount.size()
+            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2', 3.8, 'kg', '', true)
+            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'energy', 26.5, 'MJ', '', false)
+            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+
+            // Delete the profile item
+            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
+            assertOkXml(responseDelete, SUCCESS_OK.code, uid)
+
+            // Check it was deleted
+            // We should get a 404 here.
+            try {
+                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
                 assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
@@ -815,7 +891,7 @@ class ProfileItemIT extends BaseApiTest {
 
         // Amounts
         assertEquals 1, item.amounts.amount.size()
-        assertContainsAmount(item.amounts.amount, 'CO2', objective, 'kg', 'year', true)
+        assertContainsAmountJson(item.amounts.amount, 'CO2', objective, 'kg', 'year', true)
 
         // Delete the profile item
         def responseDelete = client.delete(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
@@ -848,7 +924,7 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     /**
-     * Helper method to check an amount is present and correct. Designed for json. Check with xml...
+     * Helper method to check an amount is present and correct. Designed for json.
      *
      * Precision is 1e-4
      *
@@ -859,7 +935,7 @@ class ProfileItemIT extends BaseApiTest {
      * @param perUnit the expected perUnit, eg month.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmount(amounts, type, value, unit, perUnit, isDefault) {
+    def assertContainsAmountJson(amounts, type, value, unit, perUnit, isDefault) {
         def amount = amounts.find { it.type == type }
         assertNotNull amount
         assertEquals value, amount.value, 0.0001
@@ -869,6 +945,31 @@ class ProfileItemIT extends BaseApiTest {
             assertEquals isDefault, amount.default
         } else {
             assertNull amount.default
+        }
+    }
+
+    /**
+     * Helper method to check an amount is present and correct. Designed for xml.
+     *
+     * Precision is 1e-4
+     *
+     * @param amounts the array of amounts to check.
+     * @param type the expected type, eg CO2.
+     * @param value the expected value, eg 5.83.
+     * @param unit the expected unit, eg kg.
+     * @param perUnit the expected perUnit, eg month.
+     * @param isDefault is this amount the default type?
+     */
+    def assertContainsAmountXml(amounts, type, value, unit, perUnit, isDefault) {
+        def amount = amounts.find { it.@type.text() == type }
+        assertNotNull amount
+        assertEquals value, Double.valueOf(amount.text()), 0.0001
+        assertEquals unit, amount.@unit.text()
+        assertEquals perUnit, amount.@perUnit.text()
+        if (isDefault) {
+            assertEquals isDefault, Boolean.valueOf(amount.@default.text())
+        } else {
+            assertFalse Boolean.valueOf(amount.@default.text())
         }
     }
 }
