@@ -51,6 +51,7 @@ class SearchIT extends BaseApiTest {
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
         assertEquals 2, response.data.results.size()
+        assert Collections.nCopies(2, 'category') == response.data.results.collect { it.type }
     }
 
     /**
@@ -73,6 +74,7 @@ class SearchIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.results.size()
             assertFalse response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
+            assertEquals 'category', response.data.results.first().type
         }
     }
 
@@ -96,6 +98,7 @@ class SearchIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.results.size()
             assertTrue response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
+            assertEquals 'category', response.data.results.first().type
         }
     }
 
