@@ -9,6 +9,7 @@ import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.DataItemService;
 import com.amee.domain.ProfileItemService;
+import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
@@ -16,6 +17,7 @@ import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
 import com.amee.platform.resource.profileitem.ProfileItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
+import com.amee.service.data.DataService;
 import com.amee.service.profile.ProfileService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +44,9 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
     private ProfileItemService profileItemService;
 
     @Autowired
+    private DataService dataService;
+
+    @Autowired
     private DataItemService dataItemService;
 
     @Autowired
@@ -57,12 +62,19 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
 
         // Get entities
         Profile profile = resourceService.getProfile(requestWrapper);
-        String dataItemUid = requestWrapper.getFormParameters().get("dataItemUid");
-        if (dataItemUid == null) {
+        DataItem dataItem;
+        if (requestWrapper.getFormParameters().get("dataItemUid") != null) {
+            dataItem = dataItemService.getItemByUid(requestWrapper.getFormParameters().get("dataItemUid"));    
+        } else if (requestWrapper.getFormParameters().get("category") != null) {
+            DataCategory dataCategory = dataService.getDataCategoryByIdentifier(
+                requestWrapper.getFormParameters().get("category"));
+            dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+        } else {
+
+            // TODO: This causes a 500 error.
             throw new MissingAttributeException("dataItemUid");
         }
 
-        DataItem dataItem = dataItemService.getItemByUid(dataItemUid);
         if (dataItem == null) {
 
             // A better exception here?
