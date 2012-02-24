@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.DataItemService;
+import com.amee.domain.Metadata;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.profile.ProfileItem;
@@ -45,6 +46,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         addName();
         addDates();
         addValues();
+        addNote();
         addUnit();
         addPerUnit();
     }
@@ -233,6 +235,14 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                 }
             }
         }
+    }
+
+    protected void addNote(){
+    	allowedFields.add("note");
+    	add(new ValidationSpecification()
+    		.setName("note")
+    		.setMaxSize(Metadata.VALUE_MAX_SIZE)
+    		.setAllowEmpty(true));
     }
 
     protected void addUnit() {
