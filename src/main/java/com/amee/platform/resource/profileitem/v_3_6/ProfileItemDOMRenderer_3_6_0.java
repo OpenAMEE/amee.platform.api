@@ -33,8 +33,6 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
     protected ProfileItem profileItem;
     protected Element rootElem;
     protected Element profileItemElem;
-    protected Element amountsElem;
-    protected Element notesElem;
 
     @Override
     public void start() {
@@ -98,56 +96,42 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
 
     @Override
     public void addReturnValues(ReturnValues returnValues) {
+        Element outputElem = new Element("Output");
 
-        // Create the Amounts element.
-        amountsElem = new Element("Amounts");
-
-        // Add the return values to it.
+        // Add the return values
+        Element amountsElem = new Element("Amounts");
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
-            Element amountElem = new Element("Amount");
-            amountElem.setAttribute("type", entry.getKey());
+            String type = entry.getKey();
+            ReturnValue value = entry.getValue();
 
-            ReturnValue returnValue = entry.getValue();
+            Element amountElem = new Element("Amount");
+            amountElem.setAttribute("type", type);
 
             // If there was a problem in the calculation, returnValue may be null. (PL-11105)
-            if (returnValue != null) {
-                amountElem.setAttribute("unit", returnValue.getUnit());
-                amountElem.setAttribute("perUnit", returnValue.getPerUnit());
-                amountElem.setText(Double.toString(returnValue.getValue()));
-            } else {
-
-                // Deal with an 'empty' value
-                amountElem.setAttribute("unit", "");
-                amountElem.setAttribute("perUnit", "");
-                // Set no value.
-            }
-
-            if (entry.getKey().equals(returnValues.getDefaultType())) {
+            amountElem.setAttribute("unit", value != null ? value.getUnit() : "");
+            amountElem.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
+            if (type.equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
+            amountElem.setText(value != null ? value.getValue() + "" : "");
             amountsElem.addContent(amountElem);
         }
-
-        // TODO: check this. Will the returnvalues ever be empty?
         if (amountsElem.getChildren().size() > 0) {
-            profileItemElem.addContent(amountsElem);
+            outputElem.addContent(amountsElem);
         }
 
-        // Create the Notes element.
-        notesElem = new Element("Notes");
-
-        // Add the notes to it.
+        // Add the notes
+        Element notesElem = new Element("Notes");
         for (Note note : returnValues.getNotes()) {
             Element noteElem = new Element("Note");
             noteElem.setAttribute("type", note.getType());
             noteElem.setText(note.getValue());
             notesElem.addContent(noteElem);
         }
-
-        // TODO: This should be part of the returnValues element (Amounts) not at the same level.
         if (notesElem.getChildren().size() > 0) {
-            amountsElem.addContent(notesElem);
+            outputElem.addContent(notesElem);
         }
+        profileItemElem.addContent(outputElem);
     }
 
     public String getMediaType() {

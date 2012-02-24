@@ -28,9 +28,6 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
 
     private DataItem dataItem;
     private Element rootElem;
-    private Element returnValuesElem;
-    private Element notesElem;
-    private Element valuesElem;
 
     @Override
     public void start() {
@@ -49,30 +46,32 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
 
     @Override
     public void addReturnValues(ReturnValues returnValues) {
-        returnValuesElem = new Element("Amounts");
+        Element outputElem = new Element("Output");
 
         // Add the return values
+        Element amountsElem = new Element("Amounts");
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
             String type = entry.getKey();
             ReturnValue value = entry.getValue();
 
             Element amountElem = new Element("Amount");
             amountElem.setAttribute("type", type);
+
+            // If there was a problem in the calculation, returnValue may be null. (PL-11105)
             amountElem.setAttribute("unit", value != null ? value.getUnit() : "");
             amountElem.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
             if (type.equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
             amountElem.setText(value != null ? value.getValue() + "" : "");
-            returnValuesElem.addContent(amountElem);
+            amountsElem.addContent(amountElem);
         }
-        if (returnValuesElem.getChildren().size() > 0) {
-            rootElem.addContent(returnValuesElem);
+        if (amountsElem.getChildren().size() > 0) {
+            outputElem.addContent(amountsElem);
         }
-
-        notesElem = new Element("Notes");
 
         // Add the notes
+        Element notesElem = new Element("Notes");
         for (Note note : returnValues.getNotes()) {
             Element noteElem = new Element("Note");
             noteElem.setAttribute("type", note.getType());
@@ -80,13 +79,14 @@ public class DataItemCalculationDOMRenderer_3_4_0 implements DataItemCalculation
             notesElem.addContent(noteElem);
         }
         if (notesElem.getChildren().size() > 0) {
-            rootElem.addContent(notesElem);
+            outputElem.addContent(notesElem);
         }
+        rootElem.addContent(outputElem);
     }
 
     @Override
     public void addValues(Choices values) {
-        valuesElem = new Element("Values");
+        Element valuesElem = new Element("Values");
 
         // Add the supplied values
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();

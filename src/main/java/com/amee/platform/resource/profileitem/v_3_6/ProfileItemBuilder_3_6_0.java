@@ -26,9 +26,6 @@ import com.amee.service.auth.ResourceAuthorizationService;
 public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
 
     @Autowired
-    private ProfileItemService profileItemService;
-
-    @Autowired
     private ResourceService resourceService;
 
     @Autowired
@@ -36,9 +33,6 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
 
     @Autowired
     private ResourceBeanFinder resourceBeanFinder;
-
-    @Autowired
-    private CalculationService calculationService;
 
     private ProfileItemResource.Renderer renderer;
 

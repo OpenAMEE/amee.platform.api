@@ -35,7 +35,6 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     protected ProfileItem profileItem;
     protected JSONObject rootObj;
     protected JSONObject profileItemObj;
-    protected JSONObject amountsObj;
 
     @Override
     public void start() {
@@ -103,47 +102,50 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
      */
     @Override
     public void addReturnValues(ReturnValues returnValues) {
-        amountsObj = new JSONObject();
+
+        JSONObject outputObj = new JSONObject();
 
         // Create an array of amount objects
-        JSONArray amountArr = new JSONArray();
-        ResponseHelper.put(amountsObj, "amount", amountArr);
-
-        // Add the return values
+        JSONArray amountsArr = new JSONArray();
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
 
             // Create an Amount object
             JSONObject amountObj = new JSONObject();
-            double returnValue = entry.getValue().getValue();
 
-            if (Double.isInfinite(returnValue)) {
+            String type = entry.getKey();
+            ReturnValue returnValue = entry.getValue();
+
+            ResponseHelper.put(amountObj, "type", type);
+            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
+            ResponseHelper.put(amountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+
+            // Flag for default type.
+            ResponseHelper.put(amountObj, "default", type.equals(returnValues.getDefaultType()));
+
+            if (returnValue == null) {
+                ResponseHelper.put(amountObj, "value", JSONObject.NULL);
+            } else if (Double.isInfinite(returnValue.getValue())) {
                 ResponseHelper.put(amountObj, "value", "Infinity");
-            } else if (Double.isNaN(returnValue)) {
+            } else if (Double.isNaN(returnValue.getValue())) {
                 ResponseHelper.put(amountObj, "value", "NaN");
             } else {
-                ResponseHelper.put(amountObj, "value", returnValue);
-            }
-            ResponseHelper.put(amountObj, "type", entry.getKey());
-            ResponseHelper.put(amountObj, "unit", entry.getValue().getUnit());
-            ResponseHelper.put(amountObj, "perUnit", entry.getValue().getPerUnit());
-            if (entry.getKey().equals(returnValues.getDefaultType())) {
-                ResponseHelper.put(amountObj, "default", true);
+                ResponseHelper.put(amountObj, "value", returnValue.getValue());
             }
 
             // Add the object to the amounts array
-            amountArr.put(amountObj);
+            amountsArr.put(amountObj);
         }
 
-        // Only add the amounts if we have some.
-        // TODO: confirm this is correct behaviour? I think we should add it anyway. Also see DOMRenderer.
-        if (amountArr.length() > 0) {
-            ResponseHelper.put(profileItemObj, "amounts", amountsObj);
+        // Add the amounts to the output object, if there are some.
+        if (amountsArr.length() > 0) {
+            ResponseHelper.put(outputObj, "amounts", amountsArr);
         }
 
+        // Create an array of note objects.
         JSONArray notesArr = new JSONArray();
-
-        // Add the notes
         for (Note note : returnValues.getNotes()) {
+
+            // Create the note object.
             JSONObject noteObj = new JSONObject();
             ResponseHelper.put(noteObj, "type", note.getType());
             ResponseHelper.put(noteObj, "value", note.getValue());
@@ -152,10 +154,12 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
             notesArr.put(noteObj);
         }
 
-        // TODO: Check this condition
+        // Add the notes array to the the output object, if there are some.
         if (notesArr.length() > 0) {
-            ResponseHelper.put(amountsObj, "notes", notesArr);
+            ResponseHelper.put(outputObj, "notes", notesArr);
         }
+
+        ResponseHelper.put(rootObj, "output", outputObj);
     }
 
     @Override

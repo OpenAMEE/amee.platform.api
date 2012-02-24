@@ -48,57 +48,63 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
     @Override
     public void addReturnValues(ReturnValues returnValues) {
 
-        // Create an array of multiple amount objects.
-        JSONArray multipleAmountsArr = new JSONArray();
+        JSONObject outputObj = new JSONObject();
+
+        // Create an array of amount objects.
+        JSONArray amountsArr = new JSONArray();
         for (Map.Entry<String, ReturnValue> entry : returnValues.getReturnValues().entrySet()) {
 
-            // Create a multiple amount object.
-            JSONObject multipleAmountObj = new JSONObject();
+            // Create an amount object.
+            JSONObject amountObj = new JSONObject();
 
             String type = entry.getKey();
             ReturnValue returnValue = entry.getValue();
 
-            ResponseHelper.put(multipleAmountObj, "type", type);
-            ResponseHelper.put(multipleAmountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
-            ResponseHelper.put(multipleAmountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+            ResponseHelper.put(amountObj, "type", type);
+            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
+            ResponseHelper.put(amountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
 
             // Flag for default type.
-            ResponseHelper.put(multipleAmountObj, "default", type.equals(returnValues.getDefaultType()));
+            ResponseHelper.put(amountObj, "default", type.equals(returnValues.getDefaultType()));
 
             if (returnValue == null) {
-                ResponseHelper.put(multipleAmountObj, "value", JSONObject.NULL);
+                ResponseHelper.put(amountObj, "value", JSONObject.NULL);
             } else if (Double.isInfinite(returnValue.getValue())) {
-                ResponseHelper.put(multipleAmountObj, "value", "Infinity");
+                ResponseHelper.put(amountObj, "value", "Infinity");
             } else if (Double.isNaN(returnValue.getValue())) {
-                ResponseHelper.put(multipleAmountObj, "value", "NaN");
+                ResponseHelper.put(amountObj, "value", "NaN");
             } else {
-                ResponseHelper.put(multipleAmountObj, "value", returnValue.getValue());
+                ResponseHelper.put(amountObj, "value", returnValue.getValue());
             }
 
             // Add the object to the amounts array
-            multipleAmountsArr.put(multipleAmountObj);
+            amountsArr.put(amountObj);
         }
 
-        // Add the multiple amounts to the result object, if there are some.
-        if (multipleAmountsArr.length() > 0) {
-            ResponseHelper.put(rootObj, "amounts", multipleAmountsArr);
+        // Add the amounts to the output object, if there are some.
+        if (amountsArr.length() > 0) {
+            ResponseHelper.put(outputObj, "amounts", amountsArr);
         }
 
         // Create an array of note objects.
         JSONArray notesArr = new JSONArray();
         for (Note note : returnValues.getNotes()) {
+
             // Create the note object.
             JSONObject noteObj = new JSONObject();
             ResponseHelper.put(noteObj, "type", note.getType());
             ResponseHelper.put(noteObj, "value", note.getValue());
+
             // Add the note object to the notes array
             notesArr.put(noteObj);
         }
 
-        // Add the notes array to the the result object, if there are some.
+        // Add the notes array to the the output object, if there are some.
         if (notesArr.length() > 0) {
-            ResponseHelper.put(rootObj, "notes", notesArr);
+            ResponseHelper.put(outputObj, "notes", notesArr);
         }
+
+        ResponseHelper.put(rootObj, "output", outputObj);
     }
 
     @Override
