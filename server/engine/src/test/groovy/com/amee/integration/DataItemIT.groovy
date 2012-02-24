@@ -669,8 +669,14 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
 
             // Output amounts
-            assertEquals 1, response.data.amounts.size()
-            def amount = response.data.amounts[0]
+            def amount
+            if (version >= 3.6) {
+                assertEquals 1, response.data.output.amounts.size()
+                amount = response.data.output.amounts[0]
+            } else {
+                assertEquals 1, response.data.amounts.size()
+                amount = response.data.amounts[0]
+            }
             assertEquals 'CO2', amount.type
             assertEquals 'kg', amount.unit
             assertEquals 'year', amount.perUnit
@@ -678,9 +684,16 @@ class DataItemIT extends BaseApiTest {
             assertEquals "", 20.0, amount.value, 0.000001
 
             // Notes
-            assertEquals 1, response.data.notes.size()
-            assertEquals 'comment', response.data.notes[0].type
-            assertEquals 'This is a comment', response.data.notes[0].value
+            def note
+            if (version >= 3.6) {
+                assertEquals 1, response.data.output.notes.size()
+                note = response.data.output.notes[0]
+            } else {
+                assertEquals 1, response.data.notes.size()
+                note = response.data.notes[0]
+            }
+            assertEquals 'comment', note.type
+            assertEquals 'This is a comment', note.value
 
             // Input values
             assertEquals 3, response.data.values.size()
@@ -716,8 +729,8 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'OK', response.data.Status.text()
 
             // Output amounts
-            assertEquals 1, response.data.Amounts.Amount.size()
-            def amount = response.data.Amounts.Amount[0]
+            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            def amount = response.data.Output.Amounts.Amount[0]
             assertEquals 'CO2', amount.@type.text()
             assertEquals 'kg', amount.@unit.text()
             assertEquals 'year', amount.@perUnit.text()
@@ -725,9 +738,10 @@ class DataItemIT extends BaseApiTest {
             assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
 
             // Notes
-            assertEquals 1, response.data.Notes.size()
-            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
-            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+            assertEquals 1, response.data.Output.Notes.size()
+            def note = response.data.Output.Notes.Note[0]
+            assertEquals 'comment', note.@type.text()
+            assertEquals 'This is a comment', note.text()
 
             // Input values
             assertEquals 3, response.data.Values.Value.size()
@@ -761,8 +775,14 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
 
             // Output amounts
-            assertEquals 1, response.data.amounts.size()
-            def amount = response.data.amounts[0]
+            def amount
+            if (version >= 3.6) {
+                assertEquals 1, response.data.output.amounts.size()
+                amount = response.data.output.amounts[0]
+            } else {
+                assertEquals 1, response.data.amounts.size()
+                amount = response.data.amounts[0]
+            }
             assertEquals 'CO2', amount.type
             assertEquals 'kg', amount.unit
             assertEquals 'year', amount.perUnit
@@ -770,9 +790,16 @@ class DataItemIT extends BaseApiTest {
             assertEquals "", 240000.0, amount.value, 0.000001
 
             // Notes
-            assertEquals 1, response.data.notes.size()
-            assertEquals 'comment', response.data.notes[0].type
-            assertEquals 'This is a comment', response.data.notes[0].value
+            def note
+            if (version >= 3.6) {
+                assertEquals 1, response.data.output.notes.size()
+                note = response.data.output.notes[0]
+            } else {
+                assertEquals 1, response.data.notes.size()
+                note = response.data.notes[0]
+            }
+            assertEquals 'comment', note.type
+            assertEquals 'This is a comment', note.value
 
             // Input values
             assertEquals 3, response.data.values.size()
@@ -800,8 +827,8 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'OK', response.data.Status.text()
 
             // Output amounts
-            assertEquals 1, response.data.Amounts.Amount.size()
-            def amount = response.data.Amounts.Amount[0]
+            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            def amount = response.data.Output.Amounts.Amount[0]
             assertEquals 'CO2', amount.@type.text()
             assertEquals 'kg', amount.@unit.text()
             assertEquals 'year', amount.@perUnit.text()
@@ -809,9 +836,10 @@ class DataItemIT extends BaseApiTest {
             assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
 
             // Notes
-            assertEquals 1, response.data.Notes.size()
-            assertEquals 'comment', response.data.Notes.Note[0].@type.text()
-            assertEquals 'This is a comment', response.data.Notes.Note[0].text()
+            assertEquals 1, response.data.Output.Notes.size()
+            def note = response.data.Output.Notes.Note[0]
+            assertEquals 'comment', note.@type.text()
+            assertEquals 'This is a comment', note.text()
 
             // Input values
             assertEquals 3, response.data.Values.Value.size()
@@ -843,8 +871,15 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
-            assertEquals 2, response.data.amounts.size()
-            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.amounts)
+            
+            def amounts
+            if (version >= 3.6) {
+                amounts = response.data.output.amounts
+            } else {
+                amounts = response.data.amounts
+            }
+            assertEquals 2, amounts.size()
+            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(amounts)
         }
     }
 
