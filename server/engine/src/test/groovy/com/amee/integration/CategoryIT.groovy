@@ -693,7 +693,7 @@ class CategoryIT extends BaseApiTest {
                     contentType: JSON)
             assertEquals SUCCESS_OK.code, dataItemGet.status
             assertEquals 1, dataItemGet.data.item.values.size()
-            assertTrue(['10'].sort() == dataItemGet.data.item.values.collect {it.value}.sort())
+            assertTrue([10].sort() == dataItemGet.data.item.values.collect {it.value}.sort())
             assertTrue(['test_item_value_definition'].sort() == dataItemGet.data.item.values.collect {it.path}.sort())
 
             // Delete Item Definition.
