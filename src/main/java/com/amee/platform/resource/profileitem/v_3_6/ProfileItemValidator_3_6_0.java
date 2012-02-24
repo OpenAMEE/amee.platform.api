@@ -236,6 +236,14 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
             }
         }
     }
+    
+    protected void addNote(){
+    	allowedFields.add("note");
+    	add(new ValidationSpecification()
+    		.setName("note")
+    		.setMaxSize(Metadata.VALUE_MAX_SIZE)
+    		.setAllowEmpty(true));
+    }
 
     protected void addNote(){
     	allowedFields.add("note");

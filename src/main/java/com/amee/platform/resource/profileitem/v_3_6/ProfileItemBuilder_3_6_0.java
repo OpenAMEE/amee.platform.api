@@ -102,7 +102,6 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
         if (note || full) {
             renderer.addNote();
         }
-    }
 
     @Override
     public ProfileItemResource.Renderer getRenderer(RequestWrapper requestWrapper) {

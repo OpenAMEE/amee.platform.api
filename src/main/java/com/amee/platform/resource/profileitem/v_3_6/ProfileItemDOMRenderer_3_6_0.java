@@ -68,6 +68,11 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
     }
 
     @Override
+	public void addNote() {
+		profileItemElem.addContent(new Element("Note").setText(profileItem.getNote()));
+	}
+
+	@Override
     public void addName() {
         profileItemElem.addContent(new Element("Name").setText(profileItem.getName()));
     }

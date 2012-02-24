@@ -1,5 +1,13 @@
 package com.amee.platform.resource.datacategory.v_3_3;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
@@ -8,16 +16,7 @@ import com.amee.domain.data.ItemDefinition;
 import com.amee.platform.resource.DataCategoryEditor;
 import com.amee.platform.resource.ItemDefinitionEditor;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
-import com.amee.service.auth.AuthenticationService;
-import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @Scope("prototype")

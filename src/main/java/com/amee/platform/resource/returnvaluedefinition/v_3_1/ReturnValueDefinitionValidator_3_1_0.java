@@ -48,6 +48,7 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
     public void initialise() {
         addType();
         addValueDefinition();
+        addName();
         addUnit();
         addPerUnit();
         addDefaultType();
@@ -81,6 +82,14 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
                             }
                         }));
     }
+
+	private void addName() {
+		allowedFields.add("name");
+		add(new ValidationSpecification()
+				.setName("name")
+				.setMinSize(ReturnValueDefinition.NAME_MIN_SIZE)
+				.setMaxSize(ReturnValueDefinition.NAME_MAX_SIZE));
+	}
 
     /**
      * Configure the validator for the unit property of the DataItem.

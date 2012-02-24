@@ -43,6 +43,11 @@ public class ReturnValueDefinitionJSONRenderer_3_4_0 implements ReturnValueDefin
     public void addBasic() {
         ResponseHelper.put(returnValueDefinitionObj, "uid", returnValueDefinition.getUid());
     }
+    
+    @Override
+    public void addName() {
+    	ResponseHelper.put(returnValueDefinitionObj, "name", returnValueDefinition.getName());
+    }
 
     @Override
     public void addType() {

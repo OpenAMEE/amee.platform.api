@@ -69,6 +69,11 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
     }
 
     @Override
+	public void addNote() {
+		ResponseHelper.put(profileItemObj, "note", profileItem.getNote());
+	}
+
+	@Override
     public void addName() {
         ResponseHelper.put(profileItemObj, "name", profileItem.getName());
     }

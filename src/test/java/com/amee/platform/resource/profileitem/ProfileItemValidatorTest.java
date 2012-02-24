@@ -38,7 +38,7 @@ public class ProfileItemValidatorTest {
 
     @Mock
     private ItemDefinition mockItemDefinition;
-
+    
     @Mock MetadataService mockMetadataService;
 
     @Before
@@ -96,6 +96,27 @@ public class ProfileItemValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
+	
+	@Test
+	public void testEndDateBeforeStartDate(){
+		ProfileItem bad = new ProfileItem();
+		bad.setStartDate(new Date());
+		bad.setEndDate(new Date(bad.getStartDate().getTime() - 1));
+		bad.setItemDefinition(mockItemDefinition);
+		
+		BindException errorsBad = new BindException(bad, "bad");
+		
+		ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
+		validator.setProfileItemService(mockProfileItemService);
+		validator.setObject(bad);
+		validator.initialise();
+		
+		when(mockProfileItemService.isUnique(bad)).thenReturn(true);
+		
+		validator.validate(bad, errorsBad);
+		
+		assertTrue("Object should fail validation", errorsBad.hasErrors());	
+	}
 
 	@Test
 	public void testEmptyName(){
@@ -197,7 +218,7 @@ public class ProfileItemValidatorTest {
         validator.validate(bad, errorsBad);
         assertTrue("Object should fail validation", errorsBad.hasErrors());
     }
-
+	
 	@Test
 	public void testDurationTooLong(){
 		ProfileItem bad = new ProfileItem();
@@ -279,7 +300,7 @@ public class ProfileItemValidatorTest {
 		
 		assertTrue("Object should not fail validation", !errorsBad.hasErrors());
 	}	
-    
+
     private ItemValueDefinition getItemValueDefinition(String name, String path, ValueDefinition valueDefinition) {
         ItemValueDefinition ivd = new ItemValueDefinition();
         ivd.setName(name);
