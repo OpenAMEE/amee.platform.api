@@ -1,10 +1,11 @@
 package com.amee.integration
 
-import groovyx.net.http.HttpResponseException
-import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import static org.restlet.data.Status.*
+import groovyx.net.http.HttpResponseException
+
+import org.junit.Test
 
 /**
  * Tests for the Data Item API.
@@ -22,7 +23,7 @@ class DataItemIT extends BaseApiTest {
 
     static def oneGasItemValueValues = [
             '1',
-            '188',
+            188,
             'BRE/MTP/dgen/defra 2007',
             'Gas']
 
@@ -34,7 +35,7 @@ class DataItemIT extends BaseApiTest {
 
     static def tenElectricItemValueValues = [
             '10',
-            '620',
+            620,
             'BRE/MTP/dgen/defra 2007',
             'Electric']
 
@@ -111,8 +112,13 @@ class DataItemIT extends BaseApiTest {
             assertTrue responseGet.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGet.data.status
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
-            assertEquals 4, responseGet.data.item.values.size()
-            assertTrue(['10', 'Methane', '', '200'].sort() == responseGet.data.item.values.collect {it.value}.sort())
+            assertEquals 4, responseGet.data.item.values.size();
+            Object[] list = responseGet.data.item.values.collect{it.value}.sort()
+            assert '' == list[0]
+            assert 200 == list[1]
+            assert '10' == list[2]
+            assert 'Methane' == list[3]
+			assert ['', 200, '10', 'Methane'] == responseGet.data.item.values.collect{it.value}.sort()
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort())
 
             // Sleep a little to give the index a chance to be updated.
@@ -413,8 +419,16 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'Cooking', response.data.item.itemDefinition.name
         assertEquals '/home/appliances/cooking/004CF30590A5', response.data.item.fullPath
         assertEquals oneGasItemValueValues.size(), response.data.item.values.size()
-        assertTrue(oneGasItemValueValues == response.data.item.values.collect {it.value})
-        assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path})
+        if(version >= 3.4){
+			assert oneGasItemValueValues == response.data.item.values.collect{it.value}
+		}else{
+			assert oneGasItemValueValues[0] == response.data.item.values.collect{it.value}[0]
+			// Versions before 3.4 expect all JSON values to be Strings, so a conversion is needed for non-string types
+			assert oneGasItemValueValues[1].toString() == response.data.item.values.collect{it.value}[1].toString()
+			assert oneGasItemValueValues[2] == response.data.item.values.collect{it.value}[2]
+			assert oneGasItemValueValues[3] == response.data.item.values.collect{it.value}[3]
+		}
+        assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path});
     }
 
     /**
@@ -436,14 +450,18 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.2) {
             assertEquals '1, Gas', response.data.Item.Label.text()
         }
-        assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text()
-        assertEquals 'Cooking', response.data.Item.CategoryWikiName.text()
-        assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text()
-        assertEquals '/home/appliances/cooking/004CF30590A5', response.data.Item.FullPath.text()
-        def allValues = response.data.Item.Values.Value
-        assertEquals oneGasItemValueValues.size(), allValues.size()
-        assertTrue(oneGasItemValueValues == allValues.Value*.text())
-        assertTrue(oneGasItemValuePaths == allValues.Path*.text())
+        assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text();
+        assertEquals 'Cooking', response.data.Item.CategoryWikiName.text();
+        assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text();
+        assertEquals '/home/appliances/cooking/004CF30590A5', response.data.Item.FullPath.text();
+        def allValues = response.data.Item.Values.Value;
+        assertEquals oneGasItemValueValues.size(), allValues.size();
+		assert oneGasItemValueValues[0] == allValues.Value[0].text()
+		// XML is all text, but oneGasItemValueValues contains an integer for testing json datatypes
+		assert oneGasItemValueValues[1].toString() == allValues.Value[1].text()
+		assert oneGasItemValueValues[2] == allValues.Value[2].text()
+		assert oneGasItemValueValues[3] == allValues.Value[3].text()
+        assert oneGasItemValuePaths == allValues.Path*.text()
     }
 
     /**
@@ -471,8 +489,15 @@ class DataItemIT extends BaseApiTest {
         assertEquals 'Cooking', response.data.item.itemDefinition.name
         assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.item.fullPath
         assertEquals tenElectricItemValueValues.size(), response.data.item.values.size()
-        assertTrue(tenElectricItemValueValues == response.data.item.values.collect {it.value})
-        assertTrue(tenElectricItemValuePaths == response.data.item.values.collect {it.path})
+		if(version >= 3.4){
+			assert tenElectricItemValueValues == response.data.item.values.collect{it.value}
+		}else{
+			assert tenElectricItemValueValues[0] == response.data.item.values.collect {it.value}[0]
+			assert tenElectricItemValueValues[1] == Integer.valueOf(response.data.item.values.collect {it.value}[1])
+			assert tenElectricItemValueValues[2] == response.data.item.values.collect {it.value}[2]
+			assert tenElectricItemValueValues[3] == response.data.item.values.collect {it.value}[3]
+		}
+        assert tenElectricItemValuePaths == response.data.item.values.collect {it.path}
     }
 
     /**
@@ -500,7 +525,11 @@ class DataItemIT extends BaseApiTest {
         assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.Item.FullPath.text()
         def allValues = response.data.Item.Values.Value
         assertEquals tenElectricItemValueValues.size(), allValues.size()
-        assertTrue(tenElectricItemValueValues == allValues.Value*.text())
+		assert tenElectricItemValueValues[0] == allValues.Value[0].text()
+		// in XML everything is text, but the tenElectricItemValueValues has an Integer to test the JSON type support
+		assert tenElectricItemValueValues[1].toString() == allValues.Value[1].text()
+		assert tenElectricItemValueValues[2] == allValues.Value[2].text()
+		assert tenElectricItemValueValues[3] == allValues.Value[3].text()
         assertTrue(tenElectricItemValuePaths == allValues.Path*.text())
     }
 
@@ -558,17 +587,17 @@ class DataItemIT extends BaseApiTest {
 
             // Get the DataItem and check values.
             def responseGet = client.get(
-                    path: "/${version}/categories/Cooking/items/aTestDataItem;full",
+                    path: "/${version}/categories/Cooking/items/aTestDataItem;full",	
                     contentType: JSON)
             assertEquals SUCCESS_OK.code, responseGet.status
             println responseGet.data
             assertEquals 'Test Name', responseGet.data.item.name
             assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
             assertEquals 'Test Provenance', responseGet.data.item.provenance
-            assertEquals 4, responseGet.data.item.values.size()
-            assertTrue(['20', 'Petrol', '', '123'].sort() == responseGet.data.item.values.collect {it.value}.sort())
-            assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort())
-
+            assert 4 == responseGet.data.item.values.size()
+			assert ['', 123, '20', 'Petrol'] == responseGet.data.item.values.collect{it.value}.sort()
+            assert ['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort()
+			
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem")
 
@@ -894,9 +923,9 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithValues() {
         setAdminUser()
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', 'not_an_integer', 3.4)
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '1.1', 3.4); // Not an integer either.
-        updateDataItemFieldJson('values.numberOfPeople', 'typeMismatch', '', 3.4)
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
+        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
         updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', 'not_a_double', 3.4)
         updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', '', 3.4)
         updateDataItemFieldJson('values.fuel', 'long', String.randomString(32768), 3.4)

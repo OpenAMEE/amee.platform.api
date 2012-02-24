@@ -15,8 +15,8 @@ set.AMEE_INSTANCE_NAME=local
 # Log levels
 set.LOG_LEVEL=DEBUG
 set.DEFAULT_LOG_LEVEL=INFO
-set.MAILLOG=true
-set.AIRBRAKE=true
+set.MAILLOG=false
+set.AIRBRAKE=false
 
 # Extra Java Parameters
 wrapper.java.additional.100=-Xdebug
