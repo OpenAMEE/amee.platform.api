@@ -54,7 +54,8 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                     body: ['type': 'CO2',
                             'unit': 'kg',
                             'perUnit': 'month',
-                            'valueDefinition': '45433E48B39F'],
+                            'valueDefinition': '45433E48B39F',
+							'name': 'Test Return Value Definition'],
                     requestContentType: URLENC,
                     contentType: JSON)
 
@@ -186,6 +187,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             assertEquals 'kg', response.data.returnValueDefinition.unit
             assertEquals 'month', response.data.returnValueDefinition.perUnit
             assertEquals 'true', response.data.returnValueDefinition['default']
+			assert 'Test Return Value Definition' == response.data.returnValueDefinition.name
             assertEquals '11D3548466F2', response.data.returnValueDefinition.itemDefinition.uid
             assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name
             assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid
@@ -224,6 +226,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             assertEquals 'kg', response.data.ReturnValueDefinition.Unit.text()
             assertEquals 'month', response.data.ReturnValueDefinition.PerUnit.text()
             assertEquals 'true', response.data.ReturnValueDefinition.Default.text()
+			assert 'Test Return Value Definition' == response.data.ReturnValueDefinition.Name.text()
             assertEquals '11D3548466F2', response.data.ReturnValueDefinition.ItemDefinition.@uid.text()
             assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text()
             assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text()
@@ -306,6 +309,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                             'unit': 'kg',
                             'perUnit': 'day',
                             'valueDefinition': '45433E48B39F',
+							'name': 'Test Return Value Definition',
                             'defaultType': true],
                     requestContentType: URLENC,
                     contentType: JSON)
