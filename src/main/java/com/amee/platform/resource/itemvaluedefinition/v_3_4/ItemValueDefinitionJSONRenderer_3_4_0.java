@@ -61,26 +61,27 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
 
     @Override
     public void addValue() {
-    	// JSON supports boolean, number and text types (it supports more, but these are relevant here)
-    	ValueType type = itemValueDefinition.getValueDefinition().getValueType();
-    	switch(type){
-    	case BOOLEAN:
-    		Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
-    		ResponseHelper.put(itemValueDefinitionObj, "value", booleanValue);
-    		break;
-    	case DOUBLE:
-    		Double doubleValue = Double.valueOf(itemValueDefinition.getValue());
-    		ResponseHelper.put(itemValueDefinitionObj, "value", doubleValue);
-    		break;
-    	case INTEGER:
-    		Integer integerValue = Integer.valueOf(itemValueDefinition.getValue());
-    		ResponseHelper.put(itemValueDefinitionObj, "value", integerValue);
-    		break;
-    	// Our default is to use a String
-    	default:
-    		ResponseHelper.put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
-    		break;
-    	}
+        // JSON supports boolean, number and text types (it supports more, but
+        // these are relevant here)
+        ValueType type = itemValueDefinition.getValueDefinition().getValueType();
+        switch (type) {
+        case BOOLEAN:
+            Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
+            ResponseHelper.put(itemValueDefinitionObj, "value", booleanValue);
+            break;
+        case DOUBLE:
+            Double doubleValue = Double.valueOf(itemValueDefinition.getValue());
+            ResponseHelper.put(itemValueDefinitionObj, "value", doubleValue);
+            break;
+        case INTEGER:
+            Integer integerValue = Integer.valueOf(itemValueDefinition.getValue());
+            ResponseHelper.put(itemValueDefinitionObj, "value", integerValue);
+            break;
+        // Our default is to use a String
+        default:
+            ResponseHelper.put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
+            break;
+        }
     }
 
     @Override
