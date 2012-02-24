@@ -1,5 +1,21 @@
 package com.amee.domain.item.profile;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.joda.time.Duration;
+
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.IAMEEEntityReference;
@@ -13,14 +29,6 @@ import com.amee.domain.profile.CO2CalculationService;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.joda.time.Duration;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "PROFILE_ITEM")
@@ -390,5 +398,14 @@ public class ProfileItem extends BaseItem {
     
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+    
+    public String getNote(){
+    	return getMetadataValue("note");
+    }
+    
+    public void setNote(String note){
+    	getOrCreateMetadata("note").setValue(note);
+        onModify();
     }
 }
