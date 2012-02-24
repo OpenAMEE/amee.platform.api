@@ -94,26 +94,26 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
     public void newValue(BaseItemValue itemValue) {
         JSONObject valueObj = new JSONObject();
         ResponseHelper.put(valueObj, "path", itemValue.getPath());
-        
+
         if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
-        	
-        	// Format JSON response value as number if possible
-            try{
-            	Double doubleValue = Double.valueOf(itemValue.getValueAsString());
-            	if(doubleValue == null){
-            		ResponseHelper.put(valueObj, "value", JSONObject.NULL);
-            	}else if(Double.isInfinite(doubleValue)){
-            		ResponseHelper.put(valueObj, "value", "Infinity");
-            	}else if(Double.isNaN(doubleValue)){
-            		ResponseHelper.put(valueObj, "value", "NaN");
-            	}else{
-            		ResponseHelper.put(valueObj, "value", doubleValue);
-            	}
-            }catch(NumberFormatException e){
-            	// Not a numeric value, return as a String
-            	ResponseHelper.put(valueObj, "value", itemValue.getValueAsString());
+
+            // Format JSON response value as number if possible
+            try {
+                Double doubleValue = Double.valueOf(itemValue.getValueAsString());
+                if (doubleValue == null) {
+                    ResponseHelper.put(valueObj, "value", JSONObject.NULL);
+                } else if (Double.isInfinite(doubleValue)) {
+                    ResponseHelper.put(valueObj, "value", "Infinity");
+                } else if (Double.isNaN(doubleValue)) {
+                    ResponseHelper.put(valueObj, "value", "NaN");
+                } else {
+                    ResponseHelper.put(valueObj, "value", doubleValue);
+                }
+            } catch (NumberFormatException e) {
+                // Not a numeric value, return as a String
+                ResponseHelper.put(valueObj, "value", itemValue.getValueAsString());
             }
-        	
+
             NumberValue nv = (NumberValue) itemValue;
             if (nv.hasUnit()) {
                 ResponseHelper.put(valueObj, "unit", nv.getUnit().toString());
@@ -122,8 +122,8 @@ public class DataItemJSONRenderer_3_2_0 implements DataItemResource.Renderer {
                     ResponseHelper.put(valueObj, "compoundUnit", nv.getCompoundUnit().toString());
                 }
             }
-        }else{
-        	ResponseHelper.put(valueObj, "value", itemValue.getValueAsString());
+        } else {
+            ResponseHelper.put(valueObj, "value", itemValue.getValueAsString());
         }
         ResponseHelper.put(valueObj, "history", itemValue.isHistoryAvailable());
         valuesArr.put(valueObj);
