@@ -64,23 +64,29 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
         // JSON supports boolean, number and text types (it supports more, but
         // these are relevant here)
         ValueType type = itemValueDefinition.getValueDefinition().getValueType();
-        switch (type) {
-        case BOOLEAN:
-            Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
-            ResponseHelper.put(itemValueDefinitionObj, "value", booleanValue);
-            break;
-        case DOUBLE:
-            Double doubleValue = Double.valueOf(itemValueDefinition.getValue());
-            ResponseHelper.put(itemValueDefinitionObj, "value", doubleValue);
-            break;
-        case INTEGER:
-            Integer integerValue = Integer.valueOf(itemValueDefinition.getValue());
-            ResponseHelper.put(itemValueDefinitionObj, "value", integerValue);
-            break;
-        // Our default is to use a String
-        default:
+        String value = itemValueDefinition.getValue();
+        if(ValueType.TEXT.equals(type)){
             ResponseHelper.put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
-            break;
+        }else{
+            // Non-text values that are represented here by the empty string should be null in JSON
+            if(value == null || "".equals(value)){
+                ResponseHelper.put(itemValueDefinitionObj, "value", JSONObject.NULL);
+            }else{
+                switch (type) {
+                case BOOLEAN:
+                    Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
+                    ResponseHelper.put(itemValueDefinitionObj, "value", booleanValue);
+                    break;
+                case DOUBLE:
+                    Double doubleValue = Double.valueOf(itemValueDefinition.getValue());
+                    ResponseHelper.put(itemValueDefinitionObj, "value", doubleValue);
+                    break;
+                case INTEGER:
+                    Integer integerValue = Integer.valueOf(itemValueDefinition.getValue());
+                    ResponseHelper.put(itemValueDefinitionObj, "value", integerValue);
+                    break;
+                }
+            }
         }
     }
 
