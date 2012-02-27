@@ -2,6 +2,7 @@ package com.amee.smoke.v3
 
 import static groovyx.net.http.ContentType.URLENC
 
+import org.junit.Ignore;
 import org.junit.Test
 
 import com.amee.smoke.BaseSmokeTest
@@ -10,6 +11,7 @@ class ProfileSmokeTest extends BaseSmokeTest {
 
     private static final String note = "A man, a plan, a canal - Panama!"
     
+    @Ignore("v3 Profile functionality not yet live")
     @Test
     void testProfileRequests(){
         // Create a profile
