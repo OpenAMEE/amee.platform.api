@@ -52,7 +52,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
                     body: ['valueDefinition': '45433E48B39F',
                             'name': 'test',
                             'path': 'foo',
-                            'value': 'true',
+                            'value': 1,
                             'choices': 'true,false',
                             'fromProfile': 'true',
                             'fromData': 'true',
@@ -76,7 +76,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals 'OK', responseGet.data.status
             assertEquals 'test', responseGet.data.itemValueDefinition.name
             assertEquals 'foo', responseGet.data.itemValueDefinition.path
-            assertEquals 'true', responseGet.data.itemValueDefinition.value
+            assertEquals 1, responseGet.data.itemValueDefinition.value
             assertEquals 'true,false', responseGet.data.itemValueDefinition.choices
             assertTrue responseGet.data.itemValueDefinition.fromProfile
             assertTrue responseGet.data.itemValueDefinition.fromData

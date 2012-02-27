@@ -78,7 +78,7 @@ class DataItemValueIT extends BaseApiTest {
             assertEquals 'application/json', responseGetDIV.contentType
             assertTrue responseGetDIV.data instanceof net.sf.json.JSON
             assertEquals 'OK', responseGetDIV.data.status
-            assertEquals "10", responseGetDIV.data.value.value
+            assertEquals 10, responseGetDIV.data.value.value
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
@@ -301,7 +301,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForDefault() {
-        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', null)
+        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', null)
     }
 
     /**
@@ -309,7 +309,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForCurrent() {
-        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT')
+        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
     }
 
     /**
@@ -317,7 +317,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithStartDateJustBeforeNextStartDate() {
-        getDataItemValues('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
+        getDataItemValues('DD6A1E4E829B', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
     }
 
     /**
@@ -325,7 +325,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithExactStartDate() {
-        getDataItemValues('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
+        getDataItemValues('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
     }
 
     /**
@@ -333,7 +333,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithInBetweenStartDate() {
-        getDataItemValues('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
+        getDataItemValues('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
     }
 
     /**
@@ -341,7 +341,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForFirstDate() {
-        getDataItemValues('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
+        getDataItemValues('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
     }
 
     /**
@@ -349,7 +349,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForLastDate() {
-        getDataItemValues('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
+        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'LAST'); // The end of unix time.
     }
 
     /**
@@ -380,10 +380,10 @@ class DataItemValueIT extends BaseApiTest {
      */
     def getDataItemValues(uid, value, actualStartDate, queryStartDate) {
         // Test the values within the DataItem values resource.
-        versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, true) }
+        versions.each { version -> getDataItemValuesJson(version, uid, 0D+value, actualStartDate, queryStartDate, true) }
         versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, true) }
         // Test the values embedded within the DataItem resource itself.
-        versions.each { version -> getDataItemValuesJson(version, uid, value, actualStartDate, queryStartDate, false) }
+        versions.each { version -> getDataItemValuesJson(version, uid, 0D+value, actualStartDate, queryStartDate, false) }
         versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, false) }
     }
 
@@ -439,7 +439,7 @@ class DataItemValueIT extends BaseApiTest {
             if (testValuesResource) {
                 assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.@uid*.text().sort()
             }
-            assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.Value*.text().sort()
+            assert [value+"", 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.Value*.text().sort()
             if (testValuesResource) {
                 assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort()
             }
@@ -580,7 +580,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForCurrent() {
-        getDataItemValue('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'CURRENT')
+        getDataItemValue('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
     }
 
     /**
@@ -588,7 +588,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithStartDateJustBeforeNextStartDate() {
-        getDataItemValue('DD6A1E4E829B', '0.74639', '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
+        getDataItemValue('DD6A1E4E829B', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
     }
 
     /**
@@ -596,7 +596,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithExactStartDate() {
-        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
+        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
     }
 
     /**
@@ -604,7 +604,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithInBetweenStartDate() {
-        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
+        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
     }
 
     /**
@@ -612,7 +612,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForFirstDate() {
-        getDataItemValue('B3823E43A635', '0.8199856', '1970-01-01T00:00:00Z', 'FIRST')
+        getDataItemValue('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST')
     }
 
     /**
@@ -620,7 +620,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForLastDate() {
-        getDataItemValue('289CCD5394AC', '0.81999', '2006-01-01T00:00:00Z', 'LAST')
+        getDataItemValue('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'LAST')
     }
 
     /**
@@ -628,7 +628,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueByUid() {
-        getDataItemValue('387C597FF2C4', '0.76426', '2002-01-01T00:00:00Z', '387C597FF2C4')
+        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '387C597FF2C4')
     }
 
     /**
@@ -679,7 +679,7 @@ class DataItemValueIT extends BaseApiTest {
             assert 'massCO2PerEnergy' == itemValue.Path.text()
             assert itemValue.@history.text()
             assert uid == itemValue.@uid.text()
-            assert value == itemValue.Value.text()
+            assert ""+value == itemValue.Value.text()
             assert startDate == itemValue.StartDate.text()
             assert 'kg' == itemValue.Unit.text()
             assert 'kWh' == itemValue.PerUnit.text()
@@ -818,7 +818,7 @@ class DataItemValueIT extends BaseApiTest {
                     contentType: JSON)
             assertEquals SUCCESS_OK.code, responseAfter.status
             def valueAfter = responseAfter.data.value.value
-            assertEquals valueAfter, valueBefore
+            assert valueAfter == valueBefore
         }
     }
 }
