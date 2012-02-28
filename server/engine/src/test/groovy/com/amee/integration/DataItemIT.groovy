@@ -673,13 +673,14 @@ class DataItemIT extends BaseApiTest {
             if (version >= 3.6) {
                 assertEquals 1, response.data.output.amounts.size()
                 amount = response.data.output.amounts[0]
+                assertEquals 'kg/year', amount.unit
             } else {
                 assertEquals 1, response.data.amounts.size()
                 amount = response.data.amounts[0]
+                assertEquals 'kg', amount.unit
+                assertEquals 'year', amount.perUnit
             }
             assertEquals 'CO2', amount.type
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
             assertEquals true, amount.default
             assertEquals "", 20.0, amount.value, 0.000001
 
@@ -696,12 +697,21 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'This is a comment', note.value
 
             // Input values
-            assertEquals 3, response.data.values.size()
-            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
-            assertNotNull itemValue
+            def itemValue
+            if (version >= 3.6) {
+                assertEquals 3, response.data.input.values.size()
+                itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
+                assertNotNull itemValue
+                assertEquals 'user', itemValue.source
+            } else {
+                assertEquals 3, response.data.values.size()
+                itemValue = response.data.values.find { it.name == 'energyPerTime' }
+                assertNotNull itemValue
+            }
             assertEquals '10', itemValue.value
             assertEquals 'kWh', itemValue.unit
             assertEquals 'year', itemValue.perUnit
+
         }
     }
 
@@ -733,13 +743,14 @@ class DataItemIT extends BaseApiTest {
             if (version >= 3.6) {
                 assertEquals 1, response.data.Output.Amounts.Amount.size()
                 amount = response.data.Output.Amounts.Amount[0]
+                assertEquals 'kg/year', amount.@unit.text()
             } else {
                 assertEquals 1, response.data.Amounts.Amount.size()
                 amount = response.data.Amounts.Amount[0]
+                assertEquals 'kg', amount.@unit.text()
+                assertEquals 'year', amount.@perUnit.text()
             }
             assertEquals 'CO2', amount.@type.text()
-            assertEquals 'kg', amount.@unit.text()
-            assertEquals 'year', amount.@perUnit.text()
             assertEquals 'true', amount.@default.text()
             assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
 
@@ -756,9 +767,17 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'This is a comment', note.text()
 
             // Input values
-            assertEquals 3, response.data.Values.Value.size()
-            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull itemValue
+            def itemValue
+            if (version >= 3.6) {
+                assertEquals 3, response.data.Input.Values.Value.size()
+                itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull itemValue
+                assertEquals 'user', itemValue.@source.text()
+            } else {
+                assertEquals 3, response.data.Values.Value.size()
+                itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull itemValue
+            }
             assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
             assertEquals 'kWh', itemValue.@unit.text()
             assertEquals 'year', itemValue.@perUnit.text()
@@ -791,13 +810,14 @@ class DataItemIT extends BaseApiTest {
             if (version >= 3.6) {
                 assertEquals 1, response.data.output.amounts.size()
                 amount = response.data.output.amounts[0]
+                assertEquals 'kg/year', amount.unit
             } else {
                 assertEquals 1, response.data.amounts.size()
                 amount = response.data.amounts[0]
+                assertEquals 'kg', amount.unit
+                assertEquals 'year', amount.perUnit
             }
             assertEquals 'CO2', amount.type
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
             assertEquals true, amount.default
             assertEquals "", 240000.0, amount.value, 0.000001
 
@@ -814,9 +834,17 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'This is a comment', note.value
 
             // Input values
-            assertEquals 3, response.data.values.size()
-            def itemValue = response.data.values.find { it.name == 'energyPerTime' }
-            assertNotNull itemValue
+            def itemValue
+            if (version >= 3.6) {
+                assertEquals 3, response.data.input.values.size()
+                itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
+                assertNotNull itemValue
+                assertEquals "user", itemValue.source
+            } else {
+                assertEquals 3, response.data.values.size()
+                itemValue = response.data.values.find { it.name == 'energyPerTime' }
+                assertNotNull itemValue
+            }
             assertEquals '10', itemValue.value
             assertEquals 'MWh', itemValue.unit
             assertEquals 'month', itemValue.perUnit
@@ -843,13 +871,14 @@ class DataItemIT extends BaseApiTest {
             if (version >= 3.6) {
                 assertEquals 1, response.data.Output.Amounts.Amount.size()
                 amount = response.data.Output.Amounts.Amount[0]
+                assertEquals 'kg/year', amount.@unit.text()
             } else {
                 assertEquals 1, response.data.Amounts.Amount.size()
                 amount = response.data.Amounts.Amount[0]
+                assertEquals 'kg', amount.@unit.text()
+                assertEquals 'year', amount.@perUnit.text()
             }
             assertEquals 'CO2', amount.@type.text()
-            assertEquals 'kg', amount.@unit.text()
-            assertEquals 'year', amount.@perUnit.text()
             assertEquals 'true', amount.@default.text()
             assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
 
@@ -866,9 +895,17 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'This is a comment', note.text()
 
             // Input values
-            assertEquals 3, response.data.Values.Value.size()
-            def itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull itemValue
+            def itemValue
+            if (version >= 3.6) {
+                assertEquals 3, response.data.Input.Values.Value.size()
+                itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull itemValue
+                assertEquals "user", itemValue.@source.text()
+            } else {
+                assertEquals 3, response.data.Values.Value.size()
+                itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull itemValue
+            }
             assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
             assertEquals 'MWh', itemValue.@unit.text()
             assertEquals 'month', itemValue.@perUnit.text()
