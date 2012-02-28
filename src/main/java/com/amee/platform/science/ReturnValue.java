@@ -54,6 +54,19 @@ public class ReturnValue {
     public String getUnit() {
         return unit;
     }
+    
+    public String getCompoundUnit() {
+        if (unit.isEmpty()) {
+            return "";
+        }
+        if (perUnit.isEmpty()) {
+            return unit;
+        }
+
+        AmountUnit unit = AmountUnit.valueOf(getUnit());
+        AmountPerUnit perUnit = AmountPerUnit.valueOf(getPerUnit());
+        return AmountCompoundUnit.valueOf(unit, perUnit).toString();
+    }
 
     public String getPerUnit() {
         return perUnit;
