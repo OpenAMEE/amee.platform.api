@@ -85,7 +85,7 @@ fi
 
 logMessage checking snapshots are up to date
 
-latest=`ls -dt ${data_dir} snapshot.[0-9]* | head -n 1`
+latest=`ls -dt ${data_dir}/snapshot.[0-9]* | head -n 1 | xargs -n1 basename`
 
 for i in `find ${data_dir} ${maxdepth} -name 'snapshot.current.*' -print`
 do
