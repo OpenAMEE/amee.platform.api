@@ -49,7 +49,7 @@ done
 
 [[ -n $debug ]] && set -x
 
-if [[ -z ${days} && -z ${num} ]]
+if [[ -z ${email} ]]
 then
     echo "$USAGE"
     exit 1
@@ -75,29 +75,26 @@ logMessage command: $0 $@
 # trap control-c
 trap 'echo "caught INT/TERM, exiting now";logExit aborted 13' INT TERM
 
-if [[ -n ${email} ]]
-then
-    #is maxdepth supported?
-    find ${data_dir} -maxdepth 0 -name foobar >/dev/null 2>&1
-    if [ $? = 0 ]; then
-        maxdepth="-maxdepth 1"
-    else
-        unset maxdepth
-    fi
-
-    logMessage checking snapshots are up to date
-
-    latest=`ls -dt ${data_dir} snapshot.[0-9]* | head -n 1`
-
-    for i in `find ${data_dir} ${maxdepth} -name 'snapshot.current.*' -print`
-    do
-        current=`cat ${i} | cut -d '/' -f 7`
-        if [[ "$latest" != "$current" ]]; then
-            logMessage snapshot is not up to date
-            logExit failed 2
-        fi
-    done
+#is maxdepth supported?
+find ${data_dir} -maxdepth 0 -name foobar >/dev/null 2>&1
+if [ $? = 0 ]; then
+    maxdepth="-maxdepth 1"
+else
+    unset maxdepth
 fi
+
+logMessage checking snapshots are up to date
+
+latest=`ls -dt ${data_dir} snapshot.[0-9]* | head -n 1`
+
+for i in `find ${data_dir} ${maxdepth} -name 'snapshot.current.*' -print`
+do
+    current=`cat ${i} | cut -d '/' -f 7`
+    if [[ "$latest" != "$current" ]]; then
+        logMessage snapshot is not up to date
+        logExit failed 2
+    fi
+done
 
 logExit ended 0
 
