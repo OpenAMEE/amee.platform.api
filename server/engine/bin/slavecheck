@@ -29,9 +29,6 @@ do
     m)
         email="$OPTARG"
         ;;
-    N)
-        num="$OPTARG"
-        ;;
     d)
         data_dir="$OPTARG"
         ;;
