@@ -41,6 +41,19 @@ public class DataItem extends BaseItem {
     @Transient
     private Object values;
 
+    /**
+     * A temporary and transient object for use in validation. See the getUnits() method below.
+     */
+    @Transient
+    private Object units;
+
+    /**
+     * A temporary and transient object for use in validation. See the getPerUnits() method below.
+     * This bean has the same structure as the units bean.
+     */
+    @Transient
+    private Object perUnits;
+
     public DataItem() {
         super();
     }
@@ -96,7 +109,7 @@ public class DataItem extends BaseItem {
     /**
      * Returns a temporary and transient JavaBean related to the Item Values associated with this
      * DataItem. The bean is intended as a target for property binding during input validation within
-     * PUT and POST requests. See {@link ItemDefinition} getDataItemValuesBean() for more details
+     * PUT and POST requests. See {@link ItemDefinition#getDataItemValuesBean()} for more details
      * on how this bean is created.
      *
      * @return
@@ -106,6 +119,36 @@ public class DataItem extends BaseItem {
             values = getItemDefinition().getDataItemValuesBean();
         }
         return values;
+    }
+
+    /**
+     * Returns a temporary and transient JavaBean related to the units associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link ItemDefinition#getDataItemUnitsBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getUnits() {
+        if (units == null) {
+            units = getItemDefinition().getProfileItemUnitsBean();
+        }
+        return units;
+    }
+
+    /**
+     * Returns a temporary and transient JavaBean related to the perUnits associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link ItemDefinition#getDataItemUnitsBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getPerUnits() {
+        if (perUnits == null) {
+            perUnits = getItemDefinition().getProfileItemUnitsBean();
+        }
+        return perUnits;
     }
 
     /**

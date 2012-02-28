@@ -177,6 +177,25 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
 
     /**
      * Returns a JavaBean that contains fields and setter/getter methods conforming to
+     * the 'fromData' ItemValueDefinitions of this ItemDefinition. The returned object is temporary
+     * and transient. It is only intended for use with the validation logic for incoming POST and PUT
+     * requests. The bean does not have a permanent class and instead uses a dynamic class produced by
+     * a CGLIB {@link BeanGenerator}.
+     *
+     * @return A JavaBean matching the above description
+     */
+    public Object getDataItemUnitsBean() {
+        BeanGenerator bg = new BeanGenerator();
+        for (ItemValueDefinition ivd : getActiveItemValueDefinitions()) {
+            if (ivd.isFromData()) {
+                bg.addProperty(ivd.getPath(), String.class);
+            }
+        }
+        return bg.create();
+    }
+
+    /**
+     * Returns a JavaBean that contains fields and setter/getter methods conforming to
      * the 'fromProfile' ItemValueDefinitions of this ItemDefinition. The returned object is temporary
      * and transient. It is only intended for use with the validation logic for incoming POST and PUT
      * requests. The bean does not have a permanent class and instead uses a dynamic class produced by
