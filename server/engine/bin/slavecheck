@@ -14,8 +14,7 @@ log=${solr_root}/logs/${prog}.log
 
 # define usage string
 USAGE="\
-usage: $prog -m <email> [-d dir] [-u username] [-v]
-       -m <email>  notification email address
+usage: $prog [-d dir] [-u username] [-v]
        -d          specify directory holding index data
        -u          specify user to sudo to before running script
        -v          increase verbosity
@@ -26,9 +25,6 @@ usage: $prog -m <email> [-d dir] [-u username] [-v]
 while getopts m:d:u:vV OPTION
 do
     case $OPTION in
-    m)
-        email="$OPTARG"
-        ;;
     d)
         data_dir="$OPTARG"
         ;;
@@ -48,12 +44,6 @@ do
 done
 
 [[ -n $debug ]] && set -x
-
-if [[ -z ${email} ]]
-then
-    echo "$USAGE"
-    exit 1
-fi
 
 fixUser "$@"
 
