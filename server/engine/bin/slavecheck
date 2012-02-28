@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Shell script to check slaves have the latest snapshot installed.
+
 orig_dir=$(pwd)
 cd ${0%/*}/..
 solr_root=$(pwd)
