@@ -31,7 +31,7 @@ class ProfileItemIT extends BaseApiTest {
     def categoryWikiName = 'ICE_v2_by_mass'
 
     /**
-     * Tests for creation, fetch and deletion of a Profile Item using JSON and XML responses.
+     * Tests for creation, fetch, update and deletion of a Profile Item using JSON and XML responses.
      * Tests creation by uid and category + drill downs.
      *
      * Create a new Profile Item by POSTing to '/profiles/{UID}/items' (since 3.6.0).
@@ -63,6 +63,8 @@ class ProfileItemIT extends BaseApiTest {
      * Eg, category=Electricity_by_Country&country=Albania
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
+     *
+     * Update a Profile Item by sending a PUT request to '/profiles/{UID}/items' (since 3.6.0)
      *
      * Delete (TRASH) a Profile Item by sending a DELETE request to '/profiles/{UID}/items/{UID}' (since 3.6.0).
      */
@@ -123,6 +125,22 @@ class ProfileItemIT extends BaseApiTest {
             assertContainsAmountJson(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
             assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
 
+            // Update the profile item
+            def responsePut = client.put(
+                path: "/${version}/profiles/${cookingProfileUid}/items/${uid}",
+                body: [note: 'Updated note'],
+                requestContentType: URLENC,
+                contentType: JSON
+            )
+            assertOkJson(responsePut, SUCCESS_OK.code, uid)
+            
+            // Get the updated profile item
+            responseGet = client.get(
+                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
+                contentType: JSON)
+            assert SUCCESS_OK.code, responseGet.status
+            assert responseGet.data.item.note == 'Updated note'
+            
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
