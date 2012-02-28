@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -244,9 +245,11 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                     // Build a regular expression based on the list of valid choices
                     StringBuilder regEx = new StringBuilder();
                     regEx.append("^");
-                    regEx.append(choices.get(0).getValue());
-                    for (Choice choice : choices.subList(1, choices.size())) {
-                        regEx.append("|" + choice.getValue());
+                    for(int i=0; i<choices.size(); i++){
+                        if(i != 0){
+                            regEx.append("|");
+                        }
+                        regEx.append(Pattern.quote(choices.get(i).getValue()));
                     }
                     regEx.append("$");
 
