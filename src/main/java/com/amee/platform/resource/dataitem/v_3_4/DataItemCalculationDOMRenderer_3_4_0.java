@@ -1,6 +1,9 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
+import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.sheet.Choice;
+import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationDOMRenderer_3_6_0;
 import com.amee.platform.science.Note;
 import com.amee.platform.science.ReturnValue;
@@ -55,6 +58,46 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
         }
         if (notesElem.getChildren().size() > 0) {
             rootElem.addContent(notesElem);
+        }
+    }
+
+    @Override
+    public void addValues(Choices values) {
+
+        // Add the supplied values
+        Element valuesElem = new Element("Values");
+        Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
+        for (Choice choice : values.getChoices()) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+                Element valueElem = new Element("Value");
+                valueElem.setAttribute("name", choice.getName());
+                valueElem.setText(choice.getValue());
+
+                // Add details from the ItemValueDefinition.
+                ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
+                if (itemValueDefinition != null) {
+                    if (itemValueDefinition.hasUnit()) {
+                        if (values.containsKey("units." + choice.getName())) {
+                            valueElem.setAttribute("unit", values.get("units." + choice.getName()).getValue());
+                        } else {
+                            valueElem.setAttribute("unit", itemValueDefinition.getUnit().toString());
+                        }
+                    }
+                    if (itemValueDefinition.hasPerUnit()) {
+                        if (values.containsKey("perUnits." + choice.getName())) {
+                            valueElem.setAttribute("perUnit", values.get("perUnits." + choice.getName()).getValue());
+                        } else {
+                            valueElem.setAttribute("perUnit", itemValueDefinition.getPerUnit().toString());
+                        }
+                    }
+                }
+                valuesElem.addContent(valueElem);
+            }
+        }
+
+        // Only add the element if we have values.
+        if (valuesElem.getChildren().size() > 0) {
+            rootElem.addContent(valuesElem);
         }
     }
 }

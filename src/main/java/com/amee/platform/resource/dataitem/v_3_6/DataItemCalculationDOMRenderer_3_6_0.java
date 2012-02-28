@@ -58,8 +58,7 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
             amountElem.setAttribute("type", type);
 
             // If there was a problem in the calculation, returnValue may be null. (PL-11105)
-            amountElem.setAttribute("unit", value != null ? value.getUnit() : "");
-            amountElem.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
+            amountElem.setAttribute("unit", value != null ? value.getCompoundUnit() : "");
             if (type.equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
@@ -86,14 +85,16 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
 
     @Override
     public void addValues(Choices values) {
-        Element valuesElem = new Element("Values");
+        Element inputElem = new Element("Input");
 
         // Add the supplied values
+        Element valuesElem = new Element("Values");
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : values.getChoices()) {
             if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
+                valueElem.setAttribute("source", "user");
                 valueElem.setText(choice.getValue());
 
                 // Add details from the ItemValueDefinition.
@@ -120,8 +121,9 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
 
         // Only add the element if we have values.
         if (valuesElem.getChildren().size() > 0) {
-            rootElem.addContent(valuesElem);
+            inputElem.addContent(valuesElem);
         }
+        rootElem.addContent(inputElem);
     }
 
     @Override

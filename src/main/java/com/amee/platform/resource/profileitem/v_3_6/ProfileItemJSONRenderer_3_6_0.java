@@ -116,8 +116,9 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
             ReturnValue returnValue = entry.getValue();
 
             ResponseHelper.put(amountObj, "type", type);
-            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
-            ResponseHelper.put(amountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+
+            // If there was a problem in the calculation, returnValue may be null. (PL-11105)
+            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getCompoundUnit() : "");
 
             // Flag for default type.
             ResponseHelper.put(amountObj, "default", type.equals(returnValues.getDefaultType()));
@@ -159,7 +160,7 @@ public class ProfileItemJSONRenderer_3_6_0 implements ProfileItemResource.Render
             ResponseHelper.put(outputObj, "notes", notesArr);
         }
 
-        ResponseHelper.put(rootObj, "output", outputObj);
+        ResponseHelper.put(profileItemObj, "output", outputObj);
     }
 
     @Override

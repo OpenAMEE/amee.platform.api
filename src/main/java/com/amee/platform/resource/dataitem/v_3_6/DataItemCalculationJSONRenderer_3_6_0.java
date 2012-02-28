@@ -61,8 +61,9 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
             ReturnValue returnValue = entry.getValue();
 
             ResponseHelper.put(amountObj, "type", type);
-            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getUnit() : "");
-            ResponseHelper.put(amountObj, "perUnit", returnValue != null ? returnValue.getPerUnit() : "");
+
+            // If there was a problem in the calculation, returnValue may be null. (PL-11105)
+            ResponseHelper.put(amountObj, "unit", returnValue != null ? returnValue.getCompoundUnit() : "");
 
             // Flag for default type.
             ResponseHelper.put(amountObj, "default", type.equals(returnValues.getDefaultType()));
@@ -109,18 +110,20 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
 
     @Override
     public void addValues(Choices values) {
-
-        Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
+        JSONObject inputObj = new JSONObject();
 
         // Create an array of value objects.
         JSONArray valuesArr = new JSONArray();
+        Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : values.getChoices()) {
             if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
 
                 // Create a value object.
                 JSONObject valueObj = new JSONObject();
                 ResponseHelper.put(valueObj, "name", choice.getName());
+                ResponseHelper.put(valueObj, "source", "user");
                 ResponseHelper.put(valueObj, "value", choice.getValue());
+
                 // Add details from the ItemValueDefinition.
                 ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
                 if (itemValueDefinition != null) {
@@ -139,15 +142,18 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
                         }
                     }
                 }
-                // Add the object to the amounts array
+
+                // Add the object to the values array
                 valuesArr.put(valueObj);
             }
         }
 
-        // Add the value objects to the result object, if there are some.
+        // Add the values array to the input object, if there are some.
         if (valuesArr.length() > 0) {
-            ResponseHelper.put(rootObj, "values", valuesArr);
+            ResponseHelper.put(inputObj, "values", valuesArr);
         }
+
+        ResponseHelper.put(rootObj, "input", inputObj);
     }
 
     @Override
