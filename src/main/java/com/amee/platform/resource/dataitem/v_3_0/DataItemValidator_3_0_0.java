@@ -21,4 +21,14 @@ public class DataItemValidator_3_0_0 extends DataItemValidator_3_4_0 {
     protected void addValues() {
         // Not in 3.0.
     }
+
+    @Override
+    protected void addUnits() {
+        // Not in 3.0.
+    }
+
+    @Override
+    protected void addPerUnits() {
+        // Not in 3.0.
+    }
 }
