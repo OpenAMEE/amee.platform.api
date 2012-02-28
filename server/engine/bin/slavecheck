@@ -5,7 +5,7 @@ cd ${0%/*}/..
 solr_root=$(pwd)
 cd ${orig_dir}
 
-unset days num data_dir user verbose debug
+unset email data_dir user verbose debug
 . ${solr_root}/bin/scripts-util
 
 # set up variables
