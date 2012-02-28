@@ -58,10 +58,15 @@ class DataItemIT extends BaseApiTest {
      * <li>wikiDoc
      * <li>provenance
      * <li>values.{path}*
+     * <li>units.{path}*
+     * <li>perUnits.{path}*
      * </ul>
      *
-     * The 'values.{path}' parameter can be used to set Data Item Values that are drill downs
-     * or the first in a historical series.
+     * The 'values.{path}', 'units.{path}' and 'perUnits.{path}' parameters can be used to set Data Item Values that
+     * are drill downs or the first in a historical series.
+     *
+     * To set historical data item values, POST to /categories/{UID|wikiName}/items/{UID|path}/values/{path}.
+     * See {@code DataItemValueIT} for examples.
      *
      * NOTE: For detailed rules on these parameters see the validation tests below.
      *
@@ -80,10 +85,12 @@ class DataItemIT extends BaseApiTest {
             def responsePost = client.post(
                     path: "/${version}/categories/Cooking/items",
                     body: [
-                            'wikiDoc': 'Test WikiDoc.',
-                            'values.numberOfPeople': 10,
-                            'values.fuel': 'Methane',
-                            'values.kgCO2PerYear': 200],
+                        'wikiDoc': 'Test WikiDoc.',
+                        'values.numberOfPeople': 10,
+                        'values.fuel': 'Methane',
+                        'values.kgCO2PerYear': 200,
+                        'units.kgCO2PerYear': 'kg',
+                        'perUnits.kgCO2PerYear': 'year'],
                     requestContentType: URLENC,
                     contentType: JSON)
 
