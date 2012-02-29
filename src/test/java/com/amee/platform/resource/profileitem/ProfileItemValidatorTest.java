@@ -307,52 +307,6 @@ public class ProfileItemValidatorTest {
 		
 		assertTrue("Object should not fail validation", !errorsBad.hasErrors());
 	}	
-	
-	@Test
-	public void testChoices(){
-	    Set<ItemValueDefinition> ivds = new HashSet<ItemValueDefinition>();
-	    ivds.add(mockItemValueDefinition);
-	    
-	    List<Choice> choices = new ArrayList<Choice>();
-	    Choice choice1 = new Choice("testChoice", "m^2");
-	    Choice choice2 = new Choice("testChoice", "ft^2");
-	    choices.add(choice1);
-	    choices.add(choice2);
-	    
-	    Map<String, String> goodRequestParams = new HashMap<String, String>();
-	    goodRequestParams.put("testChoice", "m^2");
-	    goodRequestParams.put("testChoice", "ft^2");
-	    
-	    Map<String, String> badRequestParams = new HashMap<String, String>();
-	    badRequestParams.put("testChoice", "M^2");
-	    badRequestParams.put("testChoice", "123");	    
-	    
-	    when(mockItemDefinition.getActiveItemValueDefinitions()).thenReturn(ivds);
-	    when(mockItemValueDefinition.isFromProfile()).thenReturn(true);
-	    when(mockItemValueDefinition.getPath()).thenReturn("testChoice");
-	    when(mockItemValueDefinition.isDouble()).thenReturn(false);
-	    when(mockItemValueDefinition.isInteger()).thenReturn(false);
-	    when(mockItemValueDefinition.isChoicesAvailable()).thenReturn(true);
-	    when(mockItemValueDefinition.getChoiceList()).thenReturn(choices);
-	    
-	    ProfileItem good = new ProfileItem();
-	    good.setItemDefinition(mockItemDefinition);
-        
-        BindException errorsGood = new BindException(good, "bad");
-        
-        ProfileItemValidator_3_6_0 validator = new ProfileItemValidator_3_6_0();
-        validator.setProfileItemService(mockProfileItemService);
-        validator.setObject(good);
-        validator.initialise();
-        
-        when(mockProfileItemService.isUnique(good)).thenReturn(true);
-        
-        validator.validate(good, errorsGood);
-        
-        assertFalse("Object should not fail validation", errorsGood.hasErrors());
-        assertTrue("Good choices should not fail validation", validator.isValid(goodRequestParams));
-        assertFalse("Bad choices should fail validation", validator.isValid(badRequestParams));
-	}
 
     private ItemValueDefinition getItemValueDefinition(String name, String path, ValueDefinition valueDefinition) {
         ItemValueDefinition ivd = new ItemValueDefinition();
