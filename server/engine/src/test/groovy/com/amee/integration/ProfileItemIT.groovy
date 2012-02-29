@@ -14,14 +14,17 @@ import static org.restlet.data.Status.*
  * Tests for the Profile Item API. This API has been available since version 3.6.
  */
 class ProfileItemIT extends BaseApiTest {
-    
+
     // Days in a year
     static def DAYS_IN_YEAR = 365.242199
 
     def cookingProfileUid = 'UCP4SKANF6CS'
-    def cookingProfileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
+    def cookingProfileItemUids = [
+        'J7TICQCEMGEA',
+        'CR2IS4R423WK'
+    ]
     def computersGenericProfileUid = '46OLHG2D9LWM'
-    
+
     def selectByProfileUid = 'TP437QW12VEV'
     def selectByProfileItemUids = [start: '8G534LCOMF8Z', end: '5W6K9PWM5OXD', span: '7LXKYQAY237H']
 
@@ -73,10 +76,10 @@ class ProfileItemIT extends BaseApiTest {
         versions.each { version -> createAndRemoveProfileItemByUidJson(version) }
         versions.each { version -> createAndRemoveProfileItemByCategoryXml(version) }
     }
-    
+
     def createAndRemoveProfileItemByUidJson(version) {
         if (version >= 3.6) {
-            
+
             // Create the profile item
             def responsePost = client.post(
                 path: "/${version}/profiles/${cookingProfileUid}/items",
@@ -131,16 +134,16 @@ class ProfileItemIT extends BaseApiTest {
                 body: [note: 'Updated note'],
                 requestContentType: URLENC,
                 contentType: JSON
-            )
+                )
             assertOkJson(responsePut, SUCCESS_OK.code, uid)
-            
+
             // Get the updated profile item
             responseGet = client.get(
                 path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
                 contentType: JSON)
             assert SUCCESS_OK.code, responseGet.status
             assert responseGet.data.item.note == 'Updated note'
-            
+
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
@@ -229,7 +232,7 @@ class ProfileItemIT extends BaseApiTest {
     void createDuplicateProfileItem() {
         versions.each { version -> createDuplicateProfileItem(version) }
     }
-    
+
     def createDuplicateProfileItem(version) {
         if (version >= 3.6) {
 
@@ -261,7 +264,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Clean up
@@ -281,7 +284,7 @@ class ProfileItemIT extends BaseApiTest {
     void createOverlappingProfileItem() {
         versions.each { version -> createOverlappingProfileItem(version) }
     }
-    
+
     def createOverlappingProfileItem(version) {
         if (version >= 3.6) {
 
@@ -315,7 +318,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Create an overlapping item with a different name
@@ -349,7 +352,7 @@ class ProfileItemIT extends BaseApiTest {
     void createProfileItemWithChoice() {
         versions.each { version -> createProfileItemWithChoice(version) }
     }
-    
+
     def createProfileItemWithChoice(version) {
         if(version >= 3.6){
             // Try creating a profile item with an invalid choice
@@ -358,8 +361,8 @@ class ProfileItemIT extends BaseApiTest {
                     path: "/${version}/profiles/${computersGenericProfileUid}/items",
                     body: [
                         name: 'invalidChoice',
-                        dataItemUid: 'J5OCT81E66FT',
-                        onStandby: 'notAValidChoice'],
+                        dataItemUid: '651B5AE27940',
+                        'values.onStandby': 'notAValidChoice'],
                     requestContentType: URLENC,
                     contentType: JSON)
                 fail 'Should have thrown exception'
@@ -367,27 +370,27 @@ class ProfileItemIT extends BaseApiTest {
                 // Should have been rejected
                 assert CLIENT_ERROR_BAD_REQUEST.code == e.response.status
             }
-            
+
             // Try creating a profile item with a valid choice
             def responsePost = client.post(
                 path: "/${version}/profiles/${computersGenericProfileUid}/items",
                 body: [
                     name: 'validChoice',
-                    dataItemUid: 'J5OCT81E66FT',
-                    onStandby: 'always'],
+                    dataItemUid: '651B5AE27940',
+                    'values.onStandby': 'always'],
                 requestContentType: URLENC,
                 contentType: JSON)
-            
+
             // Should have been created
             def uid = responsePost.headers['Location'].value.split('/')[7]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
-            
+
             // Clean up
             def responseDelete = client.delete(path: "/${version}/profiles/${computersGenericProfileUid}/items/${uid}")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
         }
     }
-    
+
     /**
      * Test fetching a number of profile items with JSON and XML responses.
      *
@@ -426,7 +429,7 @@ class ProfileItemIT extends BaseApiTest {
     void getProfileItems() {
         versions.each { version -> getProfileItems(version) }
     }
-    
+
     def getProfileItems(version) {
         if (version >= 3.6) {
             getProfileItemsJson(version)
@@ -472,7 +475,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getProfileItemsSelectByJson(version) {
         if (version >= 3.6) {
-            
+
             // Query window is from April to June
 
             // Default is to get all items that intersect query window
@@ -547,7 +550,7 @@ class ProfileItemIT extends BaseApiTest {
     void getSingleProfileItem() {
         versions.each { version -> getSingleProfileItem(version) }
     }
-    
+
     def getSingleProfileItem(version) {
         if (version >= 3.6) {
             getSingleProfileItemJson(version)
@@ -575,7 +578,7 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals 'kg/year', response.data.item.output.amounts[0].unit
         assertTrue response.data.item.output.amounts[0].default
         assertEquals 233.35999999999999, response.data.item.output.amounts[0].value, 0.000001
-        
+
         // Notes
         assertEquals 1, response.data.item.output.notes.size()
         assertEquals 'comment', response.data.item.output.notes[0].type
@@ -640,7 +643,7 @@ class ProfileItemIT extends BaseApiTest {
     void getSingleProfileItemUnauthorised() {
         versions.each { version -> getSingleProfileItemUnauthorised(version) }
     }
-    
+
     def getSingleProfileItemUnauthorised(version) {
         if (version >= 3.6) {
 
@@ -696,7 +699,7 @@ class ProfileItemIT extends BaseApiTest {
         updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
 
         updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
-        
+
         // Invalid format for duration
         updateProfileItemFieldJson('duration', 'format', '10Y', 3.6)
     }
@@ -714,11 +717,11 @@ class ProfileItemIT extends BaseApiTest {
      */
     @Test
     void updateWithValues() {
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6);
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6); // Not an integer either.
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6);
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6)
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6) // Not an integer either.
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6)
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
 
         // TODO: test doubles?
     }
@@ -764,8 +767,8 @@ class ProfileItemIT extends BaseApiTest {
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
-                assert [field] == response.data.validationResult.errors.collect {it.field}
-                assert [code] == response.data.validationResult.errors.collect {it.code}
+                assert [field]== response.data.validationResult.errors.collect {it.field}
+                assert [code]== response.data.validationResult.errors.collect {it.code}
             }
         }
     }
@@ -783,7 +786,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def timeSeries(version) {
         if (version >= 3.6) {
-            
+
             // cases relating to a single valued data series
 
             // cases relating to profile item within query range
@@ -922,12 +925,12 @@ class ProfileItemIT extends BaseApiTest {
             body: postParams,
             requestContentType: URLENC,
             contentType: JSON)
-        
+
         def location = responsePost.headers['Location'].value
         def uid = location.split('/')[7]
         assertNotNull uid
         assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
-        
+
         // Fetch profile items and check values
         def queryParams = [:]
         if (querystart) {
