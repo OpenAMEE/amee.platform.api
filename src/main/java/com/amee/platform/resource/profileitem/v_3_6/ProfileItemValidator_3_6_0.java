@@ -48,8 +48,8 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         addDates();
         addValues();
         addNote();
-        addUnit();
-        addPerUnit();
+        addUnits();
+        addPerUnits();
     }
 
     @Override
@@ -270,7 +270,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                 .setAllowEmpty(true));
     }
 
-    protected void addUnit() {
+    protected void addUnits() {
         for (ItemValueDefinition ivd : profileItem.getItemDefinition().getActiveItemValueDefinitions()) {
             if (ivd.isFromProfile()) {
                 final String unitName = "units." + ivd.getPath();
@@ -304,7 +304,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
         }
     }
 
-    protected void addPerUnit() {
+    protected void addPerUnits() {
         for (ItemValueDefinition ivd : profileItem.getItemDefinition().getActiveItemValueDefinitions()) {
             if (ivd.isFromProfile()) {
                 final String perUnitName = "perUnits." + ivd.getPath();
