@@ -23,7 +23,7 @@
                                 <property name="next">
                                     <bean class="com.amee.platform.restlet.CollectCredentialsGuard">
                                         <constructor-arg index="0" ref="platformApplication"/>
-                                        <constructor-arg index="1" ref="authenticationService"/>
+                                        <constructor-arg index="1" ref="authenticationServiceImpl"/>
                                         <property name="next" ref="versionsRouter"/>
                                     </bean>
                                 </property>
