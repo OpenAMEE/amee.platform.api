@@ -96,12 +96,11 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Check the calculated amount
             assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.amounts.amount.size()
-            def amount = responseGet.data.item.amounts.amount[0]
+            assertEquals 1, responseGet.data.item.output.amounts.size()
+            def amount = responseGet.data.item.output.amounts[0]
             assertNotNull amount
             assertEquals 10.0, amount.value, 0.0001
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
+            assertEquals 'kg/year', amount.unit
             assertTrue amount.default
 
             // Check the values
@@ -146,12 +145,11 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Check the calculated amount
             assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.amounts.amount.size()
-            amount = responseGet.data.item.amounts.amount[0]
+            assertEquals 1, responseGet.data.item.output.amounts.size()
+            amount = responseGet.data.item.output.amounts[0]
             assertNotNull amount
             assertEquals 120000.0, amount.value, 0.0001
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
+            assertEquals 'kg/year', amount.unit
             assertTrue amount.default
 
             // Check the values

@@ -120,10 +120,10 @@ class ProfileItemIT extends BaseApiTest {
             assert responseGet.data.item.note == 'Test note'
 
             // Amounts
-            assertEquals 3, responseGet.data.item.amounts.amount.size()
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2', 3.8, 'kg', '', true)
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+            assertEquals 3, responseGet.data.item.output.amounts.size()
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2', 3.8, 'kg', true)
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'energy', 26.5, 'MJ', false)
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Update the profile item
             def responsePut = client.put(
@@ -201,10 +201,10 @@ class ProfileItemIT extends BaseApiTest {
             assertEquals categoryWikiName, responseGet.data.Item.CategoryWikiName.text()
 
             // Amounts
-            assertEquals 3, responseGet.data.Item.Amounts.Amount.size()
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2', 3.8, 'kg', '', true)
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'energy', 26.5, 'MJ', '', false)
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+            assertEquals 3, responseGet.data.Item.Output.Amounts.Amount.size()
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2', 3.8, 'kg', true)
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'energy', 26.5, 'MJ', false)
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
@@ -570,17 +570,16 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '', response.data.item.endDate
 
         // Amounts
-        assertEquals 1, response.data.item.amounts.amount.size()
-        assertEquals 'CO2', response.data.item.amounts.amount[0].type
-        assertEquals 'year', response.data.item.amounts.amount[0].perUnit
-        assertEquals 'kg', response.data.item.amounts.amount[0].unit
-        assertTrue response.data.item.amounts.amount[0].default
-        assertEquals 233.35999999999999, response.data.item.amounts.amount[0].value, 0.000001
+        assertEquals 1, response.data.item.output.amounts.size()
+        assertEquals 'CO2', response.data.item.output.amounts[0].type
+        assertEquals 'kg/year', response.data.item.output.amounts[0].unit
+        assertTrue response.data.item.output.amounts[0].default
+        assertEquals 233.35999999999999, response.data.item.output.amounts[0].value, 0.000001
         
         // Notes
-        assertEquals 1, response.data.item.amounts.notes.size()
-        assertEquals 'comment', response.data.item.amounts.notes[0].type
-        assertEquals 'This is a comment', response.data.item.amounts.notes[0].value
+        assertEquals 1, response.data.item.output.notes.size()
+        assertEquals 'comment', response.data.item.output.notes[0].type
+        assertEquals 'This is a comment', response.data.item.output.notes[0].value
     }
 
     def getSingleProfileItemXml(version) {
@@ -597,17 +596,16 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '', response.data.Item.EndDate.text()
 
         // Amounts
-        assertEquals 1, response.data.Item.Amounts.Amount.size()
-        assertEquals 'CO2', response.data.Item.Amounts.Amount[0].@type.text()
-        assertEquals 'year', response.data.Item.Amounts.Amount[0].@perUnit.text()
-        assertEquals 'kg', response.data.Item.Amounts.Amount[0].@unit.text()
-        assertEquals 'true', response.data.Item.Amounts.Amount[0].@default.text()
-        assertEquals '233.35999999999999', response.data.Item.Amounts.Amount[0].text()
+        assertEquals 1, response.data.Item.Output.Amounts.Amount.size()
+        assertEquals 'CO2', response.data.Item.Output.Amounts.Amount[0].@type.text()
+        assertEquals 'kg/year', response.data.Item.Output.Amounts.Amount[0].@unit.text()
+        assertEquals 'true', response.data.Item.Output.Amounts.Amount[0].@default.text()
+        assertEquals '233.35999999999999', response.data.Item.Output.Amounts.Amount[0].text()
 
         // Notes
-        assertEquals 1, response.data.Item.Amounts.Notes.Note.size()
-        assertEquals 'comment', response.data.Item.Amounts.Notes.Note[0].@type.text()
-        assertEquals 'This is a comment', response.data.Item.Amounts.Notes.Note[0].text()
+        assertEquals 1, response.data.Item.Output.Notes.Note.size()
+        assertEquals 'comment', response.data.Item.Output.Notes.Note[0].@type.text()
+        assertEquals 'This is a comment', response.data.Item.Output.Notes.Note[0].text()
     }
 
     /**
@@ -954,8 +952,8 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals code, item.name
 
         // Amounts
-        assertEquals 1, item.amounts.amount.size()
-        assertContainsAmountJson(item.amounts.amount, 'CO2', objective, 'kg', 'year', true)
+        assertEquals 1, item.output.amounts.size()
+        assertContainsAmountJson(item.output.amounts, 'CO2', objective, 'kg/year', true)
 
         // Delete the profile item
         def responseDelete = client.delete(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
@@ -996,20 +994,14 @@ class ProfileItemIT extends BaseApiTest {
      * @param type the expected type, eg CO2.
      * @param value the expected value, eg 5.83.
      * @param unit the expected unit, eg kg.
-     * @param perUnit the expected perUnit, eg month.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountJson(amounts, type, value, unit, perUnit, isDefault) {
+    def assertContainsAmountJson(amounts, type, value, unit, isDefault) {
         def amount = amounts.find { it.type == type }
         assertNotNull amount
         assertEquals value, amount.value, 0.0001
         assertEquals unit, amount.unit
-        assertEquals perUnit, amount.perUnit
-        if (isDefault) {
-            assertEquals isDefault, amount.default
-        } else {
-            assertNull amount.default
-        }
+        assertEquals isDefault, amount.default
     }
 
     /**
@@ -1021,19 +1013,13 @@ class ProfileItemIT extends BaseApiTest {
      * @param type the expected type, eg CO2.
      * @param value the expected value, eg 5.83.
      * @param unit the expected unit, eg kg.
-     * @param perUnit the expected perUnit, eg month.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountXml(amounts, type, value, unit, perUnit, isDefault) {
+    def assertContainsAmountXml(amounts, type, value, unit, isDefault) {
         def amount = amounts.find { it.@type.text() == type }
         assertNotNull amount
         assertEquals value, Double.valueOf(amount.text()), 0.0001
         assertEquals unit, amount.@unit.text()
-        assertEquals perUnit, amount.@perUnit.text()
-        if (isDefault) {
-            assertEquals isDefault, Boolean.valueOf(amount.@default.text())
-        } else {
-            assertFalse Boolean.valueOf(amount.@default.text())
-        }
+        assertEquals isDefault, Boolean.valueOf(amount.@default.text())
     }
 }

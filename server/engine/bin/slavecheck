@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# Shell script to check slaves have the latest snapshot installed.
+
+orig_dir=$(pwd)
+cd ${0%/*}/..
+solr_root=$(pwd)
+cd ${orig_dir}
+
+unset email data_dir user verbose debug
+. ${solr_root}/bin/scripts-util
+
+# set up variables
+prog=${0##*/}
+log=${solr_root}/logs/${prog}.log
+
+# define usage string
+USAGE="\
+usage: $prog [-d dir] [-u username] [-v]
+       -d          specify directory holding index data
+       -u          specify user to sudo to before running script
+       -v          increase verbosity
+       -V          output debugging info
+"
+
+# parse args
+while getopts m:d:u:vV OPTION
+do
+    case $OPTION in
+    d)
+        data_dir="$OPTARG"
+        ;;
+    u)
+        user="$OPTARG"
+        ;;
+    v)
+        verbose="v"
+        ;;
+    V)
+        debug="V"
+        ;;
+    *)
+        echo "$USAGE"
+        exit 1
+    esac
+done
+
+[[ -n $debug ]] && set -x
+
+fixUser "$@"
+
+# use default value for data_dir if not specified
+# relative path starts at ${solr_root}
+if [[ -z ${data_dir} ]]
+then
+    data_dir=${solr_root}/data
+elif [[ "`echo ${data_dir}|cut -c1`" != "/" ]]
+then
+    data_dir=${solr_root}/${data_dir}
+fi
+
+setStartTime
+
+logMessage started by $oldwhoami
+logMessage command: $0 $@
+
+# trap control-c
+trap 'echo "caught INT/TERM, exiting now";logExit aborted 13' INT TERM
+
+#is maxdepth supported?
+find ${data_dir} -maxdepth 0 -name foobar >/dev/null 2>&1
+if [ $? = 0 ]; then
+    maxdepth="-maxdepth 1"
+else
+    unset maxdepth
+fi
+
+logMessage checking snapshots are up to date
+
+latest=`ls -dt ${data_dir}/snapshot.[0-9]* | head -n 1 | xargs -n1 basename`
+
+for i in `find ${data_dir} ${maxdepth} -name 'snapshot.current.*' -print`
+do
+    current=`cat ${i} | cut -d '/' -f 7`
+    if [[ "$latest" != "$current" ]]; then
+        logMessage snapshot is not up to date
+        logExit failed 2
+    fi
+done
+
+logExit ended 0
+
+
