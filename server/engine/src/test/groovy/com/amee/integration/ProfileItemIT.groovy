@@ -358,7 +358,7 @@ class ProfileItemIT extends BaseApiTest {
                     path: "/${version}/profiles/${computersGenericProfileUid}/items",
                     body: [
                         name: 'invalidChoice',
-                        dataItemUid: J5OCT81E66FT,
+                        dataItemUid: 'J5OCT81E66FT',
                         onStandby: 'notAValidChoice'],
                     requestContentType: URLENC,
                     contentType: JSON)
@@ -373,7 +373,7 @@ class ProfileItemIT extends BaseApiTest {
                 path: "/${version}/profiles/${computersGenericProfileUid}/items",
                 body: [
                     name: 'validChoice',
-                    dataItemUid: J5OCT81E66FT,
+                    dataItemUid: 'J5OCT81E66FT',
                     onStandby: 'always'],
                 requestContentType: URLENC,
                 contentType: JSON)
