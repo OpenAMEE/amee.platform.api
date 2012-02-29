@@ -343,6 +343,52 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     /**
+     * Tests creation of profile items with valid and invalid choices specified.
+     */
+    @Test
+    void createProfileItemWithChoice() {
+        versions.each { version -> createProfileItemWithChoice(version) }
+    }
+    
+    def createProfileItemWithChoice(version) {
+        if(version >= 3.6){
+            // Try creating a profile item with an invalid choice
+            try{
+                client.post(
+                    path: "/${version}/profiles/${computersGenericProfileUid}/items",
+                    body: [
+                        name: 'invalidChoice',
+                        dataItemUid: J5OCT81E66FT,
+                        onStandby: 'notAValidChoice'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+                fail 'Should have thrown exception'
+            } catch(HttpResponseException e){
+                // Should have been rejected
+                assert CLIENT_ERROR_BAD_REQUEST.code == e.response.status
+            }
+            
+            // Try creating a profile item with a valid choice
+            def responsePost = client.post(
+                path: "/${version}/profiles/${computersGenericProfileUid}/items",
+                body: [
+                    name: 'validChoice',
+                    dataItemUid: J5OCT81E66FT,
+                    onStandby: 'always'],
+                requestContentType: URLENC,
+                contentType: JSON)
+            
+            // Should have been created
+            def uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
+            
+            // Clean up
+            def responseDelete = client.delete(path: "/${version}/profiles/${computersGenericProfileUid}/items/${uid}")
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
+        }
+    }
+    
+    /**
      * Test fetching a number of profile items with JSON and XML responses.
      *
      * Get a list of profile items by sending a GET request to /profiles/{UID}/items.
