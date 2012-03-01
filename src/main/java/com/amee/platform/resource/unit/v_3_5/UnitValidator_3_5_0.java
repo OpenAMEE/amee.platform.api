@@ -106,7 +106,7 @@ public class UnitValidator_3_5_0 extends BaseValidator implements UnitResource.U
 
     protected void addUnitType() {
         allowedFields.add("unitType");
-        add(AMEEUnitType.class, "unitType", unitTypeEditor);
+        addCustomEditor(AMEEUnitType.class, "unitType", unitTypeEditor);
         add(new ValidationSpecification()
                 .setName("unitType")
                 .setAllowEmpty(false)

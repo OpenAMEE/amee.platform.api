@@ -41,7 +41,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addStartDate() {
         allowedFields.add("startDate");
-        add(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
+        addCustomEditor(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
         add(new ValidationSpecification()
                 .setName("startDate")
                 .setAllowEmpty(true));
@@ -52,7 +52,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        add(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
+        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
         add(new ValidationSpecification()
                 .setName("endDate")
                 .setAllowEmpty(true));

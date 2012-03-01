@@ -118,7 +118,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
 
         // Start date
         allowedFields.add("startDate");
-        add(Date.class, "startDate", new StartEndDateEditor(new Date()));
+        addCustomEditor(Date.class, "startDate", new StartEndDateEditor(new Date()));
         add(new ValidationSpecification()
                 .setName("startDate")
                 .setAllowEmpty(true)
@@ -144,7 +144,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
 
         // End date
         allowedFields.add("endDate");
-        add(Date.class, "endDate", new StartEndDateEditor(null));
+        addCustomEditor(Date.class, "endDate", new StartEndDateEditor(null));
         add(new ValidationSpecification()
                 .setName("endDate")
                 .setAllowEmpty(true)
@@ -221,21 +221,21 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                             .setAllowEmpty(true));
 
                     // Property editor.
-                    add(Double.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(Double.class, paramName, new ItemValueEditor(ivd));
                 } else if (ivd.isInteger()) {
                     add(new ValidationSpecification()
                             .setName(paramName)
                             .setIntegerNumber(true)
                             .setAllowEmpty(true));
 
-                    add(Integer.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(Integer.class, paramName, new ItemValueEditor(ivd));
                 } else {
                     add(new ValidationSpecification()
                             .setName(paramName)
                             .setMaxSize(ProfileItemTextValue.VALUE_SIZE)
                             .setAllowEmpty(true));
 
-                    add(String.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(String.class, paramName, new ItemValueEditor(ivd));
                 }
 
                 // If the field has choices, make sure a valid one is specified

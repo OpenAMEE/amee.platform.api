@@ -128,7 +128,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                             .setDoubleNumber(true)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(Double.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(Double.class, paramName, new ItemValueEditor(ivd));
                 } else if (ivd.isInteger()) {
                     // Integer values.
                     // Add ValidationSpecification.
@@ -137,7 +137,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                             .setIntegerNumber(true)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(Integer.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(Integer.class, paramName, new ItemValueEditor(ivd));
                 } else {
                     // String values.
                     // Add ValidationSpecification.
@@ -146,7 +146,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                             .setMaxSize(BaseDataItemTextValue.VALUE_SIZE)
                             .setAllowEmpty(true));
                     // Add the editor.
-                    add(String.class, paramName, new ItemValueEditor(ivd));
+                    addCustomEditor(String.class, paramName, new ItemValueEditor(ivd));
                 }
             }
         }

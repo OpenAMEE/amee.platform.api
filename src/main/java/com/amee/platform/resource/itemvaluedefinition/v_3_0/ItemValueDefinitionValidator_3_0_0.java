@@ -59,12 +59,12 @@ public class ItemValueDefinitionValidator_3_0_0 extends BaseValidator implements
 
     private void addApiVersions() {
         allowedFields.add("apiVersions");
-        add(Set.class, "apiVersions", apiVersionSetEditor);
+        addCustomEditor(Set.class, "apiVersions", apiVersionSetEditor);
     }
 
     private void addValueDefintion() {
         allowedFields.add("valueDefinition");
-        add(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
+        addCustomEditor(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
         add(new ValidationSpecification()
                 .setName("valueDefinition")
                 .setUid(true)
@@ -119,7 +119,7 @@ public class ItemValueDefinitionValidator_3_0_0 extends BaseValidator implements
 
     private void addUnit() {
         allowedFields.add("unit");
-        add(AmountUnit.class, "unit", new UnitEditor());
+        addCustomEditor(AmountUnit.class, "unit", new UnitEditor());
         add(new ValidationSpecification()
                 .setName("unit")
                 .setMaxSize(ItemValueDefinition.UNIT_MAX_SIZE)
@@ -128,7 +128,7 @@ public class ItemValueDefinitionValidator_3_0_0 extends BaseValidator implements
 
     private void addPerUnit() {
         allowedFields.add("perUnit");
-        add(AmountPerUnit.class, "perUnit", new PerUnitEditor());
+        addCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
         add(new ValidationSpecification()
                 .setName("perUnit")
                 .setMaxSize(ItemValueDefinition.PER_UNIT_MAX_SIZE)
