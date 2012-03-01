@@ -108,8 +108,7 @@ public class ProfileItemDOMRenderer_3_6_0 implements ProfileItemResource.Rendere
             amountElem.setAttribute("type", type);
 
             // If there was a problem in the calculation, returnValue may be null. (PL-11105)
-            amountElem.setAttribute("unit", value != null ? value.getUnit() : "");
-            amountElem.setAttribute("perUnit", value != null ? value.getPerUnit() : "");
+            amountElem.setAttribute("unit", value != null ? value.getCompoundUnit() : "");
             if (type.equals(returnValues.getDefaultType())) {
                 amountElem.setAttribute("default", "true");
             }
