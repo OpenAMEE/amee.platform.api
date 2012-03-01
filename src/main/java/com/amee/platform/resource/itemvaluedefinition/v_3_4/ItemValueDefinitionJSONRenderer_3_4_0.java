@@ -65,13 +65,13 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
         // these are relevant here)
         ValueType type = itemValueDefinition.getValueDefinition().getValueType();
         String value = itemValueDefinition.getValue();
-        if(ValueType.TEXT.equals(type)){
+        if (ValueType.TEXT.equals(type)) {
             ResponseHelper.put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
-        }else{
+        } else {
             // Non-text values that are represented here by the empty string should be null in JSON
-            if(value == null || "".equals(value)){
+            if (value == null || "".equals(value)) {
                 ResponseHelper.put(itemValueDefinitionObj, "value", JSONObject.NULL);
-            }else{
+            } else {
                 switch (type) {
                 case BOOLEAN:
                     Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
