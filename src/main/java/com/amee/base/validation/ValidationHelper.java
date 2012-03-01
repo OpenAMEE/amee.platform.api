@@ -101,7 +101,7 @@ public abstract class ValidationHelper {
      * @param field          the field name of the property
      * @param propertyEditor a {@link PropertyEditor} implementation
      */
-    protected void add(Class requiredType, String field, PropertyEditor propertyEditor) {
+    protected void addCustomEditor(Class requiredType, String field, PropertyEditor propertyEditor) {
         getDataBinder().registerCustomEditor(requiredType, field, propertyEditor);
     }
 
