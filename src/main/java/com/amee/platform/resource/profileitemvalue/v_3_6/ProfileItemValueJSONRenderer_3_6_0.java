@@ -51,11 +51,7 @@ public class ProfileItemValueJSONRenderer_3_6_0 implements ProfileItemValueResou
             NumberValue nv = (NumberValue) profileItemValue;
             ResponseHelper.put(profileItemValueObj, "value", nv.getValueAsDouble());
             if (nv.hasUnit()) {
-                ResponseHelper.put(profileItemValueObj, "unit", nv.getUnit().toString());
-                if (nv.hasPerUnit()) {
-                    ResponseHelper.put(profileItemValueObj, "perUnit", nv.getPerUnit().toString());
-                    ResponseHelper.put(profileItemValueObj, "compoundUnit", nv.getCompoundUnit().toString());
-                }
+                ResponseHelper.put(profileItemValueObj, "unit", nv.getCompoundUnit().toString());
             }
         } else {
             ResponseHelper.put(profileItemValueObj, "value", profileItemValue.getValueAsString());
