@@ -192,8 +192,8 @@ public class TransactionalTest extends BaseTest {
             });
             fail("Should have thrown a TimedOutException.");
         } catch (TimedOutException e) {
-            // Let 15 seconds pass before testing (to allow ResourceHandler to complete).
-            Thread.sleep(15 * 1000);
+            // Let 20 seconds pass before testing (to allow ResourceHandler to complete).
+            Thread.sleep(20 * 1000);
             assertNull("Result should be null.", result);
             assertFalse("Should not have completed.", slowResourceHandlerCompleted);
             assertTrue("Should have three events", dummyAMEETransactionListener.getTransactionEventTypes().size() == 3);
