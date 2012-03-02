@@ -416,6 +416,14 @@
             <artifactId>gmaven-runtime-1.7</artifactId>
             <version>${gmaven-runtime-1.7.version}</version>
             <scope>test</scope>
+
+            <!-- See PL-11066 -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>gossip</artifactId>
+                    <groupId>org.sonatype.gossip</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
