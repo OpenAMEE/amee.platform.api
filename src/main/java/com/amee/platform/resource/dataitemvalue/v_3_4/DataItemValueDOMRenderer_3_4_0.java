@@ -48,11 +48,7 @@ public class DataItemValueDOMRenderer_3_4_0 implements DataItemValueResource.Ren
         if (NumberValue.class.isAssignableFrom(dataItemValue.getClass())) {
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
-                dataItemValueElem.addContent(new Element("Unit").setText(nv.getUnit().toString()));
-                if (nv.hasPerUnit()) {
-                    dataItemValueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
-                    dataItemValueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
-                }
+                dataItemValueElem.addContent(new Element("Unit").setText(nv.getCompoundUnit().toString()));
             }
         }
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {

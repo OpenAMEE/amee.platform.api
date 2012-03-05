@@ -72,11 +72,7 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
 
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
-                ResponseHelper.put(dataItemValueObj, "unit", nv.getUnit().toString());
-                if (nv.hasPerUnit()) {
-                    ResponseHelper.put(dataItemValueObj, "perUnit", nv.getPerUnit().toString());
-                    ResponseHelper.put(dataItemValueObj, "compoundUnit", nv.getCompoundUnit().toString());
-                }
+                ResponseHelper.put(dataItemValueObj, "unit", nv.getCompoundUnit().toString());
             }
         } else {
             // Not a numeric value, use a String
