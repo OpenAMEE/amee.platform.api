@@ -412,10 +412,7 @@ class DataItemValueIT extends BaseApiTest {
             if (testValuesResource) {
                 assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort()
             }
-            assert ['kg', null, null] == values.collect { it?.unit }
-            assert ['kWh', null, null] == values.collect { it?.perUnit }
-            // TODO: Test below doesn't seem to work.
-            // assert ['kg/(kW·h)', null, null] == values.collect { it?.compoundUnit }
+            assert ['kg/(kW·h)', null, null] == values.collect { it?.unit }
         }
     }
 
@@ -443,10 +440,7 @@ class DataItemValueIT extends BaseApiTest {
             if (testValuesResource) {
                 assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort()
             }
-            assert ['kg'] == values.Unit*.text().sort()
-            assert ['kWh'] == values.PerUnit*.text().sort()
-            // TODO: Test below doesn't seem to work.
-            // assert ['kg/(kW·h)'] == values.CompoundUnit*.text().sort()
+            assert ['kg/(kW·h)'] == values.Unit*.text().sort()
         }
     }
 
@@ -660,10 +654,7 @@ class DataItemValueIT extends BaseApiTest {
             assert uid == itemValue.uid
             assert value == itemValue.value
             assert startDate == itemValue.startDate
-            assert 'kg' == itemValue.unit
-            assert 'kWh' == itemValue.perUnit
-            // TODO: Test below doesn't seem to work.
-            // assert 'kg/(kW·h)' == itemValue.compoundUnit
+            assert 'kg/(kW·h)' == itemValue.unit
         }
     }
 
@@ -681,10 +672,7 @@ class DataItemValueIT extends BaseApiTest {
             assert uid == itemValue.@uid.text()
             assert ""+value == itemValue.Value.text()
             assert startDate == itemValue.StartDate.text()
-            assert 'kg' == itemValue.Unit.text()
-            assert 'kWh' == itemValue.PerUnit.text()
-            // TODO: Test below doesn't seem to work.
-            // assert 'kg/(kW·h)' == itemValue.CompoundUnit.text()
+            assert 'kg/(kW·h)' == itemValue.Unit.text()
         }
     }
 
