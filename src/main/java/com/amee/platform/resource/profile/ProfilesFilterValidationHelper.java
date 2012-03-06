@@ -1,18 +1,19 @@
 package com.amee.platform.resource.profile;
 
-import com.amee.base.validation.ValidationHelper;
+import com.amee.base.validation.BaseValidator;
 import com.amee.platform.search.ProfilesFilter;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 @Scope("prototype")
-public class ProfilesFilterValidationHelper extends ValidationHelper {
+public class ProfilesFilterValidationHelper extends BaseValidator {
 
     @Autowired
     private ProfilesFilterValidator validator;
@@ -34,7 +35,7 @@ public class ProfilesFilterValidationHelper extends ValidationHelper {
     public String getName() {
         return "profileFilter";
     }
-    
+
     @Override
     public String[] getAllowedFields() {
         if (allowedFields == null) {
@@ -42,7 +43,7 @@ public class ProfilesFilterValidationHelper extends ValidationHelper {
             allowedFields.add("resultStart");
             allowedFields.add("resultLimit");
         }
-        return allowedFields.toArray(new String[]{});
+        return allowedFields.toArray(new String[] {});
     }
 
     public ProfilesFilter getProfilesFilter() {
@@ -51,5 +52,10 @@ public class ProfilesFilterValidationHelper extends ValidationHelper {
 
     public void setProfilesFilter(ProfilesFilter profilesFilter) {
         this.profilesFilter = profilesFilter;
+    }
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return validator.supports(clazz);
     }
 }

@@ -70,7 +70,7 @@ public class ReturnValueDefinitionFormAcceptor_3_1_0 implements ReturnValueDefin
 
     protected ReturnValueDefinitionResource.ReturnValueDefinitionValidator getValidator(RequestWrapper requestWrapper) {
         return (ReturnValueDefinitionResource.ReturnValueDefinitionValidator)
-                resourceBeanFinder.getValidationHelper(
+                resourceBeanFinder.getBaseValidator(
                         ReturnValueDefinitionResource.ReturnValueDefinitionValidator.class, requestWrapper);
     }
 }

@@ -1,25 +1,26 @@
 package com.amee.platform.resource.tag.v_3_2;
 
 import com.amee.base.domain.Since;
-import com.amee.base.validation.ValidationHelper;
+import com.amee.base.validation.BaseValidator;
 import com.amee.platform.resource.CSVListEditor;
 import com.amee.platform.resource.tag.TagsFilterValidator;
 import com.amee.platform.resource.tag.TagsResource;
 import com.amee.service.tag.TagsFilter;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Service
 @Scope("prototype")
 @Since("3.2.0")
-public class TagsFilterValidationHelper_3_2_0 extends ValidationHelper implements TagsResource.TagsFilterValidationHelper {
+public class TagsFilterValidationHelper_3_2_0 extends BaseValidator implements TagsResource.TagsFilterValidationHelper {
 
     @Autowired
     private TagsFilterValidator validator;
@@ -34,8 +35,13 @@ public class TagsFilterValidationHelper_3_2_0 extends ValidationHelper implement
     }
 
     @Override
-    public Object getObject() {
+    public TagsFilter getObject() {
         return tagsFilter;
+    }
+
+    @Override
+    public void setObject(TagsFilter tagsFilter) {
+        this.tagsFilter = tagsFilter;
     }
 
     @Override
@@ -55,16 +61,11 @@ public class TagsFilterValidationHelper_3_2_0 extends ValidationHelper implement
             allowedFields.add("incTags");
             allowedFields.add("excTags");
         }
-        return allowedFields.toArray(new String[]{});
+        return allowedFields.toArray(new String[] {});
     }
 
     @Override
-    public TagsFilter getTagsFilter() {
-        return tagsFilter;
-    }
-
-    @Override
-    public void setTagsFilter(TagsFilter tagsFilter) {
-        this.tagsFilter = tagsFilter;
+    public boolean supports(Class<?> clazz) {
+        return validator.supports(clazz);
     }
 }

@@ -1,12 +1,13 @@
 package com.amee.platform.resource.algorithm;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.data.ItemDefinition;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
-import java.util.Map;
+import com.amee.platform.resource.ResourceValidator;
 
 public interface AlgorithmResource {
 
@@ -35,15 +36,7 @@ public interface AlgorithmResource {
     interface FormAcceptor extends ResourceAcceptor {
     }
 
-    interface AlgorithmValidator {
-
-        public boolean isValid(Map<String, String> queryParameters);
-
-        public Algorithm getObject();
-
-        public void setObject(Algorithm object);
-
-        public ValidationResult getValidationResult();
+    interface AlgorithmValidator extends ResourceValidator<Algorithm> {
     }
 
     interface Remover extends ResourceRemover {

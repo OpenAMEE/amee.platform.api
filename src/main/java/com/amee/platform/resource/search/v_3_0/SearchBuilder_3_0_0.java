@@ -14,6 +14,7 @@ import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.search.SearchResource;
 import com.amee.platform.search.SearchFilter;
 import com.amee.platform.search.SearchService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
                         requestWrapper.getMatrixParameters().containsKey("wikiDoc") ||
                         requestWrapper.getMatrixParameters().containsKey("provenance"));
         SearchResource.SearchFilterValidationHelper validationHelper = getValidationHelper(requestWrapper);
-        validationHelper.setSearchFilter(filter);
+        validationHelper.setObject(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             handle(requestWrapper, filter);
             SearchResource.Renderer renderer = getRenderer(requestWrapper);
@@ -70,14 +71,14 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
         DataItemResource.Builder dataItemBuilder = getDataItemBuilder(requestWrapper);
         for (IAMEEEntity entity : resultsWrapper.getResults()) {
             switch (entity.getObjectType()) {
-                case DC:
-                    dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
-                    renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
-                    break;
-                case DI:
-                    dataItemBuilder.handle(requestWrapper, (DataItem) entity);
-                    renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
-                    break;
+            case DC:
+                dataCategoryBuilder.handle(requestWrapper, (DataCategory) entity);
+                renderer.newDataCategory(dataCategoryBuilder.getRenderer(requestWrapper));
+                break;
+            case DI:
+                dataItemBuilder.handle(requestWrapper, (DataItem) entity);
+                renderer.newDataItem(dataItemBuilder.getRenderer(requestWrapper));
+                break;
             }
         }
     }
@@ -90,17 +91,15 @@ public class SearchBuilder_3_0_0 implements SearchResource.Builder {
     }
 
     private DataCategoryResource.Builder getDataCategoryBuilder(RequestWrapper requestWrapper) {
-        return (DataCategoryResource.Builder)
-                resourceBeanFinder.getBuilder(DataCategoryResource.Builder.class, requestWrapper);
+        return (DataCategoryResource.Builder) resourceBeanFinder.getBuilder(DataCategoryResource.Builder.class, requestWrapper);
     }
 
     private DataItemResource.Builder getDataItemBuilder(RequestWrapper requestWrapper) {
-        return (DataItemResource.Builder)
-                resourceBeanFinder.getBuilder(DataItemResource.Builder.class, requestWrapper);
+        return (DataItemResource.Builder) resourceBeanFinder.getBuilder(DataItemResource.Builder.class, requestWrapper);
     }
 
     private SearchResource.SearchFilterValidationHelper getValidationHelper(RequestWrapper requestWrapper) {
-        return (SearchResource.SearchFilterValidationHelper)
-                resourceBeanFinder.getValidationHelper(SearchResource.SearchFilterValidationHelper.class, requestWrapper);
+        return (SearchResource.SearchFilterValidationHelper) resourceBeanFinder.getBaseValidator(SearchResource.SearchFilterValidationHelper.class,
+                requestWrapper);
     }
 }

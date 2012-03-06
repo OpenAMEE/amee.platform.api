@@ -1,11 +1,13 @@
 package com.amee.platform.resource.tag;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.tag.Tag;
+import com.amee.platform.resource.ResourceValidator;
 import com.amee.service.tag.TagsFilter;
-
-import java.util.Map;
 
 public interface TagsResource {
 
@@ -27,14 +29,6 @@ public interface TagsResource {
     public static interface FormAcceptor extends ResourceAcceptor {
     }
 
-    public static interface TagsFilterValidationHelper {
-
-        public TagsFilter getTagsFilter();
-
-        public void setTagsFilter(TagsFilter tagsFilter);
-
-        public boolean isValid(Map<String, String> queryParameters);
-
-        public ValidationResult getValidationResult();
+    public static interface TagsFilterValidationHelper extends ResourceValidator<TagsFilter> {
     }
 }

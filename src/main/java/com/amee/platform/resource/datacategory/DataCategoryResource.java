@@ -1,18 +1,14 @@
 package com.amee.platform.resource.datacategory;
 
-import java.util.Map;
-
-import org.springframework.validation.Validator;
-
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRemover;
 import com.amee.base.resource.ResourceRenderer;
-import com.amee.base.resource.ValidationResult;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.tag.Tag;
+import com.amee.platform.resource.ResourceValidator;
 import com.amee.service.data.DataService;
 
 public interface DataCategoryResource {
@@ -31,7 +27,7 @@ public interface DataCategoryResource {
         public void addBasic();
 
         public void addName();
-        
+
         public void addPath();
 
         public void addParent();
@@ -57,17 +53,9 @@ public interface DataCategoryResource {
         public DataCategoryResource.DataCategoryValidator getValidator(RequestWrapper requestWrapper);
     }
 
-    public static interface DataCategoryValidator extends Validator {
+    public static interface DataCategoryValidator extends ResourceValidator<DataCategory> {
 
         public void initialise();
-
-        public DataCategory getObject();
-
-        public void setObject(DataCategory DataCategory);
-
-        public boolean isValid(Map<String, String> queryParameters);
-
-        public ValidationResult getValidationResult();
 
         public void setDataService(DataService dataService);
     }

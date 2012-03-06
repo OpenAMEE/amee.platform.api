@@ -11,6 +11,6 @@ public abstract class ItemDefinitionAcceptor {
 
     protected ItemDefinitionResource.ItemDefinitionValidator getValidator(RequestWrapper requestWrapper) {
         return (ItemDefinitionResource.ItemDefinitionValidator)
-                resourceBeanFinder.getValidationHelper(ItemDefinitionResource.ItemDefinitionValidator.class, requestWrapper);
+                resourceBeanFinder.getBaseValidator(ItemDefinitionResource.ItemDefinitionValidator.class, requestWrapper);
     }
 }

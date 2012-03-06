@@ -1,19 +1,20 @@
 package com.amee.platform.resource;
 
-import com.amee.base.validation.ValidationHelper;
-import com.amee.domain.AMEEStatus;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.amee.base.validation.BaseValidator;
+import com.amee.domain.AMEEStatus;
 
 @Service
 @Scope("prototype")
-public class EntityFilterValidationHelper extends ValidationHelper {
+public class EntityFilterValidationHelper extends BaseValidator {
 
     @Autowired
     private EntityFilterValidator entityFilterValidator;
@@ -56,5 +57,10 @@ public class EntityFilterValidationHelper extends ValidationHelper {
 
     public void setEntityFilter(EntityFilter entityFilter) {
         this.entityFilter = entityFilter;
+    }
+    
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return entityFilterValidator.supports(clazz);
     }
 }
