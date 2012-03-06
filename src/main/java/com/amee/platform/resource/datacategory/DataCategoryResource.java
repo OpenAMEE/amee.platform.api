@@ -1,15 +1,19 @@
 package com.amee.platform.resource.datacategory;
 
-import com.amee.base.resource.*;
+import java.util.Map;
+
+import org.springframework.validation.Validator;
+
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.ValidationResult;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.tag.Tag;
 import com.amee.service.data.DataService;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-import org.springframework.validation.Validator;
-
-import java.util.Map;
 
 public interface DataCategoryResource {
 
@@ -26,6 +30,8 @@ public interface DataCategoryResource {
 
         public void addBasic();
 
+        public void addName();
+        
         public void addPath();
 
         public void addParent();
