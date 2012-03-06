@@ -80,8 +80,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals 'true,false', responseGet.data.itemValueDefinition.choices
             assertTrue responseGet.data.itemValueDefinition.fromProfile
             assertTrue responseGet.data.itemValueDefinition.fromData
-            assertEquals 'kg', responseGet.data.itemValueDefinition.unit
-            assertEquals 'month', responseGet.data.itemValueDefinition.perUnit
+            assertEquals 'kg/month', responseGet.data.itemValueDefinition.unit
             assertEquals 2, responseGet.data.itemValueDefinition.versions.size()
             assertEquals '1.0', responseGet.data.itemValueDefinition.versions[0].version
             assertEquals '2.0', responseGet.data.itemValueDefinition.versions[1].version
@@ -142,8 +141,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assertEquals 'true,false', responseGet.data.ItemValueDefinition.Choices.text()
             assertEquals 'true', responseGet.data.ItemValueDefinition.FromProfile.text()
             assertEquals 'true', responseGet.data.ItemValueDefinition.FromData.text()
-            assertEquals 'kg', responseGet.data.ItemValueDefinition.Unit.text()
-            assertEquals 'month', responseGet.data.ItemValueDefinition.PerUnit.text()
+            assertEquals 'kg/month', responseGet.data.ItemValueDefinition.Unit.text()
             def allVersions = responseGet.data.ItemValueDefinition.Versions.Version
             assertEquals 2, allVersions.size()
             assertEquals '1.0', allVersions[0].text()
