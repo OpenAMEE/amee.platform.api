@@ -316,7 +316,7 @@ class CategoryIT extends BaseApiTest {
     }
     
     def getCategoriesWithNamesJson(version) {
-        if(version >= 3.3) {
+        if (version >= 3.3) {
             client.contentType = JSON
             def response = client.get(path: "/${version}/categories;name")
             assert SUCCESS_OK.code == response.status
@@ -388,7 +388,7 @@ class CategoryIT extends BaseApiTest {
    }
 
    def getCategoriesWithNamesXml(version) {
-       if(version >= 3.3) {
+       if (version >= 3.3) {
            client.contentType = XML
            def response = client.get(path: "/${version}/categories;name")
            assertEquals SUCCESS_OK.code, response.status
