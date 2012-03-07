@@ -7,8 +7,9 @@ import java.util.Date;
 
 public class DataItemValuesFilter extends LimitFilter {
 
+    private static final long serialVersionUID = 4120820672227897639L;
     private Date startDate = DataItemService.EPOCH;
-    private Date endDate = DataItemService.Y2038;
+    private Date endDate = DataItemService.MYSQL_MAX_DATETIME;
     private DataItem dataItem;
     private ItemValueDefinition itemValueDefinition;
 
@@ -43,7 +44,7 @@ public class DataItemValuesFilter extends LimitFilter {
 
     public void setEndDate(Date endDate) {
         if (endDate == null) {
-            endDate = DataItemService.Y2038;
+            endDate = DataItemService.MYSQL_MAX_DATETIME;
         }
         this.endDate = endDate;
     }

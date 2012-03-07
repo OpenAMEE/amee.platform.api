@@ -9,12 +9,13 @@ import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
-import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.joda.time.DateTime;
 
 public interface DataItemService extends ItemService {
 
@@ -24,6 +25,9 @@ public interface DataItemService extends ItemService {
     // Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07. See: http://en.wikipedia.org/wiki/Year_2038_problem
     // This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
     final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
+
+    // The last time that can be represented by a MySQL DATETIME column is '9999-12-31 23:59:59'
+    final static Date MYSQL_MAX_DATETIME = new DateTime(9999, 12, 31, 23, 59, 59, 0).toDate();
 
     @Override
     DataItem getItemByUid(String uid);
