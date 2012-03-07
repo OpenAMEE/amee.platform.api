@@ -87,6 +87,10 @@ public class APIVersion extends AMEEEntity {
         return this.equals(ONE);
     }
 
+    public boolean isVersionTwo() {
+        return this.equals(TWO);
+    }
+
     public boolean isNotVersionOne() {
         return !this.equals(ONE);
     }
