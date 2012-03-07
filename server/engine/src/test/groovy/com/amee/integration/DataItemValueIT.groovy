@@ -12,9 +12,9 @@ import static org.restlet.data.Status.*
  *
  * Data Item Values for a particular Item Value Definition can form a history. The values at the epoch
  * are automatically created, can be updated but cannot be removed. It's possible to create, modify and remove
- * values for any point after the epoch and up to the end of the epoch. It's not possible to have two values
+ * values for any point after the epoch and up to 9999-12-31 23:59:59. It's not possible to have two values
  * at the same point in a history. The current time resolution is down to the second. The epoch
- * is '1970-01-01T00:00:00Z' and the end of the epoch is '2038-01-19T03:14:00Z'.
+ * is '1970-01-01T00:00:00Z'.
  */
 class DataItemValueIT extends BaseApiTest {
 
@@ -721,19 +721,19 @@ class DataItemValueIT extends BaseApiTest {
     @Test
     void updateWithLastStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', 'LAST')
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_after_max', 'LAST')
     }
 
     @Test
     void updateWithEndOfEpochStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', '2038-01-19T03:14:00Z')
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_after_max', '9999-12-31T23:59:59Z')
     }
 
     @Test
-    void updateWithAfterEndOfEpochStartDate() {
+    void updateWithAfterMaxStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_of_epoch', '2039-01-01T00:00:00Z')
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_after_max', '10000-01-01T00:00:00Z')
     }
 
     /**

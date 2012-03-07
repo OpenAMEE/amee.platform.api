@@ -686,19 +686,19 @@ class ProfileItemIT extends BaseApiTest {
      * <ul>
      * <li>All are optional.
      * <li>startDate must be before endDate.
-     * <li>dates must be within 1970-01-01 00:00:00 => Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07.
-     *     This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
+     * <li>dates must be within 1970-01-01 00:00:00 => 9999-12-31 23:59:59, which is from the epoch to the last
+     * date supported by MySQL DATETIME columns.
      * </ul>
      */
     @Test
     void updateWithInvalidDates() {
         updateProfileItemFieldJson('startDate', 'epoch.startDate', '1950-01-01T12:00:00Z', 3.6)
-        updateProfileItemFieldJson('startDate', 'end_of_epoch.startDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'end_after_max.startDate', '10000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('endDate', 'end_of_epoch.endDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('endDate', 'end_after_max.endDate', '10000-01-01T12:00:00Z', 3.6)
         updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
+        updateProfileItemFieldJson('duration', 'end_after_max.endDate', 'P10000Y', 3.6)
 
         // Invalid format for duration
         updateProfileItemFieldJson('duration', 'format', '10Y', 3.6)
