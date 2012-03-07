@@ -256,7 +256,7 @@
 
     <profiles>
         <profile>
-            <id>skip-copy-dependencies</id>
+            <id>skip-eclipse-unsupported-mojos</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
