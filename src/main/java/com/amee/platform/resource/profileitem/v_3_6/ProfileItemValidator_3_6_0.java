@@ -161,7 +161,7 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                     }
 
                                     // Date must be in allowed range (don't need
-                                    // to check < EPOCH as previous test will
+                                    // to check < max as previous test will
                                     // catch)
                                     if (thisProfileItem.getEndDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
                                         errors.rejectValue("endDate", "end_after_max.endDate");
