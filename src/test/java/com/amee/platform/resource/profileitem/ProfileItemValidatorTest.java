@@ -220,7 +220,7 @@ public class ProfileItemValidatorTest {
     public void testDurationTooLong() {
         ProfileItem bad = new ProfileItem();
         bad.setStartDate(new Date());
-        bad.setDuration("P1000Y");
+        bad.setDuration("P10000Y");
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");
