@@ -5,6 +5,7 @@ import org.junit.Test
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Search API.
@@ -45,11 +46,12 @@ class SearchIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/search",
                 query: ['q': 'water', 'types': 'DC'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/json', response.contentType
         assertTrue response.data instanceof net.sf.json.JSON
         assertEquals 'OK', response.data.status
         assertEquals 2, response.data.results.size()
+        assert Collections.nCopies(2, 'category') == response.data.results.collect { it.type }
     }
 
     /**
@@ -66,12 +68,13 @@ class SearchIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/search",
                     query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.results.size()
             assertFalse response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
+            assertEquals 'category', response.data.results.first().type
         }
     }
 
@@ -89,12 +92,13 @@ class SearchIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/search",
                     query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
             assertTrue response.data instanceof net.sf.json.JSON
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.results.size()
             assertTrue response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
+            assertEquals 'category', response.data.results.first().type
         }
     }
 
@@ -111,7 +115,7 @@ class SearchIT extends BaseApiTest {
         def response = client.get(
                 path: "/${version}/search",
                 query: ['q': 'water', 'types': 'DI'])
-        assertEquals 200, response.status
+        assertEquals SUCCESS_OK.code, response.status
         assertEquals 'application/xml', response.contentType
         assertEquals 'OK', response.data.Status.text()
         def allResults = response.data.Results.Item
@@ -132,7 +136,7 @@ class SearchIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/search",
                     query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def allResults = response.data.Results.Category
@@ -155,7 +159,7 @@ class SearchIT extends BaseApiTest {
             def response = client.get(
                     path: "/${version}/search",
                     query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
-            assertEquals 200, response.status
+            assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/xml', response.contentType
             assertEquals 'OK', response.data.Status.text()
             def allResults = response.data.Results.Category
@@ -182,7 +186,7 @@ class SearchIT extends BaseApiTest {
             fail 'Response status code should have been 400.';
         } catch (HttpResponseException e) {
             def response = e.response;
-            assertEquals 400, response.status;
+            assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status;
             assertEquals 'application/json', response.contentType;
             assertTrue response.data instanceof net.sf.json.JSON;
             assertEquals 'INVALID', response.data.status;

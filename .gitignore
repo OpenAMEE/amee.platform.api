@@ -7,3 +7,7 @@ build.properties
 /server/engine/src/test/resources/smoke.properties
 .idea/
 *.iml
+.project
+.classpath
+.settings
+.groovy

@@ -64,7 +64,7 @@
 
     <!-- Messages for validation -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="file://${CONF_HOME}/validationMessages"/>
+        <property name="basename" value="${CONF_HOME}/validationMessages"/>
         <property name="cacheSeconds" value="60"/>
         <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>
@@ -96,5 +96,8 @@
 
     <!-- A no-op implementation of LocaleServiceDAO. -->
     <bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAONoOpImpl"/>
+
+    <!-- Drill Down service is lucene backed in v3 -->
+    <bean id="drillDownService" class="com.amee.platform.search.LuceneDrillDownService"/>
 
 </beans>
