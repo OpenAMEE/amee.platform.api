@@ -98,6 +98,6 @@
     <bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAONoOpImpl"/>
 
     <!-- Drill Down service is lucene backed in v3 -->
-    <bean id="drillDownService" class="com.amee.platform.search.SearchDrillDownService"/>
+    <bean id="drillDownService" class="com.amee.platform.search.LuceneDrillDownService"/>
 
 </beans>
