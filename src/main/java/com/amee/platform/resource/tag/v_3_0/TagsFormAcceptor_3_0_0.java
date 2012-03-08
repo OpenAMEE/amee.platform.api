@@ -51,50 +51,63 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) throws ValidationException {
         Tag tag;
+        
         // Get existing tag if it exists.
         Tag existingTag = tagService.getTagByTag(requestWrapper.getFormParameters().get("tag"));
         if (existingTag == null) {
+            
             // Create new Tag.
             tag = new Tag();
             validationHelper.setTag(tag);
             if (validationHelper.isValid(requestWrapper.getFormParameters())) {
+                
                 // Save new Tag.
                 log.debug("handle() Use new Tag.");
+                
                 // Authorized?
                 resourceAuthorizationService.ensureAuthorizedForAccept(
                         requestWrapper.getAttributes().get("activeUserUid"));
+                
                 // Don't allow more than 1000 tags.
                 // NOTE: See https://jira.amee.com/browse/PL-1761
                 // Note: See https://jira.amee.com/browse/PL-1947
                 if (tagService.getTagCount() >= 1000) {
                     throw new IllegalStateException("Only 1000 tags are allowed.");
                 }
+                
                 // Save Tag.
                 tagService.persist(tag);
             } else {
                 throw new ValidationException(validationHelper.getValidationResult());
             }
         } else {
+            
             // Use existing tag.
             log.debug("handle() Use existing Tag.");
             tag = existingTag;
         }
+        
         // Deal with an entity if present.
         IAMEEEntityReference entity = tagResourceService.getEntity(requestWrapper);
         if (entity != null) {
+            
             // TODO: Intention is to support entities other than DataCategory at some point.
             if (DataCategory.class.isAssignableFrom(entity.getClass())) {
                 DataCategory dataCategory = (DataCategory) entity;
+                
                 // Authorized?
                 resourceAuthorizationService.ensureAuthorizedForModify(
                         requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
+                
                 // Find existing EntityTag.
                 EntityTag entityTag = tagService.getEntityTag(dataCategory, tag.getTag());
                 if (entityTag == null) {
+                    
                     // Create and save EntityTag.
                     log.debug("handle() Use new EntityTag.");
                     entityTag = new EntityTag(dataCategory, tag);
                     tagService.persist(entityTag);
+                    
                     // Need to invalidate the Data Category.
                     invalidationService.add(dataCategory);
                 } else {
@@ -106,7 +119,9 @@ public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
         } else {
             log.debug("handle() No entity.");
         }
+        
         // Woo!
-        return ResponseHelper.getOK(requestWrapper);
+        String location = "/" + requestWrapper.getVersion() + "/tags/" + tag.getUid();
+        return ResponseHelper.getOK(requestWrapper, location, tag.getUid());
     }
 }

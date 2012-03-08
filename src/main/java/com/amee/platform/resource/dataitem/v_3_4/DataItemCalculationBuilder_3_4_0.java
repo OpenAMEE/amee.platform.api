@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO: Specify units and perUnits.
  * TODO: Validation of each parameter against matching IVDs.
  */
 @Service
@@ -99,7 +98,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         // Get all the parameters.
         List<Choice> parameters = getParameters(requestWrapper);
 
-        // Prepare the value choices.
+        // Get the available user choices (with any defaults set).
         // TODO: Is hard-coding the APIVersion OK?
         Choices userValueChoices = dataItemService.getUserValueChoices(dataItem, APIVersion.TWO);
         userValueChoices.merge(parameters);
@@ -117,20 +116,38 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         }
     }
 
+    /**
+     * Creates a List of Choices from the submitted parameters. Only values.*, units.* and perUnits.* values are used.
+     *
+     * Values parameters will have their 'values.' prefix stripped.
+     *
+     * @param requestWrapper
+     * @return
+     */
     private List<Choice> getParameters(RequestWrapper requestWrapper) {
+
         // Get the map of query parameters but remove special parameters values.
         Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
         // queryParameters.remove("returnUnit");
         // queryParameters.remove("returnPerUnit");
         queryParameters.remove("startDate");
+
         // Create list of Choices for parameters.
         List<Choice> parameterChoices = new ArrayList<Choice>();
         for (String name : queryParameters.keySet()) {
-            parameterChoices.add(new Choice(name, requestWrapper.getQueryParameters().get(name)));
+            String value = requestWrapper.getQueryParameters().get(name);
+
+            // Only add those parameters we are expecting (values, units, perUnits)
+            if (name.startsWith("values.")) {
+                parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), value));
+            } else if (name.startsWith("units.") || name.startsWith("perUnits.")) {
+                parameterChoices.add(new Choice(name, value));
+            }
         }
         return parameterChoices;
     }
 
+    @Override
     public DataItemCalculationResource.Renderer getRenderer(RequestWrapper requestWrapper) {
         if (renderer == null) {
             renderer = (DataItemCalculationResource.Renderer) resourceBeanFinder.getRenderer(DataItemCalculationResource.Renderer.class, requestWrapper);

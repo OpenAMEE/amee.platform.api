@@ -18,7 +18,7 @@ import java.util.Set;
 @Service
 @Scope("prototype")
 @Since("3.4.0")
-public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implements DataItemValuesResource.DataItemValuesFilterValidator {
+public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implements DataItemValuesResource.FilterValidator {
 
     protected DataItemValuesFilter object;
     protected Set<String> allowedFields = new HashSet<String>();
@@ -41,7 +41,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addStartDate() {
         allowedFields.add("startDate");
-        add(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
+        addCustomEditor(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
         add(new ValidationSpecification()
                 .setName("startDate")
                 .setAllowEmpty(true));
@@ -52,7 +52,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        add(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
+        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
         add(new ValidationSpecification()
                 .setName("endDate")
                 .setAllowEmpty(true));
@@ -70,7 +70,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
 
     @Override
     public String[] getAllowedFields() {
-        return allowedFields.toArray(new String[]{});
+        return allowedFields.toArray(new String[allowedFields.size()]);
     }
 
     @Override

@@ -48,6 +48,6 @@ public class AlgorithmRemover_3_4_0 implements AlgorithmResource.Remover {
         // Handle Algorithm removal.
         definitionService.remove(algorithm);
         definitionService.invalidate(itemDefinition);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, algorithm.getUid());
     }
 }

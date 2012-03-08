@@ -39,10 +39,13 @@ public class DataCategoryJSONRenderer_3_3_0 implements DataCategoryResource.Rend
 
     public void addBasic() {
         ResponseHelper.put(dataCategoryObj, "uid", dataCategory.getUid());
-        ResponseHelper.put(dataCategoryObj, "name", dataCategory.getName());
         ResponseHelper.put(dataCategoryObj, "wikiName", dataCategory.getWikiName());
     }
 
+    public void addName(){
+        ResponseHelper.put(dataCategoryObj, "name", dataCategory.getName());
+    }
+    
     public void addPath() {
         ResponseHelper.put(dataCategoryObj, "path", dataCategory.getPath());
         ResponseHelper.put(dataCategoryObj, "fullPath", dataCategory.getFullPath());

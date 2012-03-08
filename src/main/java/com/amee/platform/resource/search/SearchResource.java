@@ -21,8 +21,6 @@ public interface SearchResource {
         public void newDataItem(DataItemResource.Renderer dataItemRenderer);
 
         public void setTruncated(boolean truncated);
-
-        public Object getObject();
     }
 
     public static interface SearchFilterValidationHelper {

@@ -58,6 +58,7 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
         DataCategory dataCategory = resourceService.getDataCategoryWhichHasItemDefinition(requestWrapper);
 
         // Authorized?
+        // TODO: should this be ensureAuthorizedForAccept?
         resourceAuthorizationService.ensureAuthorizedForModify(
                 requestWrapper.getAttributes().get("activeUserUid"), dataCategory);
 
@@ -85,7 +86,7 @@ public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAccept
                     requestWrapper,
                     "/" + requestWrapper.getVersion() +
                             "/categories/" + requestWrapper.getAttributes().get("categoryIdentifier") +
-                            "/items/" + dataItem.getUid());
+                            "/items/" + dataItem.getUid(), dataItem.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

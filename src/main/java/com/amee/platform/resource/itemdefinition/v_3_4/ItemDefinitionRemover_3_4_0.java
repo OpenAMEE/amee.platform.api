@@ -42,6 +42,6 @@ public class ItemDefinitionRemover_3_4_0 implements ItemDefinitionResource.Remov
 
         definitionService.remove(itemDefinition);
         definitionService.invalidate(itemDefinition);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, itemDefinition.getUid());
     }
 }

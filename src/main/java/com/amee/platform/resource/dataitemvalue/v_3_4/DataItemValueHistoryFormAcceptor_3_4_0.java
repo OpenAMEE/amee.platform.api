@@ -96,7 +96,7 @@ public class DataItemValueHistoryFormAcceptor_3_4_0 implements DataItemValueHist
                             "/categories/" + requestWrapper.getAttributes().get("categoryIdentifier") +
                             "/items/" + requestWrapper.getAttributes().get("itemIdentifier") +
                             "/values/" + requestWrapper.getAttributes().get("valuePath") +
-                            "/" + dataItemValue.getUid());
+                            "/" + dataItemValue.getUid(), dataItemValue.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

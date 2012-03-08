@@ -74,7 +74,7 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
         filter.setStartDate(DataItemService.EPOCH);
 
         // Create validator.
-        DataItemValuesResource.DataItemValuesFilterValidator validator = getValidator(requestWrapper);
+        DataItemValuesResource.FilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
         validator.setDefaultStartDate(DataItemService.EPOCH);
         validator.initialise();
@@ -149,9 +149,9 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
     }
 
     @Override
-    public DataItemValuesResource.DataItemValuesFilterValidator getValidator(RequestWrapper requestWrapper) {
-        return (DataItemValuesResource.DataItemValuesFilterValidator)
+    public DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper) {
+        return (DataItemValuesResource.FilterValidator)
                 resourceBeanFinder.getValidator(
-                        DataItemValuesResource.DataItemValuesFilterValidator.class, requestWrapper);
+                        DataItemValuesResource.FilterValidator.class, requestWrapper);
     }
 }

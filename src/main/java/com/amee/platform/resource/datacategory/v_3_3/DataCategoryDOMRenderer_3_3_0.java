@@ -38,10 +38,13 @@ public class DataCategoryDOMRenderer_3_3_0 implements DataCategoryResource.Rende
 
     public void addBasic() {
         dataCategoryElem.setAttribute("uid", dataCategory.getUid());
-        dataCategoryElem.addContent(new Element("Name").setText(dataCategory.getName()));
         dataCategoryElem.addContent(new Element("WikiName").setText(dataCategory.getWikiName()));
     }
 
+    public void addName() {
+        dataCategoryElem.addContent(new Element("Name").setText(dataCategory.getName()));
+    }
+    
     public void addPath() {
         dataCategoryElem.addContent(new Element("Path").setText(dataCategory.getPath()));
         dataCategoryElem.addContent(new Element("FullPath").setText(dataCategory.getFullPath()));

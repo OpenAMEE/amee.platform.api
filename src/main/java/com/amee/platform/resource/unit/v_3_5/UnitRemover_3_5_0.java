@@ -45,6 +45,6 @@ public class UnitRemover_3_5_0 implements UnitResource.Remover {
 
         // Handle Unit removal.
         unitService.remove(unit);
-        return ResponseHelper.getOK(requestWrapper);
+        return ResponseHelper.getOK(requestWrapper, null, unit.getUid());
     }
 }

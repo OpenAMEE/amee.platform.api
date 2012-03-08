@@ -21,7 +21,7 @@ public class ItemValueDefinitionFormAcceptor_3_0_0 extends ItemValueDefinitionAc
         validator.initialise();
         if (validator.isValid(requestWrapper.getFormParameters())) {
             definitionService.invalidate(itemValueDefinition.getItemDefinition());
-            return ResponseHelper.getOK(requestWrapper);
+            return ResponseHelper.getOK(requestWrapper, null, itemValueDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

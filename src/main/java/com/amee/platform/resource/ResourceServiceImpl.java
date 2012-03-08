@@ -8,23 +8,34 @@ import com.amee.base.utils.UidGen;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.DataItemService;
+import com.amee.domain.ProfileItemService;
 import com.amee.domain.algorithm.Algorithm;
+import com.amee.domain.auth.User;
 import com.amee.domain.data.*;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.profile.Profile;
+import com.amee.domain.sheet.Choice;
+import com.amee.domain.sheet.Choices;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.science.StartEndDate;
+import com.amee.service.auth.AuthenticationService;
+import com.amee.service.auth.AuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
+import com.amee.service.profile.ProfileService;
 import com.amee.service.tag.TagService;
 import com.amee.service.unit.UnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -39,13 +50,22 @@ public class ResourceServiceImpl implements ResourceService {
     private DataItemService dataItemService;
 
     @Autowired
+    private ProfileItemService profileItemService;
+    
+    @Autowired
     private TagService tagService;
 
     @Autowired
     private UnitService unitService;
 
     @Autowired
+    private ProfileService profileService;
+
+    @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @Override
     public DataCategory getDataCategory(RequestWrapper requestWrapper) {
@@ -81,9 +101,11 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public DataItem getDataItem(RequestWrapper requestWrapper, DataCategory dataCategory) {
-        // Get DataItem identifier.
+
+        // First try the DataItem identifier (UID) from the URI.
         String itemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
         if (itemIdentifier != null) {
+
             // Get DataItem.
             DataItem dataItem = dataItemService.getDataItemByIdentifier(dataCategory, itemIdentifier);
             if (dataItem != null) {
@@ -92,7 +114,22 @@ public class ResourceServiceImpl implements ResourceService {
                 throw new NotFoundException();
             }
         } else {
-            throw new MissingAttributeException("itemIdentifier");
+
+            // Try fetching by drill down
+            List<Choice> selections = new ArrayList<Choice>();
+            for (Choice choice : dataCategory.getItemDefinition().getDrillDownChoices()) {
+                String parameterName = choice.getName();
+                if (requestWrapper.getAllParameters().containsKey(parameterName)) {
+                    selections.add(new Choice(parameterName, requestWrapper.getAllParameters().get(parameterName)));
+                }
+            }
+
+            DataItem dataItem = dataItemService.getDataItemByCategoryAndDrillDowns(dataCategory, selections);
+            if (dataItem != null) {
+                return dataItem;
+            } else {
+                throw new NotFoundException();
+            }
         }
     }
 
@@ -305,5 +342,46 @@ public class ResourceServiceImpl implements ResourceService {
         } else {
             throw new MissingAttributeException("unitTypeIdentifier");
         }
+    }
+
+    @Override
+    public Profile getProfile(RequestWrapper requestWrapper) {
+
+        // Get the profile identifier
+        String profileIdentifier = requestWrapper.getAttributes().get("profileIdentifier");
+        if (profileIdentifier != null) {
+            Profile profile = profileService.getProfileByUid(profileIdentifier);
+            if (profile != null) {
+                return profile;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("profileIdentifier");
+        }
+    }
+
+    @Override
+    public ProfileItem getProfileItem(RequestWrapper requestWrapper, Profile profile) {
+
+        // Get the profile item identifier
+        String itemIdentifier = requestWrapper.getAttributes().get("itemIdentifier");
+        if (itemIdentifier != null) {
+
+            // Get ProfileItem.
+            ProfileItem profileItem = profileItemService.getItemByUid(itemIdentifier);
+            if (profileItem != null && profileItem.getProfile().equals(profile)) {
+                return profileItem;
+            } else {
+                throw new NotFoundException();
+            }
+        } else {
+            throw new MissingAttributeException("itemIdentifier");
+        }
+    }
+
+    @Override
+    public User getCurrentUser(RequestWrapper requestWrapper) {
+        return authenticationService.getUserByUid(requestWrapper.getAttributes().get("activeUserUid"));
     }
 }

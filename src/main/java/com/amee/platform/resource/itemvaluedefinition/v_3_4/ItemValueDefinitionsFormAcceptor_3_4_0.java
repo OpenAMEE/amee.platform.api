@@ -67,7 +67,7 @@ public class ItemValueDefinitionsFormAcceptor_3_4_0 extends ItemValueDefinitionB
             String location = "/" + requestWrapper.getVersion() +
                     "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
                     "/values/" + itemValueDefinition.getUid();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, itemValueDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

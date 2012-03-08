@@ -13,7 +13,7 @@ public interface DrillResource {
 
     interface Renderer extends ResourceRenderer {
 
-        final static DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+        DateTimeFormatter DATE_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
         void startSelections();
 

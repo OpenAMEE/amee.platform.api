@@ -75,6 +75,7 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
 
         boolean full = requestWrapper.getMatrixParameters().containsKey("full");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
+        boolean name = requestWrapper.getMatrixParameters().containsKey("name");
         boolean path = requestWrapper.getMatrixParameters().containsKey("path");
         boolean parent = requestWrapper.getMatrixParameters().containsKey("parent");
         boolean authority = requestWrapper.getMatrixParameters().containsKey("authority");
@@ -89,6 +90,9 @@ public class DataCategoryBuilder_3_0_0 implements DataCategoryResource.Builder {
         renderer.addBasic();
 
         // Optionals.
+        if (name || full) {
+            renderer.addName();
+        }
         if (path || full) {
             renderer.addPath();
         }

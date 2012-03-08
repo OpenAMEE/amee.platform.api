@@ -32,7 +32,9 @@ public class SearchJSONRenderer_3_0_0 implements SearchResource.Renderer {
     @Override
     public void newDataCategory(DataCategoryResource.Renderer dataCategoryRenderer) {
         try {
-            resultsArr.put(((JSONObject) dataCategoryRenderer.getObject()).getJSONObject("category"));
+            JSONObject category = ((JSONObject) dataCategoryRenderer.getObject()).getJSONObject("category");
+            ResponseHelper.put(category, "type", "category");
+            resultsArr.put(category);
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
@@ -41,7 +43,9 @@ public class SearchJSONRenderer_3_0_0 implements SearchResource.Renderer {
     @Override
     public void newDataItem(DataItemResource.Renderer dataItemRenderer) {
         try {
-            resultsArr.put(((JSONObject) dataItemRenderer.getObject()).getJSONObject("item"));
+            JSONObject item = ((JSONObject) dataItemRenderer.getObject()).getJSONObject("item");
+            ResponseHelper.put(item, "type", "item");
+            resultsArr.put(item);
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }

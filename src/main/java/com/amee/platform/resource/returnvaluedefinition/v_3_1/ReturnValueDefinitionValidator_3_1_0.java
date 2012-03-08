@@ -48,6 +48,7 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
     public void initialise() {
         addType();
         addValueDefinition();
+        addName();
         addUnit();
         addPerUnit();
         addDefaultType();
@@ -82,12 +83,20 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
                         }));
     }
 
+	private void addName() {
+		allowedFields.add("name");
+		add(new ValidationSpecification()
+				.setName("name")
+				.setMinSize(ReturnValueDefinition.NAME_MIN_SIZE)
+				.setMaxSize(ReturnValueDefinition.NAME_MAX_SIZE));
+	}
+
     /**
      * Configure the validator for the unit property of the DataItem.
      */
     private void addUnit() {
         allowedFields.add("unit");
-        add(AmountUnit.class, "unit", new UnitEditor());
+        addCustomEditor(AmountUnit.class, "unit", new UnitEditor());
         add(new ValidationSpecification()
                 .setName("unit")
                 .setAllowEmpty(true)
@@ -100,7 +109,7 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
      */
     private void addPerUnit() {
         allowedFields.add("perUnit");
-        add(AmountPerUnit.class, "perUnit", new PerUnitEditor());
+        addCustomEditor(AmountPerUnit.class, "perUnit", new PerUnitEditor());
         add(new ValidationSpecification()
                 .setName("perUnit")
                 .setAllowEmpty(true)
@@ -155,7 +164,7 @@ public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implemen
      */
     private void addValueDefinition() {
         allowedFields.add("valueDefinition");
-        add(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
+        addCustomEditor(ValueDefinition.class, "valueDefinition", valueDefinitionEditor);
     }
 
     @Override

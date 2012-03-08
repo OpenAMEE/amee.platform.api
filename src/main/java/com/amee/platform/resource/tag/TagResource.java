@@ -17,8 +17,6 @@ public interface TagResource {
         void newTag(Tag tag);
 
         void addBasic();
-
-        Object getObject();
     }
 
     interface FormAcceptor extends ResourceAcceptor {

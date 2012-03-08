@@ -74,7 +74,7 @@ public class ReturnValueDefinitionsFormAcceptor_3_1_0 implements ReturnValueDefi
                     requestWrapper,
                     "/" + requestWrapper.getVersion() +
                             "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
-                            "/returnvalues/" + returnValueDefinition.getUid());
+                            "/returnvalues/" + returnValueDefinition.getUid(), returnValueDefinition.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

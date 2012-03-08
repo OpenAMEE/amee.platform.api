@@ -11,7 +11,6 @@ import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
-import com.amee.service.data.DataService;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -148,6 +147,10 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
         localeService.clearLocaleNames();
     }
 
+    public void addName() {
+        // Not implemented for ecospold.
+    }
+    
     public void addPath() {
         // Not implemented for ecospold.
     }

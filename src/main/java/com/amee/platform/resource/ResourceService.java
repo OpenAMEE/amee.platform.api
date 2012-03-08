@@ -3,12 +3,15 @@ package com.amee.platform.resource;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.domain.AMEEStatus;
 import com.amee.domain.algorithm.Algorithm;
+import com.amee.domain.auth.User;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.item.profile.ProfileItem;
+import com.amee.domain.profile.Profile;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
@@ -46,4 +49,10 @@ public interface ResourceService {
     AMEEUnitType getUnitType(RequestWrapper requestWrapper, boolean allowMissingUnitType);
 
     AMEEUnit getUnit(RequestWrapper requestWrapper, AMEEUnitType unitType);
+    
+    Profile getProfile(RequestWrapper requestWrapper);
+
+    ProfileItem getProfileItem(RequestWrapper requestWrapper, Profile profile);
+
+    User getCurrentUser(RequestWrapper requestWrapper);
 }

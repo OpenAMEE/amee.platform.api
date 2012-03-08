@@ -1,5 +1,11 @@
 package com.amee.platform.resource.returnvaluedefinition.v_3_1;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -9,12 +15,6 @@ import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
 import com.amee.service.auth.ResourceAuthorizationService;
-import com.amee.service.definition.DefinitionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
@@ -66,6 +66,7 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         boolean units = requestWrapper.getMatrixParameters().containsKey("units");
         boolean flags = requestWrapper.getMatrixParameters().containsKey("flags");
         boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
+        boolean name = requestWrapper.getMatrixParameters().containsKey("name");
 
         // New ReturnValueDefinition & basic.
         renderer.newReturnValueDefinition(returnValueDefinition);
@@ -89,6 +90,9 @@ public class ReturnValueDefinitionBuilder_3_1_0 implements ReturnValueDefinition
         }
         if (audit || full) {
             renderer.addAudit();
+        }
+        if (name || full) {
+        	renderer.addName();
         }
     }
 

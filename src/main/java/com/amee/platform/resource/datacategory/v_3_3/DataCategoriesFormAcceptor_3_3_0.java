@@ -49,7 +49,7 @@ public class DataCategoriesFormAcceptor_3_3_0 extends DataCategoryAcceptor imple
 
             // Return location of Data Category.
             String location = "/" + requestWrapper.getVersion() + "/categories/" + dataCategory.getUid();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, dataCategory.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }

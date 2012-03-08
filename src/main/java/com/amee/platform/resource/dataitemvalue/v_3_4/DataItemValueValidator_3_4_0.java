@@ -9,7 +9,7 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.data.BaseDataItemTextValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.StartEndDateEditor;
-import com.amee.platform.resource.dataitem.DataItemValueEditor;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 import com.amee.platform.science.StartEndDate;
 import org.apache.commons.logging.Log;
@@ -63,7 +63,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setName("value")
                     .setDoubleNumber(true));
             // Add the editor.
-            add(Double.class, "value", new DataItemValueEditor(ivd));
+            addCustomEditor(Double.class, "value", new ItemValueEditor(ivd));
         } else if (ivd.isInteger()) {
             // Integer values.
             // Allow parameter for this ItemValueDefinition.
@@ -73,7 +73,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setName("value")
                     .setIntegerNumber(true));
             // Add the editor.
-            add(Integer.class, "value", new DataItemValueEditor(ivd));
+            addCustomEditor(Integer.class, "value", new ItemValueEditor(ivd));
         } else {
             // String values.
             // Allow parameter for this ItemValueDefinition.
@@ -84,7 +84,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setMaxSize(BaseDataItemTextValue.VALUE_SIZE)
                     .setAllowEmpty(true));
             // Add the editor.
-            add(String.class, "value", new DataItemValueEditor(ivd));
+            addCustomEditor(String.class, "value", new ItemValueEditor(ivd));
         }
     }
 
@@ -94,7 +94,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
     protected void addStartDate() {
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
             allowedFields.add("startDate");
-            add(StartEndDate.class, "startDate", new StartEndDateEditor(new Date()));
+            addCustomEditor(StartEndDate.class, "startDate", new StartEndDateEditor(new Date()));
             add(new ValidationSpecification()
                     .setName("startDate")
                     .setAllowEmpty(true)

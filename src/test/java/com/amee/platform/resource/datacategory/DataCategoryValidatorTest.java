@@ -1,20 +1,20 @@
 package com.amee.platform.resource.datacategory;
 
-import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.LocaleService;
-import com.amee.domain.MetadataService;
-import com.amee.domain.data.DataCategory;
-import com.amee.platform.resource.datacategory.v_3_3.DataCategoryValidator_3_3_0;
-import com.amee.service.data.DataService;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.amee.base.utils.ThreadBeanHolder;
+import com.amee.domain.MetadataService;
+import com.amee.domain.data.DataCategory;
+import com.amee.platform.resource.datacategory.v_3_3.DataCategoryValidator_3_3_0;
+import com.amee.service.data.DataService;
 
 public class DataCategoryValidatorTest {
 

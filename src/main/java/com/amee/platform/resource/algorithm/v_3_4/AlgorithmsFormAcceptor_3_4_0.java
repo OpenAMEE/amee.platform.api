@@ -68,7 +68,7 @@ public class AlgorithmsFormAcceptor_3_4_0 implements AlgorithmsResource.FormAcce
             String location = "/" + requestWrapper.getVersion() +
                     "/definitions/" + requestWrapper.getAttributes().get("itemDefinitionIdentifier") +
                     "/algorithms/" + algorithm.getUid();
-            return ResponseHelper.getOK(requestWrapper, location);
+            return ResponseHelper.getOK(requestWrapper, location, algorithm.getUid());
         } else {
             throw new ValidationException(validator.getValidationResult());
         }
