@@ -48,7 +48,7 @@ class CategorySmokeTest extends BaseSmokeTest {
 
         // TODO: Remove these checks when deployed to stage/live
         config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
-        if (config.api.host.v3 =~ "live") {
+        if (config.api.host.v3 =~ "science") {
             assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
         } else {
             assertEquals(95.5576256544, response.data.amounts[0].value, DELTA)
@@ -64,7 +64,7 @@ class CategorySmokeTest extends BaseSmokeTest {
 
         // TODO: Remove these checks when deployed to stage/live
         config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
-        if (config.api.host.v3 =~ "live") {
+        if (config.api.host.v3 =~ "science") {
             assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
         } else {
             assertEquals(95.5576256544, response.data.amounts[0].value, DELTA)
