@@ -175,6 +175,50 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
         return bg.create();
     }
 
+    /**
+     * Returns a JavaBean that contains fields and setter/getter methods conforming to
+     * the 'fromProfile' ItemValueDefinitions of this ItemDefinition. The returned object is temporary
+     * and transient. It is only intended for use with the validation logic for incoming POST and PUT
+     * requests. The bean does not have a permanent class and instead uses a dynamic class produced by
+     * a CGLIB {@link BeanGenerator}.
+     *
+     * @return A JavaBean matching the above description
+     */
+    public Object getProfileItemValuesBean() {
+        BeanGenerator bg = new BeanGenerator();
+        for (ItemValueDefinition ivd : getActiveItemValueDefinitions()) {
+            if (ivd.isFromProfile()) {
+                if (ivd.isDouble()) {
+                    bg.addProperty(ivd.getPath(), Double.class);
+                } else if (ivd.isInteger()) {
+                    bg.addProperty(ivd.getPath(), Integer.class);
+                } else {
+                    bg.addProperty(ivd.getPath(), String.class);
+                }
+            }
+        }
+        return bg.create();
+    }
+
+    /**
+     * Returns a JavaBean that contains fields and setter/getter methods conforming to
+     * the 'fromProfile' ItemValueDefinitions of this ItemDefinition. The returned object is temporary
+     * and transient. It is only intended for use with the validation logic for incoming POST and PUT
+     * requests. The bean does not have a permanent class and instead uses a dynamic class produced by
+     * a CGLIB {@link BeanGenerator}.
+     *
+     * @return A JavaBean matching the above description
+     */
+    public Object getProfileItemUnitsBean() {
+        BeanGenerator bg = new BeanGenerator();
+        for (ItemValueDefinition ivd : getActiveItemValueDefinitions()) {
+            if (ivd.isFromProfile()) {
+                bg.addProperty(ivd.getPath(), String.class);
+            }
+        }
+        return bg.create();
+    }
+
     @Override
     public String getPath() {
         return getUid();

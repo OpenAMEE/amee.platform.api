@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -105,7 +106,8 @@ public class Profile extends AMEEEntity implements Pathable {
 
     @Override
     public List<IAMEEEntityReference> getHierarchy() {
-        throw new UnsupportedOperationException("Profile does not support getHierarchy().");
+        // Profile does not support hierarchy.
+        return Arrays.<IAMEEEntityReference>asList(this);
     }
 
     public User getUser() {

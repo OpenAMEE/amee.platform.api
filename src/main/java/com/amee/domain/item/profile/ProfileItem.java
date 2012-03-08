@@ -1,7 +1,24 @@
 package com.amee.domain.item.profile;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.joda.time.Duration;
+
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.AMEEStatus;
+import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.ObjectType;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.data.DataCategory;
@@ -12,12 +29,6 @@ import com.amee.domain.profile.CO2CalculationService;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.joda.time.Duration;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "PROFILE_ITEM")
@@ -40,6 +51,31 @@ public class ProfileItem extends BaseItem {
 
     @Transient
     private ReturnValues amounts = new ReturnValues();
+
+    /**
+     * A temporary and transient variable used in validation to set the endDate.
+     */
+    @Transient
+    private String duration;
+
+    /**
+     * A temporary and transient object for use in validation. See the getValues() method below.
+     */
+    @Transient
+    private Object values;
+
+    /**
+     * A temporary and transient object for use in validation. See the getUnits() method below.
+     */
+    @Transient
+    private Object units;
+
+    /**
+     * A temporary and transient object for use in validation. See the getPerUnits() method below.
+     * This bean has the same structure as the units bean.
+     */
+    @Transient
+    private Object perUnits;
 
     public ProfileItem() {
         super();
@@ -117,6 +153,11 @@ public class ProfileItem extends BaseItem {
         this.startDate = startDate;
     }
 
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setStartDate(StartEndDate startDate) {
+        this.startDate = startDate;
+    }
+
     public StartEndDate getEndDate() {
         if (endDate != null) {
             return new StartEndDate(endDate);
@@ -126,6 +167,12 @@ public class ProfileItem extends BaseItem {
     }
 
     public void setEndDate(Date endDate) {
+        // May be null.
+        this.endDate = endDate;
+    }
+
+    // Required for data binding. The parameter type of the setter must match the return type of the getter.
+    public void setEndDate(StartEndDate endDate) {
         // May be null.
         this.endDate = endDate;
     }
@@ -247,9 +294,11 @@ public class ProfileItem extends BaseItem {
      * Returns a Duration for the Item which is based on the startDate and endDate values. If there is no
      * endDate then null is returned.
      *
+     * Strange method name so it doesn't conflict with the duration getter/setter required for bean binding in validation.
+     *
      * @return the Duration or null
      */
-    public Duration getDuration() {
+    public Duration getDurationInternal() {
         if (getEndDate() != null) {
             return new Duration(getStartDate().getTime(), getEndDate().getTime());
         } else {
@@ -291,4 +340,72 @@ public class ProfileItem extends BaseItem {
         return ThreadBeanHolder.get(ProfileItemService.class);
     }
 
+    /**
+     * Returns a temporary and transient JavaBean related to the Item Values associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link com.amee.domain.data.ItemDefinition#getProfileItemValuesBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getValues() {
+        if (values == null) {
+            values = getItemDefinition().getProfileItemValuesBean();
+        }
+        return values;
+    }
+
+    /**
+     * Returns a temporary and transient JavaBean related to the units associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link com.amee.domain.data.ItemDefinition#getProfileItemUnitsBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getUnits() {
+        if (units == null) {
+            units = getItemDefinition().getProfileItemUnitsBean();
+        }
+        return units;
+    }
+
+    /**
+     * Returns a temporary and transient JavaBean related to the perUnits associated with this
+     * ProfileItem. The bean is intended as a target for property binding during input validation within
+     * PUT and POST requests. See {@link com.amee.domain.data.ItemDefinition#getProfileItemUnitsBean()} for more details
+     * on how this bean is created.
+     *
+     * @return
+     */
+    public Object getPerUnits() {
+        if (perUnits == null) {
+            perUnits = getItemDefinition().getProfileItemUnitsBean();
+        }
+        return perUnits;
+    }
+
+    public List<IAMEEEntityReference> getHierarchy() {
+        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
+        entities.add(getProfile());
+        entities.add(this);
+        return entities;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+    
+    public String getNote(){
+    	return getMetadataValue("note");
+    }
+    
+    public void setNote(String note){
+    	getOrCreateMetadata("note").setValue(note);
+        onModify();
+    }
 }

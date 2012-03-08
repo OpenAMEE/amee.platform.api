@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import java.io.Serializable;
 
 /**
- * PermissionEntry represents an individual permission used within a Permission instance. Each
+ * A PermissionEntry represents an individual permission used within a Permission instance. Each
  * PermissionEntry instance is immutable. There are no setters and the default constructor
  * is private.
  * <p/>

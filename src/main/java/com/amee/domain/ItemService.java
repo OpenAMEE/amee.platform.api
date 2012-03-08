@@ -13,33 +13,33 @@ import java.util.Set;
 
 public interface ItemService {
 
-    public BaseItem getItemByUid(String uid);
+    BaseItem getItemByUid(String uid);
 
-    public Set<ItemValueDefinition> getItemValueDefinitionsInUse(BaseItem item);
+    Set<ItemValueDefinition> getItemValueDefinitionsInUse(BaseItem item);
 
-    public List<BaseItemValue> getItemValues(BaseItem item);
+    List<BaseItemValue> getItemValues(BaseItem item);
 
-    public List<BaseItemValue> getAllItemValues(BaseItem item, String itemValuePath);
+    List<BaseItemValue> getAllItemValues(BaseItem item, String itemValuePath);
 
-    public Set<BaseItemValue> getActiveItemValues(BaseItem item);
+    Set<BaseItemValue> getActiveItemValues(BaseItem item);
 
-    public Set<BaseItemValue> getAllItemValues(BaseItem item);
+    Set<BaseItemValue> getAllItemValues(BaseItem item);
 
-    public BaseItemValue getItemValue(BaseItem item, String identifier, Date startDate);
+    BaseItemValue getItemValue(BaseItem item, String identifier, Date startDate);
 
-    public BaseItemValue getByUid(BaseItem item, final String uid);
+    BaseItemValue getByUid(BaseItem item, final String uid);
 
-    public BaseItemValue getItemValue(BaseItem item, String identifier);
+    BaseItemValue getItemValue(BaseItem item, String identifier);
 
-    public ItemValueMap getItemValuesMap(BaseItem item);
+    ItemValueMap getItemValuesMap(BaseItem item);
 
-    public boolean isItemValueUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
+    boolean isItemValueUnique(BaseItem item, ItemValueDefinition itemValueDefinition, StartEndDate startDate);
 
-    public void loadItemValuesForItems(Collection<BaseItem> items);
+    void loadItemValuesForItems(Collection<BaseItem> items);
 
-    public void addItemValue(BaseItemValue itemValue);
+    void addItemValue(BaseItemValue itemValue);
 
-    public void clearItemValues();
+    void clearItemValues();
 
-    public StartEndDate getStartDate(BaseItemValue itemValue);
+    StartEndDate getStartDate(BaseItemValue itemValue);
 }

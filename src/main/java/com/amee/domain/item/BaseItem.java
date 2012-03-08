@@ -1,16 +1,18 @@
 package com.amee.domain.item;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 import com.amee.domain.AMEEEntity;
-import com.amee.domain.IAMEEEntityReference;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.Pathable;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 @MappedSuperclass
 public abstract class BaseItem extends AMEEEntity implements Pathable {
@@ -82,18 +84,6 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
             }
         }
         return fullPath;
-    }
-
-    public List<IAMEEEntityReference> getHierarchy() {
-        List<IAMEEEntityReference> entities = new ArrayList<IAMEEEntityReference>();
-        entities.add(this);
-        DataCategory dc = getDataCategory();
-        while (dc != null) {
-            entities.add(dc);
-            dc = dc.getDataCategory();
-        }
-        Collections.reverse(entities);
-        return entities;
     }
 
     public ItemDefinition getItemDefinition() {

@@ -6,6 +6,7 @@ import com.amee.domain.data.ItemValueMap;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.StartEndDate;
 import org.joda.time.DateTime;
@@ -18,61 +19,64 @@ import java.util.Set;
 public interface DataItemService extends ItemService {
 
     // The UNIX time epoch, which is 1970-01-01 00:00:00. See: http://en.wikipedia.org/wiki/Unix_epoch
-    public final static Date EPOCH = new Date(0);
+    final static Date EPOCH = new Date(0);
 
     // Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07. See: http://en.wikipedia.org/wiki/Year_2038_problem
     // This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
-    public final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
+    final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
 
-    public long getDataItemCount(IDataCategoryReference dataCategory);
+    @Override
+    DataItem getItemByUid(String uid);
 
-    public List<DataItem> getDataItems(IDataCategoryReference dataCategory);
+    long getDataItemCount(IDataCategoryReference dataCategory);
 
-    public List<DataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
+    List<DataItem> getDataItems(IDataCategoryReference dataCategory);
 
-    public List<DataItem> getDataItems(Set<Long> dataItemIds);
+    List<DataItem> getDataItems(IDataCategoryReference dataCategory, boolean checkDataItems);
 
-    public DataItem getDataItemByIdentifier(DataCategory parent, String path);
+    List<DataItem> getDataItems(Set<Long> dataItemIds);
 
-    public Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
+    DataItem getDataItemByIdentifier(DataCategory parent, String path);
 
-    public ItemValueMap getDrillDownValuesMap(DataItem dataItem);
+    DataItem getDataItemByCategoryAndDrillDowns(DataCategory parent, List<Choice> selections);
 
-    public boolean equivalentDataItemExists(DataItem dataItem);
+    Map<String, DataItem> getDataItemMap(Set<Long> dataItemIds, boolean loadValues);
 
-    public DataItem getDataItemByUid(DataCategory parent, String uid);
+    ItemValueMap getDrillDownValuesMap(DataItem dataItem);
 
-    public DataItem getItemByUid(String uid);
+    DataItem getDataItemByUid(DataCategory parent, String uid);
 
-    public DataItem getDataItemByPath(DataCategory parent, String path);
+    DataItem getDataItemByPath(DataCategory parent, String path);
 
-    public String getLabel(DataItem dataItem);
+    String getLabel(DataItem dataItem);
 
-    public Choices getUserValueChoices(DataItem dataItem, APIVersion apiVersion);
+    Choices getUserValueChoices(DataItem dataItem, APIVersion apiVersion);
 
-    public void checkDataItem(DataItem dataItem);
+    void checkDataItem(DataItem dataItem);
 
-    public Date getDataItemsModified(DataCategory dataCategory);
+    Date getDataItemsModified(DataCategory dataCategory);
 
-    public boolean isDataItemUniqueByPath(DataItem dataItem);
+    boolean isUnique(DataItem dataItem);
 
-    public boolean isDataItemValueUniqueByStartDate(BaseDataItemValue itemValue);
+    boolean isDataItemUniqueByPath(DataItem dataItem);
 
-    public ResultsWrapper<BaseDataItemValue> getAllItemValues(DataItemValuesFilter filter);
+    boolean isDataItemValueUniqueByStartDate(BaseDataItemValue itemValue);
 
-    public void persist(DataItem dataItem);
+    ResultsWrapper<BaseDataItemValue> getAllItemValues(DataItemValuesFilter filter);
 
-    public void persist(DataItem dataItem, boolean checkDataItem);
+    void persist(DataItem dataItem);
 
-    public void remove(DataItem dataItem);
+    void persist(DataItem dataItem, boolean checkDataItem);
 
-    public void persist(BaseItemValue itemValue);
+    void remove(DataItem dataItem);
 
-    public void remove(BaseItemValue itemValue);
+    void persist(BaseItemValue itemValue);
 
-    public StartEndDate getStartDate(DataItem dataItem);
+    void remove(BaseItemValue itemValue);
 
-    public StartEndDate getEndDate(DataItem dataItem);
+    StartEndDate getStartDate(DataItem dataItem);
 
-    public void updateDataItemValues(DataItem dataitem);
+    StartEndDate getEndDate(DataItem dataItem);
+
+    void updateDataItemValues(DataItem dataitem);
 }

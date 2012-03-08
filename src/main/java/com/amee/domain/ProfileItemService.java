@@ -1,5 +1,6 @@
 package com.amee.domain;
 
+import com.amee.base.domain.ResultsWrapper;
 import com.amee.domain.data.DataCategory;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.profile.ProfileItem;
@@ -14,31 +15,33 @@ import java.util.List;
 public interface ProfileItemService extends ItemService {
 
     @Override
-    public ProfileItem getItemByUid(String uid);
+    ProfileItem getItemByUid(String uid);
 
-    public boolean hasNonZeroPerTimeValues(ProfileItem profileItem);
+    boolean hasNonZeroPerTimeValues(ProfileItem profileItem);
 
-    public boolean isNonZeroPerTimeValue(ProfileItemNumberValue value);
+    boolean isNonZeroPerTimeValue(ProfileItemNumberValue value);
 
-    public boolean isSingleFlight(ProfileItem profileItem);
+    boolean isSingleFlight(ProfileItem profileItem);
 
-    public int getProfileItemCount(Profile profile, DataCategory dataCategory);
+    int getProfileItemCount(Profile profile, DataCategory dataCategory);
 
-    public List<ProfileItem> getProfileItems(Profile profile, IDataCategoryReference dataCategory, Date profileDate);
+    ResultsWrapper<ProfileItem> getProfileItems(Profile profile, ProfileItemsFilter filter);
 
-    public List<ProfileItem> getProfileItems(Profile profile, IDataCategoryReference dataCategory, StartEndDate startDate, StartEndDate endDate);
+    List<ProfileItem> getProfileItems(Profile profile, IDataCategoryReference dataCategory, Date profileDate);
 
-    public boolean isUnique(ProfileItem pi);
+    List<ProfileItem> getProfileItems(Profile profile, IDataCategoryReference dataCategory, StartEndDate startDate, StartEndDate endDate);
 
-    public boolean equivalentProfileItemExists(ProfileItem profileItem);
+    boolean isUnique(ProfileItem pi);
 
-    public Collection<Long> getProfileDataCategoryIds(Profile profile);
+    Collection<Long> getProfileDataCategoryIds(Profile profile);
 
-    public void persist(ProfileItem profileItem);
+    void persist(ProfileItem profileItem);
 
-    public void remove(ProfileItem profileItem);
+    void remove(ProfileItem profileItem);
 
-    public void persist(BaseItemValue itemValue);
+    void persist(BaseItemValue itemValue);
 
-    public void remove(BaseItemValue itemValue);
+    void remove(BaseItemValue itemValue);
+    
+    void updateProfileItemValues(ProfileItem profileItem);
 }
