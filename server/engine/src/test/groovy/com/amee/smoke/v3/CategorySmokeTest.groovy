@@ -45,7 +45,7 @@ class CategorySmokeTest extends BaseSmokeTest {
             path: "/3/categories/IPCC_military_aircraft/items/${config.uid.item.IPCC_military_aircraft.a10}/calculation",
             query: ["flightDuration": "1"])
         assertResponseOk response
-        assertEquals(95.5576256544, response.data.amounts[0].value, DELTA)
+        assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
     }
 
     @Test
