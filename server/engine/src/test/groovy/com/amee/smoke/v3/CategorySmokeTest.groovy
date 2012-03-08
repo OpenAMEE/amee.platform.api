@@ -45,7 +45,14 @@ class CategorySmokeTest extends BaseSmokeTest {
             path: "/3/categories/IPCC_military_aircraft/calculation",
             query: [type: 'A-10A', 'values.flightDuration': '1'])
         assertResponseOk response
-        assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
+
+        // TODO: Remove these checks when deployed to stage/live
+        config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
+        if (config.api.host.v3 =~ "live") {
+            assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
+        } else {
+            assertEquals(95.5576256544, response.data.amounts[0].value, DELTA)
+        }
     }
 
     @Test
@@ -54,7 +61,14 @@ class CategorySmokeTest extends BaseSmokeTest {
             path: "/3/categories/IPCC_military_aircraft/items/${config.uid.item.IPCC_military_aircraft.a10}/calculation",
             query: ["values.flightDuration": "1"])
         assertResponseOk response
-        assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
+
+        // TODO: Remove these checks when deployed to stage/live
+        config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
+        if (config.api.host.v3 =~ "live") {
+            assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
+        } else {
+            assertEquals(95.5576256544, response.data.amounts[0].value, DELTA)
+        }
     }
 
     @Test
