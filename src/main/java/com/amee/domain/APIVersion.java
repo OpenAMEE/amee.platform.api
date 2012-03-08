@@ -33,10 +33,12 @@ public class APIVersion extends AMEEEntity {
         this.version = version;
     }
 
+    @Override
     public boolean equals(Object o) {
         return this == o || o instanceof APIVersion && o.toString().equals(version);
     }
 
+    @Override
     public int hashCode() {
         return toString().hashCode();
     }
@@ -49,6 +51,7 @@ public class APIVersion extends AMEEEntity {
         this.version = version;
     }
 
+    @Override
     public String toString() {
         return version;
     }
@@ -87,14 +90,11 @@ public class APIVersion extends AMEEEntity {
         return this.equals(ONE);
     }
 
-    public boolean isVersionTwo() {
-        return this.equals(TWO);
-    }
-
     public boolean isNotVersionOne() {
         return !this.equals(ONE);
     }
 
+    @Override
     public ObjectType getObjectType() {
         return ObjectType.AV;
     }
