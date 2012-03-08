@@ -201,10 +201,20 @@ public class InternalValue {
         throw new IllegalStateException("Expected an ExternalNumberValue.");
     }
 
+    /**
+     * If the supplied item value has unit or perUnit values, convert it to an amount in the canonical unit.
+     *
+     * @param iv the Item Value to convert to Amount.
+     * @return an Amount in the canonical unit.
+     */
     private Amount asInternalDecimal(ExternalNumberValue iv) {
+
+        // If a unit or perUnit is not defined for this Item Value just return the double value.
         if (!iv.hasUnit() && !iv.hasPerUnit()) {
             return new Amount(iv.getValueAsDouble());
         } else {
+
+            // Convert to canonical unit if required.
             Amount amount = new Amount(iv.getValueAsDouble(), iv.getCompoundUnit());
             AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
             if (amount.hasDifferentUnits(internalUnit)) {
