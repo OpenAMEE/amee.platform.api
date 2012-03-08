@@ -43,7 +43,7 @@ class CategorySmokeTest extends BaseSmokeTest {
     void categoryCalculation() {
         def response = client.get(
             path: "/3/categories/IPCC_military_aircraft/calculation",
-            query: [type:'A-10A', 'values.flightDuration': 1])
+            query: [type: 'A-10A', 'values.flightDuration': '1'])
         assertResponseOk response
         assertEquals(95.5576256544, response.data.output.amounts[0].value, DELTA)
     }
