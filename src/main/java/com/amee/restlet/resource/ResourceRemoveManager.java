@@ -27,6 +27,7 @@ public class ResourceRemoveManager extends ResourceManager {
         }
     };
 
+    @Override
     public void init(GenericResource resource) {
         super.init(resource);
         for (MediaType mediaType : mediaTypes) {
@@ -51,6 +52,7 @@ public class ResourceRemoveManager extends ResourceManager {
                     // Deal with JSON
                     if (isOk((JSONObject) result)) {
                         getResponse().setStatus(Status.SUCCESS_OK);
+                        getResponse().setEntity(getJsonRepresentation((JSONObject) result));
                     } else if (isNotFound((JSONObject) result)) {
                         getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     } else if (isNotAuthenticated((JSONObject) result)) {
@@ -71,6 +73,7 @@ public class ResourceRemoveManager extends ResourceManager {
                         String status = elm.getChild("Status").getValue();
                         if (status.equals("OK")) {
                             getResponse().setStatus(Status.SUCCESS_OK);
+                            getResponse().setEntity(getDomRepresentation((Document) result));
                         } else if (status.equals("NOT_FOUND")) {
                             getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                         } else if (status.equals("NOT_AUTHENTICATED")) {

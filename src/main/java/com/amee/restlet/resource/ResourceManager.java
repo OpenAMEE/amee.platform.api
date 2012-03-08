@@ -1,14 +1,18 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.ValidationResult;
 import com.amee.restlet.AMEESpringServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.restlet.data.MediaType;
-import org.restlet.data.Preference;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import org.restlet.data.*;
+import org.restlet.ext.json.JsonRepresentation;
+import org.restlet.resource.DomRepresentation;
+import org.restlet.resource.Representation;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -136,5 +140,95 @@ public class ResourceManager {
 
     public AMEESpringServer getActiveServer() {
         return (AMEESpringServer) getRequest().getAttributes().get("activeServer");
+    }
+
+    protected Representation getJsonRepresentation(JSONObject result) {
+        Representation representation = null;
+        try {
+            if (result != null) {
+                // Add version.
+                result.put("version", getResource().getSupportedVersion().toString());
+                // Handle validationResult.
+                if (result.has("validationResult")) {
+                    getResource().addValidationResult(new ValidationResult(result.getJSONObject("validationResult")));
+                }
+                // Handle status.
+                if (result.has("status")) {
+                    if (isOk(result)) {
+                        representation = new JsonRepresentation(result);
+                    } else if (isInvalid(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                        representation = new JsonRepresentation(result);
+                    } else if (isNotFound(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                    } else if (isNotAuthenticated(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                    } else if (isNotAuthorized(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                    } else if (isTimedOut(result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+                    } else if (isMediaTypeNotSupported(result)) {
+                        getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                    } else if (isInternalError(result)) {
+                        getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                    } else {
+                        log.warn("getJsonRepresentation() Status code not handled: " + result.getString("status"));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
+        }
+        return representation;
+    }
+
+    protected Representation getDomRepresentation(Document document) {
+        Representation representation = null;
+        if (document != null) {
+            Element result = document.getRootElement();
+            if ((result != null) && result.getName().equals("Representation")) {
+                // Add version.
+                result.addContent(new Element("Version").setText(getResource().getSupportedVersion().toString()));
+                // Handle ValidationResult.
+                if (result.getChild("ValidationResult") != null) {
+                    getResource().addValidationResult(new ValidationResult(result.getChild("ValidationResult")));
+                }
+                // Handle status.
+                if (result.getChild("Status") != null) {
+                    String status = result.getChild("Status").getValue();
+                    try {
+                        if (status.equals("OK")) {
+                            representation = new DomRepresentation(MediaType.APPLICATION_XML, ResourceBuildManager.DOM_OUTPUTTER.output(document));
+                        } else if (status.equals("INVALID")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                            representation = new DomRepresentation(MediaType.APPLICATION_XML, ResourceBuildManager.DOM_OUTPUTTER.output(document));
+                        } else if (status.equals("NOT_FOUND")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                        } else if (status.equals("NOT_AUTHENTICATED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_UNAUTHORIZED);
+                        } else if (status.equals("NOT_AUTHORIZED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+                        } else if (status.equals("TIMED_OUT")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE);
+                        } else if (status.equals("MEDIA_TYPE_NOT_SUPPORTED")) {
+                            getResponse().setStatus(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+                        } else if (status.equals("INTERNAL_ERROR")) {
+                            getResponse().setStatus(Status.SERVER_ERROR_INTERNAL);
+                        } else {
+                            log.warn("getDomRepresentation() Status code not handled: " + status);
+                        }
+                    } catch (JDOMException e) {
+                        throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
+                    }
+                }
+            } else if ((result != null) && result.getName().equals("ecoSpold")) {
+                try {
+                    representation = new DomRepresentation(MediaType.valueOf("application/x.ecospold+xml"), ResourceBuildManager.DOM_OUTPUTTER.output(document));
+                } catch (JDOMException e) {
+                    throw new RuntimeException("Caught JDOMException: " + e.getMessage(), e);
+                }
+            }
+        }
+        return representation;
     }
 }
