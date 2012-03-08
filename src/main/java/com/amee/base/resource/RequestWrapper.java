@@ -245,6 +245,11 @@ public class RequestWrapper implements Serializable {
         }
     }
 
+    /**
+     * Gets request attributes as String key-value pairs.
+     *
+     * @return a Map of request attributes.
+     */
     public Map<String, String> getAttributes() {
         return attributes;
     }
@@ -253,6 +258,13 @@ public class RequestWrapper implements Serializable {
         setMapFromMap(this.attributes, attributes);
     }
 
+    /**
+     * Gets request matrix parameters as String key-value pairs.
+     * As our matrix parameters are single values, the Map's values will be the empty String.
+     * eg: country => ""
+     *
+     * @return a Map of request matrix parameters.
+     */
     public Map<String, String> getMatrixParameters() {
         return matrixParameters;
     }
@@ -261,6 +273,11 @@ public class RequestWrapper implements Serializable {
         setMapFromMap(this.matrixParameters, matrixParameters);
     }
 
+    /**
+     * Gets request query parameters as String key-value pairs.
+     *
+     * @return a Map of request query parameters.
+     */
     public Map<String, String> getQueryParameters() {
         return queryParameters;
     }
@@ -269,6 +286,11 @@ public class RequestWrapper implements Serializable {
         setMapFromMap(this.queryParameters, queryParameters);
     }
 
+    /**
+     * Gets request form (POST body) parameters as String key-value pairs.
+     *
+     * @return a Map of request form parameters.
+     */
     public Map<String, String> getFormParameters() {
         return formParameters;
     }
@@ -277,10 +299,28 @@ public class RequestWrapper implements Serializable {
         setMapFromMap(this.formParameters, formParameters);
     }
 
+    /**
+     * Gets all submitted query and form parameters as String key-value pairs.
+     *
+     * @return a Map of all submitted query and form parameters.
+     */
+    public Map<String, String> getAllParameters() {
+        Map<String, String> allParameters = new HashMap<String, String>();
+        allParameters.putAll(getQueryParameters());
+        allParameters.putAll(getFormParameters());
+        return allParameters;
+    }
+
     public boolean hasBody() {
         return body != null;
     }
 
+    /**
+     * Gets the request body as a byte array. This is typically the submitted POST or PUT body.
+     * You probably want to use on of the getBodyAs* methods, eg: {@code getBodyAsString}
+     *
+     * @return a byte array containing the submitted body.
+     */
     public byte[] getBody() {
         return body;
     }

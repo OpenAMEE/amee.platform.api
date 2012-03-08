@@ -35,10 +35,14 @@ public class ResponseHelper {
      * @return the response representation object
      */
     public static Object getOK(RequestWrapper requestWrapper, String location) {
+        return getOK(requestWrapper, location, null);
+    }
+    
+    public static Object getOK(RequestWrapper requestWrapper, String location, String uid) {
         if (requestWrapper.getAcceptedMediaTypes().contains("application/json")) {
-            return getStatusJSONObject("OK", location);
+            return getStatusJSONObject("OK", location, uid);
         } else {
-            return getStatusDocument("OK", location);
+            return getStatusDocument("OK", location, uid);
         }
     }
 
@@ -49,7 +53,7 @@ public class ResponseHelper {
      * @return the response representation object
      */
     public static JSONObject getStatusJSONObject(String status) {
-        return getStatusJSONObject(status, null);
+        return getStatusJSONObject(status, null, null);
     }
 
     /**
@@ -59,13 +63,21 @@ public class ResponseHelper {
      * @param location the location to include in the response
      * @return the response representation object
      */
-    public static JSONObject getStatusJSONObject(String status, String location) {
+    public static JSONObject getStatusJSONObject(String status, String location, String uid) {
         try {
             JSONObject o = new JSONObject();
             o.put("status", status);
+
             if (location != null) {
                 o.put("location", location);
             }
+
+            if (uid != null) {
+                JSONObject entityObj = new JSONObject();
+                entityObj.put("uid", uid);
+                o.put("entity", entityObj);
+            }
+            
             return o;
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
@@ -79,7 +91,7 @@ public class ResponseHelper {
      * @return the response representation object
      */
     public static Document getStatusDocument(String status) {
-        return getStatusDocument(status, null);
+        return getStatusDocument(status, null, null);
     }
 
     /**
@@ -89,12 +101,18 @@ public class ResponseHelper {
      * @param location the location to include in the response
      * @return the response representation object
      */
-    public static Document getStatusDocument(String status, String location) {
+    public static Document getStatusDocument(String status, String location, String uid) {
         Element rootElem = new Element("Representation");
         rootElem.addContent(new Element("Status").setText(status));
+
         if (location != null) {
             rootElem.addContent(new Element("Location").setText(location));
         }
+
+        if (uid != null) {
+            rootElem.addContent(new Element("Entity").setAttribute("uid", uid));
+        }
+
         return new Document(rootElem);
     }
 
