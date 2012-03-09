@@ -10,6 +10,7 @@ import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.science.StartEndDate;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +65,7 @@ public class DataItemBuilder implements ItemBuilder {
         }
     }
 
+    @Override
     public Element getIdentityElement(Document document) {
         return XMLUtils.getIdentityElement(document, "DataItem", item);
     }
@@ -122,7 +124,7 @@ public class DataItemBuilder implements ItemBuilder {
         obj.put("label", dataItemService.getLabel(item));
         obj.put("startDate",
                 StartEndDate.getLocalStartEndDate(
-                        new StartEndDate(DataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString());
+                        new StartEndDate(DataItemService.MYSQL_MIN_DATETIME), TimeZoneHolder.getTimeZone()).toString());
         obj.put("endDate", "");
         // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : "");
         return obj;
@@ -157,12 +159,13 @@ public class DataItemBuilder implements ItemBuilder {
         dataItemElement.appendChild(XMLUtils.getElement(document, "Label", dataItemService.getLabel(item)));
         dataItemElement.appendChild(XMLUtils.getElement(document, "StartDate",
                 StartEndDate.getLocalStartEndDate(
-                        new StartEndDate(DataItemService.EPOCH), TimeZoneHolder.getTimeZone()).toString()));
+                        new StartEndDate(DataItemService.MYSQL_MIN_DATETIME), TimeZoneHolder.getTimeZone()).toString()));
         dataItemElement.appendChild(XMLUtils.getElement(document, "EndDate", ""));
         // (item.getEndDate() != null) ? StartEndDate.getLocalStartEndDate(item.getEndDate(), TimeZoneHolder.getTimeZone()).toString() : ""));
         return dataItemElement;
     }
 
+    @Override
     public Element getElement(Document document, boolean detailed) {
         return getElement(document, detailed, false);
     }
