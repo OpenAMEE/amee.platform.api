@@ -130,8 +130,8 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                 if (thisProfileItem != null) {
 
                                     // Date must be in allowed range.
-                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
-                                        errors.rejectValue("startDate", "epoch.startDate");
+                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.MYSQL_MIN_DATETIME) <= 0) {
+                                        errors.rejectValue("startDate", "start_before_min.startDate");
                                     }
                                     if (thisProfileItem.getStartDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
                                         errors.rejectValue("startDate", "end_after_max.startDate");

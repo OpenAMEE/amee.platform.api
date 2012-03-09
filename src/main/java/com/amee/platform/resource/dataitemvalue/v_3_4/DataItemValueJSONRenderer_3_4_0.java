@@ -8,6 +8,7 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -83,7 +84,7 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
             HistoryValue hv = (HistoryValue) dataItemValue;
             ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(hv.getStartDate().getTime()));
         } else {
-            ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(DataItemService.EPOCH.getTime()));
+            ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(DataItemService.MYSQL_MIN_DATETIME.getTime()));
         }
     }
 

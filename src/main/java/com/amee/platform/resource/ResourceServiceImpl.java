@@ -159,7 +159,7 @@ public class ResourceServiceImpl implements ResourceService {
                 dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), new Date());
             } else if (itemValueIdentifier.equals("FIRST")) {
                 // First possible date.
-                dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), DataItemService.EPOCH);
+                dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), DataItemService.MYSQL_MIN_DATETIME);
             } else if (itemValueIdentifier.equals("LAST")) {
                 // Use the last possible date.
                 dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), DataItemService.MYSQL_MAX_DATETIME);

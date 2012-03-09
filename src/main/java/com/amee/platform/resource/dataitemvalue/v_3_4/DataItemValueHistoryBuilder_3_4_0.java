@@ -17,6 +17,7 @@ import com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -71,12 +72,12 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
         DataItemValuesFilter filter = new DataItemValuesFilter();
         filter.setDataItem(dataItem);
         filter.setItemValueDefinition(itemValueDefinition);
-        filter.setStartDate(DataItemService.EPOCH);
+        filter.setStartDate(DataItemService.MYSQL_MIN_DATETIME);
 
         // Create validator.
         DataItemValuesResource.FilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
-        validator.setDefaultStartDate(DataItemService.EPOCH);
+        validator.setDefaultStartDate(DataItemService.MYSQL_MIN_DATETIME);
         validator.initialise();
 
         // Is the filter valid?

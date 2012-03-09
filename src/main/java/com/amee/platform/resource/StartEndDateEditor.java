@@ -25,7 +25,7 @@ public class StartEndDateEditor extends PropertyEditorSupport {
             if (text.equals("CURRENT")) {
                 setValue(new StartEndDate());
             } else if (text.equals("FIRST")) {
-                setValue(new StartEndDate(DataItemService.EPOCH));
+                setValue(new StartEndDate(DataItemService.MYSQL_MIN_DATETIME));
             } else if (text.equals("LAST")) {
                 setValue(new StartEndDate(DataItemService.MYSQL_MAX_DATETIME));
             } else {
