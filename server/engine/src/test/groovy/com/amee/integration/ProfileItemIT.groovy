@@ -1,14 +1,17 @@
 package com.amee.integration
 
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.*
+import static org.restlet.data.Status.*
+
 import com.amee.domain.DataItemService
+
 import groovyx.net.http.HttpResponseException
+
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 import org.junit.Ignore
 import org.junit.Test
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item API. This API has been available since version 3.6.
@@ -912,11 +915,11 @@ class ProfileItemIT extends BaseApiTest {
         def postParams = [name: code, 'values.energyPerTime': 23.0]
         postParams.dataItemUid = getDataItemUid(isseries, perunit)
         if (profilestart) {
-            def profileStartDate = DataItemService.EPOCH + profilestart
+            def profileStartDate = DataItemService.MYSQL_MIN_DATETIME + profilestart
             postParams.startDate = dateFormat.print(profileStartDate.getTime())
         }
         if (profileend) {
-            def profileEndDate = DataItemService.EPOCH + profileend
+            def profileEndDate = DataItemService.MYSQL_MIN_DATETIME + profileend
             postParams.endDate = dateFormat.print(profileEndDate.getTime())
         }
 
@@ -934,11 +937,11 @@ class ProfileItemIT extends BaseApiTest {
         // Fetch profile items and check values
         def queryParams = [:]
         if (querystart) {
-            def queryStartDate = DataItemService.EPOCH + querystart
+            def queryStartDate = DataItemService.MYSQL_MIN_DATETIME + querystart
             queryParams.startDate = dateFormat.print(queryStartDate.getTime())
         }
         if (queryend) {
-            def queryEndDate = DataItemService.EPOCH + queryend
+            def queryEndDate = DataItemService.MYSQL_MIN_DATETIME + queryend
             queryParams.endDate = dateFormat.print(queryEndDate.getTime())
         }
         if (prorata) {

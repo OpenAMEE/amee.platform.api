@@ -21,6 +21,7 @@
     <!-- Messages for a 'startDate' parameter. -->
     <entry key="epoch.startDate">The startDate value cannot be on or before the epoch.</entry>
     <entry key="end_of_epoch.startDate">The startDate value cannot be on or after the epoch end.</entry>
+    <entry key="start_before_min.startDate">The startDate value cannot be on or before 1000-01-01 00:00:00</entry>
     <entry key="end_after_max.startDate">The startDate value cannot be on or after 9999-12-31 23:59:59.</entry>
 
     <!-- Messages for an 'endDate' parameter. -->
