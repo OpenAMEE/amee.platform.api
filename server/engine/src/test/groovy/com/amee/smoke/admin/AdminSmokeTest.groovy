@@ -17,7 +17,7 @@ class AdminSmokeTest extends BaseSmokeTest {
             assertEquals 403, e.response.status
         }
 
-        setRootUser()
+        setAdminUser()
         def response = client.get(path: '/admin/users')
         assertResponseOk(response)
     }
@@ -31,7 +31,7 @@ class AdminSmokeTest extends BaseSmokeTest {
             assertEquals 403, e.response.status
         }
 
-        setRootUser()
+        setAdminUser()
         def response = client.get(path: '/admin/groups')
         assertResponseOk(response)
     }
