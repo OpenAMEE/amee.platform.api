@@ -26,6 +26,9 @@ public interface DataItemService extends ItemService {
     // This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
     final static Date Y2038 = new DateTime(2038, 1, 19, 3, 14, 0, 0).toDate();
 
+    // The first time that can be represented by a MySQL DATETIME column is '1000-01-01 00:00:00'
+    final static Date MYSQL_MIN_DATETIME = new DateTime(1000, 1, 1, 0, 0, 0, 0).toDate();
+    
     // The last time that can be represented by a MySQL DATETIME column is '9999-12-31 23:59:59'
     final static Date MYSQL_MAX_DATETIME = new DateTime(9999, 12, 31, 23, 59, 59, 0).toDate();
 
