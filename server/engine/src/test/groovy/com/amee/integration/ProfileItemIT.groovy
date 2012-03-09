@@ -695,7 +695,7 @@ class ProfileItemIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidDates() {
-        updateProfileItemFieldJson('startDate', 'epoch.startDate', '1950-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'start_before_min.startDate', '999-01-01T12:00:00Z', 3.6)
         updateProfileItemFieldJson('startDate', 'end_after_max.startDate', '10000-01-01T12:00:00Z', 3.6)
 
         updateProfileItemFieldJson('endDate', 'end_after_max.endDate', '10000-01-01T12:00:00Z', 3.6)
@@ -915,11 +915,11 @@ class ProfileItemIT extends BaseApiTest {
         def postParams = [name: code, 'values.energyPerTime': 23.0]
         postParams.dataItemUid = getDataItemUid(isseries, perunit)
         if (profilestart) {
-            def profileStartDate = DataItemService.MYSQL_MIN_DATETIME + profilestart
+            def profileStartDate = DataItemService.EPOCH + profilestart
             postParams.startDate = dateFormat.print(profileStartDate.getTime())
         }
         if (profileend) {
-            def profileEndDate = DataItemService.MYSQL_MIN_DATETIME + profileend
+            def profileEndDate = DataItemService.EPOCH + profileend
             postParams.endDate = dateFormat.print(profileEndDate.getTime())
         }
 
@@ -937,11 +937,11 @@ class ProfileItemIT extends BaseApiTest {
         // Fetch profile items and check values
         def queryParams = [:]
         if (querystart) {
-            def queryStartDate = DataItemService.MYSQL_MIN_DATETIME + querystart
+            def queryStartDate = DataItemService.EPOCH + querystart
             queryParams.startDate = dateFormat.print(queryStartDate.getTime())
         }
         if (queryend) {
-            def queryEndDate = DataItemService.MYSQL_MIN_DATETIME + queryend
+            def queryEndDate = DataItemService.EPOCH + queryend
             queryParams.endDate = dateFormat.print(queryEndDate.getTime())
         }
         if (prorata) {
