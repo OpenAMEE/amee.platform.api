@@ -1,14 +1,17 @@
 package com.amee.integration
 
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.*
+import static org.restlet.data.Status.*
+
 import com.amee.domain.DataItemService
+
 import groovyx.net.http.HttpResponseException
+
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 import org.junit.Ignore
 import org.junit.Test
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item API. This API has been available since version 3.6.
@@ -686,19 +689,19 @@ class ProfileItemIT extends BaseApiTest {
      * <ul>
      * <li>All are optional.
      * <li>startDate must be before endDate.
-     * <li>dates must be within 1970-01-01 00:00:00 => Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07.
-     *     This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
+     * <li>dates must be within 1970-01-01 00:00:00 => 9999-12-31 23:59:59, which is from the epoch to the last
+     * date supported by MySQL DATETIME columns.
      * </ul>
      */
     @Test
     void updateWithInvalidDates() {
         updateProfileItemFieldJson('startDate', 'epoch.startDate', '1950-01-01T12:00:00Z', 3.6)
-        updateProfileItemFieldJson('startDate', 'end_of_epoch.startDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'end_after_max.startDate', '10000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('endDate', 'end_of_epoch.endDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('endDate', 'end_after_max.endDate', '10000-01-01T12:00:00Z', 3.6)
         updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
+        updateProfileItemFieldJson('duration', 'end_after_max.endDate', 'P10000Y', 3.6)
 
         // Invalid format for duration
         updateProfileItemFieldJson('duration', 'format', '10Y', 3.6)
@@ -912,11 +915,11 @@ class ProfileItemIT extends BaseApiTest {
         def postParams = [name: code, 'values.energyPerTime': 23.0]
         postParams.dataItemUid = getDataItemUid(isseries, perunit)
         if (profilestart) {
-            def profileStartDate = DataItemService.EPOCH + profilestart
+            def profileStartDate = DataItemService.MYSQL_MIN_DATETIME + profilestart
             postParams.startDate = dateFormat.print(profileStartDate.getTime())
         }
         if (profileend) {
-            def profileEndDate = DataItemService.EPOCH + profileend
+            def profileEndDate = DataItemService.MYSQL_MIN_DATETIME + profileend
             postParams.endDate = dateFormat.print(profileEndDate.getTime())
         }
 
@@ -934,11 +937,11 @@ class ProfileItemIT extends BaseApiTest {
         // Fetch profile items and check values
         def queryParams = [:]
         if (querystart) {
-            def queryStartDate = DataItemService.EPOCH + querystart
+            def queryStartDate = DataItemService.MYSQL_MIN_DATETIME + querystart
             queryParams.startDate = dateFormat.print(queryStartDate.getTime())
         }
         if (queryend) {
-            def queryEndDate = DataItemService.EPOCH + queryend
+            def queryEndDate = DataItemService.MYSQL_MIN_DATETIME + queryend
             queryParams.endDate = dateFormat.print(queryEndDate.getTime())
         }
         if (prorata) {
