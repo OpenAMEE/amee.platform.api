@@ -1,16 +1,5 @@
 package com.amee.platform.resource.profileitem.v_3_6;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-
 import com.amee.base.domain.Since;
 import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
@@ -26,6 +15,17 @@ import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
 import com.amee.platform.science.AmountUnit;
 import com.amee.platform.science.StartEndDate;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 @Service
 @Scope("prototype")
@@ -130,11 +130,11 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                 if (thisProfileItem != null) {
 
                                     // Date must be in allowed range.
-                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
-                                        errors.rejectValue("startDate", "epoch.startDate");
+                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.MYSQL_MIN_DATETIME) <= 0) {
+                                        errors.rejectValue("startDate", "start_before_min.startDate");
                                     }
-                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.Y2038) >= 0) {
-                                        errors.rejectValue("startDate", "end_of_epoch.startDate");
+                                    if (thisProfileItem.getStartDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
+                                        errors.rejectValue("startDate", "end_after_max.startDate");
                                     }
                                 }
                                 return ValidationSpecification.CONTINUE;
@@ -161,10 +161,10 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                     }
 
                                     // Date must be in allowed range (don't need
-                                    // to check < EPOCH as previous test will
+                                    // to check < max as previous test will
                                     // catch)
-                                    if (thisProfileItem.getEndDate().compareTo(DataItemService.Y2038) >= 0) {
-                                        errors.rejectValue("endDate", "end_of_epoch.endDate");
+                                    if (thisProfileItem.getEndDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
+                                        errors.rejectValue("endDate", "end_after_max.endDate");
                                     }
                                 }
                                 return ValidationSpecification.CONTINUE;
@@ -192,8 +192,8 @@ public class ProfileItemValidator_3_6_0 extends BaseValidator implements Profile
                                     }
 
                                     // Date must be in allowed range.
-                                    if (endDate.compareTo(DataItemService.Y2038) >= 0) {
-                                        errors.rejectValue("duration", "end_of_epoch.endDate");
+                                    if (endDate.compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
+                                        errors.rejectValue("duration", "end_after_max.endDate");
                                     }
 
                                     thisProfileItem.setEndDate(endDate);

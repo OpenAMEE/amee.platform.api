@@ -8,12 +8,13 @@ import com.amee.domain.ProfileItemsFilter;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.profileitem.ProfileItemsResource;
 import com.amee.platform.science.StartEndDate;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 @Service
 @Scope("prototype")
@@ -61,7 +62,7 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
+        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.MYSQL_MAX_DATETIME));
         add(new ValidationSpecification()
             .setName("endDate")
             .setAllowEmpty(true));
@@ -87,8 +88,8 @@ public class ProfileItemsFilterValidator_3_6_0 extends BaseValidator implements 
                             }
 
                             // Date must be in allowed range.
-                            if (endDate.compareTo(DataItemService.Y2038) >= 0) {
-                                errors.rejectValue("duration", "end_of_epoch.endDate");
+                            if (endDate.compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
+                                errors.rejectValue("duration", "end_after_max.endDate");
                             }
 
                             thisProfileItemsFilter.setEndDate(endDate);

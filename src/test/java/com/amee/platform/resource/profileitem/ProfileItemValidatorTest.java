@@ -4,6 +4,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+import com.amee.base.utils.ThreadBeanHolder;
+import com.amee.domain.DataItemService;
+import com.amee.domain.Metadata;
+import com.amee.domain.MetadataService;
+import com.amee.domain.ProfileItemService;
+import com.amee.domain.ValueDefinition;
+import com.amee.domain.ValueType;
+import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.profile.ProfileItem;
+import com.amee.platform.resource.profileitem.v_3_6.ProfileItemValidator_3_6_0;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,18 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.validation.BindException;
-
-import com.amee.base.utils.ThreadBeanHolder;
-import com.amee.domain.DataItemService;
-import com.amee.domain.Metadata;
-import com.amee.domain.MetadataService;
-import com.amee.domain.ProfileItemService;
-import com.amee.domain.ValueDefinition;
-import com.amee.domain.ValueType;
-import com.amee.domain.data.ItemDefinition;
-import com.amee.domain.data.ItemValueDefinition;
-import com.amee.domain.item.profile.ProfileItem;
-import com.amee.platform.resource.profileitem.v_3_6.ProfileItemValidator_3_6_0;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileItemValidatorTest {
@@ -138,7 +138,7 @@ public class ProfileItemValidatorTest {
     @Test
     public void testStartDateTooEarly() {
         ProfileItem bad = new ProfileItem();
-        bad.setStartDate(new Date(DataItemService.EPOCH.getTime() - 1));
+        bad.setStartDate(new Date(DataItemService.MYSQL_MIN_DATETIME.getTime() - 1));
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");
@@ -158,7 +158,7 @@ public class ProfileItemValidatorTest {
     @Test
     public void testStartDateTooLate() {
         ProfileItem bad = new ProfileItem();
-        bad.setStartDate(new Date(DataItemService.Y2038.getTime() + 1));
+        bad.setStartDate(new Date(DataItemService.MYSQL_MAX_DATETIME.getTime() + 1));
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");
@@ -178,7 +178,7 @@ public class ProfileItemValidatorTest {
     @Test
     public void testEndDateTooLate() {
         ProfileItem bad = new ProfileItem();
-        bad.setEndDate(new Date(DataItemService.Y2038.getTime() + 1));
+        bad.setEndDate(new Date(DataItemService.MYSQL_MAX_DATETIME.getTime() + 1));
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");
@@ -220,7 +220,7 @@ public class ProfileItemValidatorTest {
     public void testDurationTooLong() {
         ProfileItem bad = new ProfileItem();
         bad.setStartDate(new Date());
-        bad.setDuration("P1000Y");
+        bad.setDuration("P10000Y");
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");

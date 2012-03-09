@@ -8,12 +8,13 @@ import com.amee.domain.DataItemValuesFilter;
 import com.amee.platform.resource.StartEndDateEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.platform.science.StartEndDate;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
@@ -42,9 +43,7 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
     protected void addStartDate() {
         allowedFields.add("startDate");
         addCustomEditor(StartEndDate.class, "startDate", new StartEndDateEditor(defaultStartDate));
-        add(new ValidationSpecification()
-                .setName("startDate")
-                .setAllowEmpty(true));
+        add(new ValidationSpecification().setName("startDate").setAllowEmpty(true));
     }
 
     /**
@@ -52,10 +51,8 @@ public class DataItemValuesFilterValidator_3_4_0 extends BaseValidator implement
      */
     protected void addEndDate() {
         allowedFields.add("endDate");
-        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.Y2038));
-        add(new ValidationSpecification()
-                .setName("endDate")
-                .setAllowEmpty(true));
+        addCustomEditor(StartEndDate.class, "endDate", new StartEndDateEditor(DataItemService.MYSQL_MAX_DATETIME));
+        add(new ValidationSpecification().setName("endDate").setAllowEmpty(true));
     }
 
     @Override
