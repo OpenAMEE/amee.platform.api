@@ -21,7 +21,7 @@
         <commons-codec.version>1.5</commons-codec.version>
         <commons-lang.version>2.6</commons-lang.version>
         <cglib.version>2.2</cglib.version>
-        <ehcache.version>1.6.2</ehcache.version>
+        <ehcache.version>2.5.1</ehcache.version>
         <hibernate-core.version>3.6.0.Final</hibernate-core.version>
         <joda-time.version>1.6.2</joda-time.version>
         <junit.version>4.8.2</junit.version>
@@ -141,7 +141,7 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <artifactId>ehcache-core</artifactId>
             <version>${ehcache.version}</version>
         </dependency>
         <dependency>
