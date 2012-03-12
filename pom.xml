@@ -17,7 +17,7 @@
         <commons-codec.version>1.5</commons-codec.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-io.version>2.0.1</commons-io.version>
-        <ehcache.version>1.6.2</ehcache.version>
+        <ehcache.version>2.5.0</ehcache.version>
         <javax.mail.version>1.4.4</javax.mail.version>
         <joda-time.version>1.6.2</joda-time.version>
         <junit.version>4.8.2</junit.version>
@@ -250,5 +250,45 @@
         <developerConnection>scm:git:ssh://git@github.com/AMEE/amee.base.git</developerConnection>
         <url>scm:git:ssh://git@github.com/AMEE/amee.base.git</url>
     </scm>
+
+    <profiles>
+        <profile>
+            <id>skip-copy-dependencies</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>1.0.0</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-dependency-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>copy-dependencies</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore/>
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+    </profiles>
 
 </project>
