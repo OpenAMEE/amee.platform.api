@@ -18,7 +18,7 @@
         <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
+        <spring.version>3.1.1.RELEASE</spring.version>
         <org-aspectj.version>1.6.10</org-aspectj.version>
         <junit.version>4.8.2</junit.version>
         <hsqldb.version>2.0.0</hsqldb.version>
@@ -103,11 +103,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <additionalClasspathElements>
-                        <element>${basedir}/src/test/resources</element>
-                    </additionalClasspathElements>
-                </configuration>
             </plugin>
 
         </plugins>
