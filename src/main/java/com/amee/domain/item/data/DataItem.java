@@ -29,9 +29,6 @@ public class DataItem extends BaseItem {
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
 
-    // The earliest possible DataItemValue date
-    private static final Date AD1000 = new DateTime(1000, 1, 1, 0, 0, 0, 0).toDate();
-
     @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
 
