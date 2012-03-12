@@ -1,27 +1,33 @@
 package com.amee.integration
 
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.*
+import static org.restlet.data.Status.*
+
 import com.amee.domain.DataItemService
+
 import groovyx.net.http.HttpResponseException
+
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 import org.junit.Ignore
 import org.junit.Test
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item API. This API has been available since version 3.6.
  */
 class ProfileItemIT extends BaseApiTest {
-    
+
     // Days in a year
     static def DAYS_IN_YEAR = 365.242199
 
     def cookingProfileUid = 'UCP4SKANF6CS'
-    def cookingProfileItemUids = ['J7TICQCEMGEA', 'CR2IS4R423WK']
+    def cookingProfileItemUids = [
+        'J7TICQCEMGEA',
+        'CR2IS4R423WK'
+    ]
     def computersGenericProfileUid = '46OLHG2D9LWM'
-    
+
     def selectByProfileUid = 'TP437QW12VEV'
     def selectByProfileItemUids = [start: '8G534LCOMF8Z', end: '5W6K9PWM5OXD', span: '7LXKYQAY237H']
 
@@ -73,10 +79,10 @@ class ProfileItemIT extends BaseApiTest {
         versions.each { version -> createAndRemoveProfileItemByUidJson(version) }
         versions.each { version -> createAndRemoveProfileItemByCategoryXml(version) }
     }
-    
+
     def createAndRemoveProfileItemByUidJson(version) {
         if (version >= 3.6) {
-            
+
             // Create the profile item
             def responsePost = client.post(
                 path: "/${version}/profiles/${cookingProfileUid}/items",
@@ -120,10 +126,10 @@ class ProfileItemIT extends BaseApiTest {
             assert responseGet.data.item.note == 'Test note'
 
             // Amounts
-            assertEquals 3, responseGet.data.item.amounts.amount.size()
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2', 3.8, 'kg', '', true)
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'energy', 26.5, 'MJ', '', false)
-            assertContainsAmountJson(responseGet.data.item.amounts.amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+            assertEquals 3, responseGet.data.item.output.amounts.size()
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2', 3.8, 'kg', true)
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'energy', 26.5, 'MJ', false)
+            assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Update the profile item
             def responsePut = client.put(
@@ -131,16 +137,16 @@ class ProfileItemIT extends BaseApiTest {
                 body: [note: 'Updated note'],
                 requestContentType: URLENC,
                 contentType: JSON
-            )
+                )
             assertOkJson(responsePut, SUCCESS_OK.code, uid)
-            
+
             // Get the updated profile item
             responseGet = client.get(
                 path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
                 contentType: JSON)
             assert SUCCESS_OK.code, responseGet.status
             assert responseGet.data.item.note == 'Updated note'
-            
+
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
@@ -201,10 +207,10 @@ class ProfileItemIT extends BaseApiTest {
             assertEquals categoryWikiName, responseGet.data.Item.CategoryWikiName.text()
 
             // Amounts
-            assertEquals 3, responseGet.data.Item.Amounts.Amount.size()
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2', 3.8, 'kg', '', true)
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'energy', 26.5, 'MJ', '', false)
-            assertContainsAmountXml(responseGet.data.Item.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', '', false)
+            assertEquals 3, responseGet.data.Item.Output.Amounts.Amount.size()
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2', 3.8, 'kg', true)
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'energy', 26.5, 'MJ', false)
+            assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
@@ -229,7 +235,7 @@ class ProfileItemIT extends BaseApiTest {
     void createDuplicateProfileItem() {
         versions.each { version -> createDuplicateProfileItem(version) }
     }
-    
+
     def createDuplicateProfileItem(version) {
         if (version >= 3.6) {
 
@@ -261,7 +267,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Clean up
@@ -281,7 +287,7 @@ class ProfileItemIT extends BaseApiTest {
     void createOverlappingProfileItem() {
         versions.each { version -> createOverlappingProfileItem(version) }
     }
-    
+
     def createOverlappingProfileItem(version) {
         if (version >= 3.6) {
 
@@ -315,7 +321,7 @@ class ProfileItemIT extends BaseApiTest {
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status;
+                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
             }
 
             // Create an overlapping item with a different name
@@ -339,6 +345,52 @@ class ProfileItemIT extends BaseApiTest {
 
             responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid2}")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid2)
+        }
+    }
+
+    /**
+     * Tests creation of profile items with valid and invalid choices specified.
+     */
+    @Test
+    void createProfileItemWithChoice() {
+        versions.each { version -> createProfileItemWithChoice(version) }
+    }
+
+    def createProfileItemWithChoice(version) {
+        if(version >= 3.6){
+            // Try creating a profile item with an invalid choice
+            try{
+                client.post(
+                    path: "/${version}/profiles/${computersGenericProfileUid}/items",
+                    body: [
+                        name: 'invalidChoice',
+                        dataItemUid: '651B5AE27940',
+                        'values.onStandby': 'notAValidChoice'],
+                    requestContentType: URLENC,
+                    contentType: JSON)
+                fail 'Should have thrown exception'
+            } catch(HttpResponseException e){
+                // Should have been rejected
+                assert CLIENT_ERROR_BAD_REQUEST.code == e.response.status
+            }
+
+            // Try creating a profile item with a valid choice
+            def responsePost = client.post(
+                path: "/${version}/profiles/${computersGenericProfileUid}/items",
+                body: [
+                    name: 'validChoice',
+                    dataItemUid: '651B5AE27940',
+                    'values.onStandby': 'always'],
+                requestContentType: URLENC,
+                contentType: JSON)
+
+            // Should have been created
+            def uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
+
+            // Clean up
+            def responseDelete = client.delete(path: "/${version}/profiles/${computersGenericProfileUid}/items/${uid}")
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
         }
     }
 
@@ -380,7 +432,7 @@ class ProfileItemIT extends BaseApiTest {
     void getProfileItems() {
         versions.each { version -> getProfileItems(version) }
     }
-    
+
     def getProfileItems(version) {
         if (version >= 3.6) {
             getProfileItemsJson(version)
@@ -426,7 +478,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def getProfileItemsSelectByJson(version) {
         if (version >= 3.6) {
-            
+
             // Query window is from April to June
 
             // Default is to get all items that intersect query window
@@ -501,7 +553,7 @@ class ProfileItemIT extends BaseApiTest {
     void getSingleProfileItem() {
         versions.each { version -> getSingleProfileItem(version) }
     }
-    
+
     def getSingleProfileItem(version) {
         if (version >= 3.6) {
             getSingleProfileItemJson(version)
@@ -524,17 +576,16 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '', response.data.item.endDate
 
         // Amounts
-        assertEquals 1, response.data.item.amounts.amount.size()
-        assertEquals 'CO2', response.data.item.amounts.amount[0].type
-        assertEquals 'year', response.data.item.amounts.amount[0].perUnit
-        assertEquals 'kg', response.data.item.amounts.amount[0].unit
-        assertTrue response.data.item.amounts.amount[0].default
-        assertEquals 233.35999999999999, response.data.item.amounts.amount[0].value, 0.000001
-        
+        assertEquals 1, response.data.item.output.amounts.size()
+        assertEquals 'CO2', response.data.item.output.amounts[0].type
+        assertEquals 'kg/year', response.data.item.output.amounts[0].unit
+        assertTrue response.data.item.output.amounts[0].default
+        assertEquals 233.35999999999999, response.data.item.output.amounts[0].value, 0.000001
+
         // Notes
-        assertEquals 1, response.data.item.amounts.notes.size()
-        assertEquals 'comment', response.data.item.amounts.notes[0].type
-        assertEquals 'This is a comment', response.data.item.amounts.notes[0].value
+        assertEquals 1, response.data.item.output.notes.size()
+        assertEquals 'comment', response.data.item.output.notes[0].type
+        assertEquals 'This is a comment', response.data.item.output.notes[0].value
     }
 
     def getSingleProfileItemXml(version) {
@@ -551,17 +602,16 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals '', response.data.Item.EndDate.text()
 
         // Amounts
-        assertEquals 1, response.data.Item.Amounts.Amount.size()
-        assertEquals 'CO2', response.data.Item.Amounts.Amount[0].@type.text()
-        assertEquals 'year', response.data.Item.Amounts.Amount[0].@perUnit.text()
-        assertEquals 'kg', response.data.Item.Amounts.Amount[0].@unit.text()
-        assertEquals 'true', response.data.Item.Amounts.Amount[0].@default.text()
-        assertEquals '233.35999999999999', response.data.Item.Amounts.Amount[0].text()
+        assertEquals 1, response.data.Item.Output.Amounts.Amount.size()
+        assertEquals 'CO2', response.data.Item.Output.Amounts.Amount[0].@type.text()
+        assertEquals 'kg/year', response.data.Item.Output.Amounts.Amount[0].@unit.text()
+        assertEquals 'true', response.data.Item.Output.Amounts.Amount[0].@default.text()
+        assertEquals '233.35999999999999', response.data.Item.Output.Amounts.Amount[0].text()
 
         // Notes
-        assertEquals 1, response.data.Item.Amounts.Notes.Note.size()
-        assertEquals 'comment', response.data.Item.Amounts.Notes.Note[0].@type.text()
-        assertEquals 'This is a comment', response.data.Item.Amounts.Notes.Note[0].text()
+        assertEquals 1, response.data.Item.Output.Notes.Note.size()
+        assertEquals 'comment', response.data.Item.Output.Notes.Note[0].@type.text()
+        assertEquals 'This is a comment', response.data.Item.Output.Notes.Note[0].text()
     }
 
     /**
@@ -596,7 +646,7 @@ class ProfileItemIT extends BaseApiTest {
     void getSingleProfileItemUnauthorised() {
         versions.each { version -> getSingleProfileItemUnauthorised(version) }
     }
-    
+
     def getSingleProfileItemUnauthorised(version) {
         if (version >= 3.6) {
 
@@ -639,20 +689,20 @@ class ProfileItemIT extends BaseApiTest {
      * <ul>
      * <li>All are optional.
      * <li>startDate must be before endDate.
-     * <li>dates must be within 1970-01-01 00:00:00 => Almost (less 7 seconds) the last unix time, which is 2038-01-19 03:14:07.
-     *     This time is seven seconds less than the last unix because StartEndDate is not sensitive to seconds.
+     * <li>dates must be within 1970-01-01 00:00:00 => 9999-12-31 23:59:59, which is from the epoch to the last
+     * date supported by MySQL DATETIME columns.
      * </ul>
      */
     @Test
     void updateWithInvalidDates() {
-        updateProfileItemFieldJson('startDate', 'epoch.startDate', '1950-01-01T12:00:00Z', 3.6)
-        updateProfileItemFieldJson('startDate', 'end_of_epoch.startDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'start_before_min.startDate', '999-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('startDate', 'end_after_max.startDate', '10000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('endDate', 'end_of_epoch.endDate', '2040-01-01T12:00:00Z', 3.6)
+        updateProfileItemFieldJson('endDate', 'end_after_max.endDate', '10000-01-01T12:00:00Z', 3.6)
         updateProfileItemFieldJson('endDate', 'end_before_start.endDate', '2000-01-01T12:00:00Z', 3.6)
 
-        updateProfileItemFieldJson('duration', 'end_of_epoch.endDate', 'P100Y', 3.6)
-        
+        updateProfileItemFieldJson('duration', 'end_after_max.endDate', 'P10000Y', 3.6)
+
         // Invalid format for duration
         updateProfileItemFieldJson('duration', 'format', '10Y', 3.6)
     }
@@ -670,11 +720,11 @@ class ProfileItemIT extends BaseApiTest {
      */
     @Test
     void updateWithValues() {
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6);
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6); // Not an integer either.
-        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6);
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6);
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6)
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6) // Not an integer either.
+        updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6)
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
 
         // TODO: test doubles?
     }
@@ -720,8 +770,8 @@ class ProfileItemIT extends BaseApiTest {
                 assertEquals 'application/json', response.contentType
                 assertTrue response.data instanceof net.sf.json.JSON
                 assertEquals 'INVALID', response.data.status
-                assert [field] == response.data.validationResult.errors.collect {it.field}
-                assert [code] == response.data.validationResult.errors.collect {it.code}
+                assert [field]== response.data.validationResult.errors.collect {it.field}
+                assert [code]== response.data.validationResult.errors.collect {it.code}
             }
         }
     }
@@ -739,7 +789,7 @@ class ProfileItemIT extends BaseApiTest {
 
     def timeSeries(version) {
         if (version >= 3.6) {
-            
+
             // cases relating to a single valued data series
 
             // cases relating to profile item within query range
@@ -878,12 +928,12 @@ class ProfileItemIT extends BaseApiTest {
             body: postParams,
             requestContentType: URLENC,
             contentType: JSON)
-        
+
         def location = responsePost.headers['Location'].value
         def uid = location.split('/')[7]
         assertNotNull uid
         assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
-        
+
         // Fetch profile items and check values
         def queryParams = [:]
         if (querystart) {
@@ -908,8 +958,8 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals code, item.name
 
         // Amounts
-        assertEquals 1, item.amounts.amount.size()
-        assertContainsAmountJson(item.amounts.amount, 'CO2', objective, 'kg', 'year', true)
+        assertEquals 1, item.output.amounts.size()
+        assertContainsAmountJson(item.output.amounts, 'CO2', objective, 'kg/year', true)
 
         // Delete the profile item
         def responseDelete = client.delete(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
@@ -950,20 +1000,14 @@ class ProfileItemIT extends BaseApiTest {
      * @param type the expected type, eg CO2.
      * @param value the expected value, eg 5.83.
      * @param unit the expected unit, eg kg.
-     * @param perUnit the expected perUnit, eg month.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountJson(amounts, type, value, unit, perUnit, isDefault) {
+    def assertContainsAmountJson(amounts, type, value, unit, isDefault) {
         def amount = amounts.find { it.type == type }
         assertNotNull amount
         assertEquals value, amount.value, 0.0001
         assertEquals unit, amount.unit
-        assertEquals perUnit, amount.perUnit
-        if (isDefault) {
-            assertEquals isDefault, amount.default
-        } else {
-            assertNull amount.default
-        }
+        assertEquals isDefault, amount.default
     }
 
     /**
@@ -975,19 +1019,13 @@ class ProfileItemIT extends BaseApiTest {
      * @param type the expected type, eg CO2.
      * @param value the expected value, eg 5.83.
      * @param unit the expected unit, eg kg.
-     * @param perUnit the expected perUnit, eg month.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountXml(amounts, type, value, unit, perUnit, isDefault) {
+    def assertContainsAmountXml(amounts, type, value, unit, isDefault) {
         def amount = amounts.find { it.@type.text() == type }
         assertNotNull amount
         assertEquals value, Double.valueOf(amount.text()), 0.0001
         assertEquals unit, amount.@unit.text()
-        assertEquals perUnit, amount.@perUnit.text()
-        if (isDefault) {
-            assertEquals isDefault, Boolean.valueOf(amount.@default.text())
-        } else {
-            assertFalse Boolean.valueOf(amount.@default.text())
-        }
+        assertEquals isDefault, Boolean.valueOf(amount.@default.text())
     }
 }

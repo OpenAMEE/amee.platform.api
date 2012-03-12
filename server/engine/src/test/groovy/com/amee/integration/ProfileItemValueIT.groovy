@@ -44,8 +44,8 @@ class ProfileItemValueIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
 
             def itemValues = response.data.values
-            assertValueJson(itemValues, 'numberOwned', 1, null, null, null, profileItemUid, 'Computers_generic', 'Number Owned')
-            assertValueJson(itemValues, 'onStandby', 'mostly', null, null, null, profileItemUid, 'Computers_generic', 'On standby')
+            assertValueJson(itemValues, 'numberOwned', 1, null, profileItemUid, 'Computers_generic', 'Number Owned')
+            assertValueJson(itemValues, 'onStandby', 'mostly', null, profileItemUid, 'Computers_generic', 'On standby')
         }
     }
     
@@ -96,12 +96,11 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Check the calculated amount
             assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.amounts.amount.size()
-            def amount = responseGet.data.item.amounts.amount[0]
+            assertEquals 1, responseGet.data.item.output.amounts.size()
+            def amount = responseGet.data.item.output.amounts[0]
             assertNotNull amount
             assertEquals 10.0, amount.value, 0.0001
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
+            assertEquals 'kg/year', amount.unit
             assertTrue amount.default
 
             // Check the values
@@ -109,7 +108,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 path: "/${version}/profiles/${profileUid}/items/${uid}/values;full",
                 contentType: JSON)
             def itemValues = responseGet.data.values
-            assertValueJson(itemValues, 'energyPerTime', 5, 'kWh', 'year', 'kW·h/year', uid, 'Electricity_by_Country', 'Energy per Time')
+            assertValueJson(itemValues, 'energyPerTime', 5, 'kW·h/year', uid, 'Electricity_by_Country', 'Energy per Time')
 
             // Delete the profile item
             def responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
@@ -146,12 +145,11 @@ class ProfileItemValueIT extends BaseApiTest {
 
             // Check the calculated amount
             assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.amounts.amount.size()
-            amount = responseGet.data.item.amounts.amount[0]
+            assertEquals 1, responseGet.data.item.output.amounts.size()
+            amount = responseGet.data.item.output.amounts[0]
             assertNotNull amount
             assertEquals 120000.0, amount.value, 0.0001
-            assertEquals 'kg', amount.unit
-            assertEquals 'year', amount.perUnit
+            assertEquals 'kg/year', amount.unit
             assertTrue amount.default
 
             // Check the values
@@ -159,7 +157,7 @@ class ProfileItemValueIT extends BaseApiTest {
                 path: "/${version}/profiles/${profileUid}/items/${uid}/values;full",
                 contentType: JSON)
             itemValues = responseGet.data.values
-            assertValueJson(itemValues, 'energyPerTime', 5, 'MWh', 'month', 'MW·h/month', uid, 'Electricity_by_Country', 'Energy per Time')
+            assertValueJson(itemValues, 'energyPerTime', 5, 'MW·h/month', uid, 'Electricity_by_Country', 'Energy per Time')
 
             // Delete the profile item
             responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
@@ -189,7 +187,7 @@ class ProfileItemValueIT extends BaseApiTest {
      * @param wikiName the expected wikiName.
      * @param itemValueDefName the expected item value definition name.
      */
-    def assertValueJson(itemValues, path, value, unit, perUnit, compoundUnit, itemUid, wikiName, itemValueDefName) {
+    def assertValueJson(itemValues, path, value, unit, itemUid, wikiName, itemValueDefName) {
         def itemValue = itemValues.find { it.itemValueDefinition.path == path }
         assertNotNull itemValue
         if (itemValue.value instanceof Double) {
@@ -199,12 +197,6 @@ class ProfileItemValueIT extends BaseApiTest {
         }
         if (unit) {
             assertEquals unit, itemValue.unit
-        }
-        if (perUnit) {
-            assertEquals perUnit, itemValue.perUnit
-        }
-        if (compoundUnit) {
-            assertEquals compoundUnit, itemValue.compoundUnit
         }
         assertEquals itemUid, itemValue.item.uid
         assertEquals wikiName, itemValue.category.wikiName
