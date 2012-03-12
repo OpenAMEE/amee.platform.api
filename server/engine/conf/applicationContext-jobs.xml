@@ -34,7 +34,7 @@
     </bean>
 
     <!-- Update search index: Fire at 10 minutes past every hour. -->
-    <bean id="searchIndexUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="searchIndexUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="searchIndexUpdateJobDetail"/>
         <property name="cronExpression" value="0 10 * * * ?"/>
     </bean>
@@ -48,7 +48,7 @@
     </bean>
 
     <!-- Search index flush: Fire at 2 AM every day. -->
-    <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="searchIndexFlushJobDetail"/>
         <property name="cronExpression" value="0 0 2 * * ?"/>
     </bean>
@@ -62,7 +62,7 @@
     </bean>
 
     <!-- Search index snapshot: Fire every 5 minutes at 15 seconds past the minute. -->
-    <bean id="searchIndexSnapshotCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="searchIndexSnapshotCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="searchIndexSnapshotJobDetail"/>
         <property name="cronExpression" value="15 0/5 * * * ?"/>
     </bean>
@@ -76,7 +76,7 @@
     </bean>
 
     <!-- Search index Searcher check: Fire every minute at 30 seconds past the minute. -->
-    <bean id="searchIndexCheckSearcherCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="searchIndexCheckSearcherCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="searchIndexCheckSearcherJobDetail"/>
         <property name="cronExpression" value="30 * * * * ?"/>
     </bean>
