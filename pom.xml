@@ -17,7 +17,7 @@
         <commons-codec.version>1.5</commons-codec.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-io.version>2.0.1</commons-io.version>
-        <ehcache.version>2.5.0</ehcache.version>
+        <ehcache.version>2.5.1</ehcache.version>
         <javax.mail.version>1.4.4</javax.mail.version>
         <joda-time.version>1.6.2</joda-time.version>
         <junit.version>4.8.2</junit.version>
@@ -158,7 +158,7 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
+            <artifactId>ehcache-core</artifactId>
             <version>${ehcache.version}</version>
         </dependency>
         <dependency>
@@ -253,7 +253,7 @@
 
     <profiles>
         <profile>
-            <id>skip-copy-dependencies</id>
+            <id>skip-eclipse-unsupported-mojos</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
