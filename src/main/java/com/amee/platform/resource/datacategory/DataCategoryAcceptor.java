@@ -11,7 +11,7 @@ public abstract class DataCategoryAcceptor {
 
     public DataCategoryResource.DataCategoryValidator getValidator(RequestWrapper requestWrapper) {
         return (DataCategoryResource.DataCategoryValidator)
-                resourceBeanFinder.getValidationHelper(
+                resourceBeanFinder.getBaseValidator(
                         DataCategoryResource.DataCategoryValidator.class, requestWrapper);
     }
 }

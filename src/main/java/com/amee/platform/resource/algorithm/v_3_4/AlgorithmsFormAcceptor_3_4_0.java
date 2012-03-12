@@ -76,6 +76,6 @@ public class AlgorithmsFormAcceptor_3_4_0 implements AlgorithmsResource.FormAcce
 
     protected AlgorithmResource.AlgorithmValidator getValidator(RequestWrapper requestWrapper) {
         return (AlgorithmResource.AlgorithmValidator)
-                resourceBeanFinder.getValidationHelper(AlgorithmResource.AlgorithmValidator.class, requestWrapper);
+                resourceBeanFinder.getBaseValidator(AlgorithmResource.AlgorithmValidator.class, requestWrapper);
     }
 }

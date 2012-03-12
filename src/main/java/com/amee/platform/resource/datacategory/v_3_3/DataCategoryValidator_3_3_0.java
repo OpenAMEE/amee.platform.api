@@ -151,7 +151,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
 
     protected void addDataCategory() {
         allowedFields.add("dataCategory");
-        add(DataCategory.class, "dataCategory", dataCategoryEditor);
+        addCustomEditor(DataCategory.class, "dataCategory", dataCategoryEditor);
         add(new ValidationSpecification()
                 .setName("dataCategory")
                 .setAllowEmpty(false)
@@ -184,7 +184,7 @@ public class DataCategoryValidator_3_3_0 extends BaseValidator implements DataCa
 
     protected void addItemDefinition() {
         allowedFields.add("itemDefinition");
-        add(ItemDefinition.class, "itemDefinition", itemDefinitionEditor);
+        addCustomEditor(ItemDefinition.class, "itemDefinition", itemDefinitionEditor);
         add(new ValidationSpecification()
                 .setName("itemDefinition")
                 .setAllowEmpty(true)

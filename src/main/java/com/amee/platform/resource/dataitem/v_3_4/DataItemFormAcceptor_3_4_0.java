@@ -13,6 +13,7 @@ import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.invalidation.InvalidationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -81,16 +82,16 @@ public class DataItemFormAcceptor_3_4_0 implements DataItemResource.FormAcceptor
      * Update the DataItem Values for the supplied Data Item based on the values bean within the DataItem.
      * <p/>
      * Support for updating DataItem Values is since version 3.4.0.
-     *
-     * @param dataItem to update
+     * 
+     * @param dataItem
+     *            to update
      */
     protected void updateDataItemValues(DataItem dataItem) {
         dataItemService.updateDataItemValues(dataItem);
     }
 
     protected DataItemResource.DataItemValidator getValidator(RequestWrapper requestWrapper) {
-        return (DataItemResource.DataItemValidator)
-                resourceBeanFinder.getValidationHelper(
-                        DataItemResource.DataItemValidator.class, requestWrapper);
+        return (DataItemResource.DataItemValidator) resourceBeanFinder.getBaseValidator(
+                DataItemResource.DataItemValidator.class, requestWrapper);
     }
 }

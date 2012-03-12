@@ -2,12 +2,10 @@ package com.amee.platform.resource.search;
 
 import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceRenderer;
-import com.amee.base.resource.ValidationResult;
+import com.amee.platform.resource.ResourceValidator;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.search.SearchFilter;
-
-import java.util.Map;
 
 public interface SearchResource {
 
@@ -23,14 +21,10 @@ public interface SearchResource {
         public void setTruncated(boolean truncated);
     }
 
-    public static interface SearchFilterValidationHelper {
+    public static interface SearchFilterValidationHelper extends ResourceValidator<SearchFilter> {
 
-        public SearchFilter getSearchFilter();
+        // public SearchFilter getSearchFilter();
 
-        public void setSearchFilter(SearchFilter searchFilter);
-
-        public boolean isValid(Map<String, String> queryParameters);
-
-        public ValidationResult getValidationResult();
+        // public void setSearchFilter(SearchFilter searchFilter);
     }
 }

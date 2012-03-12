@@ -2,6 +2,9 @@ package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
+import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.sheet.Choice;
+import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationJSONRenderer_3_6_0;
 import com.amee.platform.science.Note;
 import com.amee.platform.science.ReturnValue;
@@ -78,4 +81,49 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
             ResponseHelper.put(rootObj, "notes", notesArr);
         }
     }
+
+    @Override
+    public void addValues(Choices values) {
+
+        // Create an array of value objects.
+        JSONArray valuesArr = new JSONArray();
+        Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
+        for (Choice choice : values.getChoices()) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+
+                // Create a value object.
+                JSONObject valueObj = new JSONObject();
+                ResponseHelper.put(valueObj, "name", choice.getName());
+                ResponseHelper.put(valueObj, "value", choice.getValue());
+
+                // Add details from the ItemValueDefinition.
+                ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
+                if (itemValueDefinition != null) {
+                    if (itemValueDefinition.hasUnit()) {
+                        if (values.containsKey("units." + choice.getName())) {
+                            ResponseHelper.put(valueObj, "unit", values.get("units." + choice.getName()).getValue());
+                        } else {
+                            ResponseHelper.put(valueObj, "unit", itemValueDefinition.getUnit());
+                        }
+                        if (itemValueDefinition.hasPerUnit()) {
+                            if (values.containsKey("perUnits." + choice.getName())) {
+                                ResponseHelper.put(valueObj, "perUnit", values.get("perUnits." + choice.getName()).getValue());
+                            } else {
+                                ResponseHelper.put(valueObj, "perUnit", itemValueDefinition.getPerUnit());
+                            }
+                        }
+                    }
+                }
+
+                // Add the object to the values array
+                valuesArr.put(valueObj);
+            }
+        }
+
+        // Add the values array to the input object, if there are some.
+        if (valuesArr.length() > 0) {
+            ResponseHelper.put(rootObj, "values", valuesArr);
+        }
+    }
+
 }

@@ -12,8 +12,6 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
-import com.amee.calculation.service.CalculationService;
-import com.amee.domain.ProfileItemService;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.resource.ResourceService;

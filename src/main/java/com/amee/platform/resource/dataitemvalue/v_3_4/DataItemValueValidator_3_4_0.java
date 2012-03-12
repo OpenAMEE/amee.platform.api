@@ -9,19 +9,20 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.data.BaseDataItemTextValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.StartEndDateEditor;
-import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
+import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.science.StartEndDate;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A Validator implementation for validating DataItems.
@@ -63,7 +64,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setName("value")
                     .setDoubleNumber(true));
             // Add the editor.
-            add(Double.class, "value", new ItemValueEditor(ivd));
+            addCustomEditor(Double.class, "value", new ItemValueEditor(ivd));
         } else if (ivd.isInteger()) {
             // Integer values.
             // Allow parameter for this ItemValueDefinition.
@@ -73,7 +74,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setName("value")
                     .setIntegerNumber(true));
             // Add the editor.
-            add(Integer.class, "value", new ItemValueEditor(ivd));
+            addCustomEditor(Integer.class, "value", new ItemValueEditor(ivd));
         } else {
             // String values.
             // Allow parameter for this ItemValueDefinition.
@@ -84,7 +85,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                     .setMaxSize(BaseDataItemTextValue.VALUE_SIZE)
                     .setAllowEmpty(true));
             // Add the editor.
-            add(String.class, "value", new ItemValueEditor(ivd));
+            addCustomEditor(String.class, "value", new ItemValueEditor(ivd));
         }
     }
 
@@ -94,7 +95,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
     protected void addStartDate() {
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
             allowedFields.add("startDate");
-            add(StartEndDate.class, "startDate", new StartEndDateEditor(new Date()));
+            addCustomEditor(StartEndDate.class, "startDate", new StartEndDateEditor(new Date()));
             add(new ValidationSpecification()
                     .setName("startDate")
                     .setAllowEmpty(true)
@@ -107,10 +108,10 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                                     if (thisDIV != null) {
                                         if (HistoryValue.class.isAssignableFrom(thisDIV.getClass())) {
                                             HistoryValue hv = (HistoryValue) thisDIV;
-                                            if (hv.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
-                                                errors.rejectValue("startDate", "epoch");
-                                            } else if (hv.getStartDate().compareTo(DataItemService.Y2038) >= 0) {
-                                                errors.rejectValue("startDate", "end_of_epoch");
+                                            if (hv.getStartDate().compareTo(DataItemService.MYSQL_MIN_DATETIME) <= 0) {
+                                                errors.rejectValue("startDate", "start_before_min");
+                                            } else if (hv.getStartDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
+                                                errors.rejectValue("startDate", "end_after_max");
                                             } else if (!dataItemService.isDataItemValueUniqueByStartDate(thisDIV)) {
                                                 errors.rejectValue("startDate", "duplicate");
                                             }

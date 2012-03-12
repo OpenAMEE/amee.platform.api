@@ -147,6 +147,10 @@ public class DataCategoryEcospoldRenderer_3_2_0 implements DataCategoryResource.
         localeService.clearLocaleNames();
     }
 
+    public void addName() {
+        // Not implemented for ecospold.
+    }
+    
     public void addPath() {
         // Not implemented for ecospold.
     }

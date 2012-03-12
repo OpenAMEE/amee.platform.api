@@ -11,31 +11,34 @@ import com.amee.domain.DataItemService;
 import com.amee.domain.ProfileItemService;
 import com.amee.domain.algorithm.Algorithm;
 import com.amee.domain.auth.User;
-import com.amee.domain.data.*;
+import com.amee.domain.data.DataCategory;
+import com.amee.domain.data.ItemDefinition;
+import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.data.ItemValueMap;
+import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
 import com.amee.domain.sheet.Choice;
-import com.amee.domain.sheet.Choices;
 import com.amee.domain.tag.Tag;
 import com.amee.domain.unit.AMEEUnit;
 import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.auth.AuthenticationService;
-import com.amee.service.auth.AuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.definition.DefinitionService;
 import com.amee.service.profile.ProfileService;
 import com.amee.service.tag.TagService;
 import com.amee.service.unit.UnitService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -51,7 +54,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Autowired
     private ProfileItemService profileItemService;
-    
+
     @Autowired
     private TagService tagService;
 
@@ -136,11 +139,10 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * Gets the {@link BaseDataItemValue} for the current resource.
      * <p/>
-     * TODO: This method is not designed for large amounts of DIVHs.
-     * TODO: See https://jira.amee.com/browse/PL-2685.
-     *
-     * @param requestWrapper      the current {@link RequestWrapper}
-     * @param dataItem            the current {@link DataItem}
+     * TODO: This method is not designed for large amounts of DIVHs. TODO: See https://jira.amee.com/browse/PL-2685.
+     * 
+     * @param requestWrapper the current {@link RequestWrapper}
+     * @param dataItem the current {@link DataItem}
      * @param itemValueDefinition the current {@link ItemValueDefinition}
      * @return
      */
@@ -154,22 +156,13 @@ public class ResourceServiceImpl implements ResourceService {
             ItemValueMap itemValueMap = dataItemService.getItemValuesMap(dataItem);
             if (itemValueIdentifier.equals("CURRENT")) {
                 // Current date.
-                dataItemValue =
-                        (BaseDataItemValue) itemValueMap.get(
-                                itemValueDefinition.getPath(),
-                                new Date());
+                dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), new Date());
             } else if (itemValueIdentifier.equals("FIRST")) {
                 // First possible date.
-                dataItemValue =
-                        (BaseDataItemValue) itemValueMap.get(
-                                itemValueDefinition.getPath(),
-                                DataItemService.EPOCH);
+                dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), DataItemService.MYSQL_MIN_DATETIME);
             } else if (itemValueIdentifier.equals("LAST")) {
                 // Use the last possible date.
-                dataItemValue =
-                        (BaseDataItemValue) itemValueMap.get(
-                                itemValueDefinition.getPath(),
-                                DataItemService.Y2038);
+                dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), DataItemService.MYSQL_MAX_DATETIME);
             } else if (UidGen.INSTANCE_12.isValid(itemValueIdentifier)) {
                 // Treat identifier as a UID.
                 dataItemValue = (BaseDataItemValue) dataItemService.getByUid(dataItem, itemValueIdentifier);
@@ -179,10 +172,7 @@ public class ResourceServiceImpl implements ResourceService {
             } else {
                 // Try to parse identifier as a date.
                 try {
-                    dataItemValue =
-                            (BaseDataItemValue) itemValueMap.get(
-                                    itemValueDefinition.getPath(),
-                                    new StartEndDate(itemValueIdentifier));
+                    dataItemValue = (BaseDataItemValue) itemValueMap.get(itemValueDefinition.getPath(), new StartEndDate(itemValueIdentifier));
                 } catch (IllegalArgumentException e) {
                     // Could not parse date.
                     throw new ValidationException(new ValidationResult(messageSource, "itemValueIdentifier", "typeMismatch"));

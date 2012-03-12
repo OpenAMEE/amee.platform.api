@@ -42,7 +42,7 @@ public class ItemValueUsageValidator_3_1_0 extends BaseValidator implements Item
 
     private void addType() {
         allowedFields.add("type");
-        add(ValueUsageType.class, "type", new ValueUsageTypeEditor());
+        addCustomEditor(ValueUsageType.class, "type", new ValueUsageTypeEditor());
         add(new ValidationSpecification()
                 .setName("type")
         );

@@ -50,11 +50,7 @@ public class ProfileItemValueDOMRenderer_3_6_0 implements ProfileItemValueResour
         if (NumberValue.class.isAssignableFrom(profileItemValue.getClass())) {
             NumberValue nv = (NumberValue) profileItemValue;
             if (nv.hasUnit()) {
-                profileItemValueElem.addContent(new Element("Unit").setText(nv.getUnit().toString()));
-                if (nv.hasPerUnit()) {
-                    profileItemValueElem.addContent(new Element("PerUnit").setText(nv.getPerUnit().toString()));
-                    profileItemValueElem.addContent(new Element("CompoundUnit").setText(nv.getCompoundUnit().toString()));
-                }
+                profileItemValueElem.addContent(new Element("Unit").setText(nv.getCompoundUnit().toString()));
             }
         }
     }

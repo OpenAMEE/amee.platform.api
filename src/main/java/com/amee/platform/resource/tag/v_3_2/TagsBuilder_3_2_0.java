@@ -12,13 +12,14 @@ import com.amee.platform.resource.tag.TagResourceService;
 import com.amee.platform.resource.tag.TagsResource;
 import com.amee.service.tag.TagService;
 import com.amee.service.tag.TagsFilter;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Scope("prototype")
@@ -50,7 +51,7 @@ public class TagsBuilder_3_2_0 implements TagsResource.Builder {
     public void handle(RequestWrapper requestWrapper, IAMEEEntityReference entity) {
         TagsFilter filter = new TagsFilter();
         TagsResource.TagsFilterValidationHelper validationHelper = getValidationHelper(requestWrapper);
-        validationHelper.setTagsFilter(filter);
+        validationHelper.setObject(filter);
         if (validationHelper.isValid(requestWrapper.getQueryParameters())) {
             TagsResource.Renderer renderer = getRenderer(requestWrapper);
             renderer.start();
@@ -83,12 +84,10 @@ public class TagsBuilder_3_2_0 implements TagsResource.Builder {
     }
 
     private TagResource.Builder getTagBuilder(RequestWrapper requestWrapper) {
-        return (TagResource.Builder)
-                resourceBeanFinder.getBuilder(TagResource.Builder.class, requestWrapper);
+        return (TagResource.Builder) resourceBeanFinder.getBuilder(TagResource.Builder.class, requestWrapper);
     }
 
     private TagsResource.TagsFilterValidationHelper getValidationHelper(RequestWrapper requestWrapper) {
-        return (TagsResource.TagsFilterValidationHelper)
-                resourceBeanFinder.getValidationHelper(TagsResource.TagsFilterValidationHelper.class, requestWrapper);
+        return (TagsResource.TagsFilterValidationHelper) resourceBeanFinder.getBaseValidator(TagsResource.TagsFilterValidationHelper.class, requestWrapper);
     }
 }

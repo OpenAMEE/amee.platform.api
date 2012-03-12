@@ -1,13 +1,16 @@
 package com.amee.platform.resource.dataitem;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.DataItemService;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.data.DataItem;
+import com.amee.platform.resource.ResourceValidator;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
-
-import java.util.Map;
 
 public interface DataItemResource {
 
@@ -50,17 +53,9 @@ public interface DataItemResource {
     interface FormAcceptor extends ResourceAcceptor {
     }
 
-    interface DataItemValidator {
+    interface DataItemValidator extends ResourceValidator<DataItem> {
 
         void initialise();
-
-        boolean isValid(Map<String, String> queryParameters);
-
-        DataItem getObject();
-
-        void setObject(DataItem object);
-
-        ValidationResult getValidationResult();
 
         void setDataItemService(DataItemService dataItemService);
     }

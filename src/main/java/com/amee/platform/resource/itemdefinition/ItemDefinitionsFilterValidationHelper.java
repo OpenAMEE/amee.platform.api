@@ -1,18 +1,19 @@
 package com.amee.platform.resource.itemdefinition;
 
-import com.amee.base.validation.ValidationHelper;
-import com.amee.platform.search.ItemDefinitionsFilter;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.amee.base.validation.BaseValidator;
+import com.amee.platform.search.ItemDefinitionsFilter;
 
 @Service
 @Scope("prototype")
-public class ItemDefinitionsFilterValidationHelper extends ValidationHelper {
+public class ItemDefinitionsFilterValidationHelper extends BaseValidator {
 
     @Autowired
     private ItemDefinitionsFilterValidator validator;
@@ -52,5 +53,10 @@ public class ItemDefinitionsFilterValidationHelper extends ValidationHelper {
 
     public void setItemDefinitionFilter(ItemDefinitionsFilter itemDefinitionsFilter) {
         this.itemDefinitionsFilter = itemDefinitionsFilter;
+    }
+    
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return validator.supports(clazz);
     }
 }

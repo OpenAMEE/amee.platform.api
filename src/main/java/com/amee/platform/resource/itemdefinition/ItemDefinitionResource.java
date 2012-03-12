@@ -1,11 +1,12 @@
 package com.amee.platform.resource.itemdefinition;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRemover;
+import com.amee.base.resource.ResourceRenderer;
 import com.amee.domain.data.ItemDefinition;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
-import java.util.Map;
+import com.amee.platform.resource.ResourceValidator;
 
 public interface ItemDefinitionResource {
 
@@ -39,14 +40,6 @@ public interface ItemDefinitionResource {
     interface Remover extends ResourceRemover {
     }
 
-    interface ItemDefinitionValidator {
-
-        public boolean isValid(Map<String, String> queryParameters);
-
-        public ItemDefinition getObject();
-
-        public void setObject(ItemDefinition object);
-
-        public ValidationResult getValidationResult();
+    interface ItemDefinitionValidator extends ResourceValidator<ItemDefinition> {
     }
 }
