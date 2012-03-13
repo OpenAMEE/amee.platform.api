@@ -10,7 +10,6 @@ import groovyx.net.http.HttpResponseException
 
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -283,7 +282,6 @@ class ProfileItemIT extends BaseApiTest {
      * Two profile items cannot have the same dataItemUid and overlapping dates unless they also have different names.
      */
     @Test
-    @Ignore("See: PL-11203")
     void createOverlappingProfileItem() {
         versions.each { version -> createOverlappingProfileItem(version) }
     }
