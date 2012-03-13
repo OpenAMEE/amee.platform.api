@@ -640,6 +640,12 @@ class DataItemIT extends BaseApiTest {
 
     /**
      * Tests overriding the units defined in the item value definition with units in the data item value.
+     *
+     * If a unit is defined for a data item value then that unit is used for display and calculation,
+     * otherwise the unit from the item value definition is used.
+     *
+     * Values are always converted to the canonical 'internal value' with the units defined in the
+     * item value definition before the calculation algorithm is run.
      */
     @Test
     void overrideUnitsJson() {
