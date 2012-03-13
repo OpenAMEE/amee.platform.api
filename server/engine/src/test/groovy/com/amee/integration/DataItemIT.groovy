@@ -88,9 +88,7 @@ class DataItemIT extends BaseApiTest {
                         'wikiDoc': 'Test WikiDoc.',
                         'values.numberOfPeople': 10,
                         'values.fuel': 'Methane',
-                        'values.kgCO2PerYear': 200,
-                        'units.kgCO2PerYear': 'kg',
-                        'perUnits.kgCO2PerYear': 'year'],
+                        'values.kgCO2PerYear': 200],
                     requestContentType: URLENC,
                     contentType: JSON)
 
@@ -641,6 +639,61 @@ class DataItemIT extends BaseApiTest {
     }
 
     /**
+     * Tests overriding the units defined in the item value definition with units in the data item value.
+     */
+    @Test
+    void overrideUnitsJson() {
+        versions.each { version -> overrideUnitsJson(version) }
+    }
+
+    def overrideUnitsJson(version) {
+        if (version >= 3.6) {
+
+            // Must be admin to update data items.
+            setAdminUser()
+
+            // Get the data item
+            def responseGet = client.get(
+                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/values/volumeFuelPerTime")
+            assert SUCCESS_OK.code == responseGet.status
+            assert "L/min" == responseGet.data.values[0].unit
+
+            // Do a calculation
+            responseGet = client.get(
+                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/calculation;full",
+                query: ['values.flightDuration': '1'])
+            assert SUCCESS_OK.code == responseGet.status
+            assertEquals 95.5576256544, responseGet.data.output.amounts[0].value, 0.000001
+            assert 'kg/year' == responseGet.data.output.amounts[0].unit
+            
+            // Update the unit and perUnit
+            def responsePut = client.put(
+                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59",
+                body: ['units.volumeFuelPerTime': 'mL', 'perUnits.volumeFuelPerTime': 's'],
+                requestContentType: URLENC,
+                contentType: JSON)
+            assertOkJson responsePut, 200, 'F3668F762C59';
+
+            // The data item should show the overridden values.
+            responseGet = client.get(
+                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/values/volumeFuelPerTime")
+            assert SUCCESS_OK.code == responseGet.status
+            assert "mL/s" == responseGet.data.values[0].unit
+
+            // Do the calculation again
+            // Algorithm: volumeFuelPerTime * flightDuration * fuelCO2Factor * RFI
+            // 38.85 * 1 * (70.72 * 34.7802 / 1000) * 1
+            // asInternalDecimal() label: IPCC military aircraft/volumeFuelPerTime,external: 38.85 mL/s,internal: 2.3310000000000004 L/min
+            responseGet = client.get(
+                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/calculation;full",
+                query: ['values.flightDuration': '1'])
+            assert SUCCESS_OK.code == responseGet.status
+            assertEquals 5.733457539264001, responseGet.data.output.amounts[0].value, 0.000001
+            assert 'kg/year' == responseGet.data.output.amounts[0].unit
+        }
+    }
+
+    /**
      * Tests an algorithm is applied to calculate a result with JSON response.
      *
      * The default units and perUnits are used.
@@ -984,7 +1037,7 @@ class DataItemIT extends BaseApiTest {
      * <li>No longer than 255 characters.
      * </ul>
      *
-     * NOTE: The test for duplicates below depends on the DataItem with UID 'AE884BA62089' having the same path set.
+     * NOTE: The test for duplicates below depends on the DataItem with UID 'A9290047911B' having the same path set.
      */
     @Test
     void updateWithInvalidPath() {
@@ -1026,13 +1079,18 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithValues() {
         setAdminUser()
-        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
-        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
-        updateDataItemFieldJson('values.numberOfPeople', 'long', String.randomString(32768), 3.4)
-        updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', 'not_a_double', 3.4)
-        updateDataItemFieldJson('values.kgCO2PerYear', 'typeMismatch', '', 3.4)
-        updateDataItemFieldJson('values.fuel', 'long', String.randomString(32768), 3.4)
-        updateDataItemFieldJson('values.source', 'long', String.randomString(32768), 3.4)
+        updateDataItemFieldJson('values.description', 'long', String.randomString(32768), 3.4)
+        updateDataItemFieldJson('values.volumeFuelPerTime', 'typeMismatch', 'not_a_double', 3.4)
+        updateDataItemFieldJson('values.volumeFuelPerTime', 'typeMismatch', '', 3.4)
+
+        updateDataItemFieldJson('units.volumeFuelPerTime', 'format', 'NOT_A_UNIT', 3.6)
+
+        // Meter is not compatible with litre.
+        updateDataItemFieldJson('units.volumeFuelPerTime', 'format', 'm', 3.6)
+        updateDataItemFieldJson('perUnits.volumeFuelPerTime', 'format', 'NOT_A_UNIT', 3.6)
+
+        // kg is not compatible with minute
+        updateDataItemFieldJson('perUnits.volumeFuelPerTime', 'format', 'kg', 3.6)
     }
 
     /**
@@ -1075,7 +1133,7 @@ class DataItemIT extends BaseApiTest {
                 body[field] = value
                 // Update DataItem.
                 client.put(
-                        path: "/${version}/categories/Cooking/items/AE884BA62089",
+                        path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON)
