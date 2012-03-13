@@ -128,7 +128,7 @@ public class DataItem extends BaseItem {
      */
     public Object getUnits() {
         if (units == null) {
-            units = getItemDefinition().getProfileItemUnitsBean();
+            units = getItemDefinition().getDataItemUnitsBean();
         }
         return units;
     }
@@ -143,7 +143,7 @@ public class DataItem extends BaseItem {
      */
     public Object getPerUnits() {
         if (perUnits == null) {
-            perUnits = getItemDefinition().getProfileItemUnitsBean();
+            perUnits = getItemDefinition().getDataItemUnitsBean();
         }
         return perUnits;
     }
