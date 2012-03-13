@@ -1,10 +1,11 @@
 package com.amee.integration
 
-import groovyx.net.http.HttpResponseException
-import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import static org.restlet.data.Status.*
+import groovyx.net.http.HttpResponseException
+
+import org.junit.Test
 
 /**
  * Tests for the Tag API.
@@ -201,7 +202,7 @@ class TagIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(2000)
 
             // We should get a 404 here for the EntityTag.
             try {
