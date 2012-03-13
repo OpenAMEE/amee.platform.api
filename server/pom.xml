@@ -33,10 +33,10 @@
         <commons-logging.version>1.1.1</commons-logging.version>
         <gmaven-runtime-1.7.version>1.3</gmaven-runtime-1.7.version>
         <groovy.version>1.7.10</groovy.version>
-        <h2.version>1.3.154</h2.version>
+        <h2.version>1.3.164</h2.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
         <hoptoad-notifier.version>1.9</hoptoad-notifier.version>
-        <hsqldb.version>2.0.0</hsqldb.version>
+        <hsqldb.version>2.2.8</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
@@ -258,6 +258,8 @@
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                         <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
+
+                        <!-- Set this to 0 to disable timeouts when debugging (default is 15) -->
                         <amee.resourceDefaultTimeout>15</amee.resourceDefaultTimeout>
                     </systemPropertyVariables>
                     <additionalClasspathElements>
@@ -414,6 +416,14 @@
             <artifactId>gmaven-runtime-1.7</artifactId>
             <version>${gmaven-runtime-1.7.version}</version>
             <scope>test</scope>
+
+            <!-- See PL-11066 -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>gossip</artifactId>
+                    <groupId>org.sonatype.gossip</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
