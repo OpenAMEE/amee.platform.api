@@ -9,6 +9,7 @@ import com.amee.domain.item.data.BaseDataItemTextValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
+import com.amee.platform.science.AmountUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,8 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
         addWikiDoc();
         addProvenance();
         addValues();
+        addUnits();
+        addPerUnits();
     }
 
     /**
@@ -76,6 +79,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                         new ValidationSpecification.CustomValidation() {
                             @Override
                             public int validate(Object object, Object value, Errors errors) {
+
                                 // Ensure DataItem is unique on path.
                                 DataItem thisDI = (DataItem) object;
                                 if ((thisDI != null) && (thisDI.getDataCategory() != null)) {
@@ -148,6 +152,78 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                     // Add the editor.
                     addCustomEditor(String.class, paramName, new ItemValueEditor(ivd));
                 }
+            }
+        }
+    }
+
+    protected void addUnits() {
+        for (final ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromData()) {
+                final String unitName = "units." + ivd.getPath();
+
+                // Allow this field.
+                allowedFields.add(unitName);
+                add(new ValidationSpecification()
+                    .setName(unitName)
+                    .setAllowEmpty(true)
+                    .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+
+                                // Ensure unit is valid (compatible with the item value definition.)
+                                String unit = (String) value;
+                                if (unit != null) {
+                                    try {
+                                        if (!ivd.isValidUnit(unit)) {
+                                            errors.rejectValue(unitName, "format");
+                                        }
+                                    } catch (IllegalArgumentException e) {
+                                        errors.rejectValue(unitName, "format");
+                                    }
+                                }
+
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        }
+                    )
+                );
+            }
+        }
+    }
+    
+    protected void addPerUnits() {
+        for (final ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromData()) {
+                final String perUnitName = "perUnits." + ivd.getPath();
+
+                // Allow this field
+                allowedFields.add(perUnitName);
+                add(new ValidationSpecification()
+                    .setName(perUnitName)
+                    .setAllowEmpty(true)
+                    .setCustomValidation(
+                        new ValidationSpecification.CustomValidation() {
+                            @Override
+                            public int validate(Object object, Object value, Errors errors) {
+
+                                // Ensure perUnit is valid (compatible with the item value definition.)
+                                String perUnit = (String) value;
+                                if (perUnit != null) {
+                                    try {
+                                        if (!ivd.isValidPerUnit(perUnit)) {
+                                            errors.rejectValue(perUnitName, "format");
+                                        }
+                                    } catch (IllegalArgumentException e) {
+                                        errors.rejectValue(perUnitName, "format");
+                                    }
+                                }
+
+                                return ValidationSpecification.CONTINUE;
+                            }
+                        }
+                    )
+                );
             }
         }
     }
