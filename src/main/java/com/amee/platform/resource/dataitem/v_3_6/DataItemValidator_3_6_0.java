@@ -79,6 +79,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                         new ValidationSpecification.CustomValidation() {
                             @Override
                             public int validate(Object object, Object value, Errors errors) {
+
                                 // Ensure DataItem is unique on path.
                                 DataItem thisDI = (DataItem) object;
                                 if ((thisDI != null) && (thisDI.getDataCategory() != null)) {
@@ -156,7 +157,7 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
     }
 
     protected void addUnits() {
-        for (ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
+        for (final ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
             if (ivd.isFromData()) {
                 final String unitName = "units." + ivd.getPath();
 
@@ -170,12 +171,13 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                             @Override
                             public int validate(Object object, Object value, Errors errors) {
 
+                                // Ensure unit is valid (compatible with the item value definition.)
                                 String unit = (String) value;
-
-                                // Ensure unit is valid
                                 if (unit != null) {
                                     try {
-                                        AmountUnit.valueOf(unit);
+                                        if (!ivd.isValidUnit(unit)) {
+                                            errors.rejectValue(unitName, "format");
+                                        }
                                     } catch (IllegalArgumentException e) {
                                         errors.rejectValue(unitName, "format");
                                     }
@@ -191,8 +193,8 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
     }
     
     protected void addPerUnits() {
-        for (ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
-            if (ivd.isFromProfile()) {
+        for (final ItemValueDefinition ivd : dataItem.getItemDefinition().getActiveItemValueDefinitions()) {
+            if (ivd.isFromData()) {
                 final String perUnitName = "perUnits." + ivd.getPath();
 
                 // Allow this field
@@ -205,12 +207,13 @@ public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemRe
                             @Override
                             public int validate(Object object, Object value, Errors errors) {
 
+                                // Ensure perUnit is valid (compatible with the item value definition.)
                                 String perUnit = (String) value;
-
-                                // Ensure perUnit is valid
                                 if (perUnit != null) {
                                     try {
-                                        AmountUnit.valueOf(perUnit);
+                                        if (!ivd.isValidPerUnit(perUnit)) {
+                                            errors.rejectValue(perUnitName, "format");
+                                        }
                                     } catch (IllegalArgumentException e) {
                                         errors.rejectValue(perUnitName, "format");
                                     }

@@ -1,6 +1,7 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
 import com.amee.base.domain.Since;
+import com.amee.base.validation.BaseValidator;
 import com.amee.base.validation.ValidationSpecification;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemValidator_3_6_0;
@@ -33,5 +34,16 @@ public class DataItemValidator_3_4_0 extends DataItemValidator_3_6_0 {
                 break;
             }
         }
+
+    }
+
+    @Override
+    protected void addUnits() {
+        // Not supported.
+    }
+
+    @Override
+    protected void addPerUnits() {
+        // Not supported.
     }
 }
