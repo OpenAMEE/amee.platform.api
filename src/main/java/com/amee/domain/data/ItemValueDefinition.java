@@ -109,6 +109,12 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
         setName(name);
     }
 
+    /**
+     * An ItemValueDefinition is considered trashed if itself is trashed, its item definition is trashed or
+     * its value definition is trashed.
+     *
+     * @return true if this ItemValueDefinition should be considered trashed.
+     */
     @Override
     public boolean isTrash() {
         return status.equals(AMEEStatus.TRASH) || getItemDefinition().isTrash() || getValueDefinition().isTrash();
@@ -166,6 +172,7 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
         this.valueDefinition = valueDefinition;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -309,28 +316,20 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
 
     @Override
     public boolean hasUnit() {
-        return StringUtils.isNotBlank(unit) && !unit.equals("any");
-    }
-
-    public boolean isAnyUnit() {
-        return StringUtils.isNotBlank(unit) && unit.equals("any");
+        return StringUtils.isNotBlank(unit);
     }
 
     @Override
     public boolean hasPerUnit() {
-        return StringUtils.isNotBlank(perUnit) && !perUnit.equals("any");
-    }
-
-    public boolean isAnyPerUnit() {
-        return StringUtils.isNotBlank(perUnit) && perUnit.equals("any");
+        return StringUtils.isNotBlank(perUnit);
     }
 
     public boolean isValidUnit(String unit) {
-        return isAnyUnit() || getUnit().isCompatibleWith(unit);
+        return getUnit().isCompatibleWith(unit);
     }
 
     public boolean isValidPerUnit(String perUnit) {
-        return isAnyPerUnit() || getPerUnit().isCompatibleWith(perUnit);
+        return getPerUnit().isCompatibleWith(perUnit);
     }
 
     @Override

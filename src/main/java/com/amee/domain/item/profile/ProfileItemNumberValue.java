@@ -107,12 +107,12 @@ public class ProfileItemNumberValue extends BaseProfileItemValue implements Numb
 
     @Override
     public boolean hasUnit() {
-        return (StringUtils.isNotBlank(unit) && getItemValueDefinition().isAnyUnit()) || getItemValueDefinition().hasUnit();
+        return StringUtils.isNotBlank(unit) || getItemValueDefinition().hasUnit();
     }
 
     @Override
     public boolean hasPerUnit() {
-        return (StringUtils.isNotBlank(perUnit) && getItemValueDefinition().isAnyPerUnit()) || getItemValueDefinition().hasPerUnit();
+        return StringUtils.isNotBlank(perUnit) || getItemValueDefinition().hasPerUnit();
     }
 
     public boolean hasPerTimeUnit() {
