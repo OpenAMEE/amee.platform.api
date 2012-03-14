@@ -202,7 +202,7 @@ class TagIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(1000)
 
             // We should get a 404 here for the EntityTag.
             try {
