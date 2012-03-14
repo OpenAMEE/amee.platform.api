@@ -42,9 +42,9 @@ class CategorySmokeTest extends BaseSmokeTest {
     @Test
     void categoryCalculation() {
 
-        // TODO: Update when deployed to stage/live
+        // TODO: Update when deployed to live
         config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
-        if (config.api.host.v3 =~ "science") {
+        if (config.api.host.v3 =~ "science" || config.api.host.v3 =~ "stage") {
             def response = client.get(
                 path: "/3/categories/IPCC_military_aircraft/calculation",
                 query: [type: 'A-10A', 'values.flightDuration': '1'])
@@ -56,9 +56,9 @@ class CategorySmokeTest extends BaseSmokeTest {
     @Test
     void dataItemCalculation() {
 
-        // TODO: Update checks when deployed to stage/live
+        // TODO: Update checks when deployed to live
         config = new ConfigSlurper().parse(getClass().getResource("/smoke.properties"))
-        if (config.api.host.v3 =~ "science") {
+        if (config.api.host.v3 =~ "science" || config.api.host.v3 =~ "stage") {
             def response = client.get(
                 path: "/3/categories/IPCC_military_aircraft/items/${config.uid.item.IPCC_military_aircraft.a10}/calculation",
                 query: ["values.flightDuration": "1"])
