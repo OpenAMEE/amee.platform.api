@@ -109,13 +109,13 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
     }
 
     @Override
-    public void addValues(Choices values) {
+    public void addValues(Choices userValues) {
         JSONObject inputObj = new JSONObject();
 
         // Create an array of value objects.
         JSONArray valuesArr = new JSONArray();
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
-        for (Choice choice : values.getChoices()) {
+        for (Choice choice : userValues.getChoices()) {
             if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
 
                 // Create a value object.
@@ -128,14 +128,14 @@ public class DataItemCalculationJSONRenderer_3_6_0 implements DataItemCalculatio
                 ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
                 if (itemValueDefinition != null) {
                     if (itemValueDefinition.hasUnit()) {
-                        if (values.containsKey("units." + choice.getName())) {
-                            ResponseHelper.put(valueObj, "unit", values.get("units." + choice.getName()).getValue());
+                        if (userValues.containsKey("units." + choice.getName())) {
+                            ResponseHelper.put(valueObj, "unit", userValues.get("units." + choice.getName()).getValue());
                         } else {
                             ResponseHelper.put(valueObj, "unit", itemValueDefinition.getUnit());
                         }
                         if (itemValueDefinition.hasPerUnit()) {
-                            if (values.containsKey("perUnits." + choice.getName())) {
-                                ResponseHelper.put(valueObj, "perUnit", values.get("perUnits." + choice.getName()).getValue());
+                            if (userValues.containsKey("perUnits." + choice.getName())) {
+                                ResponseHelper.put(valueObj, "perUnit", userValues.get("perUnits." + choice.getName()).getValue());
                             } else {
                                 ResponseHelper.put(valueObj, "perUnit", itemValueDefinition.getPerUnit());
                             }

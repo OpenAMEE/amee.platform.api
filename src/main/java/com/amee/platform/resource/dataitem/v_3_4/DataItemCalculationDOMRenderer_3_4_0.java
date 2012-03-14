@@ -62,12 +62,12 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
     }
 
     @Override
-    public void addValues(Choices values) {
+    public void addValues(Choices userValues) {
 
         // Add the supplied values
         Element valuesElem = new Element("Values");
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
-        for (Choice choice : values.getChoices()) {
+        for (Choice choice : userValues.getChoices()) {
             if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
@@ -77,15 +77,15 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
                 ItemValueDefinition itemValueDefinition = itemValueDefinitions.get(choice.getName());
                 if (itemValueDefinition != null) {
                     if (itemValueDefinition.hasUnit()) {
-                        if (values.containsKey("units." + choice.getName())) {
-                            valueElem.setAttribute("unit", values.get("units." + choice.getName()).getValue());
+                        if (userValues.containsKey("units." + choice.getName())) {
+                            valueElem.setAttribute("unit", userValues.get("units." + choice.getName()).getValue());
                         } else {
                             valueElem.setAttribute("unit", itemValueDefinition.getUnit().toString());
                         }
                     }
                     if (itemValueDefinition.hasPerUnit()) {
-                        if (values.containsKey("perUnits." + choice.getName())) {
-                            valueElem.setAttribute("perUnit", values.get("perUnits." + choice.getName()).getValue());
+                        if (userValues.containsKey("perUnits." + choice.getName())) {
+                            valueElem.setAttribute("perUnit", userValues.get("perUnits." + choice.getName()).getValue());
                         } else {
                             valueElem.setAttribute("perUnit", itemValueDefinition.getPerUnit().toString());
                         }

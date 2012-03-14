@@ -22,6 +22,6 @@ public interface DataItemCalculationResource {
 
         void addReturnValues(ReturnValues returnValues);
 
-        void addValues(Choices values);
+        void addValues(Choices userValues);
     }
 }
