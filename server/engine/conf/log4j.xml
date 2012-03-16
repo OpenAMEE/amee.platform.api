@@ -140,7 +140,7 @@
         <!--
           The TimeSlice option is used to determine the time window for which
           all received StopWatch logs are aggregated to create a single
-          GroupedTimingStatistics log. Here we set it to 10 seconds, overriding
+          GroupedTimingStatistics log. Here we set it to 60 seconds, overriding
           the default of 30000 ms
         -->
         <param name="TimeSlice" value="60000"/>
