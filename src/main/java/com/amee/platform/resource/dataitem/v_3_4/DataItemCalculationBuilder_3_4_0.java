@@ -16,7 +16,6 @@ import com.amee.platform.resource.dataitem.DataItemCalculationResource;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.auth.ResourceAuthorizationService;
-import com.amee.service.data.DataService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -29,9 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * TODO: Validation of each parameter against matching IVDs.
- */
 @Service
 @Scope("prototype")
 @Since("3.4.0")
@@ -87,12 +83,15 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         // Get special parameters.
         // String unit = requestWrapper.getQueryParameters().get("returnUnit");
         // String perUnit = requestWrapper.getQueryParameters().get("returnPerUnit");
-        String startDate = requestWrapper.getQueryParameters().get("startDate");
 
-        // The resource may receive a startDate parameter that sets the current date in an
-        // historical sequence of ItemValues.
+        String startDate = requestWrapper.getQueryParameters().get("startDate");
         if (StringUtils.isNotBlank(startDate)) {
             dataItem.setEffectiveStartDate(new StartEndDate(startDate));
+        }
+
+        String endDate = requestWrapper.getQueryParameters().get("endDate");
+        if (StringUtils.isNotBlank(endDate)) {
+            dataItem.setEffectiveEndDate(new StartEndDate(endDate));
         }
 
         // Get all the parameters.
@@ -112,7 +111,11 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Render the values.
         if (values || full) {
-            renderer.addValues(userValueChoices);
+
+            // Get the data item values
+            dataItem.getValues();
+
+            renderer.addValues(userValueChoices, new StartEndDate(startDate), new StartEndDate(endDate));
         }
     }
 
@@ -131,6 +134,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         // queryParameters.remove("returnUnit");
         // queryParameters.remove("returnPerUnit");
         queryParameters.remove("startDate");
+        queryParameters.remove("endDate");
 
         // Create list of Choices for parameters.
         List<Choice> parameterChoices = new ArrayList<Choice>();

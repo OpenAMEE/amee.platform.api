@@ -7,6 +7,8 @@ import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.science.ReturnValues;
 
+import java.util.Date;
+
 public interface DataItemCalculationResource {
 
     interface Builder extends ResourceBuilder {
@@ -22,6 +24,6 @@ public interface DataItemCalculationResource {
 
         void addReturnValues(ReturnValues returnValues);
 
-        void addValues(Choices userValues);
+        void addValues(Choices userValues, Date startDate, Date endDate);
     }
 }
