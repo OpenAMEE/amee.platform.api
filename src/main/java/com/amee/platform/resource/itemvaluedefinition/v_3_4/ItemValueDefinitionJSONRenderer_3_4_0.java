@@ -66,7 +66,7 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
         ValueType type = itemValueDefinition.getValueDefinition().getValueType();
         String value = itemValueDefinition.getValue();
         if (ValueType.TEXT.equals(type)) {
-            ResponseHelper.put(itemValueDefinitionObj, "value", itemValueDefinition.getValue());
+            ResponseHelper.put(itemValueDefinitionObj, "value", value);
         } else {
             // Non-text values that are represented here by the empty string should be null in JSON
             if (value == null || "".equals(value)) {
@@ -74,16 +74,13 @@ public class ItemValueDefinitionJSONRenderer_3_4_0 implements ItemValueDefinitio
             } else {
                 switch (type) {
                 case BOOLEAN:
-                    Boolean booleanValue = Boolean.valueOf(itemValueDefinition.getValue());
-                    ResponseHelper.put(itemValueDefinitionObj, "value", booleanValue);
+                    ResponseHelper.put(itemValueDefinitionObj, "value", Boolean.valueOf(value));
                     break;
                 case DOUBLE:
-                    Double doubleValue = Double.valueOf(itemValueDefinition.getValue());
-                    ResponseHelper.put(itemValueDefinitionObj, "value", doubleValue);
+                    ResponseHelper.put(itemValueDefinitionObj, "value", Double.valueOf(value));
                     break;
                 case INTEGER:
-                    Integer integerValue = Integer.valueOf(itemValueDefinition.getValue());
-                    ResponseHelper.put(itemValueDefinitionObj, "value", integerValue);
+                    ResponseHelper.put(itemValueDefinitionObj, "value", Integer.valueOf(value));
                     break;
                 }
             }

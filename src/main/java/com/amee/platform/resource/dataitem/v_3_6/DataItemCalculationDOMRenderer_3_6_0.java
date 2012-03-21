@@ -2,17 +2,17 @@ package com.amee.platform.resource.dataitem.v_3_6;
 
 import com.amee.base.domain.Since;
 import com.amee.domain.DataItemService;
-import com.amee.domain.data.BaseItemValueStartDateComparator;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
-import com.amee.domain.item.UsableValuePredicate;
 import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
-import com.amee.platform.science.*;
-import org.apache.commons.collections.CollectionUtils;
+import com.amee.platform.science.ExternalHistoryValue;
+import com.amee.platform.science.Note;
+import com.amee.platform.science.ReturnValue;
+import com.amee.platform.science.ReturnValues;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.joda.time.DateTime;
@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Scope("prototype")
@@ -88,7 +89,7 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
     }
 
     @Override
-    public void addValues(Choices userValues, Date startDate, Date endDate) {
+    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
         Element inputElem = new Element("Input");
 
         // Add the supplied values
@@ -125,68 +126,51 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
             }
         }
 
-        // TODO: Move this logic into the builder.
         // Data item values
-        for (Map.Entry<String, ItemValueDefinition> entry: itemValueDefinitions.entrySet()) {
+        for (Map.Entry<String, List<BaseItemValue>> entry: dataItemValues.entrySet()) {
             String path = entry.getKey();
-            ItemValueDefinition itemValueDefinition = entry.getValue();
+            List<BaseItemValue> itemValues = entry.getValue();
 
             // Only display a value if it hasn't been overridden by the user.
-            if (itemValueDefinition.isFromData() && !userValues.containsKey(path)) {
+            if (!userValues.containsKey(path)) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", path);
                 valueElem.setAttribute("source", "amee");
 
-                // Get all ItemValues with this ItemValueDefinition path.
-                List<BaseItemValue> itemValues = dataItemService.getAllItemValues(dataItem, path);
-
                 // Time series?
                 if (itemValues.size() > 1) {
-
-                    // Add all BaseItemValues with usable values
-                    List<BaseItemValue> usableSet = (List<BaseItemValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
-
-                    if (!usableSet.isEmpty()) {
-                        Element seriesElem = new Element("DataSeries");
-                        for (BaseItemValue itemValue: filterItemValues(usableSet, startDate, endDate)) {
-                            Element dataPointElem = new Element("DataPoint");
-                            if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
-                                NumberValue nv = (NumberValue) itemValue;
-                                if (nv.hasUnit()) {
-                                    dataPointElem.setAttribute("unit", nv.getCompoundUnit().toString());
-                                }
-                            }
-                            if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
-                                dataPointElem.setAttribute("startDate", ((ExternalHistoryValue) itemValue).getStartDate().toString());
-                            } else {
-                                dataPointElem.setAttribute("startDate", DATE_FORMAT.print(new DateTime(0)));
-                            }
-                            dataPointElem.setText(itemValue.getValueAsString());
-                            seriesElem.addContent(dataPointElem);
-
-                            // TODO: How do we deal with start dates and end dates in data calculations
-//                            values.put(ivd, new InternalValue(usableSet, dataItem.getEffectiveStartDate(), dataItem.getEffectiveEndDate()));
-                        }
-                        valueElem.addContent(seriesElem);
-                    }
-
-                } else if (itemValues.size() == 1) {
-                    BaseItemValue itemValue = itemValues.get(0);
-                    if (itemValue.isUsableValue()) {
-
+                    Element seriesElem = new Element("DataSeries");
+                    for (BaseItemValue itemValue: itemValues) {
+                        Element dataPointElem = new Element("DataPoint");
                         if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
                             NumberValue nv = (NumberValue) itemValue;
                             if (nv.hasUnit()) {
-                                valueElem.setAttribute("unit", nv.getCompoundUnit().toString());
+                                dataPointElem.setAttribute("unit", nv.getCompoundUnit().toString());
                             }
                         }
-
-                        valueElem.setText(itemValue.getValueAsString());
+                        if (ExternalHistoryValue.class.isAssignableFrom(itemValue.getClass())) {
+                            dataPointElem.setAttribute("startDate", ((ExternalHistoryValue) itemValue).getStartDate().toString());
+                        } else {
+                            dataPointElem.setAttribute("startDate", DATE_FORMAT.print(new DateTime(0)));
+                        }
+                        dataPointElem.setText(itemValue.getValueAsString());
+                        seriesElem.addContent(dataPointElem);
                     }
+                    valueElem.addContent(seriesElem);
+
+                } else if (itemValues.size() == 1) {
+                    BaseItemValue itemValue = itemValues.get(0);
+                    if (NumberValue.class.isAssignableFrom(itemValue.getClass())) {
+                        NumberValue nv = (NumberValue) itemValue;
+                        if (nv.hasUnit()) {
+                            valueElem.setAttribute("unit", nv.getCompoundUnit().toString());
+                        }
+                    }
+
+                    valueElem.setText(itemValue.getValueAsString());
                 }
                 valuesElem.addContent(valueElem);
             }
-
         }
 
         // Only add the element if we have values.
@@ -204,57 +188,5 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
     @Override
     public Object getObject() {
         return new Document(rootElem);
-    }
-    
-    private List<BaseItemValue> filterItemValues(List<BaseItemValue> values, Date startDate, Date endDate) {
-        List<BaseItemValue> filteredValues = new ArrayList<BaseItemValue>();
-
-        // sort in descending order (most recent last, non-historical value first)
-        Collections.sort(values, new BaseItemValueStartDateComparator());
-
-        // endDate can be nil, indicating range-of-interest extends to infinite future time
-        // in this case, only the final value in the interval is of interest to anyone
-        if (endDate == null) {
-            filteredValues.add(values.get(values.size() - 1));
-            return filteredValues;
-        }
-
-        // The earliest value
-        BaseItemValue previous = values.get(0);
-        StartEndDate latest;
-        if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-            latest = ((ExternalHistoryValue)previous).getStartDate();
-        } else {
-
-            // Set the epoch.
-            latest = new StartEndDate(new Date(0));
-        }
-
-        for (BaseItemValue iv : values) {
-            StartEndDate currentStart;
-            if (BaseItemValueStartDateComparator.isHistoricValue(iv)) {
-                currentStart = ((ExternalHistoryValue)iv).getStartDate();
-            } else {
-                currentStart = new StartEndDate(new Date(0));
-            }
-
-            if (currentStart.before(endDate) && !currentStart.before(startDate)) {
-                filteredValues.add(iv);
-            } else if (currentStart.before(startDate) && currentStart.after(latest)) {
-                latest = currentStart;
-                previous = iv;
-            }
-        }
-
-        // Add the previous point to the start of the list
-        // TODO: WTF?
-        if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-//            slog.info("Adding previous point at " + ((ExternalHistoryValue)previous).getStartDate());
-        } else {
-//            slog.info("Adding previous point at " + new StartEndDate(new Date(0)));
-        }
-        filteredValues.add(0, previous);
-
-        return filteredValues;
     }
 }
