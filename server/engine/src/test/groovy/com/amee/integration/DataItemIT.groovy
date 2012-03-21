@@ -762,24 +762,32 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'comment', note.type
             assertEquals 'This is a comment', note.value
 
-            // Input values
-            def itemValue
+            // User input values
+            def userItemValue
             if (version >= 3.6) {
                 assertEquals 8, response.data.input.values.size()
-                itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals 10, itemValue.value
-                assertEquals 'user', itemValue.source
+                userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
+                assertNotNull userItemValue
+                assertEquals 10, userItemValue.value
+                assertEquals 'user', userItemValue.source
             } else {
                 assertEquals 3, response.data.values.size()
-                itemValue = response.data.values.find { it.name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals '10', itemValue.value
+                userItemValue = response.data.values.find { it.name == 'energyPerTime' }
+                assertNotNull userItemValue
+                assertEquals '10', userItemValue.value
             }
+            assertEquals 'kWh', userItemValue.unit
+            assertEquals 'year', userItemValue.perUnit
 
-            assertEquals 'kWh', itemValue.unit
-            assertEquals 'year', itemValue.perUnit
-
+            // Data item input values
+            def dataItemValue
+            if (version >= 3.6) {
+                dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
+                assertNotNull dataItemValue
+                assertEquals 0.0324402, dataItemValue.value, 0.000001
+                assertEquals 'amee', dataItemValue.source
+                assertEquals 'kg/(kW·h)', dataItemValue.unit
+            }
         }
     }
 
@@ -834,21 +842,31 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'comment', note.@type.text()
             assertEquals 'This is a comment', note.text()
 
-            // Input values
-            def itemValue
+            // User input values
+            def userItemValue
             if (version >= 3.6) {
                 assertEquals 8, response.data.Input.Values.Value.size()
-                itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals 'user', itemValue.@source.text()
+                userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull userItemValue
+                assertEquals 'user', userItemValue.@source.text()
             } else {
                 assertEquals 3, response.data.Values.Value.size()
-                itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull itemValue
+                userItemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
+                assertNotNull userItemValue
             }
-            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
-            assertEquals 'kWh', itemValue.@unit.text()
-            assertEquals 'year', itemValue.@perUnit.text()
+            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
+            assertEquals 'kWh', userItemValue.@unit.text()
+            assertEquals 'year', userItemValue.@perUnit.text()
+
+            // Data item input values
+            def dataItemValue
+            if (version >= 3.6) {
+                dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
+                assertNotNull dataItemValue
+                assertEquals 'amee', dataItemValue.@source.text()
+                assertEquals 0.0324402, Double.parseDouble(dataItemValue.text()), 0.000001
+                assertEquals 'kg/(kW·h)', dataItemValue.@unit.text()
+            }
         }
     }
 
