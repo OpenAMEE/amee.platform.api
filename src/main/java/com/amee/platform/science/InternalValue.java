@@ -118,6 +118,10 @@ public class InternalValue {
                     // The new value will not be added to the TreeSet (see class note about inconsistency with equals).
                     log.warn("filterItemValues() Two non-historical values should not exist.");
                     return 0;
+
+                    // Note: Java 7 may cause this branch to be executed due to changes in TreeMap implementation.
+                    // See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5045147
+                    // and: http://www.oracle.com/technetwork/java/javase/jdk7-relnotes-418459.html#jdk7changes
                 }
             }
         });
