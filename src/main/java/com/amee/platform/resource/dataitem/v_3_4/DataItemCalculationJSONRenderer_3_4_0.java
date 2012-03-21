@@ -3,6 +3,7 @@ package com.amee.platform.resource.dataitem.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationJSONRenderer_3_6_0;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -83,7 +85,7 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
     }
 
     @Override
-    public void addValues(Choices userValues) {
+    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
 
         // Create an array of value objects.
         JSONArray valuesArr = new JSONArray();
