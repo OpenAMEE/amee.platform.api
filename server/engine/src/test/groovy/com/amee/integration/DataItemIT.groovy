@@ -765,16 +765,18 @@ class DataItemIT extends BaseApiTest {
             // Input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 3, response.data.input.values.size()
+                assertEquals 8, response.data.input.values.size()
                 itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
                 assertNotNull itemValue
+                assertEquals 10, itemValue.value
                 assertEquals 'user', itemValue.source
             } else {
                 assertEquals 3, response.data.values.size()
                 itemValue = response.data.values.find { it.name == 'energyPerTime' }
                 assertNotNull itemValue
+                assertEquals '10', itemValue.value
             }
-            assertEquals '10', itemValue.value
+
             assertEquals 'kWh', itemValue.unit
             assertEquals 'year', itemValue.perUnit
 
@@ -835,7 +837,7 @@ class DataItemIT extends BaseApiTest {
             // Input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 3, response.data.Input.Values.Value.size()
+                assertEquals 8, response.data.Input.Values.Value.size()
                 itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
                 assertNotNull itemValue
                 assertEquals 'user', itemValue.@source.text()
@@ -899,19 +901,20 @@ class DataItemIT extends BaseApiTest {
             assertEquals 'comment', note.type
             assertEquals 'This is a comment', note.value
 
-            // Input values
+            // User input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 3, response.data.input.values.size()
+                assertEquals 8, response.data.input.values.size()
                 itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
                 assertNotNull itemValue
+                assertEquals 10, itemValue.value
                 assertEquals "user", itemValue.source
             } else {
                 assertEquals 3, response.data.values.size()
                 itemValue = response.data.values.find { it.name == 'energyPerTime' }
                 assertNotNull itemValue
+                assertEquals '10', itemValue.value
             }
-            assertEquals '10', itemValue.value
             assertEquals 'MWh', itemValue.unit
             assertEquals 'month', itemValue.perUnit
         }
@@ -963,7 +966,7 @@ class DataItemIT extends BaseApiTest {
             // Input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 3, response.data.Input.Values.Value.size()
+                assertEquals 8, response.data.Input.Values.Value.size()
                 itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
                 assertNotNull itemValue
                 assertEquals "user", itemValue.@source.text()

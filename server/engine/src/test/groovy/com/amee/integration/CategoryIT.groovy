@@ -966,11 +966,11 @@ class CategoryIT extends BaseApiTest {
             assertEquals 'This is a comment', response.data.output.notes[0].value
 
             // Input values
-            assertEquals 3, response.data.input.values.size()
+            assertEquals 8, response.data.input.values.size()
             def itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
             assertNotNull itemValue
             assertEquals 'user', itemValue.source
-            assertEquals '10', itemValue.value
+            assertEquals 10, itemValue.value
             assertEquals 'kWh', itemValue.unit
             assertEquals 'year', itemValue.perUnit
         }
@@ -1013,7 +1013,7 @@ class CategoryIT extends BaseApiTest {
             assertEquals 'This is a comment', response.data.Output.Notes.Note[0].text()
 
             // Input values
-            assertEquals 3, response.data.Input.Values.Value.size()
+            assertEquals 8, response.data.Input.Values.Value.size()
             def itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
             assertNotNull itemValue
             assertEquals 'user', itemValue.@source.text()
@@ -1062,11 +1062,11 @@ class CategoryIT extends BaseApiTest {
             assertEquals 'This is a comment', response.data.output.notes[0].value
 
             // Input values
-            assertEquals 3, response.data.input.values.size()
+            assertEquals 8, response.data.input.values.size()
             def itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
             assertNotNull itemValue
             assertEquals 'user', itemValue.source
-            assertEquals '10', itemValue.value
+            assertEquals 10, itemValue.value
             assertEquals 'MWh', itemValue.unit
             assertEquals 'month', itemValue.perUnit
         }
@@ -1105,7 +1105,7 @@ class CategoryIT extends BaseApiTest {
             assertEquals 'This is a comment', response.data.Output.Notes.Note[0].text()
 
             // Input values
-            assertEquals 3, response.data.Input.Values.Value.size()
+            assertEquals 8, response.data.Input.Values.Value.size()
             def itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
             assertNotNull itemValue
             assertEquals 'user', itemValue.@source.text()
