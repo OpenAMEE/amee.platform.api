@@ -1158,4 +1158,110 @@ class CategoryIT extends BaseApiTest {
             assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.output.amounts)
         }
     }
+
+    /**
+     * Tests a calculation that uses data item value histories (data series).
+     * A startDate and endDate are supplied.
+     */
+    @Test
+    void getCategoryCalculationHistoryJson() {
+        versions.each { version -> getCategoryCalculationHistoryJson(version) }
+    }
+
+    def getCategoryCalculationHistoryJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+
+            // Default units
+            // Georgia
+            def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
+                query: [
+                    country: 'Georgia',
+                    'values.energyPerTime': '10',
+                    startDate: '2000-01-01T00:00:00Z',
+                    endDate: '2004-01-01T00:00:00Z'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            def amount
+            assertEquals 1, response.data.output.amounts.size()
+            amount = response.data.output.amounts[0]
+            assertEquals 'kg/year', amount.unit
+            assertEquals 'CO2', amount.type
+            assertEquals true, amount.default
+            assertEquals 1.1839605065023955, amount.value, 0.000001
+
+            // User input values
+            def userItemValue
+            assertEquals 6, response.data.input.values.size()
+            userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
+            assertNotNull userItemValue
+            assertEquals 10, userItemValue.value
+            assertEquals 'user', userItemValue.source
+            assertEquals 'kWh', userItemValue.unit
+
+            // Data item input values
+            def dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
+            assertNotNull dataItemValue
+            assertEquals 'amee', dataItemValue.source
+            assert dataItemValue.value.size() == 5
+            def firstValue = dataItemValue.value.first()
+            assert firstValue.startDate == '1970-01-01T00:00:00Z'
+            assert firstValue.unit == 'kg/(kW·h)'
+            assertEquals 0.1449678, firstValue.value, 0.000001
+        }
+    }
+
+    @Test
+    void getDataItemCalculationHistoryXml() {
+        versions.each { version -> getDataItemCalculationHistoryXml(version) }
+    }
+
+    def getDataItemCalculationHistoryXml(version) {
+        if (version >= 3.6) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
+                query: [
+                    country: 'Georgia',
+                    'values.energyPerTime': '10',
+                    startDate: '2000-01-01T00:00:00Z',
+                    endDate: '2004-01-01T00:00:00Z'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            def amount
+            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            amount = response.data.Output.Amounts.Amount[0]
+            assertEquals 'kg/year', amount.@unit.text()
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 1.1839605065023955, Double.parseDouble(amount.text()), 0.000001
+
+            // User input values
+            def userItemValue
+            assertEquals 6, response.data.Input.Values.Value.size()
+            userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
+            assertNotNull userItemValue
+            assertEquals 'user', userItemValue.@source.text()
+            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
+            assertEquals 'kWh', userItemValue.@unit.text()
+
+            // Data item input values
+            def dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
+            assertNotNull dataItemValue
+            assertEquals 'amee', dataItemValue.@source.text()
+            assert dataItemValue.DataSeries.DataPoint.size() == 5
+            def firstValue = dataItemValue.DataSeries.DataPoint[0]
+            assert firstValue.@startDate == '1970-01-01T00:00:00Z'
+            assert firstValue.@unit == 'kg/(kW·h)'
+            assertEquals 0.1449678, Double.parseDouble(firstValue.text()), 0.000001
+        }
+    }
 }
