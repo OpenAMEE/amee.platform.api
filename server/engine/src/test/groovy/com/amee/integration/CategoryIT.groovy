@@ -1134,6 +1134,71 @@ class CategoryIT extends BaseApiTest {
     }
 
     /**
+     * Tests a calculation using custom returnUnits and returnPerUnits.
+     */
+    @Test
+    void getCategoryCalculationCustomReturnUnitsJson() {
+        versions.each { version -> getCategoryCalculationCustomReturnUnitsJson(version) }
+    }
+
+    def getCategoryCalculationCustomReturnUnitsJson(version) {
+        if (version >= 3.6) {
+            client.contentType = JSON
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation",
+                query: [
+                    country: 'Albania',
+                    'values.energyPerTime': '10',
+                    'returnUnits.CO2': 'g',
+                    'returnPerUnits.CO2': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            def amount
+            assertEquals 1, response.data.output.amounts.size()
+            amount = response.data.output.amounts[0]
+            assertEquals 'g/month', amount.unit
+            assertEquals 'CO2', amount.type
+            assertEquals true, amount.default
+            assertEquals "", 1666.66666666667, amount.value, 0.000001
+        }
+    }
+
+    @Test
+    void getCategoryCalculationCustomReturnUnitsXml() {
+        versions.each { version -> getCategoryCalculationCustomReturnUnitsXml(version) }
+    }
+
+    def getCategoryCalculationCustomReturnUnitsXml(version) {
+        if (version >= 3.6) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/calculation",
+                query: [
+                    country: 'Albania',
+                    'values.energyPerTime': '10',
+                    'returnUnits.CO2': 'g',
+                    'returnPerUnits.CO2': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            def amount
+            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            amount = response.data.Output.Amounts.Amount[0]
+            assertEquals 'g/month', amount.@unit.text()
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 1666.66666666667, Double.parseDouble(amount.text()), 0.000001
+        }
+    }
+
+
+    /**
      * Tests an algorithm that returns Infinity or NaN return values.
      *
      * Note: The amount value below is not the same as for a real API result as the algorithm has been simplified for testing.

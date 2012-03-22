@@ -713,6 +713,8 @@ class DataItemIT extends BaseApiTest {
      * Supply the input values with the values.{PATH} query params, eg values.energyPerTime=10.
      * Supply the input units with the units.{PATH} query params, eg units.energyPerTime=MWh.
      * Supply the input perUnits with the perUnits.{PATH} query params, eg perUnits.energyPerTime=month.
+     * Supply the output units with the returnUnits.{TYPE} query params, eg returnUnits.CH4=g.
+     * Supply the output perUnits with the returnPerUnits.{TYPE} query params, eg returnPerUnits.CH4=month.
      *
      * See {@link CategoryIT} for examples of performing calculations using drills to select the data item.
      */
@@ -881,8 +883,6 @@ class DataItemIT extends BaseApiTest {
     def getDataItemCalculationCustomUnitsJson(version) {
         if (version >= 3.4) {
             client.contentType = JSON
-
-            // Default units
             def response = client.get(
                 path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
                 query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
@@ -996,6 +996,76 @@ class DataItemIT extends BaseApiTest {
             assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
             assertEquals 'MWh', itemValue.@unit.text()
             assertEquals 'month', itemValue.@perUnit.text()
+        }
+    }
+
+    /**
+     * Tests a calculation using custom returnUnits and returnPerUnits.
+     */
+    @Test
+    void getDataItemCalculationCustomReturnUnitsJson() {
+        versions.each { version -> getDataItemCalculationCustomReturnUnitsJson(version) }
+    }
+
+    def getDataItemCalculationCustomReturnUnitsJson(version) {
+        if (version >= 3.4) {
+            client.contentType = JSON
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation",
+                query: ['values.energyPerTime': '10', 'returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Output amounts
+            def amount
+            if (version >= 3.6) {
+                assertEquals 1, response.data.output.amounts.size()
+                amount = response.data.output.amounts[0]
+                assertEquals 'g/month', amount.unit
+            } else {
+                assertEquals 1, response.data.amounts.size()
+                amount = response.data.amounts[0]
+                assertEquals 'g', amount.unit
+                assertEquals 'month', amount.perUnit
+            }
+            assertEquals 'CO2', amount.type
+            assertEquals true, amount.default
+            assertEquals "", 1666.66666666667, amount.value, 0.000001
+        }
+    }
+
+    @Test
+    void getDataItemCalculationCustomReturnUnitsXml() {
+        versions.each { version -> getDataItemCalculationCustomReturnUnitsXml(version) }
+    }
+
+    def getDataItemCalculationCustomReturnUnitsXml(version) {
+        if (version >= 3.4) {
+            client.contentType = XML
+            def response = client.get(
+                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation",
+                query: ['values.energyPerTime': '10', 'returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'])
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/xml', response.contentType
+            assertEquals 'OK', response.data.Status.text()
+
+            // Output amounts
+            def amount
+            if (version >= 3.6) {
+                assertEquals 1, response.data.Output.Amounts.Amount.size()
+                amount = response.data.Output.Amounts.Amount[0]
+                assertEquals 'g/month', amount.@unit.text()
+            } else {
+                assertEquals 1, response.data.Amounts.Amount.size()
+                amount = response.data.Amounts.Amount[0]
+                assertEquals 'g', amount.@unit.text()
+                assertEquals 'month', amount.@perUnit.text()
+            }
+            assertEquals 'CO2', amount.@type.text()
+            assertEquals 'true', amount.@default.text()
+            assertEquals 1666.66666666667, Double.parseDouble(amount.text()), 0.000001
         }
     }
 
