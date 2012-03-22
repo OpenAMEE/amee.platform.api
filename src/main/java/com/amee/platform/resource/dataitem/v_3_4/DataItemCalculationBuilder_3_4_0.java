@@ -1,7 +1,5 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
-import static com.amee.domain.DataItemService.MYSQL_MIN_DATETIME;
-
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -23,14 +21,6 @@ import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 import com.amee.service.auth.ResourceAuthorizationService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -40,6 +30,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+import static com.amee.domain.DataItemService.MYSQL_MIN_DATETIME;
 
 @Service
 @Scope("prototype")
