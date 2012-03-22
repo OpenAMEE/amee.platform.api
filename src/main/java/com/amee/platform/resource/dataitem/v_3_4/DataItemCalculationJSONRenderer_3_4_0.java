@@ -91,7 +91,8 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
         JSONArray valuesArr = new JSONArray();
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
 
                 // Create a value object.
                 JSONObject valueObj = new JSONObject();

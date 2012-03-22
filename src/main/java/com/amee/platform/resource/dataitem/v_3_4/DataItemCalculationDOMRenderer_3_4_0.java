@@ -70,7 +70,8 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
         Element valuesElem = new Element("Values");
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
                 valueElem.setText(choice.getValue());

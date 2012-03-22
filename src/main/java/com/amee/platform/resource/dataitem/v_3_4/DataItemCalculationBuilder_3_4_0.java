@@ -17,9 +17,7 @@ import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
-import com.amee.platform.science.ExternalHistoryValue;
-import com.amee.platform.science.ReturnValues;
-import com.amee.platform.science.StartEndDate;
+import com.amee.platform.science.*;
 import com.amee.service.auth.ResourceAuthorizationService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -113,10 +111,35 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Do the calculation.
         ReturnValues returnValues = calculationService.calculate(dataItem, userValueChoices, APIVersion.TWO);
+        
+        // Convert to different return units if required
+        // TODO: improve this so we don't need to make copies.
+        ReturnValues convertedReturnValues = new ReturnValues();
+        for (Map.Entry<String, ReturnValue> entry: returnValues.getReturnValues().entrySet()) {
+            String type = entry.getKey();
+            ReturnValue returnValue = entry.getValue();
+            
+            String unit = userValueChoices.get("returnUnits." + type) != null ? userValueChoices.get("returnUnits." + type).getValue() : "";
+            String perUnit = userValueChoices.get("returnPerUnits." + type) != null ? userValueChoices.get("returnPerUnits." + type).getValue() : "";
+
+            CO2AmountUnit returnUnit = new CO2AmountUnit(unit, perUnit);
+            Amount amount = returnValue.toAmount();
+            Amount convertedAmount = amount.convert(returnUnit);
+            convertedReturnValues.putValue(returnValue.getType(), returnUnit.getUnit().toString(),
+                returnUnit.getPerUnit().toString(), convertedAmount.getValue());
+        }
+
+        // Set the default
+        convertedReturnValues.setDefaultType(returnValues.getDefaultType());
+
+        // Copy the notes over
+        for (Note note: returnValues.getNotes()) {
+            convertedReturnValues.addNote(note.getType(), note.getValue());
+        }
 
         // Render the ReturnValues.
         renderer.addDataItem(dataItem);
-        renderer.addReturnValues(returnValues);
+        renderer.addReturnValues(convertedReturnValues);
 
         // Render the input values.
         if (values || full) {
@@ -131,7 +154,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
     /**
      * Creates a List of Choices from the submitted parameters.
-     * Only values.*, units.* and perUnits.* values are used.
+     * Only values.*, units.*, perUnits.*, returnUnits.* and returnPerUnits.* values are used.
      * Values parameters will have their 'values.' prefix stripped.
      *
      * @param requestWrapper
@@ -147,7 +170,8 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             // Only add those parameters we are expecting (values, units, perUnits)
             if (name.startsWith("values.")) {
                 parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), requestWrapper.getQueryParameters().get(name)));
-            } else if (name.startsWith("units.") || name.startsWith("perUnits.")) {
+            } else if (name.startsWith("units.") || name.startsWith("perUnits.") ||
+                name.startsWith("returnUnits.") || name.startsWith("returnPerUnits.")) {
                 parameterChoices.add(new Choice(name, requestWrapper.getQueryParameters().get(name)));
             }
         }

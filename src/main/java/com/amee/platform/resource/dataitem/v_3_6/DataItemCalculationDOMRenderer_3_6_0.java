@@ -98,7 +98,8 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
 
         // User values
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
                 valueElem.setAttribute("source", "user");
