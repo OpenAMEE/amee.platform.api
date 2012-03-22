@@ -101,11 +101,10 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             dataItem.setEffectiveEndDate(new StartEndDate(endDate));
         }
 
-        // Get all the parameters.
+        // Get the values, units and perUnits parameters.
         List<Choice> parameters = getParameters(requestWrapper);
 
-        // Get the available user choices (with any defaults set).
-        // TODO: Is hard-coding the APIVersion OK?
+        // Get the available user choices (with any defaults set) and merge submitted values.
         Choices userValueChoices = dataItemService.getUserValueChoices(dataItem, APIVersion.TWO);
         userValueChoices.merge(parameters);
 
@@ -116,7 +115,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         renderer.addDataItem(dataItem);
         renderer.addReturnValues(returnValues);
 
-        // Render the values.
+        // Render the input values.
         if (values || full) {
 
             // Get the data item values
@@ -128,32 +127,25 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
     }
 
     /**
-     * Creates a List of Choices from the submitted parameters. Only values.*, units.* and perUnits.* values are used.
-     *
+     * Creates a List of Choices from the submitted parameters.
+     * Only values.*, units.* and perUnits.* values are used.
      * Values parameters will have their 'values.' prefix stripped.
      *
      * @param requestWrapper
      * @return
      */
     private List<Choice> getParameters(RequestWrapper requestWrapper) {
-
-        // Get the map of query parameters but remove special parameters values.
-        Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
-        // queryParameters.remove("returnUnit");
-        // queryParameters.remove("returnPerUnit");
-        queryParameters.remove("startDate");
-        queryParameters.remove("endDate");
-
-        // Create list of Choices for parameters.
         List<Choice> parameterChoices = new ArrayList<Choice>();
+
+        // Get the map of all query parameters.
+        Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
         for (String name : queryParameters.keySet()) {
-            String value = requestWrapper.getQueryParameters().get(name);
 
             // Only add those parameters we are expecting (values, units, perUnits)
             if (name.startsWith("values.")) {
-                parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), value));
+                parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), requestWrapper.getQueryParameters().get(name)));
             } else if (name.startsWith("units.") || name.startsWith("perUnits.")) {
-                parameterChoices.add(new Choice(name, value));
+                parameterChoices.add(new Choice(name, requestWrapper.getQueryParameters().get(name)));
             }
         }
         return parameterChoices;
@@ -191,12 +183,13 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         return dataItemValues;
     }
 
-    // TODO: Duplication com.amee.platform.science.InternalValue.filterItemValues()
     /**
      * Filter the ItemValue collection by the effective start and end dates of the owning Item.
      * ItemValues are excluded if they start prior to startDate and are not the final value in the sequence.
      * ItemValues are excluded if they start on or after the endDate.
      * The item value immediately prior to the start of the selection interval should be kept
+     *
+     * TODO: This is a duplication of com.amee.platform.science.InternalValue#filterItemValues
      *
      * @param values    ItemValues to filter
      * @param startDate effective startDate of Item
@@ -224,7 +217,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         } else {
 
             // Set the epoch.
-            latest = new StartEndDate(new Date(0));
+            latest = new StartEndDate(DataItemService.MYSQL_MIN_DATETIME);
         }
 
         for (BaseItemValue iv : values) {
@@ -232,7 +225,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             if (BaseItemValueStartDateComparator.isHistoricValue(iv)) {
                 currentStart = ((ExternalHistoryValue)iv).getStartDate();
             } else {
-                currentStart = new StartEndDate(new Date(0));
+                currentStart = new StartEndDate(DataItemService.MYSQL_MIN_DATETIME);
             }
 
             if (currentStart.before(endDate) && !currentStart.before(startDate)) {
@@ -245,9 +238,9 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Add the previous point to the start of the list
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-            log.info("Adding previous point at " + ((ExternalHistoryValue)previous).getStartDate());
+            log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.info("Adding previous point at " + new StartEndDate(new Date(0)));
+            log.debug("Adding previous point at " + new StartEndDate(DataItemService.MYSQL_MIN_DATETIME));
         }
         filteredValues.add(0, previous);
 
