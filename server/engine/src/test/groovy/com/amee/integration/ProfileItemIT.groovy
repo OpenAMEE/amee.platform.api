@@ -546,6 +546,12 @@ class ProfileItemIT extends BaseApiTest {
      * <li>category - include the category used by this profile item.
      * <li>note - include the item's note
      * </ul>
+     *
+     * Profile item GET requests support the following query parameters.
+     *
+     * <ul>
+     * <li>returnUnits.{type}* - units for return values. Eg returnUnits.CO2=g.
+     * <li>returnPerUnits.{type}* - perUnits for return values. Eg returnPerUnits.CO2=month.
      */
     @Test
     void getSingleProfileItem() {
@@ -610,6 +616,31 @@ class ProfileItemIT extends BaseApiTest {
         assertEquals 1, response.data.Item.Output.Notes.Note.size()
         assertEquals 'comment', response.data.Item.Output.Notes.Note[0].@type.text()
         assertEquals 'This is a comment', response.data.Item.Output.Notes.Note[0].text()
+    }
+
+    @Test
+    void getProfileItemCustomReturnUnits() {
+        versions.each { version -> getProfileItemCustomReturnUnits(version) }
+    }
+    
+    def getProfileItemCustomReturnUnits(version) {
+        if (version >= 3.6) {
+            def response = client.get(
+                path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;amounts",
+                query: ['returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'],
+                contentType: JSON)
+            assertEquals SUCCESS_OK.code, response.status
+            assertEquals 'application/json', response.contentType
+            assertTrue response.data instanceof net.sf.json.JSON
+            assertEquals 'OK', response.data.status
+
+            // Amounts
+            assertEquals 1, response.data.item.output.amounts.size()
+            assertEquals 'CO2', response.data.item.output.amounts[0].type
+            assertEquals 'g/month', response.data.item.output.amounts[0].unit
+            assertTrue response.data.item.output.amounts[0].default
+            assertEquals 19446.6666666667, response.data.item.output.amounts[0].value, 0.000001
+        }
     }
 
     /**
