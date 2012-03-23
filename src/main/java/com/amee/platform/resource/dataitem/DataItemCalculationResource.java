@@ -22,10 +22,8 @@ public interface DataItemCalculationResource {
 
     interface Renderer extends ResourceRenderer {
 
-        void addDataItem(DataItem dataItem);
-
         void addReturnValues(ReturnValues returnValues);
 
-        void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues);
+        void addValues(DataItem data, Choices userValues, Map<String, List<BaseItemValue>> dataItemValues);
     }
 }

@@ -88,10 +88,6 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         DataItemCalculationResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
 
-        // Get special parameters.
-        // String unit = requestWrapper.getQueryParameters().get("returnUnit");
-        // String perUnit = requestWrapper.getQueryParameters().get("returnPerUnit");
-
         String startDate = requestWrapper.getQueryParameters().get("startDate");
         if (StringUtils.isNotBlank(startDate)) {
             dataItem.setEffectiveStartDate(new StartEndDate(startDate));
@@ -113,33 +109,35 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         ReturnValues returnValues = calculationService.calculate(dataItem, userValueChoices, APIVersion.TWO);
         
         // Convert to different return units if required
-        // TODO: improve this so we don't need to make copies.
-        ReturnValues convertedReturnValues = new ReturnValues();
-        for (Map.Entry<String, ReturnValue> entry: returnValues.getReturnValues().entrySet()) {
-            String type = entry.getKey();
-            ReturnValue returnValue = entry.getValue();
-            
-            String unit = userValueChoices.get("returnUnits." + type) != null ? userValueChoices.get("returnUnits." + type).getValue() : "";
-            String perUnit = userValueChoices.get("returnPerUnits." + type) != null ? userValueChoices.get("returnPerUnits." + type).getValue() : "";
+        if (hasReturnUnits(userValueChoices)) {
+            ReturnValues convertedReturnValues = new ReturnValues();
+            for (Map.Entry<String, ReturnValue> entry: returnValues.getReturnValues().entrySet()) {
+                String type = entry.getKey();
+                ReturnValue returnValue = entry.getValue();
 
-            CO2AmountUnit returnUnit = new CO2AmountUnit(unit, perUnit);
-            Amount amount = returnValue.toAmount();
-            Amount convertedAmount = amount.convert(returnUnit);
-            convertedReturnValues.putValue(returnValue.getType(), returnUnit.getUnit().toString(),
-                returnUnit.getPerUnit().toString(), convertedAmount.getValue());
+                String unit = userValueChoices.get("returnUnits." + type) != null ? userValueChoices.get("returnUnits." + type).getValue() : "";
+                String perUnit = userValueChoices.get("returnPerUnits." + type) != null ? userValueChoices.get("returnPerUnits." + type).getValue() : "";
+
+                CO2AmountUnit returnUnit = new CO2AmountUnit(unit, perUnit);
+                Amount amount = returnValue.toAmount();
+                Amount convertedAmount = amount.convert(returnUnit);
+                convertedReturnValues.putValue(returnValue.getType(), returnUnit.getUnit().toString(),
+                    returnUnit.getPerUnit().toString(), convertedAmount.getValue());
+            }
+
+            // Set the default
+            convertedReturnValues.setDefaultType(returnValues.getDefaultType());
+
+            // Copy the notes over
+            for (Note note: returnValues.getNotes()) {
+                convertedReturnValues.addNote(note.getType(), note.getValue());
+            }
+
+            // Render the ReturnValues.
+            renderer.addReturnValues(convertedReturnValues);
+        } else {
+            renderer.addReturnValues(returnValues);
         }
-
-        // Set the default
-        convertedReturnValues.setDefaultType(returnValues.getDefaultType());
-
-        // Copy the notes over
-        for (Note note: returnValues.getNotes()) {
-            convertedReturnValues.addNote(note.getType(), note.getValue());
-        }
-
-        // Render the ReturnValues.
-        renderer.addDataItem(dataItem);
-        renderer.addReturnValues(convertedReturnValues);
 
         // Render the input values.
         if (values || full) {
@@ -148,7 +146,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             Map<String, List<BaseItemValue>> dataItemValues =
                 getDataItemValues(dataItem, new StartEndDate(startDate), new StartEndDate(endDate));
             
-            renderer.addValues(userValueChoices, dataItemValues);
+            renderer.addValues(dataItem, userValueChoices, dataItemValues);
         }
     }
 
@@ -185,7 +183,15 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         }
         return renderer;
     }
-    
+
+    /**
+     * Gets the data item values for a given data item filtered by startDate and endDate.
+     *
+     * @param dataItem
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     private Map<String, List<BaseItemValue>> getDataItemValues(DataItem dataItem, Date startDate, Date endDate) {
         Map<String, List<BaseItemValue>> dataItemValues = new HashMap<String, List<BaseItemValue>>();
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
@@ -267,10 +273,22 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
             log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.info("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
+            log.debug("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
         }
         filteredValues.add(0, previous);
 
         return filteredValues;
+    }
+
+    /**
+     * Has the user submitted custom returnUnits or returnPerUnits?
+     */
+    private boolean hasReturnUnits(Choices userChoices) {
+        for (Choice choice: userChoices.getChoices()) {
+            if (choice.getValue().startsWith("returnUnit.") || choice.getValue().startsWith("returnPerUnit.")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

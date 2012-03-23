@@ -3,6 +3,7 @@ package com.amee.platform.resource.dataitem.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationDOMRenderer_3_6_0;
@@ -64,7 +65,7 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
     }
 
     @Override
-    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
+    public void addValues(DataItem dataItem, Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
 
         // Add the supplied values
         Element valuesElem = new Element("Values");
