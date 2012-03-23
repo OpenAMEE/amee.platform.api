@@ -285,7 +285,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
      */
     private boolean hasReturnUnits(Choices userChoices) {
         for (Choice choice: userChoices.getChoices()) {
-            if (choice.getValue().startsWith("returnUnit.") || choice.getValue().startsWith("returnPerUnit.")) {
+            if (choice.getName().startsWith("returnUnits.") || choice.getName().startsWith("returnPerUnits.")) {
                 return true;
             }
         }
