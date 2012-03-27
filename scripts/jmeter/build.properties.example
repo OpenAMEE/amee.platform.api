@@ -1,6 +1,8 @@
 jmeter.work.dir=/Users/david.keen/code/AMEE/amee.platform.api/scripts/jmeter
 jmeter.install.dir=/Applications/jakarta-jmeter-2.4
 jmeter.host=platform-api-dev.amee.com
+jmeter.username=platform
+jmeter.password=PASSWORD
 jmeter.testplan=v3_load.jmx
 jmeter.threads=1
 jmeter.loops=1

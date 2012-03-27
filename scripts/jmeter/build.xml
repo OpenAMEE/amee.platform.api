@@ -36,6 +36,8 @@
 			<property name="jmeter.timer.deviation" value="${jmeter.timer.deviation}"/>
 			<property name="jmeter.timer.offset" value="${jmeter.timer.offset}"/>
 			<property name="jmeter.host" value="${jmeter.host}"/>
+            <property name="jmeter.username" value="${jmeter.username}"/>
+            <property name="jmeter.password" value="${jmeter.password}"/>
 			<property name="jmeter.work.dir" value="${jmeter.work.dir}"/>
 		</jmeter>
 	</target>
