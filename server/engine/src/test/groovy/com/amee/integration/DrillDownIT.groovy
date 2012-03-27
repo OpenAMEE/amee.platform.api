@@ -79,7 +79,7 @@ class DrillDownIT extends BaseApiTest {
     }
 
     /**
-     * Tests a UID is retrieved when one of the drilldowns has an empty value.
+     * Tests a UID is retrieved when one or more of the drill downs has an empty value.
      */
     @Test
     void emptyDrillDownValue() {
@@ -88,9 +88,13 @@ class DrillDownIT extends BaseApiTest {
 
     def emptyDrillDownValue(version) {
         if (version >= 3.3) {
+
+            // Access to CLM cats is restricted.
+            setAdminUser()
+
             def response = client.get(
-                path: "/${version}/categories/ICE_v2_by_mass/drill",
-                query: [material: 'Lime', type: 'General'],
+                path: "/${version}/categories/CLM_food_processing_emissions/drill",
+                query: [process: 'canning', type: 'meat'],
                 contentType: JSON);
             assertEquals SUCCESS_OK.code, response.status
             assertEquals 'application/json', response.contentType
@@ -98,7 +102,7 @@ class DrillDownIT extends BaseApiTest {
             assertEquals 'OK', response.data.status
             assertEquals 1, response.data.drill.choices.values.size()
             assertEquals 'uid', response.data.drill.choices.name
-            assertEquals 'NX9WAFL8MUCL', response.data.drill.choices.values[0]
+            assertEquals 'B4F0278F0CD8', response.data.drill.choices.values[0]
         }
     }
 }

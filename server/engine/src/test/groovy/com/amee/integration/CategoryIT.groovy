@@ -22,7 +22,8 @@ class CategoryIT extends BaseApiTest {
         'Integration', 'Api', 'Item history test', 'Item history dimless test',
         'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant', 'chlorine, gaseous, diaphragm cell, at plant',
         'Grid',
-        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc']
+        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc',
+        'Processes']
 
     static def categoryNamesExcEcoinvent = [
         'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
@@ -33,7 +34,8 @@ class CategoryIT extends BaseApiTest {
         'Integration', 'Api', 'Item history test', 'Item history dimless test',
         'LCA',
         'Grid',
-        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc']
+        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc',
+        'Processes']
 
     static def categoryWikiNames = [
         'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
@@ -44,7 +46,8 @@ class CategoryIT extends BaseApiTest {
         'Integration', 'Api', 'Item_history_test', 'Item_history_dimless_test',
         'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics', 'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant', 'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
         'Greenhouse_Gas_Protocol_international_electricity',
-        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft']
+        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft',
+        'CLM_food_processing_emissions']
 
     static def categoryWikiNamesExcEcoinvent = [
         'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
@@ -55,7 +58,8 @@ class CategoryIT extends BaseApiTest {
         'Integration', 'Api', 'Item_history_test', 'Item_history_dimless_test',
         'LCA',
         'Greenhouse_Gas_Protocol_international_electricity',
-        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft']
+        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft',
+        'CLM_food_processing_emissions']
 
     /**
      * Tests for creation, fetch and deletion of a Data Category using JSON responses.
