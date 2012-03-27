@@ -9,6 +9,8 @@ import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 @Since("3.4.0")
 public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Renderer {
 
+    private static final Log LOG = LogFactory.getLog(DataItemValueJSONRenderer_3_4_0.class);
+    
     @Autowired
     protected DataItemService dataItemService;
 
@@ -50,12 +54,12 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
         ResponseHelper.put(dataItemValueObj, "uid", dataItemValue.getUid());
         ResponseHelper.put(dataItemValueObj, "history", dataItemValue.isHistoryAvailable());
 
+        String valueString = dataItemValue.getValueAsString();
         if (NumberValue.class.isAssignableFrom(dataItemValue.getClass())) {
 
-            // If the value is a number, format the JSON appropriately,
-            // otherwise use a String
+            // If the value is a number, format the JSON appropriately, otherwise use a String
             try {
-                Double doubleValue = Double.valueOf(dataItemValue.getValueAsString());
+                Double doubleValue = Double.valueOf(valueString);
                 if (doubleValue == null) {
                     // This shouldn't be possible
                     ResponseHelper.put(dataItemValueObj, "value", JSONObject.NULL);
@@ -67,17 +71,23 @@ public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Re
                     ResponseHelper.put(dataItemValueObj, "value", doubleValue);
                 }
             } catch (NumberFormatException e) {
-                // Not a numeric value, use a String
-                ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
+                // Cannot handle this numeric value, use the String representation instead
+                LOG.warn("Cannot parse "+valueString+" as a double, defaulting to String representation", e);
+                ResponseHelper.put(dataItemValueObj, "value", valueString);
             }
 
             NumberValue nv = (NumberValue) dataItemValue;
             if (nv.hasUnit()) {
                 ResponseHelper.put(dataItemValueObj, "unit", nv.getCompoundUnit().toString());
             }
+            
+        } else if ("true".equalsIgnoreCase(valueString) || "false".equalsIgnoreCase(valueString)) {
+            // Value represents a boolean
+            ResponseHelper.put(dataItemValueObj, "value", Boolean.valueOf(dataItemValue.getValueAsString()));
+            
         } else {
-            // Not a numeric value, use a String
-            ResponseHelper.put(dataItemValueObj, "value", dataItemValue.getValueAsString());
+            // Not a numeric/boolean value, use a String
+            ResponseHelper.put(dataItemValueObj, "value", valueString);
         }
 
         if (HistoryValue.class.isAssignableFrom(dataItemValue.getClass())) {
