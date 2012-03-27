@@ -12,6 +12,7 @@
     <!-- You may override the following in build.properties -->
     <property name="amee.devel.home" value="/Development/AMEE/amee.platform.api/project/amee.platform.api" />
     <property name="mvn.executable" value="/usr/bin/mvn"/>
+    <property name="cap.executable" value="/usr/bin/cap"/>
 
     <target name="rebuild" depends="clean, package, copy-amee-libs"
             description="Perform a clean build from src."/>
@@ -70,7 +71,7 @@
 
     <target name="cap-install" depends="rebuild" description="Create a new release and deploy to git.">
         <fail unless="tag" message="You must specify a tag, eg -Dtag=2.10.5" />
-        <exec executable="cap" dir="${basedir}" failonerror="true">
+        <exec executable="${cap.executable}" dir="${basedir}" failonerror="true">
             <env key="PLATFORM_API_SRC_DIR" value="${amee.devel.home}" />
             <env key="PLATFORM_API_PKG_DIR" value="${amee.package.dir}" />
             <arg value="install"/>
