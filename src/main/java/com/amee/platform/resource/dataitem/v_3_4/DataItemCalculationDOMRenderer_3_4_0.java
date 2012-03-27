@@ -3,6 +3,7 @@ package com.amee.platform.resource.dataitem.v_3_4;
 import com.amee.base.domain.Since;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationDOMRenderer_3_6_0;
@@ -64,13 +65,14 @@ public class DataItemCalculationDOMRenderer_3_4_0 extends DataItemCalculationDOM
     }
 
     @Override
-    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
+    public void addValues(DataItem dataItem, Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
 
         // Add the supplied values
         Element valuesElem = new Element("Values");
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
                 valueElem.setText(choice.getValue());

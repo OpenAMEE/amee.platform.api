@@ -1,22 +1,24 @@
 package com.amee.platform.resource.profileitem.v_3_6;
 
-import java.util.TimeZone;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.domain.item.profile.ProfileItem;
 import com.amee.domain.profile.Profile;
+import com.amee.domain.sheet.Choice;
+import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.profileitem.ProfileItemResource;
+import com.amee.platform.science.*;
 import com.amee.service.auth.ResourceAuthorizationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 @Scope("prototype")
@@ -89,8 +91,45 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
             renderer.addCategory();
         }
         if (amounts || full) {
-            renderer.addReturnValues(profileItem.getAmounts());
+            ReturnValues returnValues = profileItem.getAmounts();
+
+            // Don't bother trying to convert if we have no custom units or results (eg algorithm error)
+            Choices returnUnitChoices = getReturnUnitParameters(requestWrapper);
+            if (returnUnitChoices.getChoices().isEmpty() || !returnValues.hasReturnValues()) {
+                renderer.addReturnValues(returnValues);
+            } else {
+
+                // Convert
+                ReturnValues convertedReturnValues = new ReturnValues();
+                for (Map.Entry<String, ReturnValue> entry: returnValues.getReturnValues().entrySet()) {
+                    String type = entry.getKey();
+                    ReturnValue returnValue = entry.getValue();
+
+                    String unit = returnUnitChoices.get("returnUnits." + type) != null ?
+                        returnUnitChoices.get("returnUnits." + type).getValue() : "";
+                    String perUnit = returnUnitChoices.get("returnPerUnits." + type) != null ?
+                        returnUnitChoices.get("returnPerUnits." + type).getValue() : "";
+
+                    CO2AmountUnit returnUnit = new CO2AmountUnit(unit, perUnit);
+                    Amount amount = returnValue.toAmount();
+                    Amount convertedAmount = amount.convert(returnUnit);
+                    convertedReturnValues.putValue(returnValue.getType(), returnUnit.getUnit().toString(),
+                        returnUnit.getPerUnit().toString(), convertedAmount.getValue());
+                }
+
+                // Set the default type (an algorithm error may cause this to be null).
+                convertedReturnValues.setDefaultType(returnValues.getDefaultType());
+
+                // Copy the notes over
+                for (Note returnValueNote: returnValues.getNotes()) {
+                    convertedReturnValues.addNote(returnValueNote.getType(), returnValueNote.getValue());
+                }
+
+                // Render the ReturnValues.
+                renderer.addReturnValues(convertedReturnValues);
+            }
         }
+
         if (note || full) {
             renderer.addNote();
         }
@@ -103,5 +142,20 @@ public class ProfileItemBuilder_3_6_0 implements ProfileItemResource.Builder {
                     (ProfileItemResource.Renderer) resourceBeanFinder.getRenderer(ProfileItemResource.Renderer.class, requestWrapper);
         }
         return renderer;
+    }
+
+    private Choices getReturnUnitParameters(RequestWrapper requestWrapper) {
+        List<Choice> parameterChoices = new ArrayList<Choice>();
+
+        // Get the map of all query parameters.
+        Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
+        for (String name : queryParameters.keySet()) {
+
+            // Only add returnUnits, returnPerUnits
+            if (name.startsWith("returnUnits.") || name.startsWith("returnPerUnits.")) {
+                parameterChoices.add(new Choice(name, requestWrapper.getQueryParameters().get(name)));
+            }
+        }
+        return new Choices("returnUnits", parameterChoices);
     }
 }

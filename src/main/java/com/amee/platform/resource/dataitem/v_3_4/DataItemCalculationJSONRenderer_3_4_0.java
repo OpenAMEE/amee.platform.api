@@ -4,6 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.data.DataItem;
 import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationJSONRenderer_3_6_0;
@@ -85,13 +86,14 @@ public class DataItemCalculationJSONRenderer_3_4_0 extends DataItemCalculationJS
     }
 
     @Override
-    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
+    public void addValues(DataItem dataItem, Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
 
         // Create an array of value objects.
         JSONArray valuesArr = new JSONArray();
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
 
                 // Create a value object.
                 JSONObject valueObj = new JSONObject();

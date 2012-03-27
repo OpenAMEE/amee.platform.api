@@ -1,7 +1,5 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
-import static com.amee.domain.DataItemService.MYSQL_MIN_DATETIME;
-
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -19,18 +17,8 @@ import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
-import com.amee.platform.science.ExternalHistoryValue;
-import com.amee.platform.science.ReturnValues;
-import com.amee.platform.science.StartEndDate;
+import com.amee.platform.science.*;
 import com.amee.service.auth.ResourceAuthorizationService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -40,6 +28,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+import static com.amee.domain.DataItemService.MYSQL_MIN_DATETIME;
 
 @Service
 @Scope("prototype")
@@ -96,10 +88,6 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         DataItemCalculationResource.Renderer renderer = getRenderer(requestWrapper);
         renderer.start();
 
-        // Get special parameters.
-        // String unit = requestWrapper.getQueryParameters().get("returnUnit");
-        // String perUnit = requestWrapper.getQueryParameters().get("returnPerUnit");
-
         String startDate = requestWrapper.getQueryParameters().get("startDate");
         if (StringUtils.isNotBlank(startDate)) {
             dataItem.setEffectiveStartDate(new StartEndDate(startDate));
@@ -110,59 +98,79 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             dataItem.setEffectiveEndDate(new StartEndDate(endDate));
         }
 
-        // Get all the parameters.
+        // Get the values, units and perUnits parameters.
         List<Choice> parameters = getParameters(requestWrapper);
 
-        // Get the available user choices (with any defaults set).
-        // TODO: Is hard-coding the APIVersion OK?
+        // Get the available user choices (with any defaults set) and merge submitted values.
         Choices userValueChoices = dataItemService.getUserValueChoices(dataItem, APIVersion.TWO);
         userValueChoices.merge(parameters);
 
         // Do the calculation.
         ReturnValues returnValues = calculationService.calculate(dataItem, userValueChoices, APIVersion.TWO);
+        
+        // Convert to different return units if required
+        if (hasReturnUnits(userValueChoices)) {
+            ReturnValues convertedReturnValues = new ReturnValues();
+            for (Map.Entry<String, ReturnValue> entry: returnValues.getReturnValues().entrySet()) {
+                String type = entry.getKey();
+                ReturnValue returnValue = entry.getValue();
 
-        // Render the ReturnValues.
-        renderer.addDataItem(dataItem);
-        renderer.addReturnValues(returnValues);
+                String unit = userValueChoices.get("returnUnits." + type) != null ? userValueChoices.get("returnUnits." + type).getValue() : "";
+                String perUnit = userValueChoices.get("returnPerUnits." + type) != null ? userValueChoices.get("returnPerUnits." + type).getValue() : "";
 
-        // Render the values.
+                CO2AmountUnit returnUnit = new CO2AmountUnit(unit, perUnit);
+                Amount amount = returnValue.toAmount();
+                Amount convertedAmount = amount.convert(returnUnit);
+                convertedReturnValues.putValue(returnValue.getType(), returnUnit.getUnit().toString(),
+                    returnUnit.getPerUnit().toString(), convertedAmount.getValue());
+            }
+
+            // Set the default
+            convertedReturnValues.setDefaultType(returnValues.getDefaultType());
+
+            // Copy the notes over
+            for (Note note: returnValues.getNotes()) {
+                convertedReturnValues.addNote(note.getType(), note.getValue());
+            }
+
+            // Render the ReturnValues.
+            renderer.addReturnValues(convertedReturnValues);
+        } else {
+            renderer.addReturnValues(returnValues);
+        }
+
+        // Render the input values.
         if (values || full) {
 
             // Get the data item values
             Map<String, List<BaseItemValue>> dataItemValues =
                 getDataItemValues(dataItem, new StartEndDate(startDate), new StartEndDate(endDate));
             
-            renderer.addValues(userValueChoices, dataItemValues);
+            renderer.addValues(dataItem, userValueChoices, dataItemValues);
         }
     }
 
     /**
-     * Creates a List of Choices from the submitted parameters. Only values.*, units.* and perUnits.* values are used.
-     *
+     * Creates a List of Choices from the submitted parameters.
+     * Only values.*, units.*, perUnits.*, returnUnits.* and returnPerUnits.* values are used.
      * Values parameters will have their 'values.' prefix stripped.
      *
      * @param requestWrapper
      * @return
      */
     private List<Choice> getParameters(RequestWrapper requestWrapper) {
-
-        // Get the map of query parameters but remove special parameters values.
-        Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
-        // queryParameters.remove("returnUnit");
-        // queryParameters.remove("returnPerUnit");
-        queryParameters.remove("startDate");
-        queryParameters.remove("endDate");
-
-        // Create list of Choices for parameters.
         List<Choice> parameterChoices = new ArrayList<Choice>();
+
+        // Get the map of all query parameters.
+        Map<String, String> queryParameters = new HashMap<String, String>(requestWrapper.getQueryParameters());
         for (String name : queryParameters.keySet()) {
-            String value = requestWrapper.getQueryParameters().get(name);
 
             // Only add those parameters we are expecting (values, units, perUnits)
             if (name.startsWith("values.")) {
-                parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), value));
-            } else if (name.startsWith("units.") || name.startsWith("perUnits.")) {
-                parameterChoices.add(new Choice(name, value));
+                parameterChoices.add(new Choice(StringUtils.removeStart(name, "values."), requestWrapper.getQueryParameters().get(name)));
+            } else if (name.startsWith("units.") || name.startsWith("perUnits.") ||
+                name.startsWith("returnUnits.") || name.startsWith("returnPerUnits.")) {
+                parameterChoices.add(new Choice(name, requestWrapper.getQueryParameters().get(name)));
             }
         }
         return parameterChoices;
@@ -175,7 +183,15 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         }
         return renderer;
     }
-    
+
+    /**
+     * Gets the data item values for a given data item filtered by startDate and endDate.
+     *
+     * @param dataItem
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     private Map<String, List<BaseItemValue>> getDataItemValues(DataItem dataItem, Date startDate, Date endDate) {
         Map<String, List<BaseItemValue>> dataItemValues = new HashMap<String, List<BaseItemValue>>();
         Map<String, ItemValueDefinition> itemValueDefinitions = dataItem.getItemDefinition().getItemValueDefinitionsMap();
@@ -200,12 +216,13 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         return dataItemValues;
     }
 
-    // TODO: Duplication com.amee.platform.science.InternalValue.filterItemValues()
     /**
      * Filter the ItemValue collection by the effective start and end dates of the owning Item.
      * ItemValues are excluded if they start prior to startDate and are not the final value in the sequence.
      * ItemValues are excluded if they start on or after the endDate.
      * The item value immediately prior to the start of the selection interval should be kept
+     *
+     * TODO: This is a duplication of com.amee.platform.science.InternalValue#filterItemValues
      *
      * @param values    ItemValues to filter
      * @param startDate effective startDate of Item
@@ -254,12 +271,24 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Add the previous point to the start of the list
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-            log.info("Adding previous point at " + ((ExternalHistoryValue)previous).getStartDate());
+            log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.info("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
+            log.debug("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
         }
         filteredValues.add(0, previous);
 
         return filteredValues;
+    }
+
+    /**
+     * Has the user submitted custom returnUnits or returnPerUnits?
+     */
+    private boolean hasReturnUnits(Choices userChoices) {
+        for (Choice choice: userChoices.getChoices()) {
+            if (choice.getName().startsWith("returnUnits.") || choice.getName().startsWith("returnPerUnits.")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

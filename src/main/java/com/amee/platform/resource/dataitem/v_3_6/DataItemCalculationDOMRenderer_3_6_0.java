@@ -31,7 +31,6 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
     @Autowired
     protected DataItemService dataItemService;
 
-    protected DataItem dataItem;
     protected Element rootElem;
 
     @Override
@@ -42,11 +41,6 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
     @Override
     public void ok() {
         rootElem.addContent(new Element("Status").setText("OK"));
-    }
-
-    @Override
-    public void addDataItem(DataItem dataItem) {
-        this.dataItem = dataItem;
     }
 
     @Override
@@ -89,7 +83,7 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
     }
 
     @Override
-    public void addValues(Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
+    public void addValues(DataItem dataItem, Choices userValues, Map<String, List<BaseItemValue>> dataItemValues) {
         Element inputElem = new Element("Input");
 
         // Add the supplied values
@@ -98,7 +92,8 @@ public class DataItemCalculationDOMRenderer_3_6_0 implements DataItemCalculation
 
         // User values
         for (Choice choice : userValues.getChoices()) {
-            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.")) {
+            if (!choice.getName().startsWith("units.") && !choice.getName().startsWith("perUnits.") &&
+                !choice.getName().startsWith("returnUnits.") && !choice.getName().startsWith("returnPerUnits")) {
                 Element valueElem = new Element("Value");
                 valueElem.setAttribute("name", choice.getName());
                 valueElem.setAttribute("source", "user");
