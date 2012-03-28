@@ -15,15 +15,15 @@ class ItemDefinitionIT extends BaseApiTest {
     static def itemDefinitionNames1 = [
         'APITestDimlessHistory',
         'APITestGHGElectricity',
-        'Computers Generic',
-        'Cooking']
+        'CLM food processing',
+        'Computers Generic']
 
     // Page two when sorted by name, resultStart is 4 and resultLimit is 4.
     static def itemDefinitionNames2 = [
+        'Cooking',
         'EcoSpold',
         'Entertainment Generic',
-        'GHGElectricity',
-        'GHGP international grid electricity']
+        'GHGElectricity']
 
     def static expectedUsageNames = ['usage1', 'usage2']
     def static expectedUsagePresents = ['false', 'true']
