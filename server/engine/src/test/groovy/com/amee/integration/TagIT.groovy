@@ -13,6 +13,9 @@ import org.junit.Test
  */
 class TagIT extends BaseApiTest {
 
+    // Time in ms to wait for lucene index updates.
+    public static final int SLEEP_TIME = 2000
+
     def tagUids = [
             '932FD23CD3A2',
             '5708D3DBF601',
@@ -135,12 +138,10 @@ class TagIT extends BaseApiTest {
             String location = responsePost.headers['Location'].value
             def uid = location.split('/')[5]
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
-//            assertEquals SUCCESS_CREATED.code, responsePost.status
 
             // Then delete the Tag.
             def responseDelete = client.delete(path: "/${version}/tags/tagtobedeleted")
             assertOkJson responseDelete, SUCCESS_OK.code, uid
-//            assertEquals SUCCESS_OK.code, responseDelete.status
 
             // We should get a 404 here.
             try {
@@ -186,7 +187,7 @@ class TagIT extends BaseApiTest {
             postTagToCategory('Kitchen_generic', 'entity_tag_to_be_deleted', version)
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // The EntityTag should exist.
             def responseGet = client.get(path: "/${version}/categories/Kitchen_generic/tags/entity_tag_to_be_deleted")
@@ -202,7 +203,7 @@ class TagIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // We should get a 404 here for the EntityTag.
             try {
@@ -219,7 +220,7 @@ class TagIT extends BaseApiTest {
             postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version)
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // The EntityTag should exist.
             responseGet = client.get(path: "/${version}/categories/Entertainment_generic/tags/entity_tag_to_be_deleted")
@@ -235,7 +236,7 @@ class TagIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // We should get a 404 here for the EntityTag.
             try {
@@ -287,7 +288,7 @@ class TagIT extends BaseApiTest {
             postTagToCategory('Entertainment_generic', 'entity_tag_to_be_deleted', version)
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Check the categories can be discovered via the tag.
             testFilterCategories(['tags': 'entity_tag_to_be_deleted'], ['Kitchen_generic', 'Entertainment_generic'], version)
@@ -295,10 +296,9 @@ class TagIT extends BaseApiTest {
             // Now delete the Tag.
             def responseDelete = client.delete(path: "/${version}/tags/entity_tag_to_be_deleted")
             assertOkJson responseDelete, SUCCESS_OK.code, uid
-//            assertEquals SUCCESS_OK.code, responseDelete.status
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Check categories cannot be discovered via the tag.
             testFilterCategories(['tags': 'entity_tag_to_be_deleted'], [], version)
@@ -686,7 +686,7 @@ class TagIT extends BaseApiTest {
         postTagToCategory('Computers_generic', 'test_tag_3', version)
 
         // Sleep a little to give the index a chance to be updated.
-        sleep(1000)
+        sleep(SLEEP_TIME)
 
         // Check the categories can be discovered.
         testFilterCategories(['tags': 'test_tag_1'], ['Kitchen_generic', 'Entertainment_generic'], version)
@@ -730,13 +730,10 @@ class TagIT extends BaseApiTest {
         if (version >= 3.2) {
             def responseDelete = client.delete(path: "/${version}/tags/test_tag_1")
             assertOkJson responseDelete, SUCCESS_OK.code, uid1
-//            assertEquals SUCCESS_OK.code, responseDelete.status
             responseDelete = client.delete(path: "/${version}/tags/test_tag_2")
             assertOkJson responseDelete, SUCCESS_OK.code, uid2
-//            assertEquals SUCCESS_OK.code, responseDelete.status
             responseDelete = client.delete(path: "/${version}/tags/test_tag_3")
             assertOkJson responseDelete, SUCCESS_OK.code, uid3
-//            assertEquals SUCCESS_OK.code, responseDelete.status
         }
     }
 
@@ -747,11 +744,8 @@ class TagIT extends BaseApiTest {
                 requestContentType: URLENC,
                 contentType: JSON)
 
-//        assertEquals SUCCESS_CREATED.code, responsePost.status
         String location = responsePost.headers['Location'].value
         def uid = location.split('/')[5]
-        // TODO: When PL-11224 is completed we can get the UID from the Location header.
-//        sleep(3000)
         assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
         uid
@@ -877,6 +871,7 @@ class TagIT extends BaseApiTest {
                 // Create form body.
                 def body = [:]
                 body[field] = value
+
                 // Update Tag.
                 client.put(
                         path: "/${version}/tags/computer",
