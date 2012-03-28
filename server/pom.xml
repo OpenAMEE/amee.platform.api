@@ -14,15 +14,15 @@
     <properties>
 
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.10.1-DEV</amee-platform-api.version>
+        <amee-platform-api.version>3.10.1</amee-platform-api.version>
         <amee-base.version>1.2.0</amee-base.version>
         <amee-persist.version>1.0.14</amee-persist.version>
         <amee-messaging.version>1.0.12</amee-messaging.version>
         <amee-restlet.version>1.1.0</amee-restlet.version>
         <amee-platform-science.version>1.5.0</amee-platform-science.version>
         <amee-platform-domain.version>2.5.0</amee-platform-domain.version>
-        <amee-platform-service.version>2.4.2-SNAPSHOT</amee-platform-service.version>
-        <amee-platform-resource.version>1.4.1-SNAPSHOT</amee-platform-resource.version>
+        <amee-platform-service.version>2.4.2</amee-platform-service.version>
+        <amee-platform-resource.version>1.4.1</amee-platform-resource.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
