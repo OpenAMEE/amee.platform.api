@@ -18,6 +18,8 @@ import org.junit.Test
  */
 class DataItemValueIT extends BaseApiTest {
 
+    public static final int SLEEP_TIME = 2000
+
     /**
      * Tests for creation, fetch and deletion of a historical Data Item Value using JSON responses.
      *
@@ -47,7 +49,7 @@ class DataItemValueIT extends BaseApiTest {
             setAdminUser()
 
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Create a DataItemValue.
             def responsePost = client.post(
@@ -68,7 +70,7 @@ class DataItemValueIT extends BaseApiTest {
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Get the new DataItemValue.
             def responseGetDIV = client.get(
@@ -94,7 +96,7 @@ class DataItemValueIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // We should get a 404 here.
             try {
@@ -121,7 +123,7 @@ class DataItemValueIT extends BaseApiTest {
             setAdminUser()
 
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Create a DataItemValue.
             def responsePost = client.post(
@@ -142,7 +144,7 @@ class DataItemValueIT extends BaseApiTest {
             assertOkXml responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Get the new DataItemValue.
             def responseGetDIV = client.get(
@@ -167,7 +169,7 @@ class DataItemValueIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // We should get a 404 here.
             try {
@@ -205,7 +207,7 @@ class DataItemValueIT extends BaseApiTest {
             setAdminUser()
 
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
@@ -239,7 +241,7 @@ class DataItemValueIT extends BaseApiTest {
             assertTrue isNear(modifiedDIV, modifiedDI)
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
         }
     }
 
@@ -258,7 +260,7 @@ class DataItemValueIT extends BaseApiTest {
             setAdminUser()
 
             // Sleep a little to ensure the isNear calculation below will be accurate.
-            sleep(1000)
+            sleep(SLEEP_TIME)
 
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
@@ -292,7 +294,7 @@ class DataItemValueIT extends BaseApiTest {
             assertTrue isNear(modifiedDIV, modifiedDI)
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(1000)
+            sleep(SLEEP_TIME)
         }
     }
 
