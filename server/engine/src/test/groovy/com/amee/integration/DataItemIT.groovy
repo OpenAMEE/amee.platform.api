@@ -12,6 +12,9 @@ import org.junit.Test
  */
 class DataItemIT extends BaseApiTest {
 
+    // Time in ms to wait for lucene index updates.
+    public static final int SLEEP_TIME = 2000
+
     static def dataItemUids = [
             'B6419AFB7114',
             'B1EF6970E87C',
@@ -106,7 +109,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // Get the new DataItem.
             def responseGet = client.get(
@@ -127,14 +130,14 @@ class DataItemIT extends BaseApiTest {
             assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort())
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // Then delete it.
             def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // We should get a 404 here.
             try {
@@ -162,7 +165,7 @@ class DataItemIT extends BaseApiTest {
             // Create a DataItem
             def responsePost = client.post(
                 path: "/${version}/categories/Cooking/items",
-                body: ['values.numberOfPeople': 100, 'values.fuel': 'foo'],
+                body: ['values.numberOfPeople': '100', 'values.fuel': 'foo'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
@@ -175,13 +178,13 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // Try to create another data item with the same drilldown values.
             try {
                 client.post(
                     path: "/${version}/categories/Cooking/items",
-                    body: ['values.numberOfPeople': 100, 'values.fuel': 'foo'],
+                    body: ['values.numberOfPeople': '100', 'values.fuel': 'foo'],
                     requestContentType: URLENC,
                     contentType: JSON)
             } catch (HttpResponseException e) {
@@ -197,7 +200,7 @@ class DataItemIT extends BaseApiTest {
             // Create another data item with different value for one drilldown.
             responsePost = client.post(
                 path: "/${version}/categories/Cooking/items",
-                body: ['values.numberOfPeople': 100, 'values.fuel': 'bar'],
+                body: ['values.numberOfPeople': '100', 'values.fuel': 'bar'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
@@ -240,7 +243,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
             try {
 
                 // Create a DataItem.
@@ -263,7 +266,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
         }
     }
 
@@ -570,7 +573,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responsePost, SUCCESS_CREATED.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // Update the DataItem.
             def responsePut = client.put(
@@ -588,7 +591,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responsePut, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
 
             // Get the DataItem and check values.
             def responseGet = client.get(
@@ -610,7 +613,7 @@ class DataItemIT extends BaseApiTest {
             assertOkJson responseDelete, SUCCESS_OK.code, uid
 
             // Sleep a little to give the index a chance to be updated.
-            sleep(2000)
+            sleep(SLEEP_TIME)
         }
     }
 
