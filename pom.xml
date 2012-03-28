@@ -13,7 +13,7 @@
         
         <!-- Versions. -->
         <amee-base.version>1.2.0</amee-base.version>
-        <amee-platform-service.version>2.4.2-SNAPSHOT</amee-platform-service.version>
+        <amee-platform-service.version>2.4.2</amee-platform-service.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
