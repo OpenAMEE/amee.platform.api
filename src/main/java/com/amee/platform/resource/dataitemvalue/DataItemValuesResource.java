@@ -1,6 +1,10 @@
 package com.amee.platform.resource.dataitemvalue;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.ValidationResult;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.DataItemValuesFilter;
 import com.amee.domain.item.data.DataItem;
@@ -21,9 +25,6 @@ public interface DataItemValuesResource {
         FilterValidator getValidator(RequestWrapper requestWrapper);
     }
 
-    /**
-     * Note that this Renderer is also used by DataItemValueHistoryResource.
-     */
     interface Renderer extends ResourceRenderer {
 
         void newDataItemValue(DataItemValueResource.Renderer renderer);
@@ -50,6 +51,7 @@ public interface DataItemValuesResource {
 
     static interface FormAcceptor extends ResourceAcceptor {
 
+        @Override
         Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 }

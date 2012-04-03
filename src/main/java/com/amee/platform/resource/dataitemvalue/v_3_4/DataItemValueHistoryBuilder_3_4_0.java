@@ -4,6 +4,7 @@ import com.amee.base.domain.ResultsWrapper;
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
+import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.transaction.AMEETransaction;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.DataItemService;
@@ -14,7 +15,7 @@ import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource;
-import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
+import com.amee.platform.resource.dataitemvalue.DataItemValuesHistoryResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 
@@ -25,10 +26,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * A resource to show the history of values for a {@link DataItem} for a specific {@link ItemValueDefinition}.
- * <p/>
- * This resource borrows renderers and builders from {@link DataItemValuesResource} as the representations
- * are very similar.
+ * <p>A resource to show the history of values for a {@link DataItem} for a specific {@link ItemValueDefinition}.<p/>
+ * 
+ * This resource borrows renderers and builders from {@link DataItemValuesResource} as the representations are very similar.
  */
 @Service
 @Scope("prototype")
@@ -47,11 +47,13 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
     @Autowired
     private ResourceAuthorizationService resourceAuthorizationService;
 
-    private DataItemValuesResource.Renderer renderer;
+    private DataItemValuesHistoryResource.Renderer valuesRenderer;
+
+    private DataItemValueHistoryResource.Renderer valueRenderer;
 
     /**
      * Handle a request.
-     *
+     * 
      * @param requestWrapper the current {@link RequestWrapper}
      */
     @Override
@@ -66,7 +68,7 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
 
         // Authorized for DataItem?
         resourceAuthorizationService.ensureAuthorizedForBuild(
-                requestWrapper.getAttributes().get("activeUserUid"), dataItem);
+            requestWrapper.getAttributes().get("activeUserUid"), dataItem);
 
         // Create filter.
         DataItemValuesFilter filter = new DataItemValuesFilter();
@@ -85,9 +87,9 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
             // Handle the DataItem & ItemValueDefinition.
             handle(requestWrapper, filter);
             // Render the response.
-            DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
-            renderer.ok();
-            return renderer.getObject();
+            DataItemValuesHistoryResource.Renderer valuesRenderer = getValuesRenderer(requestWrapper);
+            valuesRenderer.ok();
+            return valuesRenderer.getObject();
         } else {
             throw new ValidationException(validator.getValidationResult());
         }
@@ -96,9 +98,9 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
     /**
      * Handle a request. Typically called by the method above but could also be called by another resource
      * as part of build its own representation.
-     *
+     * 
      * @param requestWrapper the current {@link RequestWrapper}
-     * @param filter         the {@link DataItemValuesFilter} for this request
+     * @param filter the {@link DataItemValuesFilter} for this request
      */
     @Override
     public void handle(RequestWrapper requestWrapper, DataItemValuesFilter filter) {
@@ -106,53 +108,90 @@ public class DataItemValueHistoryBuilder_3_4_0 implements DataItemValueHistoryRe
         // Get the item values.
         ResultsWrapper<BaseDataItemValue> resultsWrapper = dataItemService.getAllItemValues(filter);
 
-        // Setup Renderer.
-        DataItemValuesResource.Renderer renderer = getRenderer(requestWrapper);
-        renderer.start();
-        renderer.setTruncated(resultsWrapper.isTruncated());
+        // Setup Values Renderer.
+        DataItemValuesHistoryResource.Renderer valuesRenderer = getValuesRenderer(requestWrapper);
+        valuesRenderer.start();
+        valuesRenderer.setTruncated(resultsWrapper.isTruncated());
+
+        // Get Value Renderer
+        DataItemValueHistoryResource.Renderer valueRenderer = getValueRenderer(requestWrapper);
 
         // Add Data Item Values to Renderer and build.
-        DataItemValueResource.Builder dataItemValueBuilder = getDataItemValueBuilder(requestWrapper);
         for (BaseDataItemValue itemValue : resultsWrapper.getResults()) {
-            dataItemValueBuilder.handle(requestWrapper, itemValue);
-            renderer.newDataItemValue(dataItemValueBuilder.getRenderer(requestWrapper));
+            handle(requestWrapper, itemValue);
+            valuesRenderer.newDataItemValue(valueRenderer);
+        }
+    }
+
+    @Override
+    public void handle(RequestWrapper requestWrapper, BaseDataItemValue dataItemValue) {
+
+        // Get the Renderer.
+        DataItemValueHistoryResource.Renderer renderer = getValueRenderer(requestWrapper);
+        renderer.start();
+
+        // Collect rendering options from matrix params.
+        boolean full = requestWrapper.getMatrixParameters().containsKey("full");
+        boolean path = requestWrapper.getMatrixParameters().containsKey("path");
+        boolean category = requestWrapper.getMatrixParameters().containsKey("category");
+        boolean item = requestWrapper.getMatrixParameters().containsKey("item");
+        boolean audit = requestWrapper.getMatrixParameters().containsKey("audit");
+        boolean itemValueDefinition = requestWrapper.getMatrixParameters().containsKey("itemValueDefinition");
+
+        // New DataItemValue & basic.
+        renderer.newDataItemValue(dataItemValue);
+        renderer.addBasic();
+
+        // Optionals.
+        if (path || full) {
+            renderer.addPath();
+        }
+        if (category || full) {
+            renderer.addDataCategory();
+        }
+        if (item || full) {
+            renderer.addDataItem();
+        }
+        if (audit || full) {
+            renderer.addAudit();
+        }
+        if ((itemValueDefinition || full) && (dataItemValue.getItemValueDefinition() != null)) {
+            renderer.addItemValueDefinition(dataItemValue.getItemValueDefinition());
         }
     }
 
     /**
-     * Get a {@link DataItemValuesResource.Renderer} for this {@link com.amee.base.resource.ResourceBuilder}.
-     * <p/>
-     * Note: This borrows the renderer from DataItemValuesResource.
-     *
+     * Get a {@link DataItemValuesHistoryResource.Renderer} for this {@link com.amee.base.resource.ResourceBuilder}.
+     * 
      * @param requestWrapper the current {@link RequestWrapper}
-     * @return a {@link DataItemValuesResource.Renderer}
+     * @return a {@link DataItemValuesHistoryResource.Renderer}
      */
     @Override
-    public DataItemValuesResource.Renderer getRenderer(RequestWrapper requestWrapper) {
-        if (renderer == null) {
-            renderer = (DataItemValuesResource.Renderer) resourceBeanFinder.getRenderer(DataItemValuesResource.Renderer.class, requestWrapper);
+    public DataItemValuesHistoryResource.Renderer getValuesRenderer(RequestWrapper requestWrapper) {
+        if (valuesRenderer == null) {
+            valuesRenderer = (DataItemValuesHistoryResource.Renderer) resourceBeanFinder.getRenderer(DataItemValuesHistoryResource.Renderer.class,
+                requestWrapper);
         }
-        return renderer;
+        return valuesRenderer;
     }
 
     /**
-     * Get a {@link DataItemValueResource.Builder} for this {@link com.amee.base.resource.ResourceBuilder}.
-     * <p/>
-     * This borrows the renderer from DataItemValuesResource.
-     *
+     * Get a {@link DataItemValueHistoryResource.Renderer} for this {@link ResourceBuilder}.
+     * 
      * @param requestWrapper the current {@link RequestWrapper}
-     * @return a {@link DataItemValueResource.Builder}
+     * @return a {@link DataItemValueHistoryResource.Renderer}
      */
     @Override
-    public DataItemValueResource.Builder getDataItemValueBuilder(RequestWrapper requestWrapper) {
-        return (DataItemValueResource.Builder)
-                resourceBeanFinder.getBuilder(DataItemValueResource.Builder.class, requestWrapper);
+    public DataItemValueHistoryResource.Renderer getValueRenderer(RequestWrapper requestWrapper) {
+        if (valueRenderer == null) {
+            valueRenderer = (DataItemValueHistoryResource.Renderer) resourceBeanFinder.getRenderer(DataItemValueHistoryResource.Renderer.class, requestWrapper);
+        }
+        return valueRenderer;
     }
 
     @Override
     public DataItemValuesResource.FilterValidator getValidator(RequestWrapper requestWrapper) {
-        return (DataItemValuesResource.FilterValidator)
-                resourceBeanFinder.getValidator(
-                        DataItemValuesResource.FilterValidator.class, requestWrapper);
+        return (DataItemValuesResource.FilterValidator) resourceBeanFinder.getValidator(
+            DataItemValuesResource.FilterValidator.class, requestWrapper);
     }
 }
