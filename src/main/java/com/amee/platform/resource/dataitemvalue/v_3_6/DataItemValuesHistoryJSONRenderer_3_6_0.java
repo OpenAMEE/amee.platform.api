@@ -1,9 +1,9 @@
-package com.amee.platform.resource.dataitemvalue.v_3_4;
+package com.amee.platform.resource.dataitemvalue.v_3_6;
 
 import com.amee.base.domain.Since;
 import com.amee.base.resource.ResponseHelper;
-import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
-import com.amee.platform.resource.dataitemvalue.DataItemValuesResource;
+import com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource;
+import com.amee.platform.resource.dataitemvalue.DataItemValuesHistoryResource;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
-@Since("3.4.0")
-public class DataItemValuesJSONRenderer_3_4_0 implements DataItemValuesResource.Renderer {
+@Since("3.6.0")
+public class DataItemValuesHistoryJSONRenderer_3_6_0 implements DataItemValuesHistoryResource.Renderer {
 
     private JSONObject rootObj;
     private JSONArray valuesArr;
@@ -32,7 +32,7 @@ public class DataItemValuesJSONRenderer_3_4_0 implements DataItemValuesResource.
     }
 
     @Override
-    public void newDataItemValue(DataItemValueResource.Renderer renderer) {
+    public void newDataItemValue(DataItemValueHistoryResource.Renderer renderer) {
         try {
             valuesArr.put(((JSONObject) renderer.getObject()).getJSONObject("value"));
         } catch (JSONException e) {
@@ -54,4 +54,5 @@ public class DataItemValuesJSONRenderer_3_4_0 implements DataItemValuesResource.
     public Object getObject() {
         return rootObj;
     }
+
 }

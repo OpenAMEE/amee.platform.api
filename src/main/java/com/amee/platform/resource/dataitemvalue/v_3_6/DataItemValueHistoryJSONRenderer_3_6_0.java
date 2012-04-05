@@ -1,8 +1,8 @@
 package com.amee.platform.resource.dataitemvalue.v_3_6;
 
 import com.amee.base.domain.Since;
-import com.amee.platform.resource.dataitemvalue.DataItemValueDOMRenderer;
 import com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource;
+import com.amee.platform.resource.dataitemvalue.DataItemValueJSONRenderer;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("prototype")
 @Since("3.6.0")
-public class DataItemValueHistoryDOMRenderer_3_6_0 extends DataItemValueDOMRenderer implements DataItemValueHistoryResource.Renderer {
+public class DataItemValueHistoryJSONRenderer_3_6_0 extends DataItemValueJSONRenderer implements DataItemValueHistoryResource.Renderer {
 
     @Override
     public boolean isHistoryItem() {
