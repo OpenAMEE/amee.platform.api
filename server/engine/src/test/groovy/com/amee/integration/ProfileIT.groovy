@@ -1,10 +1,11 @@
 package com.amee.integration
 
-import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
-import groovyx.net.http.HttpResponseException
 import static org.restlet.data.Status.*
+import groovyx.net.http.HttpResponseException
+
+import org.junit.Test
 
 /**
  * Tests for the Profile API. This API has been available since version 3.6.
