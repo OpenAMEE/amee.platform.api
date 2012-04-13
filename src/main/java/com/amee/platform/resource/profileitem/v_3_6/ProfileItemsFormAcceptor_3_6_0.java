@@ -19,8 +19,7 @@ import com.amee.platform.resource.profileitem.ProfileItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.profile.ProfileService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -31,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.6.0")
 public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.FormAcceptor {
-    
-    private final Log log = LogFactory.getLog(getClass());
 
     @Autowired
     private ResourceService resourceService;
@@ -64,7 +61,7 @@ public class ProfileItemsFormAcceptor_3_6_0 implements ProfileItemsResource.Form
         Profile profile = resourceService.getProfile(requestWrapper);
         DataItem dataItem;
         if (requestWrapper.getFormParameters().get("dataItemUid") != null) {
-            dataItem = dataItemService.getItemByUid(requestWrapper.getFormParameters().get("dataItemUid"));    
+            dataItem = dataItemService.getItemByUid(requestWrapper.getFormParameters().get("dataItemUid"));
         } else if (requestWrapper.getFormParameters().get("category") != null) {
             DataCategory dataCategory = dataService.getDataCategoryByIdentifier(
                 requestWrapper.getFormParameters().get("category"));

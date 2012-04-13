@@ -1,12 +1,15 @@
 package com.amee.platform.resource.profileitem;
 
-import com.amee.base.resource.*;
+import com.amee.base.resource.RequestWrapper;
+import com.amee.base.resource.ResourceAcceptor;
+import com.amee.base.resource.ResourceBuilder;
+import com.amee.base.resource.ResourceRenderer;
+import com.amee.base.resource.ValidationResult;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.ProfileItemsFilter;
 import com.amee.domain.profile.Profile;
 import com.amee.platform.science.StartEndDate;
 
-import java.util.Date;
 import java.util.Map;
 
 public interface ProfileItemsResource {
@@ -31,7 +34,17 @@ public interface ProfileItemsResource {
     }
 
     interface FormAcceptor extends ResourceAcceptor {
-
+        @Override
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
+    }
+    
+    interface DOMAcceptor extends ResourceAcceptor<Object> {
+        @Override
+        Object handle(RequestWrapper requestWrapper) throws ValidationException;
+    }
+    
+    interface JSONAcceptor extends ResourceAcceptor<Object> {
+        @Override
         Object handle(RequestWrapper requestWrapper) throws ValidationException;
     }
 
