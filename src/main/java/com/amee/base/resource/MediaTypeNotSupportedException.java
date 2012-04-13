@@ -13,6 +13,15 @@ public class MediaTypeNotSupportedException extends ResourceException {
     public MediaTypeNotSupportedException() {
         super();
     }
+    
+    /**
+     * Constructor that accepts an error message.
+     * 
+     * @param message the message to include along with the exception.
+     */
+    public MediaTypeNotSupportedException(String message) {
+        super(message);
+    }
 
     /**
      * Produces a {@link JSONObject} where the 'status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.

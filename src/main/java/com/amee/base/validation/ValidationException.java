@@ -2,14 +2,15 @@ package com.amee.base.validation;
 
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link ResourceException} that can be thrown by resources to represent validation errors, typically from
@@ -49,6 +50,15 @@ public class ValidationException extends ResourceException {
         setValidationResults(validationResults);
     }
 
+    /**
+     * Constructor that accepts an error message.
+     * 
+     * @param message the message to include along with the exception.
+     */
+    public ValidationException(String message) {
+        super(message);
+    }
+    
     /**
      * Create a {@link JSONObject} response representation which includes a single {@link ValidationResult} or
      * a list of {@link ValidationResult}s.

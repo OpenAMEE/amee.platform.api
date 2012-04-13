@@ -2,6 +2,18 @@ package com.amee.base.resource;
 
 import com.amee.base.domain.Version;
 import com.amee.base.validation.ValidationException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -9,9 +21,6 @@ import org.jdom.input.SAXBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * Encapsulates properties and behaviour for requests intended for a resource. Typically the request will
@@ -351,11 +360,9 @@ public class RequestWrapper implements Serializable {
                 throw new RuntimeException("Cannot create a Document when there is an empty body.");
             }
         } catch (JDOMException e) {
-            // TODO: More detail in this exception.
-            throw new ValidationException();
+            throw new ValidationException(e.getMessage());
         } catch (IOException e) {
-            // TODO: More detail in this exception.
-            throw new ValidationException();
+            throw new ValidationException(e.getMessage());
         }
     }
 
@@ -372,8 +379,7 @@ public class RequestWrapper implements Serializable {
                 throw new RuntimeException("Cannot create a JSONObject when there is an empty body.");
             }
         } catch (JSONException e) {
-            // TODO: More detail in this exception.
-            throw new ValidationException();
+            throw new ValidationException(e.getMessage());
         }
     }
 
