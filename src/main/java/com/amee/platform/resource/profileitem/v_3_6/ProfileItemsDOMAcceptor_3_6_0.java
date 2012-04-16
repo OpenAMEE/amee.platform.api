@@ -122,6 +122,9 @@ public class ProfileItemsDOMAcceptor_3_6_0 implements ProfileItemsResource.DOMAc
                 } else {
                     throw new ValidationException(validator.getValidationResult());
                 }
+                
+                // This will generate all profile item values.
+                profileItemService.persist(profileItem);
 
                 // Aggregate the results
                 String location = "/" + requestWrapper.getVersion() + "/profiles/" +
