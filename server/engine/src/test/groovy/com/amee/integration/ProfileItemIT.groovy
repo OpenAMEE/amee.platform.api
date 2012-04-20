@@ -226,6 +226,151 @@ class ProfileItemIT extends BaseApiTest {
         }
     }
 
+    @Test
+    void createAndRemoveProfileItemsJson(){
+        versions.each { version -> createAndRemoveProfileItemsByUidJson(version) }
+        versions.each { version -> createAndRemoveProfileItemsByUidXML(version) }
+    }
+
+    def createAndRemoveProfileItemsByUidJson(version) {
+        if(version >= 3.6) {
+            def requestBody = '''
+            {
+              "profileItems":[
+                {
+                  "dataItemUid":"963A90C107FA",
+                  "energyPerTime":101,
+                  "responsibleArea":101,
+                  "totalArea":101
+                },
+                {
+                  "dataItemUid":"963A90C107FA",
+                  "energyPerTime":201,
+                  "responsibleArea":201,
+                  "totalArea":201
+                }
+              ]
+            }
+            '''
+
+            // Create the profile items
+            def responsePost = client.post(
+                path: "/${version}/profiles/UCP4SKANF6CS/items",
+                body: requestBody,
+                requestContentType: JSON,
+                contentType: JSON)
+
+            assert SUCCESS_CREATED.code == responsePost.status
+            assert responsePost.headers['Location'] == null
+
+            assert responsePost.data.profileItems.size() == 2
+
+            def uid0 = responsePost.data.profileItems[0].uid
+            assert uid0 != null
+            def location0 = responsePost.data.profileItems[0].location
+            assert location0.contains("/profiles/UCP4SKANF6CS/items")
+
+            def uid1 = responsePost.data.profileItems[1].uid
+            assert uid1 != null
+            def location1 = responsePost.data.profileItems[1].location
+            assert location1.contains("/profiles/UCP4SKANF6CS/items")
+
+            // Cleanup first profile item
+            def responseDelete = client.delete(path: location0, contentType: JSON)
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid0)
+
+            // Check it was deleted - we should get a 404 here.
+            try {
+                client.get(path: location0, contentType: JSON)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            }
+
+            // Cleanup second profile item
+            responseDelete = client.delete(path: location1, contentType: JSON)
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid1)
+
+            // Check it was deleted - we should get a 404 here.
+            try {
+                client.get(path: location1, contentType: JSON)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            }
+        }
+    }
+
+    def createAndRemoveProfileItemsByUidXML(version) {
+        if(version >= 3.6) {
+            def requestBody =
+            '''<?xml version="1.0" encoding="UTF-8"?>
+            <ProfileCategory>
+              <ProfileItems>
+                <ProfileItem>
+                  <dataItemUid>963A90C107FA</dataItemUid>
+                  <energyPerTime>101</energyPerTime>
+                  <responsibleArea>101</responsibleArea>
+                  <totalArea>101</totalArea>
+                </ProfileItem>
+                <ProfileItem>
+                  <dataItemUid>963A90C107FA</dataItemUid>
+                  <energyPerTime>201</energyPerTime>
+                  <responsibleArea>201</responsibleArea>
+                  <totalArea>201</totalArea>
+                </ProfileItem>
+              </ProfileItems>
+            </ProfileCategory>
+            '''
+
+            // Create the profile items
+            def responsePost = client.post(
+                path: "/${version}/profiles/UCP4SKANF6CS/items",
+                body: requestBody,
+                requestContentType: XML,
+                contentType: XML)
+
+            assert SUCCESS_CREATED.code == responsePost.status
+            assert responsePost.headers['Location'] == null
+
+            assert responsePost.data.ProfileItems.ProfileItem.size() == 2
+
+            def uid0 = responsePost.data.ProfileItems.ProfileItem[0].Entity.text()
+            assert uid0 != null
+            def location0 = responsePost.data.ProfileItems.ProfileItem[0].Location.text()
+            assert location0.contains("/profiles/UCP4SKANF6CS/items")
+
+            def uid1 = responsePost.data.ProfileItems.ProfileItem[1].Entity.text()
+            assert uid1 != null
+            def location1 = responsePost.data.ProfileItems.ProfileItem[1].Location.text()
+            assert location1.contains("/profiles/UCP4SKANF6CS/items")
+
+            // Cleanup first profile item
+            def responseDelete = client.delete(path: location0, contentType: XML)
+            assertOkXml(responseDelete, SUCCESS_OK.code, uid0)
+
+            // Check it was deleted - we should get a 404 here.
+            try {
+                client.get(path: location0, contentType: XML)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            }
+
+            // Cleanup second profile item
+            responseDelete = client.delete(path: location1, contentType: XML)
+            assertOkXml(responseDelete, SUCCESS_OK.code, uid1)
+
+            // Check it was deleted - we should get a 404 here.
+            try {
+                client.get(path: location1, contentType: XML)
+                fail 'Should have thrown an exception'
+            } catch (HttpResponseException e) {
+                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            }
+        }
+    }
+
     /**
      * Tests creating a duplicate profile item. A profile item is considered duplicate if it has the same:
      * profile ID, data category ID, data item ID, start date, name.
@@ -622,7 +767,7 @@ class ProfileItemIT extends BaseApiTest {
     void getProfileItemCustomReturnUnits() {
         versions.each { version -> getProfileItemCustomReturnUnits(version) }
     }
-    
+
     def getProfileItemCustomReturnUnits(version) {
         if (version >= 3.6) {
             def response = client.get(

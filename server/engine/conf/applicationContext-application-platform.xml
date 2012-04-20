@@ -803,6 +803,18 @@
                                   value="com.amee.platform.resource.profileitem.ProfileItemsResource$FormAcceptor"/>
                     </bean>
                 </entry>
+                <entry key="application/json">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target" 
+                                  value="com.amee.platform.resource.profileitem.ProfileItemsResource$JSONAcceptor" />
+                    </bean>
+                </entry>
+                <entry key="application/xml">
+                    <bean class="com.amee.base.resource.LocalResourceAcceptor">
+                        <property name="target" 
+                                  value="com.amee.platform.resource.profileitem.ProfileItemsResource$DOMAcceptor" />
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
