@@ -21,6 +21,7 @@
         <junit.version>4.8.2</junit.version>
         <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.11.0</xerces.version>
+        <xml-apis.version>2.11.0</xml-apis.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -162,6 +163,11 @@
             <version>${xerces.version}</version>
         </dependency>
         <dependency>
+        	<groupId>xml-apis</groupId>
+        	<artifactId>xml-apis</artifactId>
+        	<version>${xml-apis.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>${commons-lang.version}</version>
@@ -174,7 +180,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <!-- Distribution Management. -->
