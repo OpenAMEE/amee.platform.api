@@ -85,13 +85,7 @@ public class ResourceManager {
                 Object a = getRequest().getAttributes().get(attributeName);
                 if (a instanceof String) {
                     // This removes any matrix parameters.
-                    String value = ((String) a).split(";")[0];
-                    try {
-                        value = URLDecoder.decode(value, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        log.warn("getAttributes() Caught UnsupportedEncodingException: " + e.getMessage());
-                    }
-                    attributes.put(attributeName, value);
+                    attributes.put(attributeName, ((String) a).split(";")[0]);
                 } else {
                     log.warn("getAttributes() Attribute value is not a String: " + attributeName);
                 }
