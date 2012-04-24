@@ -1,7 +1,13 @@
 package com.amee.restlet.resource;
 
-import com.amee.base.resource.ValidationResult;
-import com.amee.restlet.AMEESpringServer;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -9,14 +15,17 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.restlet.data.*;
+import org.restlet.data.MediaType;
+import org.restlet.data.Preference;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.*;
+import com.amee.base.resource.ValidationResult;
+import com.amee.restlet.AMEESpringServer;
 
 public class ResourceManager {
 
@@ -85,7 +94,16 @@ public class ResourceManager {
                 Object a = getRequest().getAttributes().get(attributeName);
                 if (a instanceof String) {
                     // This removes any matrix parameters.
-                    attributes.put(attributeName, ((String) a).split(";")[0]);
+                    String value = ((String) a).split(";")[0];
+                    try {
+                        // URLDecoder decodes application/x-www-form-urlencoded Strings, which should only appear in the body of a POST.
+                        // It decodes "+" symbols to spaces, which breaks ISO time formats that include a "+", so we manually encode them
+                        // here and immediately decode them again in order to preserve them.
+                        value = URLDecoder.decode(value.replace("+", "%2B"), "UTF-8").replace("%2B", "+");
+                    } catch (UnsupportedEncodingException e) {
+                        log.warn("getAttributes() Caught UnsupportedEncodingException: " + e.getMessage());
+                    }
+                    attributes.put(attributeName, value);
                 } else {
                     log.warn("getAttributes() Attribute value is not a String: " + attributeName);
                 }
