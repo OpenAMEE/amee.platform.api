@@ -1,8 +1,8 @@
 package com.amee.base.resource;
 
 import com.amee.base.domain.VersionBeanFinder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +24,7 @@ import java.util.concurrent.*;
 @Scope("prototype")
 public class LocalResourceHandler implements ResourceHandler {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
