@@ -21,8 +21,8 @@ import com.amee.platform.science.*;
 import com.amee.service.auth.ResourceAuthorizationService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
     private DataItemCalculationResource.Renderer renderer;
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     @AMEETransaction

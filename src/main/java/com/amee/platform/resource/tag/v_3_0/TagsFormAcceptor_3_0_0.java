@@ -16,8 +16,8 @@ import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.data.DataService;
 import com.amee.service.invalidation.InvalidationService;
 import com.amee.service.tag.TagService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.0.0")
 public class TagsFormAcceptor_3_0_0 implements TagsResource.FormAcceptor {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private InvalidationService invalidationService;

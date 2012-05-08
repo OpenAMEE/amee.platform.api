@@ -9,8 +9,8 @@ import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 import com.amee.platform.resource.dataitemvalue.DataItemValueResource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Since("3.4.0")
 public class DataItemValueJSONRenderer_3_4_0 implements DataItemValueResource.Renderer {
 
-    private static final Log LOG = LogFactory.getLog(DataItemValueJSONRenderer_3_4_0.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataItemValueJSONRenderer_3_4_0.class);
     
     @Autowired
     protected DataItemService dataItemService;

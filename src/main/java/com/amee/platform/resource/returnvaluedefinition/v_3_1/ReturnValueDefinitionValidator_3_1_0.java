@@ -11,8 +11,8 @@ import com.amee.platform.resource.ValueDefinitionEditor;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import java.util.Set;
 @Since("3.1.0")
 public class ReturnValueDefinitionValidator_3_1_0 extends BaseValidator implements ReturnValueDefinitionResource.ReturnValueDefinitionValidator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     // Alpha numerics & underscore.
     private final static String TYPE_PATTERN_STRING = "^[a-zA-Z0-9_]*$";

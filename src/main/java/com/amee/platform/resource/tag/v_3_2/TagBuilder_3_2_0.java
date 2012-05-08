@@ -14,8 +14,8 @@ import com.amee.platform.resource.tag.TagResource;
 import com.amee.platform.resource.tag.TagResourceService;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.tag.TagService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.2.0")
 public class TagBuilder_3_2_0 implements TagResource.Builder {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private TagService tagService;
