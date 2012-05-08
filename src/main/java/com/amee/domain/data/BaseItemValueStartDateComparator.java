@@ -2,8 +2,8 @@ package com.amee.domain.data;
 
 import com.amee.domain.item.BaseItemValue;
 import com.amee.platform.science.ExternalHistoryValue;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 
@@ -13,7 +13,7 @@ import java.util.Comparator;
  */
 public class BaseItemValueStartDateComparator implements Comparator<BaseItemValue> {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public int compare(BaseItemValue iv1, BaseItemValue iv2) {
