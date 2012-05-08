@@ -2,8 +2,8 @@ package com.amee.platform.science;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class DataSeries {
 
-    private final Log log = LogFactory.getLog("science");
+    private final Logger log = LoggerFactory.getLogger("science");
     private SortedSet<DataPoint> dataPoints = new TreeSet<DataPoint>();
 
     /// These dates will be used to define a query window on the series.

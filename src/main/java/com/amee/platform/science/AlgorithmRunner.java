@@ -1,7 +1,7 @@
 package com.amee.platform.science;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.org.mozilla.javascript.internal.JavaScriptException;
 import sun.org.mozilla.javascript.internal.NativeJavaObject;
 import sun.org.mozilla.javascript.internal.Scriptable;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class AlgorithmRunner {
 
-    private final Log scienceLog = LogFactory.getLog("science");
+    private final Logger scienceLog = LoggerFactory.getLogger("science");
 
     // The ScriptEngine for the JavaScript context.
     private final ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
