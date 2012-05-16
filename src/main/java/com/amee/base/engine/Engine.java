@@ -71,7 +71,8 @@ public class Engine implements WrapperListener {
     @Override
     public Integer start(String[] args) {
 
-        // Redirect JDK logging to Commons Logging
+        // Redirect JDK logging to slf4j Logging
+        // TODO: Should we use jul-to-slf4j? http://www.slf4j.org/legacy.html (http://stackoverflow.com/a/9117188)
         JavaLoggingToSlf4jRedirector.activate();
 
         parseOptions(args);
