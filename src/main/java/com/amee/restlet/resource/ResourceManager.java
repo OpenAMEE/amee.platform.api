@@ -119,7 +119,31 @@ public class ResourceManager {
     }
 
     protected Map<String, String> getQueryParameters() {
-        return getRequest().getResourceRef().getQueryAsForm().getValuesMap();
+        /*
+         *  The query parameters could be retrieved by calling:
+         *  
+         *  getRequest().getResourceRef().getQueryAsForm().getValuesMap();
+         *  
+         *  The problem with that is that the Reference.getQueryAsForm() method calls a Form constructor which decodes the query string with 
+         *  URLDecoder.decode, which is appropriate only for application/x-www-form-urlencoded strings in POST bodies.  It decodes "+" symbols 
+         *  to spaces, which breaks ISO time formats that include a "+", so we manually encode them here before passing them to the Form 
+         *  constructor, and immediately decode them again in order to preserve them.
+         */
+         
+        // Get query string
+        org.restlet.data.Reference ref = getRequest().getResourceRef();
+        String query = ref.getQuery(false);
+        
+        // Encode + symbols
+        org.restlet.data.Form form = new org.restlet.data.Form(query.replace("+", "%2B"));
+        Map<String, String> params = form.getValuesMap();
+        
+        // Decode + symbols again
+        for(String param : params.keySet()){
+            params.put(param, params.get(param).replace("%2B", "+"));
+        }
+        
+        return params;
     }
 
     protected List<String> getAcceptedMediaTypes() {
