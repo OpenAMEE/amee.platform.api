@@ -30,19 +30,18 @@
         <!-- Note: Check Restlet release notes and jetty dependencies. -->
         <commons-collections.version>3.2.1</commons-collections.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <commons-logging.version>1.1.1</commons-logging.version>
         <gmaven-runtime-1.7.version>1.3</gmaven-runtime-1.7.version>
         <groovy.version>1.7.10</groovy.version>
         <h2.version>1.3.164</h2.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
-        <hoptoad-notifier.version>1.9</hoptoad-notifier.version>
+        <airbrake-notifier.version>2.0-SNAPSHOT</airbrake-notifier.version>
         <hsqldb.version>2.2.8</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
         <jscience.version>4.3.1</jscience.version>
         <junit.version>4.8.2</junit.version>
-        <log4j.version>1.2.16</log4j.version>
+        <logback-classic.version>1.0.2</logback-classic.version>
         <log4jdbc4.version>1.2beta2</log4jdbc4.version>
         <mysql-connector-java.version>5.1.15</mysql-connector-java.version>
         <org-aspectj.version>1.6.10</org-aspectj.version>
@@ -347,15 +346,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -365,14 +359,22 @@
         <!-- Airbrake. Was Hoptoad. -->
         <dependency>
             <groupId>hoptoad</groupId>
-            <artifactId>hoptoad-java-notifier</artifactId>
-            <version>${hoptoad-notifier.version}</version>
+            <artifactId>airbrake-logback-notifier</artifactId>
+            <version>${airbrake-notifier.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Commons logging bridge required for spring -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
             <scope>runtime</scope>
         </dependency>
 
