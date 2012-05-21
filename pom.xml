@@ -23,6 +23,7 @@
         <junit.version>4.8.2</junit.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <slf4j.version>1.6.1</slf4j.version>
+        <logback-classic.version>1.0.2</logback-classic.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -200,6 +201,13 @@
             <artifactId>hsqldb</artifactId>
             <version>${hsqldb.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
         </dependency>
     </dependencies>
 
