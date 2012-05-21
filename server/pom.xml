@@ -42,7 +42,7 @@
         <jscience.version>4.3.1</jscience.version>
         <junit.version>4.8.2</junit.version>
         <logback-classic.version>1.0.2</logback-classic.version>
-        <log4jdbc4.version>1.2beta2</log4jdbc4.version>
+        <log4jdbc4.version>1.2</log4jdbc4.version>
         <mysql-connector-java.version>5.1.15</mysql-connector-java.version>
         <org-aspectj.version>1.6.10</org-aspectj.version>
         <org-json.version>2.0</org-json.version>
@@ -242,7 +242,6 @@
                         <!-- Set this to create to automatically create schema. Required for hsqldb:mem. -->
                         <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
 
-                        <log4j.configuration>test-log4j.xml</log4j.configuration>
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
                         <amee.logLevel>INFO</amee.logLevel>
