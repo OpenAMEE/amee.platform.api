@@ -23,6 +23,7 @@
         <junit.version>4.8.2</junit.version>
         <org-json.version>2.0</org-json.version>
         <org-mockito.version>1.8.5</org-mockito.version>
+        <logback-classic.version>1.0.2</logback-classic.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -119,6 +120,13 @@
             <artifactId>mockito-all</artifactId>
             <version>${org-mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
         </dependency>
     </dependencies>
 
