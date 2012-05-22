@@ -132,10 +132,14 @@ public class ResourceManager {
              *  The problem with that is that the Reference.getQueryAsForm() method calls a Form constructor which decodes the query string with
              *  URLDecoder.decode, which is appropriate only for application/x-www-form-urlencoded strings in POST bodies.  It decodes "+" symbols
              *  to spaces, which breaks ISO time formats that include a "+", so we manually encode them here before passing them to the Form
-             *  constructor, and immediately decode them again in order to preserve them.
+             *  constructor, and immediately decode them again in order to preserve them.  Note that we make an effort to only encode "+" symbols
+             *  that are part of a date string, in order to avoid breaking other query parameters that may have been submitted with "+" symbols in
+             *  place of spaces (some clients do this - plus and space characters are fairly interchangeable).  The regex used just looks for a
+             *  sequence of 6 digits preceeding the plus symbol which may or may not be broken up by colons, and a sequence of two digits following
+             *  it; the assumption is that a timezone offset will not be submitted unless a time is also submitted.
              */
             // Encode + symbols
-            org.restlet.data.Form form = new org.restlet.data.Form(query.replace("+", "%2B"));
+            org.restlet.data.Form form = new org.restlet.data.Form(query.replaceAll("(\\d\\d:?\\d\\d:?\\d\\d)\\+(\\d\\d)", "$1%2B$2"));
             Map<String, String> params = form.getValuesMap();
 
             // Decode + symbols again
