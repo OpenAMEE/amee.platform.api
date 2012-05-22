@@ -55,15 +55,15 @@
     <target name="clean-deploy" depends="rebuild" description="Rebuild and deploy AMEE."/>
 
     <target name="cap-local-deploy" depends="rebuild" description="Capistrano local deploy from working copy">
-        <exec executable="cap" dir="${basedir}" failonerror="true">
+        <exec executable="${cap.executable}" dir="${basedir}" failonerror="true">
             <arg value="local"/>
             <arg value="install:prepare"/>
         </exec>
-        <exec executable="cap" dir="${basedir}" failonerror="true">
+        <exec executable="${cap.executable}" dir="${basedir}" failonerror="true">
             <arg value="local"/>
             <arg value="install:package"/>
         </exec>
-        <exec executable="cap" dir="${basedir}" failonerror="true">
+        <exec executable="${cap.executable}" dir="${basedir}" failonerror="true">
             <arg value="local"/>
             <arg value="deploy:update"/>
         </exec>
