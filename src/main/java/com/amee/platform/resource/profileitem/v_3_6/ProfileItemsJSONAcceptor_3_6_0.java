@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope("prototype")
 @Since("3.6.0")
 public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSONAcceptor {
-    
+
     @Autowired
     private ResourceService resourceService;
 
@@ -68,15 +68,21 @@ public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSON
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
 
-        // Entities (in an ordered map)
-        Map<String, String> entities = new LinkedHashMap<String, String>();
+        // Result entities (in an ordered map)
+        Map<String, String> results = new LinkedHashMap<String, String>();
 
-        // Get entities
+        // Get profile
         Profile profile = resourceService.getProfile(requestWrapper);
+
+        // Authorised?
+        resourceAuthorizationService.ensureAuthorizedForAccept(requestWrapper.getAttributes().get("activeUserUid"), profile);
+
+        // Get request body
         JSONObject requestBodyJSON = requestWrapper.getBodyAsJSONObject();
 
         try {
             if (requestBodyJSON.has("profileItems")) {
+                // Get list of profile items from request body
                 JSONArray profileItemsJSON = requestBodyJSON.getJSONArray("profileItems");
 
                 // Handle each profile item in request
@@ -84,6 +90,7 @@ public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSON
                     JSONObject profileItemJSON = profileItemsJSON.getJSONObject(i);
 
                     DataItem dataItem = null;
+                    ProfileItem profileItem = null;
                     String key, value;
                     Map<String, String> parameters = new HashMap<String, String>();
 
@@ -91,29 +98,37 @@ public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSON
                     while (keys.hasNext()) {
                         key = keys.next();
                         value = profileItemJSON.getString(key);
+
+                        // Parse JSON keys for this new profile item
                         if ("dataItemUid".equalsIgnoreCase(key)) {
                             dataItem = dataItemService.getItemByUid(value);
+
                         } else if ("category".equalsIgnoreCase(key)) {
                             DataCategory dataCategory = dataService.getDataCategoryByIdentifier(value);
                             dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
+                        } else if ("profileItemUid".equalsIgnoreCase(key)) {
+                            profileItem = profileItemService.getItemByUid(value);
+
                         } else {
                             parameters.put(key, value);
                         }
                     }
 
-                    // Check that we can correctly identify the data item, if not then we cannot continue
-                    if (dataItem == null) {
+                    // Make a new profile item if a data item was specified in the request
+                    if (dataItem != null) {
+                        profileItem = new ProfileItem(profile, dataItem);
+                    }
+
+                    // If we haven't been able to find an existing profile item or create a new one from the specified data item, this is an error
+                    if (profileItem == null) {
                         throw new NotFoundException();
                     }
 
-                    // Authorised?
-                    resourceAuthorizationService.ensureAuthorizedForAccept(requestWrapper.getAttributes().get("activeUserUid"), profile);
-
                     // Validate and handle this profile item
-                    ProfileItem profileItem = new ProfileItem(profile, dataItem);
-
                     ProfileItemResource.ProfileItemValidator validator = getValidator(requestWrapper);
                     validator.setObject(profileItem);
+                    validator.initialise();
 
                     if (validator.isValid(parameters)) {
                         profileItemService.updateProfileItemValues(profileItem);
@@ -122,18 +137,20 @@ public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSON
                     } else {
                         throw new ValidationException(validator.getValidationResult());
                     }
-                    
-                    // This will generate all profile item values.
-                    profileItemService.persist(profileItem);
+
+                    // If this profile item is new, persist it (will also generate all profile item values)
+                    if (dataItem != null) {
+                        profileItemService.persist(profileItem);
+                    }
 
                     // Aggregate the results
                     String location = "/" + requestWrapper.getVersion() + "/profiles/" +
                         requestWrapper.getAttributes().get("profileIdentifier") + "/items/" + profileItem.getUid();
-                    entities.put(profileItem.getUid(), location);
+                    results.put(profileItem.getUid(), location);
                 }
             }
+            return ResponseHelper.getBatchProfileOK(requestWrapper, results);
 
-            return ResponseHelper.getBatchProfileOK(requestWrapper, entities);
         } catch (JSONException e) {
             throw new RuntimeException("Caught JSONException: " + e.getMessage(), e);
         }
