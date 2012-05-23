@@ -120,7 +120,7 @@ public class ProfileItemsJSONAcceptor_3_6_0 implements ProfileItemsResource.JSON
                         profileItem = new ProfileItem(profile, dataItem);
                     }
 
-                    // If we haven't been able to find an existing profile item or create a new one from the specified data item, this is an error
+                    // Check we were able to find an existing profile item or create a new one from the specified data item
                     if (profileItem == null) {
                         throw new NotFoundException();
                     }
