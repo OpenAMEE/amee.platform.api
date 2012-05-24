@@ -12,14 +12,10 @@
 
     <!-- Declare the 'PLATFORM_EMAIL' SMTPAppender. -->
     <appender name="PLATFORM_EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-        <bufferSize>512</bufferSize>
         <smtpHost>localhost</smtpHost>
         <from>platform.issues@amee.cc</from>
         <to>platform.issues@amee.cc</to>
         <subject>AMEE Platform Issue - %c %m</subject>
-        <encoder>
-            <pattern>[%date] [%level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] [%logger{32}] %msg%n</pattern>
-        </encoder>
 
         <!-- deny all events with a level below ERROR, that is TRACE, DEBUG, INFO -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -29,7 +25,7 @@
 
     <!-- Declare the 'AIRBRAKE' HoptoadAppender. -->
     <appender name="AIRBRAKE" class="hoptoad.HoptoadAppender">
-        <api_key>335da09dfa378ed3d5b650becadf0214</api_key>
+        <apiKey>335da09dfa378ed3d5b650becadf0214</apiKey>
         <env>${instance.name}</env>
         <enabled>${amee.airbrake}</enabled>
 
@@ -131,7 +127,7 @@
           GroupedTimingStatistics log. Here we set it to 60 seconds, overriding
           the default of 30000 ms
         -->
-        <timeslice>60000</timeslice>
+        <timeSlice>60000</timeSlice>
         <appender-ref ref="PERFORMANCE_ROLLER"/>
     </appender>
 
@@ -144,7 +140,7 @@
       upstream loggers.
     -->
     <logger name="org.perf4j.TimingLogger" level="INFO" additivity="false">
-        <appender-ref>CoalescingStatistics</appender-ref>
+        <appender-ref ref="CoalescingStatistics"/>
     </logger>
 
     <!-- ############### log4jdbc ################### -->
@@ -165,15 +161,15 @@
     <logger name="com.amee" level="${amee.logLevel}"/>
 
     <logger name="transactions" level="INFO" additivity="false">
-        <appender-ref>TRANSACTIONS_ROLLER</appender-ref>
+        <appender-ref ref="TRANSACTIONS_ROLLER"/>
     </logger>
 
     <logger name="search" level="INFO" additivity="false">
-        <appender-ref>SEARCH_ROLLER</appender-ref>
+        <appender-ref ref="SEARCH_ROLLER"/>
     </logger>
 
     <logger name="science" level="INFO" additivity="false">
-        <appender-ref>SCIENCE_ROLLER</appender-ref>
+        <appender-ref ref="SCIENCE_ROLLER"/>
         <!-- TODO: Re-enable (see above). -->
         <!--<appender-ref ref="SCIENCE_EMAIL"/>-->
     </logger>
