@@ -1,4 +1,6 @@
 *.iws
 target
 release.properties
-pom.xml.releaseBackup
+.project
+.classpath
+.settings
