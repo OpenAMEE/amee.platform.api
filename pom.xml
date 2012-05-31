@@ -92,7 +92,7 @@
         <dependency>
             <groupId>com.amee</groupId>
             <artifactId>amee-base</artifactId>
-            <version>1.3.1</version>
+            <version>${amee-base.version}</version>
         </dependency>
 
         <!-- Compile Dependencies. -->
