@@ -37,6 +37,7 @@
         <airbrake-notifier.version>2.0-SNAPSHOT</airbrake-notifier.version>
         <hsqldb.version>2.2.8</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
+        <janino.version>2.5.10</janino.version>
         <jetty-servlet-api.version>2.5-20110124</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
         <jscience.version>4.3.1</jscience.version>
@@ -375,6 +376,11 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback-classic.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>${janino.version}</version>
         </dependency>
 
         <!-- Explicit dependency & version here to override transitive dependency version conflicts. -->

@@ -16,11 +16,22 @@
         <from>platform.issues@amee.cc</from>
         <to>platform.issues@amee.cc</to>
         <subject>AMEE Platform Issue - %c %m</subject>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date %-5level %logger{35} - %message%n</pattern>
+        </layout>
 
-        <!--
-            SMTPAppender uses OnErrorEvaluator by default which triggers email transmission
-            when it encounters an event of level ERROR or higher.
-        -->
+        <!-- send just one log entry per email -->
+        <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
+            <bufferSize>1</bufferSize>
+        </cyclicBufferTracker>
+
+        <!-- Only log if level is >= ERROR and amee.maillog property is true -->
+        <evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+                <expression>
+                    return "true".equals(System.getProperty("amee.maillog")) &amp;&amp;
+                    event.getLevel().levelInt >= ch.qos.logback.classic.Level.ERROR_INT;
+                </expression>
+        </evaluator>
     </appender>
 
     <!-- Declare the 'AIRBRAKE' HoptoadAppender. -->
