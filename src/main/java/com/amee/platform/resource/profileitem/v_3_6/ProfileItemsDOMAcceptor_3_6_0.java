@@ -66,12 +66,17 @@ public class ProfileItemsDOMAcceptor_3_6_0 implements ProfileItemsResource.DOMAc
     @AMEETransaction
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Object handle(RequestWrapper requestWrapper) {
-        
+
         // Entities (in an ordered map)
         Map<String, String> entities = new LinkedHashMap<String, String>();
 
-        // Get entities
+        // Get profile
         Profile profile = resourceService.getProfile(requestWrapper);
+
+        // Authorised?
+        resourceAuthorizationService.ensureAuthorizedForAccept(requestWrapper.getAttributes().get("activeUserUid"), profile);
+
+        // Get request body
         Document requestBodyDocument = requestWrapper.getBodyAsDocument();
         Element rootElement = requestBodyDocument.getRootElement();
 
@@ -82,6 +87,7 @@ public class ProfileItemsDOMAcceptor_3_6_0 implements ProfileItemsResource.DOMAc
             for (Element profileItemElement : profileItemElements) {
 
                 DataItem dataItem = null;
+                ProfileItem profileItem = null;
                 String name, value;
                 Map<String, String> parameters = new HashMap<String, String>();
 
@@ -93,24 +99,28 @@ public class ProfileItemsDOMAcceptor_3_6_0 implements ProfileItemsResource.DOMAc
 
                     if ("dataItemUid".equalsIgnoreCase(name)) {
                         dataItem = dataItemService.getItemByUid(value);
+
                     } else if ("category".equalsIgnoreCase(name)) {
                         DataCategory dataCategory = dataService.getDataCategoryByIdentifier(value);
                         dataItem = resourceService.getDataItem(requestWrapper, dataCategory);
+
+                    } else if ("profileItemUid".equalsIgnoreCase(name)) {
+                        profileItem = profileItemService.getItemByUid(value);
+
                     } else {
                         parameters.put(name, value);
                     }
                 }
 
-                // Check that we can correctly identify the data item, if not then we cannot continue
-                if (dataItem == null) {
-                    throw new NotFoundException();
+                // Make a new profile item if a data item was specified in the request
+                if (dataItem != null) {
+                    profileItem = new ProfileItem(profile, dataItem);
                 }
 
-                // Authorised?
-                resourceAuthorizationService.ensureAuthorizedForAccept(requestWrapper.getAttributes().get("activeUserUid"), profile);
-
-                // Validate and handle this profile item
-                ProfileItem profileItem = new ProfileItem(profile, dataItem);
+                // Check we were able to find an existing profile item or create a new one from the specified data item
+                if (profileItem == null) {
+                    throw new NotFoundException();
+                }
 
                 ProfileItemResource.ProfileItemValidator validator = getValidator(requestWrapper);
                 validator.setObject(profileItem);
@@ -122,9 +132,11 @@ public class ProfileItemsDOMAcceptor_3_6_0 implements ProfileItemsResource.DOMAc
                 } else {
                     throw new ValidationException(validator.getValidationResult());
                 }
-                
-                // This will generate all profile item values.
-                profileItemService.persist(profileItem);
+
+                // If this profile item is new, persist it (will also generate all profile item values)
+                if (dataItem != null) {
+                    profileItemService.persist(profileItem);
+                }
 
                 // Aggregate the results
                 String location = "/" + requestWrapper.getVersion() + "/profiles/" +
