@@ -1,5 +1,8 @@
 package com.amee.restlet.resource;
 
+import com.amee.base.resource.ValidationResult;
+import com.amee.restlet.AMEESpringServer;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -24,9 +27,6 @@ import org.restlet.ext.json.JsonRepresentation;
 import org.restlet.resource.DomRepresentation;
 import org.restlet.resource.Representation;
 
-import com.amee.base.resource.ValidationResult;
-import com.amee.restlet.AMEESpringServer;
-
 public class ResourceManager {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -39,7 +39,7 @@ public class ResourceManager {
 
     /**
      * This is how we tell if the request came via HTTPS as SSL is terminated at the load balancer.
-     *
+     * 
      * @return true if the current request has come through the secure connector
      */
     protected boolean isSecure() {
@@ -119,7 +119,41 @@ public class ResourceManager {
     }
 
     protected Map<String, String> getQueryParameters() {
-        return getRequest().getResourceRef().getQueryAsForm().getValuesMap();
+        // Get query string
+        org.restlet.data.Reference ref = getRequest().getResourceRef();
+        String query = ref.getQuery(false);
+
+        if (query != null) {
+            /*
+             *  The query parameters could be retrieved by calling:
+             * 
+             *  getRequest().getResourceRef().getQueryAsForm().getValuesMap();
+             * 
+             *  The problem with that is that the Reference.getQueryAsForm() method calls a Form constructor which decodes the query string with
+             *  URLDecoder.decode, which is appropriate only for application/x-www-form-urlencoded strings in POST bodies.  It decodes "+" symbols
+             *  to spaces, which breaks ISO time formats that include a "+", so we manually encode them here before passing them to the Form
+             *  constructor, and immediately decode them again in order to preserve them.  Note that we make an effort to only encode "+" symbols
+             *  that are part of a date string, in order to avoid breaking other query parameters that may have been submitted with "+" symbols in
+             *  place of spaces (some clients do this - plus and space characters are fairly interchangeable).  The regex used just looks for a
+             *  sequence of 6 digits preceeding the plus symbol which may or may not be broken up by colons, and a sequence of two digits following
+             *  it; the assumption is that a timezone offset will not be submitted unless a time is also submitted.
+             *
+             *  TODO: Check this is still needed after upgrading Restlet to 2.0.
+             *  It may be possible to use the java.net.URI class to properly encode this.
+             *  Also see: http://stackoverflow.com/questions/724043/http-url-address-encoding-in-java.
+             */
+            // Encode + symbols
+            org.restlet.data.Form form = new org.restlet.data.Form(query.replaceAll("(\\d\\d:?\\d\\d:?\\d\\d)\\+(\\d\\d)", "$1%2B$2"));
+            Map<String, String> params = form.getValuesMap();
+
+            // Decode + symbols again
+            for (String param : params.keySet()) {
+                params.put(param, params.get(param).replace("%2B", "+"));
+            }
+            return params;
+        } else {
+            return new HashMap<String, String>();
+        }
     }
 
     protected List<String> getAcceptedMediaTypes() {
