@@ -17,10 +17,10 @@
         <to>platform.issues@amee.cc</to>
         <subject>AMEE Platform Issue - %c %m</subject>
 
-        <!-- deny all events with a level below ERROR, that is TRACE, DEBUG, INFO -->
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
+        <!--
+            SMTPAppender uses OnErrorEvaluator by default which triggers email transmission
+            when it encounters an event of level ERROR or higher.
+        -->
     </appender>
 
     <!-- Declare the 'AIRBRAKE' HoptoadAppender. -->
@@ -29,9 +29,11 @@
         <env>${instance.name}</env>
         <enabled>${amee.airbrake}</enabled>
 
-        <!-- deny all events with a level below ERROR, that is TRACE, DEBUG, INFO -->
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
+        <!-- Only log on ERROR or higher -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnErrorEvaluator"/>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>NEUTRAL</OnMatch>
         </filter>
     </appender>
 
