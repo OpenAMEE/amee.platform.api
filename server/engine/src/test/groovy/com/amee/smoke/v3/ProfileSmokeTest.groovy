@@ -11,7 +11,6 @@ class ProfileSmokeTest extends BaseSmokeTest {
 
     private static final String note = "A man, a plan, a canal - Panama!"
 
-    @Ignore("v3 Profile functionality not yet live")
     @Test
     void testProfileRequests(){
         // Create a profile
