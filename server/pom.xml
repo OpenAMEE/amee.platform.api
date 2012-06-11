@@ -34,7 +34,7 @@
         <groovy.version>1.7.10</groovy.version>
         <h2.version>1.3.164</h2.version>
         <hibernate-core.version>3.6.3.Final</hibernate-core.version>
-        <airbrake-notifier.version>2.0-SNAPSHOT</airbrake-notifier.version>
+        <airbrake-notifier.version>2.0</airbrake-notifier.version>
         <hsqldb.version>2.2.8</hsqldb.version>
         <http-builder.version>0.5.1</http-builder.version>
         <janino.version>2.5.10</janino.version>
