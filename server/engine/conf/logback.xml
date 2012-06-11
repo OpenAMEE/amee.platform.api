@@ -6,7 +6,7 @@
 
         <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
-            <pattern>[%date] [%level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] [%logger{32}] %msg%n</pattern>
+            <pattern>[%date] [%-5level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] [%logger{32}] %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -97,7 +97,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>[%date] [%level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] %msg%n</pattern>
+            <pattern>[%date] [%-5level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] %msg%n</pattern>
         </encoder>
 
         <!-- deny all events with a level below INFO, that is TRACE, DEBUG -->
