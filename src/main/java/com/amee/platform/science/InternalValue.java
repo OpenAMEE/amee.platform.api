@@ -1,7 +1,7 @@
 package com.amee.platform.science;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -14,8 +14,8 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class InternalValue {
 
-    private final Log log = LogFactory.getLog(getClass());
-    private final Log slog = LogFactory.getLog("science");
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger slog = LoggerFactory.getLogger("science");
     private Object value;
 
     /**

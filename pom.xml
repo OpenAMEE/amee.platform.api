@@ -19,9 +19,10 @@
         <jscience.version>4.3.1</jscience.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-collections.version>3.2.1</commons-collections.version>
-        <commons-logging.version>1.1.1</commons-logging.version>
         <junit.version>4.8.2</junit.version>
         <org-mockito.version>1.8.5</org-mockito.version>
+        <slf4j.version>1.6.1</slf4j.version>
+        <logback-classic.version>1.0.2</logback-classic.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -79,25 +80,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <parallel>methods</parallel>
-                    <systemProperties>
-                        <property>
-                            <name>log4j.configuration</name>
-                            <value>test-log4j.xml</value>
-                        </property>
-                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
-
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>test-log4j.xml</include>
-                </includes>
-            </testResource>
-        </testResources>
-
     </build>
 
     <!-- Dependencies. -->
@@ -130,9 +115,9 @@
             <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->
@@ -148,7 +133,13 @@
             <version>${org-mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
+        </dependency>
     </dependencies>
 
     <!-- Distribution Management. -->
