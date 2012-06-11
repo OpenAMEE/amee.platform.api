@@ -19,6 +19,7 @@
         <commons-lang.version>2.6</commons-lang.version>
         <jetty.version>6.1.26</jetty.version>
         <junit.version>4.8.2</junit.version>
+        <logback-classic.version>1.0.2</logback-classic.version>
         <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.11.0</xerces.version>
         <xml-apis.version>2.11.0</xml-apis.version>
@@ -179,6 +180,13 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
         </dependency>
     </dependencies>
 

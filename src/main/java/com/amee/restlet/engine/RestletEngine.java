@@ -1,18 +1,20 @@
 package com.amee.restlet.engine;
 
 import com.amee.base.engine.Engine;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.service.LogService;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * Extends {@link Engine} to bootstrap an application based on Spring and Restlet with a Jetty web server.
  */
 public class RestletEngine extends Engine {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Component container;
 
@@ -70,11 +72,13 @@ public class RestletEngine extends Engine {
             }
             return true;
         } catch (Exception e) {
-            log.fatal("onStart() Caught Exception: " + e);
+            Marker fatal = MarkerFactory.getMarker("FATAL");
+            log.error(fatal, "onStart() Caught Exception: " + e);
             e.printStackTrace();
             return false;
         } catch (Throwable e) {
-            log.fatal("onStart() Caught Throwable: " + e);
+            Marker fatal = MarkerFactory.getMarker("FATAL");
+            log.error(fatal, "onStart() Caught Throwable: " + e);
             e.printStackTrace();
             return false;
         }
@@ -95,11 +99,13 @@ public class RestletEngine extends Engine {
                 container = null;
                 Thread.sleep(500);
             } catch (Exception e) {
-                log.fatal("onStart() Caught Exception: " + e);
+                Marker fatal = MarkerFactory.getMarker("FATAL");
+                log.error(fatal, "onStart() Caught Exception: " + e);
                 e.printStackTrace();
                 return false;
             } catch (Throwable e) {
-                log.fatal("onStart() Caught Throwable: " + e);
+                Marker fatal = MarkerFactory.getMarker("FATAL");
+                log.error(fatal, "onStart() Caught Throwable: " + e);
                 e.printStackTrace();
                 return false;
             }
