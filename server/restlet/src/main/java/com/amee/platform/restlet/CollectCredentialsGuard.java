@@ -7,6 +7,7 @@ import com.amee.service.auth.AuthenticationService;
 import org.restlet.Application;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Request;
+import org.slf4j.MDC;
 
 /**
  * A Guard that only collects the basic auth credentials and places them in the request attributes. The
@@ -33,6 +34,9 @@ public class CollectCredentialsGuard extends BaseGuard {
             request.getAttributes().put("activeUserUid", activeUser.getUid());
             RequestContext context = (RequestContext) request.getAttributes().get("requestContext");
             context.setUserUid(activeUser.getUid());
+
+            // Store the user UID in the MDC for logging
+            MDC.put("userUid", activeUser.getUid());
             return true;
         } else {
             return false;
