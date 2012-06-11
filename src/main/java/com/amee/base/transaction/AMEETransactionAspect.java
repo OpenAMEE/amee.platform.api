@@ -1,7 +1,7 @@
 package com.amee.base.transaction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AMEETransactionAspect implements ApplicationContextAware {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     // The current ApplicationContext.
     private ApplicationContext applicationContext;
