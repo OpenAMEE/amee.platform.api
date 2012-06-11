@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ import org.springframework.validation.Errors;
 @Since("3.4.0")
 public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataItemValueResource.DataItemValueValidator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected DataItemService dataItemService;

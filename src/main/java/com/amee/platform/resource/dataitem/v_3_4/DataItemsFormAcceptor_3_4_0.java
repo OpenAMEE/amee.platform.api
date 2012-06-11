@@ -15,8 +15,8 @@ import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.dataitem.DataItemsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.invalidation.InvalidationService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.4.0")
 public class DataItemsFormAcceptor_3_4_0 implements DataItemsResource.FormAcceptor {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private InvalidationService invalidationService;

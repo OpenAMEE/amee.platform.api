@@ -10,8 +10,8 @@ import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.DataItemResource;
 import com.amee.platform.resource.itemvaluedefinition.ItemValueEditor;
 import com.amee.platform.science.AmountUnit;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.Set;
 @Since("3.6.0")
 public class DataItemValidator_3_6_0 extends BaseValidator implements DataItemResource.DataItemValidator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     // Alpha numerics & underscore.
     private final static String PATH_PATTERN_STRING = "^[a-zA-Z0-9_]*$";
