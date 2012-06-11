@@ -1,7 +1,7 @@
 package com.amee.domain.profile;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -11,7 +11,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 
 public class MonthDate extends GCDate {
 
-    private static final Log log = LogFactory.getLog(MonthDate.class);
+    private static final Logger log = LoggerFactory.getLogger(MonthDate.class);
 
     /**
      * V1 API does not support resolution greater than 1 month so time zones are not relevant.
