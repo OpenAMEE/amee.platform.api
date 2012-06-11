@@ -5,8 +5,8 @@ import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceHandler;
 import com.amee.base.resource.TimedOutException;
 import com.amee.base.transaction.TransactionEventType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import static junit.framework.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TransactionalTest extends BaseTest {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private DummyEntityService dummyEntityService;
