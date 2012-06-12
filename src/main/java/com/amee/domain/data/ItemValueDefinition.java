@@ -6,7 +6,7 @@ import com.amee.domain.data.builder.v2.ItemValueDefinitionBuilder;
 import com.amee.domain.path.Pathable;
 import com.amee.domain.sheet.Choice;
 import com.amee.platform.science.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONException;

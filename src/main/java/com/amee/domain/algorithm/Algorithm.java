@@ -7,7 +7,7 @@ import com.amee.domain.ObjectType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.AlgorithmException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;

@@ -2,7 +2,7 @@ package com.amee.domain.auth;
 
 import com.amee.base.utils.XMLUtils;
 import com.amee.domain.AMEEStatus;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;

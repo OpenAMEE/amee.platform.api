@@ -6,7 +6,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.path.Pathable;
 import com.amee.platform.science.ExternalGenericValue;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
