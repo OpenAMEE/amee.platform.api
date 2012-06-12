@@ -15,19 +15,19 @@
         <amee-base.version>1.3.2-SNAPSHOT</amee-base.version>
 
         <!-- External Versions. -->
-        <!-- Note: These versions were last checked & upgraded on 14/04/2011. -->
-        <commons-lang.version>2.6</commons-lang.version>
+        <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
+        <commons-lang.version>3.1</commons-lang.version>
         <jetty.version>6.1.26</jetty.version>
-        <junit.version>4.8.2</junit.version>
-        <logback-classic.version>1.0.2</logback-classic.version>
+        <junit.version>4.10</junit.version>
+        <logback-classic.version>1.0.6</logback-classic.version>
         <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.11.0</xerces.version>
         <xml-apis.version>2.11.0</xml-apis.version>
 
         <!-- Plugin versions -->
-        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
         <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
-        <maven-surefire-plugin.version>2.8</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
 
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -169,8 +169,8 @@
         	<version>${xml-apis.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
         </dependency>
 
