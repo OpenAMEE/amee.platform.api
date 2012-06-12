@@ -1,6 +1,6 @@
 package com.amee.base.resource;
 
-import org.jdom.Document;
+import org.jdom2.Document;
 import org.json.JSONObject;
 
 /**

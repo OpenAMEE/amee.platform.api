@@ -2,7 +2,7 @@ package com.amee.base.engine;
 
 import com.amee.base.transaction.TransactionController;
 import org.apache.commons.cli.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.joda.time.DateTimeZone;
