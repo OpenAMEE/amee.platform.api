@@ -4,7 +4,7 @@ import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.v_3_1.ReturnValueDefinitionValidator_3_1_0;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 

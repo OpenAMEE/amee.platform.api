@@ -5,8 +5,8 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.datacategory.DataCategoryResource;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

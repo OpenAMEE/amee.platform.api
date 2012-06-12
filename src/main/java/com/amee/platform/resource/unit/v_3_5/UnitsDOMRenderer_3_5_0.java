@@ -3,8 +3,8 @@ package com.amee.platform.resource.unit.v_3_5;
 import com.amee.base.domain.Since;
 import com.amee.platform.resource.unit.UnitResource;
 import com.amee.platform.resource.unit.UnitsResource;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

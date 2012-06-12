@@ -4,8 +4,8 @@ import com.amee.base.domain.Since;
 import com.amee.platform.resource.dataitemvalue.DataItemValueHistoryResource;
 import com.amee.platform.resource.dataitemvalue.DataItemValuesHistoryResource;
 
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

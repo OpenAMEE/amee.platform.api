@@ -3,7 +3,7 @@ package com.amee.platform.resource.returnvaluedefinition.v_3_2;
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.v_3_4.ReturnValueDefinitionDOMRenderer_3_4_0;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

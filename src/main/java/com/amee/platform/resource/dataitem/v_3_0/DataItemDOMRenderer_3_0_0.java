@@ -4,7 +4,7 @@ import com.amee.base.domain.Since;
 import com.amee.domain.item.BaseItemValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.platform.resource.dataitem.v_3_1.DataItemDOMRenderer_3_1_0;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

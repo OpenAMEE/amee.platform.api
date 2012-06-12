@@ -10,7 +10,7 @@ import com.amee.platform.resource.UnitEditor;
 import com.amee.platform.resource.itemvaluedefinition.v_3_0.ItemValueDefinitionValidator_3_0_0;
 import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.BeanWrapper;
