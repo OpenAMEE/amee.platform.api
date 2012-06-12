@@ -1,6 +1,6 @@
 package com.amee.platform.science;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Duration;
 import org.joda.time.format.ISOPeriodFormat;
 

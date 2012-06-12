@@ -1,6 +1,6 @@
 package com.amee.platform.science;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.measure.unit.Unit;
 import java.util.HashMap;
