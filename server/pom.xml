@@ -36,7 +36,7 @@
         <hibernate-core.version>3.6.9.Final</hibernate-core.version>
         <airbrake-notifier.version>2.0</airbrake-notifier.version>
         <hsqldb.version>2.2.8</hsqldb.version>
-        <http-builder.version>0.5.2</http-builder.version>
+        <http-builder.version>0.5.1</http-builder.version>
         <janino.version>2.5.10</janino.version>
         <jetty-servlet-api.version>2.5.20110712</jetty-servlet-api.version>
         <jetty.version>6.1.26</jetty.version>
