@@ -46,7 +46,7 @@ public class StartEndDate extends BaseDate {
     }
 
     protected long defaultDate() {
-        return new DateTime().secondOfMinute().withMinimumValue().getMillis();
+        return DateTime.now().secondOfMinute().withMinimumValue().getMillis();
     }
 
     public StartEndDate plus(String duration) {
