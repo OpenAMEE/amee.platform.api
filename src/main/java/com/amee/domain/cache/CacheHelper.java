@@ -91,11 +91,11 @@ public class CacheHelper implements Serializable {
     public void clearCache(String cacheName, String elementKeyPrefix) {
         BlockingCache cache = getBlockingCache(cacheName);
         if (cache != null) {
-            log.debug("cache: " + cacheName + " elementKeyPrefix: " + elementKeyPrefix);
+            log.debug("cache: {} elementKeyPrefix: {}", cacheName, elementKeyPrefix);
             for (Object o : cache.getKeys()) {
                 String elementKey = (String) o;
                 if (elementKey.startsWith(elementKeyPrefix)) {
-                    log.debug("removing: " + elementKey);
+                    log.debug("removing: {}", elementKey);
                     cache.remove(elementKey);
                 }
             }
@@ -105,7 +105,7 @@ public class CacheHelper implements Serializable {
     public void clearCache(String cacheName) {
         BlockingCache cache = getBlockingCache(cacheName);
         if (cache != null) {
-            log.debug("clearCache() - cache: " + cacheName);
+            log.debug("clearCache() - cache: {}", cacheName);
             cache.removeAll();
             cache.getKeys();
         }
@@ -122,7 +122,7 @@ public class CacheHelper implements Serializable {
     public void remove(String cacheName, String key) {
         BlockingCache cache = getBlockingCache(cacheName);
         if (cache != null) {
-            log.debug("remove() - cache: " + cacheName + " key: " + key);
+            log.debug("remove() - cache: {} key: {}", cacheName, key);
             cache.remove(key);
         }
     }
@@ -134,7 +134,7 @@ public class CacheHelper implements Serializable {
     public void add(String cacheName, String key, Object o) {
         BlockingCache cache = getBlockingCache(cacheName);
         if (cache != null) {
-            log.debug("add() - cache: " + cacheName + " key: " + key);
+            log.debug("add() - cache: {} key: {}", cacheName, key);
             cache.put(new Element(key, o));
         }
     }
