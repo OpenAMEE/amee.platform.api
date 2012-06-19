@@ -37,7 +37,7 @@ public class EhCacheCacheService implements CacheService {
     }
 
     public void delete(String region, String key) {
-        log.debug("remove() - cache: " + region + " key: " + key);
+        log.debug("remove() - cache: {} key: {}", region, key);
         getBlockingCache(region).remove(key);
     }
 

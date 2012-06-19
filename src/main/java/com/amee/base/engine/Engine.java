@@ -246,7 +246,7 @@ public class Engine implements WrapperListener {
      */
     @Override
     public void controlEvent(int event) {
-        log.debug("controlEvent() " + event);
+        log.debug("controlEvent() {}", event);
         // Do nothing.
     }
 

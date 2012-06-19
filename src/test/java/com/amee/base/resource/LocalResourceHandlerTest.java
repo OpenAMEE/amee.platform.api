@@ -36,7 +36,7 @@ public class LocalResourceHandlerTest extends BaseTest {
                             // Sleep for 10 milliseconds.
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
-                            log.debug("Caught InterruptedException: " + e.getMessage());
+                            log.debug("Caught InterruptedException: {}", e.getMessage());
                             Thread.currentThread().interrupt();
                             break;
                         }
