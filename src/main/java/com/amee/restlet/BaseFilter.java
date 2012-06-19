@@ -20,7 +20,8 @@ public class BaseFilter extends Filter {
      * @param fault    to fetch status and message from
      */
     protected void setFault(Response response, Fault fault) {
-        log.debug("setFault() - {status=" + fault.getStatus() + ", message=" + (!fault.toString().isEmpty() ? fault.toString() : "<EMPTY>}"));
+        log.debug("setFault() - {status={}, message={}",
+            fault.getStatus(), (!fault.toString().isEmpty() ? fault.toString() : "<EMPTY>}"));
         response.setStatus(fault.getStatus(), fault.getMessage());
     }
 
