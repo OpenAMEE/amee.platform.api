@@ -189,12 +189,8 @@ public class InternalValue {
                 if (iv.isConvertible()) {
                     AmountCompoundUnit internalUnit = value.getCanonicalCompoundUnit();
                     if (amount.hasDifferentUnits(internalUnit)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("asInternalDecimal() " +
-                                "label: " + iv.getLabel() + "," +
-                                "external: " + amount + " " + amount.getUnit() + "," +
-                                "internal: " + amount.convert(internalUnit) + " " + internalUnit);
-                        }
+                        log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
+                            new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
                         amount = amount.convert(internalUnit);
                     }
                 }
@@ -222,12 +218,8 @@ public class InternalValue {
             Amount amount = new Amount(iv.getValueAsDouble(), iv.getCompoundUnit());
             AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
             if (amount.hasDifferentUnits(internalUnit)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("asInternalDecimal() " +
-                            "label: " + iv.getLabel() + "," +
-                            "external: " + amount + " " + amount.getUnit() + "," +
-                            "internal: " + amount.convert(internalUnit) + " " + internalUnit);
-                }
+                log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
+                    new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
                 amount = amount.convert(internalUnit);
             }
             return amount;

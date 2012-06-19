@@ -391,9 +391,8 @@ public class DataSeries {
         double integral = 0.0;
         Long seriesTimeInMillis = getSeriesTimeInMillis();
 
-        if (log.isDebugEnabled()) {
-            log.debug("integrate() Integrating, time range: " + getSeriesStartDate() + "->" + getSeriesEndDate() + ", series length: " + dataPoints.size());
-        }
+        log.debug("integrate() Integrating, time range: {}->{}, series length: {}",
+            new Object[] {getSeriesStartDate(), getSeriesEndDate(), dataPoints.size()});
 
         // If there is no defined time period or, in the case of data (non-profile) calculations, just an instant in time.
         if (seriesTimeInMillis == null || (seriesTimeInMillis == 0 && dataPoints.size() == 1)) {
@@ -418,11 +417,9 @@ public class DataSeries {
 
                 // Add weighted average value.
                 double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
-                if (log.isDebugEnabled()) {
-                    log.debug("integrate() " +
-                            "Diagnostics from integrate() weightedAverage: " + weightedAverage + ", current value: " + current.getValue() + ", " + i + ", datapoints size: " + pointArray.length +
-                            ", segment millis / series millis: " + segmentInMillis / (seriesTimeInMillis.doubleValue()));
-                }
+                log.debug("integrate() Diagnostics from integrate() weightedAverage: {}, current value: {}, {}, " +
+                    "datapoints size: {}, segment millis / series millis: {}",
+                    new Object[] {weightedAverage, current.getValue(), i, pointArray.length, segmentInMillis / (seriesTimeInMillis.doubleValue())});
                 if (start.isAfter(end)) continue;
                 integral = integral + weightedAverage;
             }
