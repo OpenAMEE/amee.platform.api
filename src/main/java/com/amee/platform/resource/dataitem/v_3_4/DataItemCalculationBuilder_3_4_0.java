@@ -271,9 +271,9 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Add the previous point to the start of the list
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-            log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
+            log.debug("Adding previous point at {}", ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.debug("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
+            log.debug("Adding previous point at {}", new StartEndDate(MYSQL_MIN_DATETIME));
         }
         filteredValues.add(0, previous);
 
