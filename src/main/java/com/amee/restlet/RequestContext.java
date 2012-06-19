@@ -105,7 +105,7 @@ public class RequestContext {
             sb.append(", ");
         }
         // Remove the final trailing separator and space
-        return StringUtils.chomp(sb.toString(), ", ");
+        return StringUtils.removeEnd(sb.toString(), ", ");
     }
 
     public void setError(String error) {
