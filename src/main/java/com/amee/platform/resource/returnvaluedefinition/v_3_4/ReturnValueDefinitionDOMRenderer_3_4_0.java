@@ -6,8 +6,8 @@ import com.amee.domain.ValueType;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.data.ReturnValueDefinition;
 import com.amee.platform.resource.returnvaluedefinition.ReturnValueDefinitionResource;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

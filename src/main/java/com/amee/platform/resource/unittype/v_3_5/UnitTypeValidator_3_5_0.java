@@ -6,8 +6,8 @@ import com.amee.base.validation.ValidationSpecification;
 import com.amee.domain.unit.AMEEUnitType;
 import com.amee.platform.resource.unittype.UnitTypeResource;
 import com.amee.service.unit.UnitService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.Set;
 @Since("3.5.0")
 public class UnitTypeValidator_3_5_0 extends BaseValidator implements UnitTypeResource.UnitTypeValidator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected UnitService unitService;

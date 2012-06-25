@@ -11,8 +11,8 @@ import com.amee.platform.resource.unittype.UnitTypeResource;
 import com.amee.platform.resource.unittype.UnitTypesResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.unit.UnitService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Since("3.5.0")
 public class UnitTypesFormAcceptor_3_5_0 implements UnitTypesResource.FormAcceptor {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UnitService unitService;

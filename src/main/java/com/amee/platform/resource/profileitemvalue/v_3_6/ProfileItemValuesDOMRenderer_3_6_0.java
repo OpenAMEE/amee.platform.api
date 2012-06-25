@@ -3,8 +3,8 @@ package com.amee.platform.resource.profileitemvalue.v_3_6;
 import com.amee.base.domain.Since;
 import com.amee.platform.resource.profileitemvalue.ProfileItemValueResource;
 import com.amee.platform.resource.profileitemvalue.ProfileItemValuesResource;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

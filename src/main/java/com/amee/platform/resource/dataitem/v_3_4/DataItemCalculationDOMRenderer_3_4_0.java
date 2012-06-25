@@ -10,7 +10,7 @@ import com.amee.platform.resource.dataitem.v_3_6.DataItemCalculationDOMRenderer_
 import com.amee.platform.science.Note;
 import com.amee.platform.science.ReturnValue;
 import com.amee.platform.science.ReturnValues;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

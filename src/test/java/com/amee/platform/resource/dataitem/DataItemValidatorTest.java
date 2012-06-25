@@ -8,7 +8,7 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.ItemDefinition;
 import com.amee.domain.item.data.DataItem;
 import com.amee.platform.resource.dataitem.v_3_6.DataItemValidator_3_6_0;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

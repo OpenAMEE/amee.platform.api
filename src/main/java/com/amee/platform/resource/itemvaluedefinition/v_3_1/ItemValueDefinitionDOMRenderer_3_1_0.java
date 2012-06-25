@@ -3,7 +3,7 @@ package com.amee.platform.resource.itemvaluedefinition.v_3_1;
 import com.amee.base.domain.Since;
 import com.amee.domain.ValueDefinition;
 import com.amee.platform.resource.itemvaluedefinition.v_3_4.ItemValueDefinitionDOMRenderer_3_4_0;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

@@ -8,8 +8,8 @@ import com.amee.domain.item.HistoryValue;
 import com.amee.domain.item.NumberValue;
 import com.amee.domain.item.data.BaseDataItemValue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public abstract class DataItemValueJSONRenderer implements ResourceRenderer {
 
-    private static final Log LOG = LogFactory.getLog(DataItemValueJSONRenderer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataItemValueJSONRenderer.class);
     
     @Autowired
     protected DataItemService dataItemService;

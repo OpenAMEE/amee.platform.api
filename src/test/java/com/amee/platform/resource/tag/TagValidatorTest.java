@@ -3,7 +3,7 @@ package com.amee.platform.resource.tag;
 import com.amee.base.utils.ThreadBeanHolder;
 import com.amee.domain.tag.Tag;
 import com.amee.service.tag.TagService;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.validation.BindException;

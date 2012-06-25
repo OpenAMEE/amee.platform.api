@@ -4,8 +4,8 @@ import com.amee.base.domain.Since;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.TagResource;
 import com.amee.platform.resource.tag.TagsResource;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

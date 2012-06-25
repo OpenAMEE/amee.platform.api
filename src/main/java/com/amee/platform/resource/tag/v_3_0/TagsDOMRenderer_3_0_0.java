@@ -3,7 +3,7 @@ package com.amee.platform.resource.tag.v_3_0;
 import com.amee.base.domain.Since;
 import com.amee.domain.tag.Tag;
 import com.amee.platform.resource.tag.v_3_2.TagsDOMRenderer_3_2_0;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 

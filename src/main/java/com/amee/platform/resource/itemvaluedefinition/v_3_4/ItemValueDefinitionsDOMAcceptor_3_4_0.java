@@ -13,7 +13,7 @@ import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionResourc
 import com.amee.platform.resource.itemvaluedefinition.ItemValueDefinitionsResource;
 import com.amee.service.auth.ResourceAuthorizationService;
 import com.amee.service.definition.DefinitionService;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;

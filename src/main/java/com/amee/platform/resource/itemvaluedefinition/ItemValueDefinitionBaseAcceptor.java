@@ -6,8 +6,8 @@ import com.amee.base.resource.ValidationResult;
 import com.amee.base.validation.ValidationException;
 import com.amee.domain.data.ItemValueDefinition;
 import com.amee.domain.data.ItemValueUsage;
-import org.jdom.Attribute;
-import org.jdom.Element;
+import org.jdom2.Attribute;
+import org.jdom2.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;

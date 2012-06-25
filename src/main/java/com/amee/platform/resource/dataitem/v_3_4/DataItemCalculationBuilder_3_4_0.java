@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -67,7 +67,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
     private DataItemCalculationResource.Renderer renderer;
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     @AMEETransaction
@@ -283,9 +283,9 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
 
         // Add the previous point to the start of the list
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
-            log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
+            log.debug("Adding previous point at {}", ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.debug("Adding previous point at " + new StartEndDate(EPOCH));
+			log.debug("Adding previous point at {}", new StartEndDate(EPOCH));
         }
         filteredValues.add(0, previous);
 
