@@ -1,5 +1,7 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
+import static com.amee.domain.DataItemService.EPOCH;
+
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -17,8 +19,22 @@ import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
-import com.amee.platform.science.*;
+import com.amee.platform.science.Amount;
+import com.amee.platform.science.CO2AmountUnit;
+import com.amee.platform.science.ExternalHistoryValue;
+import com.amee.platform.science.Note;
+import com.amee.platform.science.ReturnValue;
+import com.amee.platform.science.ReturnValues;
+import com.amee.platform.science.StartEndDate;
 import com.amee.service.auth.ResourceAuthorizationService;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -28,10 +44,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static com.amee.domain.DataItemService.MYSQL_MIN_DATETIME;
 
 @Service
 @Scope("prototype")
@@ -250,7 +262,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         } else {
 
             // Set the min date.
-            latest = new StartEndDate(MYSQL_MIN_DATETIME);
+            latest = new StartEndDate(EPOCH);
         }
 
         for (BaseItemValue iv : values) {
@@ -258,7 +270,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
             if (BaseItemValueStartDateComparator.isHistoricValue(iv)) {
                 currentStart = ((ExternalHistoryValue)iv).getStartDate();
             } else {
-                currentStart = new StartEndDate(MYSQL_MIN_DATETIME);
+                currentStart = new StartEndDate(EPOCH);
             }
 
             if (currentStart.before(endDate) && !currentStart.before(startDate)) {
@@ -273,7 +285,7 @@ public class DataItemCalculationBuilder_3_4_0 implements DataItemCalculationReso
         if (BaseItemValueStartDateComparator.isHistoricValue(previous)) {
             log.debug("Adding previous point at " + ((ExternalHistoryValue) previous).getStartDate());
         } else {
-            log.debug("Adding previous point at " + new StartEndDate(MYSQL_MIN_DATETIME));
+            log.debug("Adding previous point at " + new StartEndDate(EPOCH));
         }
         filteredValues.add(0, previous);
 

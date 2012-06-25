@@ -108,7 +108,7 @@ public class DataItemValueValidator_3_4_0 extends BaseValidator implements DataI
                                     if (thisDIV != null) {
                                         if (HistoryValue.class.isAssignableFrom(thisDIV.getClass())) {
                                             HistoryValue hv = (HistoryValue) thisDIV;
-                                            if (hv.getStartDate().compareTo(DataItemService.MYSQL_MIN_DATETIME) <= 0) {
+                                            if (hv.getStartDate().compareTo(DataItemService.EPOCH) <= 0) {
                                                 errors.rejectValue("startDate", "start_before_min");
                                             } else if (hv.getStartDate().compareTo(DataItemService.MYSQL_MAX_DATETIME) >= 0) {
                                                 errors.rejectValue("startDate", "end_after_max");

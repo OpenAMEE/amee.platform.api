@@ -71,7 +71,7 @@ public abstract class DataItemValueDOMRenderer implements ResourceRenderer {
             HistoryValue hv = (HistoryValue) dataItemValue;
             dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(hv.getStartDate().getTime())));
         } else {
-            dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(DataItemService.MYSQL_MIN_DATETIME.getTime())));
+            dataItemValueElem.addContent(new Element("StartDate").setText(DATE_FORMAT.print(DataItemService.EPOCH.getTime())));
         }
     }
 

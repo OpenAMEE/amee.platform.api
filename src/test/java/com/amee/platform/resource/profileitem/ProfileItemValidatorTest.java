@@ -138,7 +138,7 @@ public class ProfileItemValidatorTest {
     @Test
     public void testStartDateTooEarly() {
         ProfileItem bad = new ProfileItem();
-        bad.setStartDate(new Date(DataItemService.MYSQL_MIN_DATETIME.getTime() - 1));
+        bad.setStartDate(new Date(DataItemService.EPOCH.getTime() - 1));
         bad.setItemDefinition(mockItemDefinition);
 
         BindException errorsBad = new BindException(bad, "bad");

@@ -50,12 +50,12 @@ public class DataItemValueHistoryBuilder_3_4_0 extends DataItemValueHistoryBuild
         DataItemValuesFilter filter = new DataItemValuesFilter();
         filter.setDataItem(dataItem);
         filter.setItemValueDefinition(itemValueDefinition);
-        filter.setStartDate(DataItemService.MYSQL_MIN_DATETIME);
+        filter.setStartDate(DataItemService.EPOCH);
 
         // Create validator.
         DataItemValuesResource.FilterValidator validator = getValidator(requestWrapper);
         validator.setObject(filter);
-        validator.setDefaultStartDate(DataItemService.MYSQL_MIN_DATETIME);
+        validator.setDefaultStartDate(DataItemService.EPOCH);
         validator.initialise();
 
         // Is the filter valid?

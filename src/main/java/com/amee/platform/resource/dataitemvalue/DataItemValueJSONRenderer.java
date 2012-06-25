@@ -105,7 +105,7 @@ public abstract class DataItemValueJSONRenderer implements ResourceRenderer {
             HistoryValue hv = (HistoryValue) dataItemValue;
             ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(hv.getStartDate().getTime()));
         } else {
-            ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(DataItemService.MYSQL_MIN_DATETIME.getTime()));
+            ResponseHelper.put(dataItemValueObj, "startDate", DATE_FORMAT.print(DataItemService.EPOCH.getTime()));
         }
     }
     
