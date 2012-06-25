@@ -5,12 +5,12 @@ import com.amee.base.resource.ResourceBuilder;
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import com.amee.restlet.MediaTypeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.output.DOMOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.output.DOMOutputter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;
@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class ResourceBuildManager extends ResourceManager {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public final static DOMOutputter DOM_OUTPUTTER = new DOMOutputter();
 

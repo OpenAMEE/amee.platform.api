@@ -1,7 +1,7 @@
 package com.amee.restlet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.restlet.Component;
 import org.restlet.Server;
 import org.restlet.data.Request;
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class SiteFilter extends BaseFilter {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private Component ameeContainer;

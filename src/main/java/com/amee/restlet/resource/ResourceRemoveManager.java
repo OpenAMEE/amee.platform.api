@@ -3,10 +3,10 @@ package com.amee.restlet.resource;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ResourceRemover;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class ResourceRemoveManager extends ResourceManager {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ResourceRemover remover;
     private Set<MediaType> mediaTypes = new HashSet<MediaType>() {
