@@ -1,7 +1,7 @@
 package com.amee.base.domain;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class VersionBeanFinder implements ApplicationContextAware {
         public boolean matches(Object bean);
     }
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ApplicationContext applicationContext;
 
