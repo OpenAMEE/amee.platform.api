@@ -1,7 +1,7 @@
 package com.amee.platform.science;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -14,8 +14,8 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class InternalValue {
 
-    private final Log log = LogFactory.getLog(getClass());
-    private final Log slog = LogFactory.getLog("science");
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger slog = LoggerFactory.getLogger("science");
     private Object value;
 
     /**
@@ -189,12 +189,8 @@ public class InternalValue {
                 if (iv.isConvertible()) {
                     AmountCompoundUnit internalUnit = value.getCanonicalCompoundUnit();
                     if (amount.hasDifferentUnits(internalUnit)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("asInternalDecimal() " +
-                                "label: " + iv.getLabel() + "," +
-                                "external: " + amount + " " + amount.getUnit() + "," +
-                                "internal: " + amount.convert(internalUnit) + " " + internalUnit);
-                        }
+                        log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
+                            new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
                         amount = amount.convert(internalUnit);
                     }
                 }
@@ -222,12 +218,8 @@ public class InternalValue {
             Amount amount = new Amount(iv.getValueAsDouble(), iv.getCompoundUnit());
             AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
             if (amount.hasDifferentUnits(internalUnit)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("asInternalDecimal() " +
-                            "label: " + iv.getLabel() + "," +
-                            "external: " + amount + " " + amount.getUnit() + "," +
-                            "internal: " + amount.convert(internalUnit) + " " + internalUnit);
-                }
+                log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
+                    new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
                 amount = amount.convert(internalUnit);
             }
             return amount;

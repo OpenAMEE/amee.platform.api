@@ -1,6 +1,6 @@
 package com.amee.platform.science;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A simple object containing a type and some text.

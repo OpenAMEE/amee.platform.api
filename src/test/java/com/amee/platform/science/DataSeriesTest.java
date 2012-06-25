@@ -31,7 +31,7 @@ public class DataSeriesTest {
         TimeZone.setDefault(timeZone);
         DateTimeZone.setDefault(DateTimeZone.forTimeZone(timeZone));
 
-        now = new DateTime();
+        now = DateTime.now();
 
         lhSeries = new DataSeries();
         lhSeries.addDataPoint(new DataPoint(now.plusDays(1), new Amount("1")));

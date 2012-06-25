@@ -1,7 +1,7 @@
 package com.amee.platform.science;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -15,7 +15,7 @@ import java.util.TimeZone;
 
 public class StartEndDate extends BaseDate {
 
-    private final static Log log = LogFactory.getLog(StartEndDate.class);
+    private final static Logger log = LoggerFactory.getLogger(StartEndDate.class);
 
     private static final DateTimeFormatter FMT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -46,7 +46,7 @@ public class StartEndDate extends BaseDate {
     }
 
     protected long defaultDate() {
-        return new DateTime().secondOfMinute().withMinimumValue().getMillis();
+        return DateTime.now().secondOfMinute().withMinimumValue().getMillis();
     }
 
     public StartEndDate plus(String duration) {

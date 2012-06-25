@@ -38,7 +38,7 @@ public class InternalValueTest {
 
     @Before
     public void init() {
-        now = new DateTime();
+        now = DateTime.now();
         dateOne = now.plusMinutes(1);
         dateTwo = now.plusMinutes(2);
         dateThree = now.plusMinutes(3);
