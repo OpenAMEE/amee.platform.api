@@ -339,11 +339,11 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     /**
-     * Test fetching DataItemValues with 'FIRST' (min mysql DATETIME) as the query start date.
+     * Test fetching DataItemValues with 'FIRST' (epoch) as the query start date.
      */
     @Test
     void getDataItemValuesForFirstDate() {
-        getDataItemValues('B3823E43A635', 0.8199856, '1000-01-01T00:00:00Z', 'FIRST') // The unix EPOCH.
+        getDataItemValues('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
     }
 
     /**
@@ -412,7 +412,7 @@ class DataItemValueIT extends BaseApiTest {
             }
             assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.collect { it.value }.sort()
             if (testValuesResource) {
-                assert [actualStartDate, '1000-01-01T00:00:00Z', '1000-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort()
+                assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort()
             }
             assert ['kg/(kW·h)', null, null] == values.collect { it?.unit }
         }
@@ -440,7 +440,7 @@ class DataItemValueIT extends BaseApiTest {
             }
             assert [value+"", 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.Value*.text().sort()
             if (testValuesResource) {
-                assert [actualStartDate, '1000-01-01T00:00:00Z', '1000-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort()
+                assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort()
             }
             assert ['kg/(kW·h)'] == values.Unit*.text().sort()
         }
@@ -604,11 +604,11 @@ class DataItemValueIT extends BaseApiTest {
     }
 
     /**
-     * Test fetching DataItemValue with 'FIRST' (min MySQL DATETIME value) as the item value identifier.
+     * Test fetching DataItemValue with 'FIRST' (epoch) as the item value identifier.
      */
     @Test
     void getDataItemValueForFirstDate() {
-        getDataItemValue('B3823E43A635', 0.8199856, '1000-01-01T00:00:00Z', 'FIRST')
+        getDataItemValue('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST')
     }
 
     /**
@@ -705,7 +705,7 @@ class DataItemValueIT extends BaseApiTest {
     @Test
     void updateWithMinStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'start_before_min', '1000-01-01T00:00:00Z')
+        updateDataItemValueField('289CCD5394AC', 'startDate', 'start_before_min', '1970-01-01T00:00:00Z')
     }
 
     @Test
