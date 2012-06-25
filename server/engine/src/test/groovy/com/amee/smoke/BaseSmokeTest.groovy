@@ -6,9 +6,8 @@ import static groovyx.net.http.ContentType.JSON
 import static org.junit.Assert.assertEquals
 
 /**
- * A base class for API integration tests.
+ * A base class for API smoke tests.
  *
- * The Restlet container is started.
  */
 abstract class BaseSmokeTest {
     public static final double DELTA = 0.000001
