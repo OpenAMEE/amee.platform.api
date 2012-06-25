@@ -12,23 +12,24 @@
     <properties>
 
         <!-- Internal Versions. -->
-        <amee-base.version>1.2.1-SNAPSHOT</amee-base.version>
+        <amee-base.version>1.3.2-SNAPSHOT</amee-base.version>
 
         <!-- External Versions. -->
-        <!-- Note: These versions were last checked & upgraded on 15/04/2010. -->
+        <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <hibernate-core.version>3.6.3.Final</hibernate-core.version>
+        <hibernate-core.version>3.6.9.Final</hibernate-core.version>
         <spring.version>3.1.1.RELEASE</spring.version>
-        <org-aspectj.version>1.6.10</org-aspectj.version>
-        <junit.version>4.8.2</junit.version>
-        <hsqldb.version>2.0.0</hsqldb.version>
-        <slf4j.version>1.6.1</slf4j.version>
+        <org-aspectj.version>1.6.12</org-aspectj.version>
+        <junit.version>4.10</junit.version>
+        <hsqldb.version>2.2.8</hsqldb.version>
+        <slf4j.version>1.6.6</slf4j.version>
+        <logback-classic.version>1.0.6</logback-classic.version>
 
         <!-- Plugin versions -->
-        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-        <maven-dependency-plugin.version>2.1</maven-dependency-plugin.version>
-        <maven-release-plugin.version>2.2</maven-release-plugin.version>
-        <maven-surefire-plugin.version>2.8</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>2.4</maven-dependency-plugin.version>
+        <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
+        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
 
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -135,6 +136,18 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -202,10 +215,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
             <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
         </dependency>
     </dependencies>
 

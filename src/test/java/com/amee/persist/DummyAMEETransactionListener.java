@@ -2,8 +2,8 @@ package com.amee.persist;
 
 import com.amee.base.transaction.TransactionEvent;
 import com.amee.base.transaction.TransactionEventType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class DummyAMEETransactionListener implements ApplicationListener {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private DummyEntityDAO dao;

@@ -2,8 +2,8 @@ package com.amee.persist;
 
 import com.amee.base.domain.DatedObject;
 import com.amee.base.utils.UidGen;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -18,7 +18,7 @@ import java.util.Date;
 public abstract class BaseEntity implements DatedObject, Serializable {
 
     @Transient
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     // The exact size of all UID fields.
     public final static int UID_SIZE = 12;
