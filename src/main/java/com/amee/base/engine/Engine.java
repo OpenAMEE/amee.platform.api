@@ -1,11 +1,19 @@
 package com.amee.base.engine;
 
-import com.amee.base.transaction.TransactionController;
-import org.apache.commons.cli.*;
+import java.util.TimeZone;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.context.ApplicationContext;
@@ -13,7 +21,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import java.util.TimeZone;
+import com.amee.base.transaction.TransactionController;
 
 /**
  * The main 'Engine' class that bootstraps the application. This implements WrapperListener from Tanuki.
@@ -80,8 +88,8 @@ public class Engine implements WrapperListener {
         log.debug("Starting Engine...");
 
         // Initialise Spring ApplicationContext.
-        springContext = new ClassPathXmlApplicationContext(new String[]{"applicationContext*.xml"});
-
+        springContext = new ClassPathXmlApplicationContext("applicationContext*.xml", "classpath*:/context/applicationContext*.xml");
+        
         // Initialise TransactionController (for controlling Spring).
         transactionController = (TransactionController) springContext.getBean("transactionController");
 
