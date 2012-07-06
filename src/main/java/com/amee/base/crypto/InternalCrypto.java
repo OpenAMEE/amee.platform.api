@@ -1,8 +1,9 @@
 package com.amee.base.crypto;
 
+import java.io.File;
+
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
 
 /**
  * Cryptography for internal use with a private local key and salt.
@@ -39,9 +40,13 @@ public class InternalCrypto extends BaseCrypto {
                 File keyFile = new File(keyFileName);
                 File saltFile = new File(saltFileName);
                 if (keyFile.isFile() && saltFile.isFile()) {
+                    // Load from filesystem
                     initialise(InternalCrypto.readKeyFromFile(keyFile), InternalCrypto.readSaltFromFile(saltFile));
+                } else {
+                    // Load from classpath
+                    initialise(InternalCrypto.readKeyFromClasspath(keyFileName), InternalCrypto.readSaltFromClasspath(saltFileName));
                 }
-            }
+            } 
             if ((secretKeySpec == null) || (iv == null)) {
                 throw new RuntimeException("Could not create SecretKeySpec or IvParameterSpec instances. Check key and salt files.");
             }
