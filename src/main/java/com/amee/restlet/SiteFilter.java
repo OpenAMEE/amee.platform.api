@@ -32,7 +32,9 @@ public class SiteFilter extends BaseFilter {
                 currentServer = s;
             }
         }
-
+        if (currentServer == null) {
+            log.error("getServer() Could not find matching server with port " + currentPort);
+        }
         return currentServer;
     }
 }
