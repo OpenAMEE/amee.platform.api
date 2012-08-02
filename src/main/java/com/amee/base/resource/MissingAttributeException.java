@@ -25,7 +25,7 @@ public class MissingAttributeException extends ResourceException {
     }
 
     /**
-     * Produces a {@link JSONObject} where the 'status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     * Produces a {@link JSONObject} where the 'status' node contains 'INTERNAL_ERROR'.
      *
      * @return the {@link JSONObject} response representation.
      */
@@ -42,7 +42,7 @@ public class MissingAttributeException extends ResourceException {
     }
 
     /**
-     * Produces a {@link Document} where the 'Status' node contains 'MEDIA_TYPE_NOT_SUPPORTED'.
+     * Produces a {@link Document} where the 'Status' node contains 'INTERNAL_ERROR'.
      *
      * @return the {@link Document} response representation.
      */
