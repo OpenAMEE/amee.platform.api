@@ -281,4 +281,16 @@ public abstract class BaseValidator implements Validator {
         // }
         return validationResult;
     }
+
+    /**
+     * Get a ValidationResult using the given Errors object.
+     *
+     * @param errors
+     * @return
+     */
+    public ValidationResult getValidationResult(Errors errors) {
+        ValidationResult validationResult = new ValidationResult(messageSource);
+        validationResult.setErrors(errors);
+        return validationResult;
+    }
 }
