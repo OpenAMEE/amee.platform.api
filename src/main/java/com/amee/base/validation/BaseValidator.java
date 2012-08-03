@@ -1,12 +1,6 @@
 package com.amee.base.validation;
 
 import com.amee.base.resource.ValidationResult;
-
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -18,10 +12,13 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A base class for Validator implementations providing a mechanism to validate objects with {@link ValidationSpecification}s.
- * <p/>
- * TODO: Merge {@link ValidationHelper} into this.
  */
 public abstract class BaseValidator implements Validator {
 
