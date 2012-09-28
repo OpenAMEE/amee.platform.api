@@ -1,17 +1,27 @@
 package com.amee.base.engine;
 
-import com.amee.base.transaction.TransactionController;
-import org.apache.commons.cli.*;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.TimeZone;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import java.util.TimeZone;
+import com.amee.base.transaction.TransactionController;
 
 /**
  * The main 'Engine' class that bootstraps the application. This implements WrapperListener from Tanuki.
@@ -20,7 +30,7 @@ import java.util.TimeZone;
  */
 public class Engine implements WrapperListener {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ClassPathXmlApplicationContext springContext;
     private TransactionController transactionController;
@@ -69,16 +79,17 @@ public class Engine implements WrapperListener {
     @Override
     public Integer start(String[] args) {
 
-        // Redirect JDK logging to Commons Logging
-        JavaLoggingToCommonsLoggingRedirector.activate();
+        // Redirect JDK logging to slf4j Logging
+        // TODO: Should we use jul-to-slf4j? http://www.slf4j.org/legacy.html (http://stackoverflow.com/a/9117188)
+        JavaLoggingToSlf4jRedirector.activate();
 
         parseOptions(args);
 
         log.debug("Starting Engine...");
 
         // Initialise Spring ApplicationContext.
-        springContext = new ClassPathXmlApplicationContext(new String[]{"applicationContext*.xml"});
-
+        springContext = new ClassPathXmlApplicationContext("applicationContext*.xml", "classpath*:/context/applicationContext*.xml");
+        
         // Initialise TransactionController (for controlling Spring).
         transactionController = (TransactionController) springContext.getBean("transactionController");
 
@@ -204,11 +215,13 @@ public class Engine implements WrapperListener {
                 springContext = null;
                 Thread.sleep(500);
             } catch (Exception e) {
-                log.fatal("onStart() Caught Exception: " + e);
+                Marker fatal = MarkerFactory.getMarker("FATAL");
+                log.error(fatal, "onStart() Caught Exception: " + e);
                 e.printStackTrace();
                 return false;
             } catch (Throwable e) {
-                log.fatal("onStart() Caught Throwable: " + e);
+                Marker fatal = MarkerFactory.getMarker("FATAL");
+                log.error(fatal, "onStart() Caught Throwable: " + e);
                 e.printStackTrace();
                 return false;
             }
@@ -241,7 +254,7 @@ public class Engine implements WrapperListener {
      */
     @Override
     public void controlEvent(int event) {
-        log.debug("controlEvent() " + event);
+        log.debug("controlEvent() {}", event);
         // Do nothing.
     }
 

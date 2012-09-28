@@ -1,16 +1,28 @@
 package com.amee.base.crypto;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.ArrayUtils;
-
-import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Provides a collection of String encryption utility methods. Methods cover encryption, decryption and key and salt
@@ -208,6 +220,57 @@ public class BaseCrypto {
             }
             return salt;
         } catch (IOException e) {
+            throw new CryptoException(true, e);
+        }
+    }
+
+    /**
+     * Loads a {@link SecretKeySpec} from a file on the classpath.
+     * 
+     * @param keyFileName       the name of the classpath resource to load the key from
+     * @return                  the SecretKeySpec loaded from the classpath
+     * @throws CryptoException  encapsulates various potential cryptography exceptions
+     */
+    public static SecretKeySpec readKeyFromClasspath(String keyFileName) throws CryptoException {
+        try {
+            DataInputStream in = new DataInputStream(BaseCrypto.class.getClassLoader().getResourceAsStream(keyFileName));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int i;
+            while ((i = in.read()) != -1) {
+                out.write(i);
+            }
+            out.flush();
+            byte[] keyAsBytes = out.toByteArray();
+            return new SecretKeySpec(keyAsBytes,  "AES");
+        } catch (IOException e) {
+            throw new CryptoException(true, e);
+        }
+    }
+    
+    /**
+     * Loads a salt from a file on the classpath.  Salt must be exactly 16 bytes long otherwise a 
+     * RuntimeException is thrown.
+     * 
+     * @param saltFileName      the name of the classpath resource to load the key from
+     * @return                  the salt as a byte array
+     * @throws CryptoException  encapsulates various potential cryptography exceptions
+     */
+    public static byte[] readSaltFromClasspath(String saltFileName) throws CryptoException {
+        try{
+            DataInputStream in = new DataInputStream(BaseCrypto.class.getClassLoader().getResourceAsStream(saltFileName));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int i;
+            while((i = in.read()) != -1) {
+                out.write(i);
+            }
+            out.flush();
+            byte[] salt = out.toByteArray();
+            // Salt must be 16 bytes.
+            if(salt.length != 16) {
+                throw new RuntimeException("Salt from '" + saltFileName + "' is not 16 bytes.");
+            }
+            return salt;
+        }catch(IOException e){
             throw new CryptoException(true, e);
         }
     }

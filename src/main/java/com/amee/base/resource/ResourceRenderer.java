@@ -31,7 +31,7 @@ public interface ResourceRenderer {
 
     /**
      * Return the object of the output representation. Typically this will be a {@link org.json.JSONObject} or a
-     * {@link org.jdom.Document}.
+     * {@link org.jdom2.Document}.
      *
      * @return the output representation object
      */

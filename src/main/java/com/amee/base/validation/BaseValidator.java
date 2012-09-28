@@ -1,14 +1,8 @@
 package com.amee.base.validation;
 
 import com.amee.base.resource.ValidationResult;
-
-import java.beans.PropertyEditor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +12,17 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.beans.PropertyEditor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A base class for Validator implementations providing a mechanism to validate objects with {@link ValidationSpecification}s.
- * <p/>
- * TODO: Merge {@link ValidationHelper} into this.
  */
 public abstract class BaseValidator implements Validator {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * A {@link List} of {@link ValidationSpecification}s for validating an object against.
@@ -279,6 +276,18 @@ public abstract class BaseValidator implements Validator {
         // validationResult.addValue(field, (String) value);
         // }
         // }
+        return validationResult;
+    }
+
+    /**
+     * Get a ValidationResult using the given Errors object.
+     *
+     * @param errors
+     * @return
+     */
+    public ValidationResult getValidationResult(Errors errors) {
+        ValidationResult validationResult = new ValidationResult(messageSource);
+        validationResult.setErrors(errors);
         return validationResult;
     }
 }

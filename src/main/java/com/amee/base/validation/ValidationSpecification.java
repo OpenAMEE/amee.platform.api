@@ -1,7 +1,8 @@
 package com.amee.base.validation;
 
 import com.amee.base.utils.UidGen;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.validation.Errors;
 
@@ -49,6 +50,9 @@ public class ValidationSpecification implements Serializable {
 
     // Is the value a comma separated list of UIDs?
     private boolean uidList = false;
+
+    // Is the value a timestamp
+    private String timestamp = null;
 
     // Is the value a number (integer)?
     private boolean integerNumber = false;
@@ -160,6 +164,15 @@ public class ValidationSpecification implements Serializable {
                     e.rejectValue(name, "format");
                     return STOP;
                 }
+            }
+        }
+        // Validate timestamp
+        if (timestamp != null) {
+            try {
+                new DateTime(timestamp);
+            } catch (IllegalArgumentException e1) {
+                e.rejectValue(name, "format");
+                return STOP;
             }
         }
         // Validate integer.
@@ -290,6 +303,11 @@ public class ValidationSpecification implements Serializable {
 
     public ValidationSpecification setUrl(boolean url) {
         this.url = url;
+        return this;
+    }
+
+    public ValidationSpecification setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
         return this;
     }
 

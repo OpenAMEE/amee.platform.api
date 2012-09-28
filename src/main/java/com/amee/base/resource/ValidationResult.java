@@ -1,6 +1,6 @@
 package com.amee.base.resource;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +21,12 @@ import java.util.*;
 public class ValidationResult implements Serializable {
 
     private MessageSource messageSource;
+
+    // Map of field name => value
     private HashMap<String, String> values = new HashMap<String, String>();
+
+    // List of errors
+    // Each error is a Map of format: [field: field name, code: error code, message: error message, value: field value]
     private List<Map<String, String>> errors = new ArrayList<Map<String, String>>();
 
     public ValidationResult() {
@@ -93,21 +98,28 @@ public class ValidationResult implements Serializable {
         }
     }
 
+    /**
+     * Constructs a JSON representation of the ValidationResult.
+     *
+     * @return JSONObject listing values and errors.
+     */
     public JSONObject getJSONObject() throws JSONException {
         JSONObject obj = new JSONObject();
+
         // add values
         if (!getValues().isEmpty()) {
             JSONArray valuesArr = new JSONArray();
-            for (String key : getValues().keySet()) {
-                if (getValues().get(key) != null) {
+            for (Map.Entry<String, String> entry : getValues().entrySet()) {
+                if (entry.getValue() != null) {
                     valuesArr.put(
                             new JSONObject()
-                                    .put("name", key)
-                                    .put("value", getValues().get(key)));
+                                    .put("name", entry.getKey())
+                                    .put("value", entry.getValue()));
                 }
             }
             obj.put("values", valuesArr);
         }
+
         // add errors
         if (getErrors() != null) {
             JSONArray errorsArr = new JSONArray();
@@ -167,6 +179,10 @@ public class ValidationResult implements Serializable {
         return values;
     }
 
+    public void addGlobalError(String code) {
+        addError("global", code);
+    }
+
     public void addError(String field, String code) {
         addError(field, code, "", null);
     }
@@ -203,6 +219,11 @@ public class ValidationResult implements Serializable {
         }
     }
 
+    /**
+     * Tries to resolve a message from a list of error codes. The first match will be returned.
+     *
+     * TODO: Allow parameters to be passed. See: {@link org.springframework.context.MessageSource#getMessage}
+     */
     private String getMessage(String[] codes) {
         String message = "";
         for (String code : codes) {
@@ -214,6 +235,14 @@ public class ValidationResult implements Serializable {
         return message;
     }
 
+    /**
+     * Gets a message from the MessageSource by error code.
+     *
+     * @param key the code to lookup up, such as 'calculator.noRateSet'
+     * @return the resolved message.
+     *
+     * TODO: Allow parameters to be passed. See: {@link org.springframework.context.MessageSource#getMessage}
+     */
     private String getMessage(String key) {
         if (messageSource != null) {
             String message = messageSource.getMessage(key, null, Locale.ENGLISH);
