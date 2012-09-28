@@ -5,10 +5,10 @@ import com.amee.base.resource.ResourceAcceptor;
 import com.amee.base.resource.ResourceException;
 import com.amee.base.resource.ValidationResult;
 import com.amee.restlet.RequestContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ResourceAcceptManager extends ResourceManager {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private Map<String, ResourceAcceptor<Object>> acceptors = new HashMap<String, ResourceAcceptor<Object>>();
 

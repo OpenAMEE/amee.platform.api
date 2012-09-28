@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.data.MediaType;
@@ -29,7 +29,7 @@ import org.restlet.resource.Representation;
 
 public class ResourceManager {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private GenericResource resource;
 
@@ -137,6 +137,10 @@ public class ResourceManager {
              *  place of spaces (some clients do this - plus and space characters are fairly interchangeable).  The regex used just looks for a
              *  sequence of 6 digits preceeding the plus symbol which may or may not be broken up by colons, and a sequence of two digits following
              *  it; the assumption is that a timezone offset will not be submitted unless a time is also submitted.
+             *
+             *  TODO: Check this is still needed after upgrading Restlet to 2.0.
+             *  It may be possible to use the java.net.URI class to properly encode this.
+             *  Also see: http://stackoverflow.com/questions/724043/http-url-address-encoding-in-java.
              */
             // Encode + symbols
             org.restlet.data.Form form = new org.restlet.data.Form(query.replaceAll("(\\d\\d:?\\d\\d:?\\d\\d)\\+(\\d\\d)", "$1%2B$2"));

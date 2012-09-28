@@ -1,8 +1,8 @@
 package com.amee.restlet;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.restlet.data.Form;
 import org.restlet.data.Parameter;
 import org.restlet.data.Request;
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class RequestContext {
 
-    private final Log log = LogFactory.getLog(getClass());
-    private final Log transactions = LogFactory.getLog("transactions");
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger transactions = LoggerFactory.getLogger("transactions");
 
     private String requestPath = "";
     private String method = "";
@@ -105,7 +105,7 @@ public class RequestContext {
             sb.append(", ");
         }
         // Remove the final trailing separator and space
-        return StringUtils.chomp(sb.toString(), ", ");
+        return StringUtils.removeEnd(sb.toString(), ", ");
     }
 
     public void setError(String error) {
