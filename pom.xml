@@ -5,7 +5,7 @@
     <name>amee-restlet</name>
     <groupId>com.amee</groupId>
     <artifactId>amee-restlet</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
 
     <!-- Properties. -->
@@ -209,7 +209,7 @@
         <connection>scm:git:ssh://git@github.com/AMEE/amee.restlet.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/AMEE/amee.restlet.git</developerConnection>
         <url>scm:git:ssh://git@github.com/AMEE/amee.restlet.git</url>
-      <tag>HEAD</tag>
+      <tag>amee-restlet-1.2.1</tag>
   </scm>
 
 </project>
