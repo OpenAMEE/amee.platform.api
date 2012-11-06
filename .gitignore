@@ -11,3 +11,4 @@ build.properties
 .classpath
 .settings
 .groovy
+smoke.*.properties
