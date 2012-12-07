@@ -28,6 +28,9 @@ set :use_sudo, false
 # The deployment user. This should exist in the scm and on each of the deployed-to hosts
 set :user, "platform-api"
 
+# Use ssh agent forwarding for access to GitHub
+ssh_options[:forward_agent] = true
+
 # Source code and build locations
 raise "PLATFORM_API_SRC_DIR - #{ENV['PLATFORM_API_SRC_DIR']} does not exist" unless File.exists?(ENV['PLATFORM_API_SRC_DIR'])
 raise "PLATFORM_API_PKG_DIR - #{ENV['PLATFORM_API_PKG_DIR']} does not exist" unless File.exists?(ENV['PLATFORM_API_PKG_DIR'])
@@ -61,4 +64,12 @@ end
 
 deploy.task :finalize_update do
   # Override the rails stuff
+end
+
+# Add keys to ssh-agent for agent forwarding
+case RbConfig::CONFIG['host_os']
+  when /darwin/
+    before "deploy:update" do
+      `ssh-add`
+    end
 end
