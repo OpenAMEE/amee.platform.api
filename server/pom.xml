@@ -14,7 +14,7 @@
     <properties>
 
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.10.2</amee-platform-api.version>
+        <amee-platform-api.version>3.10.2-DEV</amee-platform-api.version>
         <amee-base.version>1.2.0</amee-base.version>
         <amee-persist.version>1.0.14</amee-persist.version>
         <amee-messaging.version>1.0.12</amee-messaging.version>
