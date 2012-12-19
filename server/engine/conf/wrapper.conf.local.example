@@ -9,7 +9,7 @@ set.JDK_HOME=%JAVA_HOME%
 wrapper.java.library.path.1=%LIB_HOME%/wrapper/macosx-universal-64
 
 # AMEE_SERVER_NAME
-set.AMEE_SERVER_NAME=platform-api-local.amee.com
+set.AMEE_SERVER_NAME=localhost
 set.AMEE_INSTANCE_NAME=local
 
 # Log levels
@@ -73,15 +73,15 @@ set.INDEX_CHECK_SEARCHER_ON_COMMIT=false
 set.MASTER_INDEX=true
 set.SNAPSHOT_ENABLED=true
 
-# The license (not required for community wrapper version)
-#wrapper.license.type=NODE
-#wrapper.license.id=201006210016
-#wrapper.license.licensee=AMEE UK (Diggory Briercliffe)
-#wrapper.license.host_id=58b035f5ef33
-#wrapper.license.features=pro, 64bit, test
-#wrapper.license.upgrade_term.begin_date=2010-05-21
-#wrapper.license.upgrade_term.end_date=2011-05-21
-#wrapper.license.key.1=b586-efcd-e14e-9559
-#wrapper.license.key.2=eac7-487d-e8cf-86d1
-#wrapper.license.key.3=e8dc-9f14-2329-3525
-#wrapper.license.key.4=518d-daff-51f6-a0bf
+# The license.
+wrapper.license.type=NODE
+wrapper.license.id=201006210016
+wrapper.license.licensee=AMEE UK (Diggory Briercliffe)
+wrapper.license.host_id=58b035f5ef33
+wrapper.license.features=pro, 64bit, test
+wrapper.license.upgrade_term.begin_date=2010-05-21
+wrapper.license.upgrade_term.end_date=2011-05-21
+wrapper.license.key.1=b586-efcd-e14e-9559
+wrapper.license.key.2=eac7-487d-e8cf-86d1
+wrapper.license.key.3=e8dc-9f14-2329-3525
+wrapper.license.key.4=518d-daff-51f6-a0bf
