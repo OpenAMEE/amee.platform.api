@@ -3,11 +3,13 @@ package com.amee.base.resource;
 import com.amee.base.domain.VersionBeanFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -74,10 +76,15 @@ public class LocalResourceHandler implements ResourceHandler {
      */
     public Object handleWithTimeout(final RequestWrapper requestWrapper, final ResourceHandler handler) {
         Object response = null;
+        final Map values = MDC.getCopyOfContextMap();
+
         // Wrap the ResourceHandler in a Callable so it can be invoked via a Future below.
         Callable<Object> task = new Callable<Object>() {
             @Override
             public Object call() throws Exception {
+                if (values != null) {
+                    MDC.setContextMap(values);
+                }
                 return handler.handle(requestWrapper);
             }
         };
