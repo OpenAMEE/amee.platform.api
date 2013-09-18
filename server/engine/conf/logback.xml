@@ -35,18 +35,18 @@
     </appender>
 
     <!-- Declare the 'AIRBRAKE' HoptoadAppender. -->
-    <appender name="AIRBRAKE" class="hoptoad.HoptoadAppender">
-        <apiKey>335da09dfa378ed3d5b650becadf0214</apiKey>
-        <env>${instance.name}</env>
-        <enabled>${amee.airbrake}</enabled>
+    <!--<appender name="AIRBRAKE" class="hoptoad.HoptoadAppender">-->
+        <!--<apiKey>335da09dfa378ed3d5b650becadf0214</apiKey>-->
+        <!--<env>${instance.name}</env>-->
+        <!--<enabled>${amee.airbrake}</enabled>-->
 
-        <!-- Only log on ERROR or higher -->
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator class="ch.qos.logback.classic.boolex.OnErrorEvaluator"/>
-            <OnMismatch>DENY</OnMismatch>
-            <OnMatch>NEUTRAL</OnMatch>
-        </filter>
-    </appender>
+        <!--&lt;!&ndash; Only log on ERROR or higher &ndash;&gt;-->
+        <!--<filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+            <!--<evaluator class="ch.qos.logback.classic.boolex.OnErrorEvaluator"/>-->
+            <!--<OnMismatch>DENY</OnMismatch>-->
+            <!--<OnMatch>NEUTRAL</OnMatch>-->
+        <!--</filter>-->
+    <!--</appender>-->
 
     <!-- Declare the 'TRANSACTIONS_ROLLER' Daily RollingFileAppender. -->
     <appender name="TRANSACTIONS_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -189,6 +189,6 @@
     <root level="${amee.defaultLogLevel}">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="PLATFORM_EMAIL"/>
-        <appender-ref ref="AIRBRAKE"/>
+        <!--<appender-ref ref="AIRBRAKE"/>-->
     </root>
 </configuration>

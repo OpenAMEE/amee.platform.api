@@ -109,9 +109,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>log4jdbc</groupId>
-            <artifactId>log4jdbc4</artifactId>
-            <version>${log4jdbc4.version}</version>
+            <groupId>com.googlecode.log4jdbc</groupId>
+            <artifactId>log4jdbc</artifactId>
+            <version>${log4jdbc.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
