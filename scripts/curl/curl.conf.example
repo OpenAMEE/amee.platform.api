@@ -1,5 +1,0 @@
-platform_host=local-future-platform.amee.com
-platform_host_header=local-future-platform.amee.com
-platform_user="platform"
-platform_password="password"
-scheme="http"

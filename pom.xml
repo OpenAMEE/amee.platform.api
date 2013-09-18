@@ -219,7 +219,13 @@
                         <PORT>8888</PORT>
                         <SECURE_PORT>8889</SECURE_PORT>
 
-                        <CONF_HOME>${basedir}/conf</CONF_HOME>
+                        <LOG_LEVEL>DEBUG</LOG_LEVEL>
+                        <DEFAULT_LOG_LEVEL>WARN</DEFAULT_LOG_LEVEL>
+                        <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
+
+                        <!-- Set this to 0 to disable timeouts when debugging (default is 15) -->
+                        <RESOURCE_DEFAULT_TIMEOUT>15</RESOURCE_DEFAULT_TIMEOUT>
+
                         <AMEE_HOME>${basedir}</AMEE_HOME>
                         <CURRENT_HOME>${basedir}/current</CURRENT_HOME>
                         <AUTO_START_SCHEDULER>false</AUTO_START_SCHEDULER>
@@ -245,11 +251,6 @@
 
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
-                        <amee.logLevel>INFO</amee.logLevel>
-                        <amee.defaultLogLevel>WARN</amee.defaultLogLevel>
-                        <server.name>localhost</server.name>
-                        <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
-                        <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
                         <amee.lucenePath>${project.build.directory}/lucene/index</amee.lucenePath>
                         <amee.masterIndex>true</amee.masterIndex>
                         <amee.clearIndex>true</amee.clearIndex>
@@ -257,14 +258,7 @@
                         <amee.indexDataCategories>true</amee.indexDataCategories>
                         <amee.indexDataItems>true</amee.indexDataItems>
                         <amee.indexCheckSearcherOnCommit>true</amee.indexCheckSearcherOnCommit>
-
-                        <!-- Set this to 0 to disable timeouts when debugging (default is 15) -->
-                        <amee.resourceDefaultTimeout>15</amee.resourceDefaultTimeout>
                     </systemPropertyVariables>
-                    <additionalClasspathElements>
-                        <element>${basedir}/src/main/resources</element>
-                        <element>${basedir}/conf</element>
-                    </additionalClasspathElements>
                 </configuration>
                 <executions>
                     <execution>
