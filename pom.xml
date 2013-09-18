@@ -25,7 +25,7 @@
         <logback-classic.version>1.0.6</logback-classic.version>
 
         <!-- Plugin versions -->
-        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
         <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
         <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
 
@@ -44,8 +44,17 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
+
+                        <!--
+                            sun.* packages are not included on javac bootclasspath on linux.
+                            See: http://java.sun.com/products/jdk/faq/faq-sun-packages.html
+                        -->
+                        <compilerArguments>
+                            <verbose />
+                            <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
+                        </compilerArguments>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -162,42 +171,4 @@
         <developerConnection>scm:git:ssh://git@github.com/AMEE/amee.platform.science.git</developerConnection>
         <url>scm:git:ssh://git@github.com/AMEE/amee.platform.science.git</url>
     </scm>
-
-    <!--
-        Profile required to compile on linux.
-        sun.* packages are not included on javac bootclasspath on linux.
-        See: http://java.sun.com/products/jdk/faq/faq-sun-packages.html
-     -->
-    <profiles>
-        <profile>
-            <id>linux</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <name>Linux</name>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <configuration>
-                                <source>1.6</source>
-                                <target>1.6</target>
-                                <compilerArguments>
-                                    <verbose />
-                                    <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
-                                </compilerArguments>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
-
-
 </project>
