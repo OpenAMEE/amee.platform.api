@@ -1,0 +1,6 @@
+*.iws
+target
+release.properties
+.project
+.classpath
+.settings
