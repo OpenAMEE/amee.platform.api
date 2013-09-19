@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- This is an example of creating a mock bean with Mockito. The class name needs to be an interface. -->
+    <!--<bean id="permissionServiceDAO" class="org.mockito.Mockito" factory-method="mock">-->
+    <!--<constructor-arg value="com.amee.service.auth.PermissionServiceDAO"/>-->
+    <!--</bean>-->
+
+    <bean class="com.amee.service.ServiceData"/>
+
+    <bean class="com.amee.service.auth.PermissionService"/>
+
+    <bean class="com.amee.service.auth.AuthorizationService"/>
+
+    <bean id="permissionServiceDao" class="com.amee.service.auth.PermissionServiceDAOMock"/>
+
+    <bean class="com.amee.service.events.PublisherService"/>
+
+    <bean class="com.amee.service.events.SubscriberService"/>
+
+    <bean id="searchQueryService" class="com.amee.platform.search.SearchQueryServiceImpl"/>
+
+    <bean id="luceneService" class="com.amee.platform.search.LuceneServiceMock"/>
+
+</beans>
