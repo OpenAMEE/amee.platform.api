@@ -18,13 +18,13 @@
 
         <!-- Internal Dependencies. -->
         <dependency>
-            <groupId>com.amee</groupId>
+            <groupId>com.amee.platform</groupId>
             <artifactId>amee-base</artifactId>
-            <version>${amee-base.version}</version>
+            <version>${amee-platform-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.amee.platform</groupId>
-            <artifactId>amee-platform-api-restlet</artifactId>
+            <artifactId>amee-restlet</artifactId>
             <version>${amee-platform-api.version}</version>
         </dependency>
 

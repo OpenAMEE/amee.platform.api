@@ -6,10 +6,14 @@
 
     <!-- Identity. -->
     <name>amee-platform-resource</name>
-    <groupId>com.amee.platform</groupId>
     <artifactId>amee-platform-resource</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.amee.platform</groupId>
+        <artifactId>amee-platform-api</artifactId>
+        <version>${amee-platform-api.version}</version>
+    </parent>
 
     <!-- Properties. -->
     <properties>

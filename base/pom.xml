@@ -4,10 +4,14 @@
 
 	<!-- Identity. -->
 	<name>amee-base</name>
-	<groupId>com.amee</groupId>
 	<artifactId>amee-base</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>jar</packkaging>
+
+	<parent>
+        <groupId>com.amee.platform</groupId>
+        <artifactId>amee-platform-api</artifactId>
+        <version>${amee-platform-api.version}</version>
+    </parent>
 
 	<!-- Properties. -->
 	<properties>

@@ -3,10 +3,14 @@
 
     <!-- Identity. -->
     <name>amee-restlet</name>
-    <groupId>com.amee</groupId>
     <artifactId>amee-restlet</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.amee.platform</groupId>
+        <artifactId>amee-platform-api</artifactId>
+        <version>${amee-platform-api.version}</version>
+    </parent>
 
     <!-- Properties. -->
     <properties>

@@ -3,10 +3,14 @@
 
     <!-- Identity. -->
     <name>amee-persist</name>
-    <groupId>com.amee</groupId>
     <artifactId>amee-persist</artifactId>
-    <version>1.0.15-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.amee.platform</groupId>
+        <artifactId>amee-platform-api</artifactId>
+        <version>${amee-platform-api.version}</version>
+    </parent>
 
     <!-- Properties. -->
     <properties>
