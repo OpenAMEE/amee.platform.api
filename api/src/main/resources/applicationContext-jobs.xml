@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Scheduler configuration. -->
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- Allow us to prevent automatic startup -->
+        <property name="autoStartup" value="${AUTO_START_SCHEDULER}"/>
+        <!-- Wait for 10 seconds -->
+        <property name="startupDelay" value="10"/>
+        <property name="triggers">
+            <list>
+                <ref bean="searchIndexUpdateCronTrigger"/>
+
+                <!-- Index optimisation disabled due to timeouts. See: https://jira.amee.com/browse/PL-10972 -->
+                <!--ref bean="searchIndexFlushCronTrigger"/-->
+                <ref bean="searchIndexSnapshotCronTrigger"/>
+                <ref bean="searchIndexCheckSearcherCronTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Search index jobs. -->
+
+    <!-- Update search index: Job definition. -->
+    <bean id="searchIndexUpdateJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="searchManager"/>
+        <property name="targetMethod" value="update"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Update search index: Fire at 10 minutes past every hour. -->
+    <bean id="searchIndexUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="searchIndexUpdateJobDetail"/>
+        <property name="cronExpression" value="0 10 * * * ?"/>
+    </bean>
+
+    <!-- Search index flush: Job definition. -->
+    <bean id="searchIndexFlushJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="luceneService"/>
+        <property name="targetMethod" value="flush"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Search index flush: Fire at 2 AM every day. -->
+    <bean id="searchIndexFlushCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="searchIndexFlushJobDetail"/>
+        <property name="cronExpression" value="0 0 2 * * ?"/>
+    </bean>
+
+    <!-- Search index snapshot: Job definition. -->
+    <bean id="searchIndexSnapshotJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="luceneService"/>
+        <property name="targetMethod" value="takeSnapshot"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Search index snapshot: Fire every 5 minutes at 15 seconds past the minute. -->
+    <bean id="searchIndexSnapshotCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="searchIndexSnapshotJobDetail"/>
+        <property name="cronExpression" value="15 0/5 * * * ?"/>
+    </bean>
+
+    <!-- Search index Searcher check: Job definition. -->
+    <bean id="searchIndexCheckSearcherJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="luceneService"/>
+        <property name="targetMethod" value="checkSearcher"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <!-- Search index Searcher check: Fire every minute at 30 seconds past the minute. -->
+    <bean id="searchIndexCheckSearcherCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="searchIndexCheckSearcherJobDetail"/>
+        <property name="cronExpression" value="30 * * * * ?"/>
+    </bean>
+
+</beans>

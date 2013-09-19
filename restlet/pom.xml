@@ -2,21 +2,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
-    <name>amee-restlet</name>
-    <artifactId>amee-restlet</artifactId>
+    <name>amee-platform-restlet</name>
+    <artifactId>amee-platform-restlet</artifactId>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <!-- Properties. -->
     <properties>
-
-        <!-- Internal Versions. -->
-        <amee-base.version>1.4.1-SNAPSHOT</amee-base.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
@@ -26,7 +23,6 @@
         <logback-classic.version>1.0.6</logback-classic.version>
         <restlet.version>1.1.10</restlet.version>
         <xerces.version>2.11.0</xerces.version>
-        <xml-apis.version>2.11.0</xml-apis.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -48,8 +44,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>                    
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -95,9 +91,12 @@
 
         <!-- Internal Dependencies. -->
         <dependency>
-            <groupId>com.amee</groupId>
-            <artifactId>amee-base</artifactId>
-            <version>${amee-base.version}</version>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-service</artifactId>
         </dependency>
 
         <!-- Compile Dependencies. -->
@@ -168,14 +167,14 @@
             <version>${xerces.version}</version>
         </dependency>
         <dependency>
-        	<groupId>xml-apis</groupId>
-        	<artifactId>xml-apis</artifactId>
-        	<version>${xml-apis.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->

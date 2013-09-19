@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <!-- Placeholder property configuration -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <!-- Set a value that should be treated as <code>null</code> when resolved as a placeholder value -->
+        <property name="nullValue" value="NULL"/>
+    </bean>
+
+    <!-- Annotations and other stuff -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com"/>
+    <tx:annotation-driven/>
+    <aop:aspectj-autoproxy/>
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- An aspect to support the perf4j @Profiled annotation.  -->
+    <bean id="timingAspect" class="org.perf4j.slf4j.aop.TimingAspect"/>
+
+    <!-- TransactionController Implementation. -->
+    <bean id="transactionController" class="com.amee.persist.TransactionControllerImpl"/>
+
+    <!-- EhCacheManagerFactoryBean -->
+    <bean id="cacheManager" class="${CACHE_MANAGER_CLASS}">
+        <property name="configLocation" value="classpath:ehcache.xml"/>
+        <property name="shared" value="true"/>
+    </bean>
+
+    <!-- CacheService -->
+    <bean id="cacheService" class="${CACHE_SERVICE_CLASS}"/>
+
+    <!-- jpaDialect -->
+    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+
+    <!-- entityManagerFactory -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="ameeDataSource"/>
+        <property name="jpaDialect" ref="jpaDialect"/>
+    </bean>
+
+    <!-- transactionManager -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="dataSource" ref="ameeDataSource"/>
+        <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="transactionSynchronization">
+            <bean id="org.springframework.transaction.jta.JtaTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+        </property>
+    </bean>
+
+    <!-- Messages for validation -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="${CONF_HOME}/validationMessages"/>
+        <property name="cacheSeconds" value="60"/>
+        <property name="useCodeAsDefaultMessage" value="true"/>
+    </bean>
+
+    <!-- AMEE Services -->
+
+    <!-- DataSheetService -->
+    <!-- The eternalPaths below should be kept in sync with those in /bin/warm-up-eternal-categories.sh -->
+    <bean id="dataSheetService" class="com.amee.service.data.DataSheetServiceImpl">
+        <property name="eternalPaths">
+            <set>
+                <!--<value>/home/heating</value>-->
+                <!--<value>/home/heating/us</value>-->
+                <!--<value>/transport/plane/generic/airports/all/countries</value>-->
+                <!--<value>/transport/car/specific</value>-->
+                <!--<value>/transport/car/specific/us</value>-->
+                <!--<value>/transport/car/specific/uk</value>-->
+                <!--<value>/transport/plane/generic/airports/all/codes</value>-->
+                <!--<value>/business/energy/stationaryCombustion</value>-->
+            </set>
+        </property>
+    </bean>
+
+    <!-- A service only used in V3 for managing values in ThreadLocals. -->
+    <bean id="transactionThreadBeanManager" class="com.amee.service.TransactionThreadBeanManager"/>
+
+    <!-- A functional implementation of LocaleServiceDAO. -->
+    <!--<bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAOImpl"/>-->
+
+    <!-- A no-op implementation of LocaleServiceDAO. -->
+    <bean id="localeServiceDAO" class="com.amee.service.locale.LocaleServiceDAONoOpImpl"/>
+
+    <!-- Drill Down service is lucene backed in v3 -->
+    <bean id="drillDownService" class="com.amee.platform.search.LuceneDrillDownService"/>
+
+</beans>

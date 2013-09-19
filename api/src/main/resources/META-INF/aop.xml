@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aspectj>
+    <!-- Commented out as part of: https://jira.amee.com/browse/PL-9456 -->
+    <!--<weaver options="-Xreweavable">-->
+    <!--<exclude within="*..*CGLIB*"/>-->
+    <!--<exclude within="*..*javassist*"/>-->
+    <!--</weaver>-->
+    <!--<aspects>-->
+    <!--<aspect name="org.springframework.beans.factory.aspectj.AbstractInterfaceDrivenDependencyInjectionAspect"/>-->
+    <!--</aspects>-->
+</aspectj>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- See JavaDoc for classes in package com.amee.messaging.config for full details on the -->
+    <!-- configuration beans and properties below. -->
+
+    <bean class="com.amee.messaging.config.MessagingConfig">
+        <property name="runSleep" value="${MESSAGING_RUN_SLEEP}"/>
+    </bean>
+
+    <bean class="com.amee.messaging.config.ConnectionConfig">
+        <property name="addresses">
+            <list>
+                <bean class="com.rabbitmq.client.Address">
+                    <constructor-arg value="${RABBIT_MQ_ADDRESS}"/>
+                    <constructor-arg value="${RABBIT_MQ_PORT}"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="com.rabbitmq.client.ConnectionFactory">
+        <property name="username" value="${RABBIT_MQ_USERNAME}"/>
+        <property name="password" value="${RABBIT_MQ_PASSWORD}"/>
+        <property name="virtualHost" value="/"/>
+        <property name="requestedHeartbeat" value="10"/>
+    </bean>
+
+    <bean id="invalidationExchange" class="com.amee.messaging.config.ExchangeConfig">
+        <property name="name" value="platform.${MESSAGING_SCOPE}.invalidation"/>
+        <property name="type" value="topic"/>
+        <property name="durable" value="true"/>
+    </bean>
+
+    <bean id="invalidationPublish" class="com.amee.messaging.config.PublishConfig">
+        <property name="scope" value="${MESSAGING_SCOPE}"/>
+    </bean>
+
+    <bean id="invalidationConsume" class="com.amee.messaging.config.ConsumeConfig">
+        <property name="scope" value="${MESSAGING_SCOPE}"/>
+    </bean>
+
+    <bean id="invalidationQueue" class="com.amee.messaging.config.QueueConfig">
+        <property name="name"
+                  value="platform.${MESSAGING_SCOPE}.invalidation.${AMEE_SERVER_NAME}.${AMEE_APP_NAME}.${AMEE_INSTANCE_NAME}"/>
+        <property name="exclusive" value="true"/>
+        <property name="autoDelete" value="true"/>
+    </bean>
+
+    <bean class="com.amee.service.invalidation.InvalidationMessageConsumer"/>
+
+    <!--<bean id="calculationExchange" class="com.amee.messaging.config.ExchangeConfig">-->
+    <!--<property name="name" value="platform.${MESSAGING_SCOPE}.calculation"/>-->
+    <!--<property name="type" value="direct"/>-->
+    <!--<property name="durable" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="calculationQueue" class="com.amee.messaging.config.QueueConfig">-->
+    <!--<property name="name" value="platform.${MESSAGING_SCOPE}.calculation"/>-->
+    <!--</bean>-->
+
+    <!--<bean class="com.amee.calculation.service.CalculationConsumer"/>-->
+
+    <!--<bean id="requestWrapperExchange" class="com.amee.messaging.config.ExchangeConfig">-->
+    <!--<property name="name" value="platform.${MESSAGING_SCOPE}.requestWrapper"/>-->
+    <!--<property name="type" value="direct"/>-->
+    <!--<property name="durable" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="requestWrapperQueue" class="com.amee.messaging.config.QueueConfig">-->
+    <!--<property name="name" value="platform.${MESSAGING_SCOPE}.requestWrapper"/>-->
+    <!--</bean>-->
+
+    <!--<bean class="com.amee.messaging.resource.RequestWrapperMessageConsumer"/>-->
+    <!--<bean class="com.amee.messaging.resource.RequestWrapperMessageConsumer"/>-->
+    <!--<bean class="com.amee.messaging.resource.RequestWrapperMessageConsumer"/>-->
+
+    <!-- Simple TaskExecutor that fires up a new thread for each task. -->
+    <bean id="invalidationTaskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
+    
+</beans>

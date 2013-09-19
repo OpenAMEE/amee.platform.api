@@ -5,16 +5,16 @@
 
     <!-- Identity. -->
     <groupId>com.amee.platform</groupId>
-    <artifactId>amee-platform-api</artifactId>
-    <name>AMEE Platform API</name>
+    <artifactId>amee-platform</artifactId>
+    <name>AMEE Platform</name>
     <packaging>pom</packaging>
-    <version>${amee-platform-api.version}</version>
+    <version>${amee-platform.version}</version>
 
     <!-- Properties. -->
     <properties>
 
         <!-- Internal Versions. -->
-        <amee-platform-api.version>3.11.0-DEV</amee-platform-api.version>
+        <amee-platform.version>3.11.0-DEV</amee-platform.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
@@ -64,7 +64,7 @@
 
     <!-- Modules. -->
     <modules>
-        <module>engine</module>
+        <module>api</module>
         <module>base</module>
         <module>domain</module>
         <module>messaging</module>
@@ -277,52 +277,97 @@
         </plugins>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-base</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-domain</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-messaging</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-persist</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-resource</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-restlet</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-science</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amee.platform</groupId>
+                <artifactId>amee-platform-service</artifactId>
+                <version>${amee-platform.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <!-- Dependencies. -->
     <dependencies>
 
         <!-- Internal Runtime Dependencies. -->
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-base</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-persist</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-messaging</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-platform-science</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-platform-domain</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-platform-service</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.amee.platform</groupId>
-            <artifactId>amee-platform-resource</artifactId>
-            <version>${amee-platform-api.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-base</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-persist</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-messaging</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-science</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-domain</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-service</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.amee.platform</groupId>-->
+            <!--<artifactId>amee-platform-resource</artifactId>-->
+            <!--<version>${amee-platform.version}</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
 
         <!-- Compile Dependencies. -->
         <dependency>

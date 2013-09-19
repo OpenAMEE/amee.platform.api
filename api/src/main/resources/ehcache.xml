@@ -1,0 +1,520 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd">
+
+    <diskStore path="java.io.tmp"/>
+
+    <!-- **** Default cache configuration **** -->
+
+    <!-- NOTE: this should not get used because caches are explicitly defined below -->
+    <defaultCache maxElementsInMemory="4000"
+                  eternal="false"
+                  timeToIdleSeconds="1800"
+                  timeToLiveSeconds="3600"
+                  overflowToDisk="false">
+    </defaultCache>
+
+    <!-- JavaDoc: Tracks the timestamps of the most recent updates to particular tables.
+    It is important that the cache timeout of the underlying cache implementation
+    be set to a higher value than the timeouts of any of the query caches. In fact,
+    we recommend that the the underlying cache not be configured for expiry at all.
+    Note, in particular, that an LRU cache expiry policy is never appropriate. -->
+    <!-- NOTE: maxElementsInMemory should match (or exceed # of tables). -->
+    <cache name="org.hibernate.cache.UpdateTimestampsCache"
+           maxElementsInMemory="4000"
+           eternal="true"
+           overflowToDisk="false">
+    </cache>
+
+    <!-- JavaDoc: The standard implementation of the Hibernate QueryCache interface.
+    This implementation is very good at recognizing stale query results and
+    re-running queries when it detects this condition, recaching the new results.
+    NOTE: this should not get used because query caches are explicitly defined below -->
+    <cache name="org.hibernate.cache.StandardQueryCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="3600"
+           overflowToDisk="false">
+    </cache>
+
+    <!--
+        **** Data capacity (collected from DB, with some contingency) ****
+        40 APIVersions
+        200 Data Categories
+        200 Item Definitions
+        200 Algorithms
+        100 Value Definitions
+        1000 Item Value Definitions
+        10,000 Data Items (DI)
+        50,000 Data Item Values (DIV)
+
+        **** Profile capacity assumptions (estimates) ****
+        50 concurrent Profiles (P)
+        50 Profile Items (PI) per P
+        2500 total PIs (Ps * PIs per P)
+        3 Profile Item Values (PIV) per PI
+        7,500 total PIVs (total PIs * PIVs per PI)
+
+        **** Aggregates ****
+        12,500 Items (DIs + PIs)
+        57,500 Item Values (PIVs + DIVs)
+
+        **** Queries?? ****
+
+        **** Application objects ****
+        120 Data Sheets (= Data Categories * 2)
+        6,000 Profile Sheets (Profiles * DCs * 2 dates)
+    -->
+
+    <!-- **** AMEE - Entities **** -->
+
+    <!-- APIVersion -->
+    <cache name="com.amee.domain.data.LocaleName"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- APIVersion -->
+    <cache name="com.amee.domain.APIVersion"
+           maxElementsInMemory="40"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Algorithm -->
+    <cache name="com.amee.domain.algorithm.AbstractAlgorithm"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Algorithm -->
+    <cache name="com.amee.domain.algorithm.Algorithm"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- DataCategory -->
+    <cache name="com.amee.domain.data.DataCategory"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Item -->
+    <cache name="com.amee.domain.item.data.DataItem"
+           maxElementsInMemory="12500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItem"
+           maxElementsInMemory="12500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ItemDefinition -->
+    <cache name="com.amee.domain.data.ItemDefinition"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.data.ItemDefinition.algorithms"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.data.ItemDefinition.itemValueDefinitions"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.data.ItemDefinition.returnValueDefinitions"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ItemValue -->
+    <cache name="com.amee.domain.item.data.DataItemNumberValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemNumberValueHistory"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemTextValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.data.DataItemTextValueHistory"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItemNumberValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.item.profile.ProfileItemTextValue"
+           maxElementsInMemory="57500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ItemValueDefinition -->
+    <cache name="com.amee.domain.data.ItemValueDefinition"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.data.ItemValueDefinition.apiVersions"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ReturnValueDefinition -->
+    <cache name="com.amee.domain.data.ReturnValueDefinition"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Profile -->
+    <cache name="com.amee.domain.profile.Profile"
+           maxElementsInMemory="50"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ValueDefinition -->
+    <cache name="com.amee.domain.ValueDefinition"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Metadata -->
+    <cache name="com.amee.domain.Metadata"
+           maxElementsInMemory="5000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Tag -->
+    <cache name="com.amee.domain.tag.Tag"
+           maxElementsInMemory="5000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="com.amee.domain.tag.Tag.entityTags"
+           maxElementsInMemory="10"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- EntityTag -->
+    <cache name="com.amee.domain.tag.EntityTag"
+           maxElementsInMemory="5000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Units -->
+    <cache name="com.amee.domain.unit.AMEEUnit"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <cache name="com.amee.domain.unit.AMEEUnitType"
+           maxElementsInMemory="500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- **** AMEE - Queries **** -->
+
+    <!-- DataServiceDAO -->
+    <cache name="query.dataService"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- ProfileServiceDAO -->
+    <cache name="query.profileService"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- DefinitionServiceDAO -->
+    <cache name="query.definitionService"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- **** AMEE - Application objects **** -->
+
+    <!-- Drill Down Choices -->
+    <cache name="DrillDownChoices"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Data Sheets -->
+    <cache name="DataSheets"
+           maxElementsInMemory="120"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="172800"
+           timeToLiveSeconds="345600"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+    <cache name="DataSheetsEternal"
+           maxElementsInMemory="60"
+           eternal="true"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Profile Sheets -->
+    <cache name="ProfileSheets"
+           maxElementsInMemory="6000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Data Categories -->
+    <cache name="DataCategoryChildren"
+           maxElementsInMemory="4000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- **** Entities **** -->
+
+    <!-- User -->
+    <cache name="com.amee.domain.auth.User"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Group -->
+    <cache name="com.amee.domain.auth.Group"
+           maxElementsInMemory="50"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- GroupPrincipal -->
+    <cache name="com.amee.domain.auth.GroupPrincipal"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- Permission -->
+    <cache name="com.amee.domain.auth.Permission"
+           maxElementsInMemory="2000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- AuthenticationDAO -->
+    <cache name="query.authenticationService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- PermissionServiceDAO -->
+    <cache name="query.permissionService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- GroupService -->
+    <cache name="query.groupService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- SiteService -->
+    <cache name="query.siteService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- MetadataService -->
+    <cache name="query.metadataService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- TagService -->
+    <cache name="query.tagService"
+           maxElementsInMemory="200"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+    <!-- LocaleService -->
+    <cache name="query.localeService"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="1800"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
+</ehcache>

@@ -8,8 +8,8 @@
 
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <!-- Properties. -->

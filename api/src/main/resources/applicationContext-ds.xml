@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- DataSource, em/tx configuration -->
+    <!-- See: http://commons.apache.org/dbcp/configuration.html -->
+    <!-- See: http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-configuration-properties.html -->
+    <bean id="ameeDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${DB_DRIVER}"/>
+        <property name="url" value="${DB_URL_PREFIX}:${DB_URL}"/>
+        <property name="username" value="${DB_USERNAME}"/>
+        <property name="password" value="${DB_PSWD}"/>
+        <property name="initialSize" value="10"/>
+        <property name="maxActive" value="250"/>
+        <property name="maxIdle" value="50"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxWait" value="-1"/>
+        <property name="validationQuery" value="${VALIDATION_QUERY}"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="300"/>
+        <property name="minEvictableIdleTimeMillis" value="240000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="1000"/>
+        <property name="defaultAutoCommit" value="false"/>
+    </bean>
+
+</beans>

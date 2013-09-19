@@ -2,21 +2,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Identity. -->
-    <name>amee-persist</name>
-    <artifactId>amee-persist</artifactId>
+    <name>amee-platform-persist</name>
+    <artifactId>amee-platform-persist</artifactId>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <!-- Properties. -->
     <properties>
-
-        <!-- Internal Versions. -->
-        <amee-base.version>1.4.1-SNAPSHOT</amee-base.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
@@ -125,9 +122,8 @@
 
         <!-- Internal Dependencies. -->
         <dependency>
-            <groupId>com.amee</groupId>
-            <artifactId>amee-base</artifactId>
-            <version>${amee-base.version}</version>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-base</artifactId>
         </dependency>
 
         <!-- Compile Dependencies. -->
@@ -152,6 +148,11 @@
             <artifactId>jcl-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-dbcp</groupId>

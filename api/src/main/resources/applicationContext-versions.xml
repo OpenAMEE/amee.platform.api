@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="versions" class="com.amee.base.domain.Versions">
+        <property name="versions">
+            <list>
+                <ref local="v_3_0_0"/>
+                <ref local="v_3_1_0"/>
+                <ref local="v_3_2_0"/>
+                <ref local="v_3_3_0"/>
+                <ref local="v_3_4_0"/>
+                <ref local="v_3_5_0"/>
+                <ref local="v_3_6_0"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="v_3_0_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.0.0"/>
+    </bean>
+
+    <bean id="v_3_1_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.1.0"/>
+    </bean>
+
+    <bean id="v_3_2_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.2.0"/>
+    </bean>
+
+    <bean id="v_3_3_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.3.0"/>
+    </bean>
+
+    <bean id="v_3_4_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.4.0"/>
+    </bean>
+
+    <bean id="v_3_5_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.5.0"/>
+    </bean>
+
+    <bean id="v_3_6_0" class="com.amee.base.domain.Version">
+        <constructor-arg value="3.6.0"/>
+    </bean>
+
+</beans>

@@ -11,16 +11,12 @@
 
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <!-- Properties. -->
     <properties>
-
-        <!-- Versions. -->
-        <amee-base.version>1.4.1-SNAPSHOT</amee-base.version>
-        <amee-platform-service.version>2.5.0-SNAPSHOT</amee-platform-service.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
@@ -95,14 +91,12 @@
 
         <!-- Internal Dependencies. -->
         <dependency>
-            <groupId>com.amee</groupId>
-            <artifactId>amee-base</artifactId>
-            <version>${amee-base.version}</version>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-base</artifactId>
         </dependency>
         <dependency>
             <groupId>com.amee.platform</groupId>
             <artifactId>amee-platform-service</artifactId>
-            <version>${amee-platform-service.version}</version>
         </dependency>
 
         <!-- Compile Dependencies. -->
@@ -110,6 +104,16 @@
             <groupId>org.json</groupId>
             <artifactId>org.json</artifactId>
             <version>${org-json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
         </dependency>
 
         <!-- Test Dependencies. -->

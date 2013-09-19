@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Identity. -->
-	<name>amee-base</name>
-	<artifactId>amee-base</artifactId>
-	<packaging>jar</packkaging>
+	<name>amee-platform-base</name>
+	<artifactId>amee-platform-base</artifactId>
+	<packaging>jar</packaging>
 
 	<parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
 	<!-- Properties. -->
@@ -34,8 +34,7 @@
 		<restlet.version>1.1.10</restlet.version>
 		<slf4j.version>1.6.6</slf4j.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
-		<spymemcached.version>2.6</spymemcached.version>
-		<wrapper-community.version>3.5.14</wrapper-community.version>
+		<spymemcached.version>2.10.0</spymemcached.version>
 
 		<!-- Plugin versions -->
 		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
@@ -58,8 +57,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${maven-compiler-plugin.version}</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.7</source>
+						<target>1.7</target>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -169,6 +168,11 @@
 			<version>${slf4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -195,7 +199,7 @@
 			<version>${ehcache.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>spy</groupId>
+			<groupId>net.spy</groupId>
 			<artifactId>spymemcached</artifactId>
 			<version>${spymemcached.version}</version>
 		</dependency>
@@ -208,11 +212,6 @@
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
 			<version>${org.jdom.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>tanukisoft</groupId>
-			<artifactId>wrapper-community</artifactId>
-			<version>${wrapper-community.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -268,7 +267,7 @@
 			<!-- http://stackoverflow.com/a/9093936 -->
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<!-- Distribution Management. -->
 	<distributionManagement>

@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Project Metadata. -->
-    <artifactId>amee-platform-api-engine</artifactId>
-    <name>AMEE Platform API - Engine</name>
+    <name>amee-platform-api</name>
+    <artifactId>amee-platform-api</artifactId>
     <packaging>jar</packaging>
+
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <dependencies>
@@ -19,13 +20,11 @@
         <!-- Internal Dependencies. -->
         <dependency>
             <groupId>com.amee.platform</groupId>
-            <artifactId>amee-base</artifactId>
-            <version>${amee-platform-api.version}</version>
+            <artifactId>amee-platform-base</artifactId>
         </dependency>
         <dependency>
             <groupId>com.amee.platform</groupId>
-            <artifactId>amee-restlet</artifactId>
-            <version>${amee-platform-api.version}</version>
+            <artifactId>amee-platform-restlet</artifactId>
         </dependency>
 
         <!-- Runtime Dependencies. -->

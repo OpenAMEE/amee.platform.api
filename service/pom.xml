@@ -8,17 +8,12 @@
 
     <parent>
         <groupId>com.amee.platform</groupId>
-        <artifactId>amee-platform-api</artifactId>
-        <version>${amee-platform-api.version}</version>
+        <artifactId>amee-platform</artifactId>
+        <version>${amee-platform.version}</version>
     </parent>
 
     <!-- Properties. -->
     <properties>
-
-        <!-- Versions. -->
-        <amee-messaging.version>1.0.13-SNAPSHOT</amee-messaging.version>
-        <amee-platform-science.version>1.5.1-SNAPSHOT</amee-platform-science.version>
-        <amee-platform-domain.version>2.6.0-SNAPSHOT</amee-platform-domain.version>
 
         <!-- External Versions. -->
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
@@ -55,8 +50,17 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
+
+                        <!--
+                            sun.* packages are not included on javac bootclasspath on linux.
+                            See: http://java.sun.com/products/jdk/faq/faq-sun-packages.html
+                        -->
+                        <compilerArguments>
+                            <verbose />
+                            <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+                        </compilerArguments>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -133,14 +137,12 @@
 
         <!-- Internal Dependencies. -->
         <dependency>
-            <groupId>com.amee</groupId>
-            <artifactId>amee-messaging</artifactId>
-            <version>${amee-messaging.version}</version>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-messaging</artifactId>
         </dependency>
         <dependency>
             <groupId>com.amee.platform</groupId>
             <artifactId>amee-platform-domain</artifactId>
-            <version>${amee-platform-domain.version}</version>
         </dependency>
 
         <!-- Compile Dependencies. -->
@@ -190,6 +192,16 @@
             <groupId>org.perf4j</groupId>
             <artifactId>perf4j</artifactId>
             <version>${org-perf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
         </dependency>
 
         <!-- Runtime Dependencies. -->
@@ -292,8 +304,8 @@
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-compiler-plugin</artifactId>
                             <configuration>
-                                <source>1.6</source>
-                                <target>1.6</target>
+                                <source>1.7</source>
+                                <target>1.7</target>
                                 <compilerArguments>
                                     <verbose />
                                     <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>

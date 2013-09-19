@@ -22,10 +22,6 @@ public class RestletEngine extends Engine {
         super();
     }
 
-    public RestletEngine(String appName, String serverName, String instanceName) {
-        super(instanceName, serverName, instanceName);
-    }
-
     /**
      * A main method which can be used to start a {@link RestletEngine}.
      *
