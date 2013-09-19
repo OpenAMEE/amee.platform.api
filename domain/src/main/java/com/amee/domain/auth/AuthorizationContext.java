@@ -1,0 +1,259 @@
+package com.amee.domain.auth;
+
+import com.amee.domain.AMEEEntity;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * AuthorizationContext encapsulates the 'context' for an authorization request. The context
+ * contains three main collections; a list of 'principals', a list of 'entities' and a set of
+ * PermissionEntries. These collections are taken into consideration when deciding if a
+ * request should be authorized.
+ */
+public class AuthorizationContext implements Serializable {
+
+    /**
+     * A list of principals which may or may not be authorized for the entities.
+     */
+    private List<AMEEEntity> principals = new ArrayList<AMEEEntity>();
+
+    /**
+     * A list of entities over which the principals may or may not have permissions, along with
+     * the requested permission entries.
+     */
+    private List<AccessSpecification> accessSpecifications = new ArrayList<AccessSpecification>();
+
+    /**
+     * A set of PermissionEntries representing the consolidated & inherited access rights following
+     * execution of AuthorizationService.isAuthorized(). The PermissionEntries will reflect the state-of-play at
+     * the point of AuthorizationService.isAuthorized() returning ALLOW or DENY for the authorization check.
+     */
+    private Set<PermissionEntry> entries = new HashSet<PermissionEntry>();
+
+    /**
+     * Local cache for the result of AuthorizationService.isAuthorized().
+     */
+    private Boolean authorized = null;
+
+    /**
+     * Indicates if a User that is a super-user is one of the principals.
+     */
+    private boolean superUser = false;
+
+    private Set<String> allowReasons = new HashSet<String>();
+
+    private Set<String> denyReasons = new HashSet<String>();
+
+    /**
+     * Default constructor.
+     */
+    public AuthorizationContext() {
+        super();
+    }
+
+    /**
+     * Convienience method to add a principal to the principals collection.
+     *
+     * @param principal to add
+     */
+    public void addPrincipal(AMEEEntity principal) {
+        if (principal == null) throw new IllegalArgumentException("The principal argument must not be null.");
+        getPrincipals().add(principal);
+    }
+
+    /**
+     * Convienience method to add a list of principals to the principals collections.
+     *
+     * @param principals to add
+     */
+    public void addPrincipals(List<AMEEEntity> principals) {
+        if (principals == null) throw new IllegalArgumentException("The principals argument must not be null.");
+        getPrincipals().addAll(principals);
+    }
+
+    /**
+     * Convienience method to add an access specification to the accessSpecifications collection.
+     *
+     * @param accessSpecification to add
+     */
+    public void addAccessSpecification(AccessSpecification accessSpecification) {
+        if (accessSpecification == null)
+            throw new IllegalArgumentException("The accessSpecification argument must not be null.");
+        getAccessSpecifications().add(accessSpecification);
+    }
+
+    /**
+     * Convienience method to add a list of access specifications to the accessSpecifications collection.
+     *
+     * @param accessSpecifications to add
+     */
+    public void addAccessSpecifications(List<AccessSpecification> accessSpecifications) {
+        if (accessSpecifications == null)
+            throw new IllegalArgumentException("The accessSpecifications argument must not be null.");
+        getAccessSpecifications().addAll(accessSpecifications);
+    }
+
+    /**
+     * Reset the AuthorizationContext. All collections are cleared.
+     */
+    public void reset() {
+        authorized = null;
+        principals.clear();
+        accessSpecifications.clear();
+        entries.clear();
+    }
+
+    public JSONObject getJSONObject() throws JSONException {
+        JSONObject obj = new JSONObject();
+        JSONArray entries = new JSONArray();
+        for (PermissionEntry entry : getEntries()) {
+            entries.put(entry.getJSONObject());
+        }
+        obj.put("entries", entries);
+        return obj;
+    }
+
+    /**
+     * Returns the principals list.
+     *
+     * @return principals list
+     */
+    public List<AMEEEntity> getPrincipals() {
+        return principals;
+    }
+
+    /**
+     * Returns the accessSpecifications list.
+     *
+     * @return accessSpecifications list
+     */
+    public List<AccessSpecification> getAccessSpecifications() {
+        return accessSpecifications;
+    }
+
+    /**
+     * Returns the last AccessSpecifications from the accessSpecifications collection.
+     *
+     * @return the last AccessSpecifications or null
+     */
+    public AccessSpecification getLastAccessSpecifications() {
+        if (!accessSpecifications.isEmpty()) {
+            return accessSpecifications.get(accessSpecifications.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the entries set;
+     *
+     * @return entries set
+     */
+    public Set<PermissionEntry> getEntries() {
+        return entries;
+    }
+
+    /**
+     * Returns true if this AuthorizationContext has been checked.
+     *
+     * @return true if this AuthorizationContext has been checked
+     */
+    public boolean hasBeenChecked() {
+        return (authorized != null);
+    }
+
+    /**
+     * Returns true if this AuthorizationContext is authorized.
+     *
+     * @return true if authorize result is allow, otherwise false if result is deny
+     */
+    public boolean isAuthorized() {
+        return hasBeenChecked() && authorized;
+    }
+
+    /**
+     * Set the authorized flag.
+     *
+     * @param authorized value to set
+     */
+    public void setAuthorized(boolean authorized) {
+        this.authorized = authorized;
+    }
+
+    /**
+     * Returns true if one of the principals was a super-user.
+     *
+     * @return true if one of the principals was a super-user
+     */
+    public boolean isSuperUser() {
+        return superUser;
+    }
+
+    /**
+     * Sets the super-user flag.
+     *
+     * @param superUser new value for the super-user flag
+     */
+    public void setSuperUser(Boolean superUser) {
+        this.superUser = superUser;
+    }
+
+    /**
+     * A list of reasons for why a principal was allowed access.
+     *
+     * @return list of allow reasons
+     */
+    public Collection<String> getAllowReasons() {
+        return allowReasons;
+    }
+
+    /**
+     * Add an allow reason.
+     *
+     * @param reason for allow
+     */
+    public void addAllowReason(String reason) {
+        allowReasons.add(reason);
+    }
+
+    /**
+     * A list of reasons for why a principal was denied access.
+     *
+     * @return list of deny reasons
+     */
+    public Collection<String> getDenyReasons() {
+        return denyReasons;
+    }
+
+    /**
+     * Get the deny reasons as a CSV String.
+     *
+     * @return deny reasons as a CSV String
+     */
+    public String getDenyReasonsString() {
+        StringBuilder sb = new StringBuilder();
+        // Collate reasons into a CSV string.
+        for (String s : denyReasons) {
+            sb.append(s);
+            sb.append(", ");
+        }
+        // Remove last two chars if needed.
+        if (sb.length() > 0) {
+            sb.delete(sb.length() - 2, sb.length());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Add a deny reason.
+     *
+     * @param reason for deny
+     */
+    public void addDenyReason(String reason) {
+        denyReasons.add(reason);
+    }
+}

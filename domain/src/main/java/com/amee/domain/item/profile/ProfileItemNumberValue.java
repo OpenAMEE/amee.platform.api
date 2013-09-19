@@ -1,0 +1,232 @@
+package com.amee.domain.item.profile;
+
+import com.amee.domain.ObjectType;
+import com.amee.domain.data.ItemValueDefinition;
+import com.amee.domain.item.BaseItemValue;
+import com.amee.domain.item.NumberValue;
+import com.amee.platform.science.AmountCompoundUnit;
+import com.amee.platform.science.AmountPerUnit;
+import com.amee.platform.science.AmountUnit;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
+@Entity
+@Table(name = "PROFILE_ITEM_NUMBER_VALUE")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class ProfileItemNumberValue extends BaseProfileItemValue implements NumberValue {
+
+    public final static int UNIT_SIZE = 255;
+    public final static int PER_UNIT_SIZE = 255;
+
+    @Column(name = "UNIT", nullable = true, length = UNIT_SIZE)
+    private String unit = "";
+
+    @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
+    private String perUnit = "";
+
+    @Column(name = "VALUE", nullable = true)
+    private Double value = null;
+
+    /**
+     * This value can be used to override the persisted value.
+     */
+    @Transient
+    private transient Double valueOverride;
+
+    public ProfileItemNumberValue() {
+        super();
+    }
+
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem) {
+        super(itemValueDefinition, profileItem);
+    }
+
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, Double value) {
+        this(itemValueDefinition, profileItem);
+        if (value != null) {
+            setValue(value);
+        } else {
+            setValue("");
+        }
+    }
+
+    public ProfileItemNumberValue(ItemValueDefinition itemValueDefinition, ProfileItem profileItem, String value) {
+        this(itemValueDefinition, profileItem);
+        if (value != null) {
+            try {
+                setValue(Double.valueOf(value));
+            } catch (NumberFormatException e) {
+                setValue("");
+            }
+        } else {
+            setValue("");
+        }
+    }
+
+    protected void copyTo(BaseItemValue o) {
+        super.copyTo(o);
+        ProfileItemNumberValue v = (ProfileItemNumberValue) o;
+        v.unit = unit;
+        v.perUnit = perUnit;
+        v.value = value;
+    }
+
+    public void checkItemValueDefinition() {
+        if (!(getItemValueDefinition().isDouble() || getItemValueDefinition().isInteger())) {
+            throw new IllegalStateException();
+        }
+    }
+
+    @Override
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    public boolean isConvertible() {
+        return true;
+    }
+
+    @Override
+    public boolean isUsableValue() {
+        return value != null;
+    }
+
+    @Override
+    public AmountUnit getCanonicalUnit() {
+        return getItemValueDefinition().getUnit();
+    }
+
+    @Override
+    public boolean hasUnit() {
+        return StringUtils.isNotBlank(unit) || getItemValueDefinition().hasUnit();
+    }
+
+    @Override
+    public boolean hasPerUnit() {
+        return StringUtils.isNotBlank(perUnit) || getItemValueDefinition().hasPerUnit();
+    }
+
+    public boolean hasPerTimeUnit() {
+        return hasPerUnit() && getPerUnit().isTime();
+    }
+
+    @Override
+    public AmountPerUnit getCanonicalPerUnit() {
+        return getItemValueDefinition().getPerUnit();
+    }
+
+    @Override
+    public AmountCompoundUnit getCompoundUnit() {
+        return getUnit().with(getPerUnit());
+    }
+
+    @Override
+    public AmountCompoundUnit getCanonicalCompoundUnit() {
+        return getItemValueDefinition().getCanonicalCompoundUnit();
+    }
+
+    @Override
+    public AmountUnit getUnit() {
+        return StringUtils.isNotBlank(unit) ? AmountUnit.valueOf(unit) : getItemValueDefinition().getUnit();
+    }
+
+    public void setUnit(String unit) throws IllegalArgumentException {
+        if (unit == null) {
+            unit = "";
+        }
+        if (!getItemValueDefinition().isValidUnit(unit)) {
+            throw new IllegalArgumentException("The unit argument is not valid: " + unit);
+        }
+        this.unit = unit;
+    }
+
+    @Override
+    public AmountPerUnit getPerUnit() {
+        if (StringUtils.isNotBlank(perUnit)) {
+            if (perUnit.equals("none")) {
+                return AmountPerUnit.valueOf(getProfileItem().getDurationInternal());
+            } else {
+                return AmountPerUnit.valueOf(perUnit);
+            }
+        } else {
+            return getItemValueDefinition().getPerUnit();
+        }
+    }
+
+    public void setPerUnit(String perUnit) throws IllegalArgumentException {
+        if (perUnit == null) {
+            perUnit = "";
+        }
+        if (!getItemValueDefinition().isValidPerUnit(perUnit)) {
+            throw new IllegalArgumentException("The perUnit argument is not valid: " + perUnit);
+        }
+        this.perUnit = perUnit;
+    }
+
+    public Double getValueOverride() {
+        return valueOverride;
+    }
+
+    public void setValueOverride(Double valueOverride) {
+        this.valueOverride = valueOverride;
+    }
+
+    public Double getValue() {
+        if (valueOverride != null) {
+            return valueOverride;
+        } else {
+            return value;
+        }
+    }
+
+    @Override
+    public Double getValueAsDouble() {
+        return getValue();
+    }
+
+    @Override
+    public String getValueAsString() {
+        if (getValue() != null) {
+            NumberFormat f = NumberFormat.getInstance();
+            if (f instanceof DecimalFormat) {
+                ((DecimalFormat) f).applyPattern("0.#################");
+            }
+            return f.format(getValue());
+        } else {
+            return "";
+        }
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    public void setValue(String value) {
+        if (StringUtils.isNotBlank(value) && !value.equals("-")) {
+            // Ensure numbers are a valid format (double).
+            try {
+                this.value = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                log.warn("setValue() Invalid number format: " + value);
+                throw new IllegalArgumentException("Invalid number format: " + value);
+            }
+        } else {
+            // Number is empty.
+            this.value = null;
+        }
+    }
+
+    @Override
+    public ObjectType getObjectType() {
+        return ObjectType.PINV;
+    }
+}

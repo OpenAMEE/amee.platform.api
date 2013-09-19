@@ -1,0 +1,209 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Identity. -->
+    <name>amee-platform-domain</name>
+    <groupId>com.amee.platform</groupId>
+    <artifactId>amee-platform-domain</artifactId>
+    <version>2.6.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <!-- Properties. -->
+    <properties>
+
+        <!-- Versions. -->
+        <amee-base.version>1.4.1-SNAPSHOT</amee-base.version>
+        <amee-persist.version>1.0.15-SNAPSHOT</amee-persist.version>
+        <amee-platform-science.version>1.5.1-SNAPSHOT</amee-platform-science.version>
+
+        <!-- External Versions. -->
+        <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
+        <commons-codec.version>1.6</commons-codec.version>
+        <commons-lang.version>3.1</commons-lang.version>
+        <cglib.version>2.2.2</cglib.version>
+        <ehcache.version>2.5.2</ehcache.version>
+        <hibernate-core.version>3.6.9.Final</hibernate-core.version>
+        <joda-time.version>2.1</joda-time.version>
+        <junit.version>4.10</junit.version>
+        <jscience.version>4.3.1</jscience.version>
+        <logback-classic.version>1.0.6</logback-classic.version>
+        <org-json.version>2.0</org-json.version>
+        <org-mockito.version>1.9.0</org-mockito.version>
+        <xerces.version>2.11.0</xerces.version>
+        <xml-apis.version>2.11.0</xml-apis.version>
+
+        <!-- Plugin versions -->
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
+        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
+        
+        <!-- Other. -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <!-- Build Plugins. -->
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <localCheckout>true</localCheckout>
+                        <pushChanges>false</pushChanges>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <parallel>methods</parallel>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <!-- Dependencies. -->
+    <dependencies>
+
+        <!-- Internal Dependencies. -->
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-base</artifactId>
+            <version>${amee-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee</groupId>
+            <artifactId>amee-persist</artifactId>
+            <version>${amee-persist.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amee.platform</groupId>
+            <artifactId>amee-platform-science</artifactId>
+            <version>${amee-platform-science.version}</version>
+        </dependency>
+
+        <!-- Compile Dependencies. -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>${org-json.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>${jscience.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+
+        <!-- Test Dependencies. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>${xerces.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>xml-apis</groupId>-->
+            <!--<artifactId>xml-apis</artifactId>-->
+            <!--<version>${xml-apis.version}</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${org-mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+            <scope>test</scope>
+            <!-- http://stackoverflow.com/a/9093936 -->
+        </dependency>
+    </dependencies>
+
+    <!-- Distribution Management. -->
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases Repository</name>
+            <url>https://nexus.amee.com/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshots Repository</name>
+            <url>https://nexus.amee.com/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!-- Version Control. -->
+    <scm>
+        <connection>scm:git:ssh://git@github.com/AMEE/amee.platform.domain.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/AMEE/amee.platform.domain.git</developerConnection>
+        <url>scm:git:ssh://git@github.com/AMEE/amee.platform.domain.git</url>
+    </scm>
+
+</project>
