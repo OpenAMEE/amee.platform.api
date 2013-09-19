@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <!-- Placeholder property configuration -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <!-- Set a value that should be treated as <code>null</code> when resolved as a placeholder value -->
+        <property name="nullValue" value="NULL"/>
+    </bean>
+
+    <!-- Annotations and other stuff -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com"/>
+    <tx:annotation-driven/>
+    <aop:aspectj-autoproxy/>
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- jpaDialect -->
+    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+
+    <!-- entityManagerFactory -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="ameeDataSource"/>
+        <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.transaction.factory_class">
+                    org.springframework.orm.hibernate3.SpringTransactionFactory
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- transactionManager -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="dataSource" ref="ameeDataSource"/>
+        <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="transactionSynchronization">
+            <bean id="org.springframework.transaction.jta.JtaTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+        </property>
+    </bean>
+
+    <!-- JpaTemplate -->
+    <bean id="jpaTemplate" class="org.springframework.orm.jpa.JpaTemplate">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- DataSource -->
+    <bean id="ameeDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="url" value="jdbc:hsqldb:mem:amee_test"/>
+        <property name="username" value="sa"/>
+        <property name="password" value="NULL"/>
+        <property name="initialSize" value="10"/>
+        <property name="maxActive" value="250"/>
+        <property name="maxIdle" value="50"/>
+        <property name="minIdle" value="10"/>
+        <property name="maxWait" value="-1"/>
+        <property name="validationQuery" value="SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="300"/>
+        <property name="minEvictableIdleTimeMillis" value="240000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="1000"/>
+        <property name="defaultAutoCommit" value="false"/>
+    </bean>
+
+    <!-- DAO that that uses a jpaTemplate. -->
+    <!--<bean id="dummyEntityDao" class="com.amee.persist.DummyEntityDAOImpl_JpaDaoSupport">-->
+    <!--<property name="jpaTemplate" ref="jpaTemplate"/>-->
+    <!--</bean>-->
+
+    <!-- DAO that uses the EntityManager directly. -->
+    <bean id="dummyEntityDao" class="com.amee.persist.DummyEntityDAOImpl_EntityManager"/>
+
+</beans>
