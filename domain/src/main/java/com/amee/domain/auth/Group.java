@@ -25,17 +25,17 @@ import javax.persistence.Table;
  */
 @Entity(name = "Group")
 // can't use 'GROUP' as that is a reserved word in SQL
-@Table(name = "GROUPS")
+@Table(name = "groups")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Group extends AMEEEntity implements Comparable {
 
     public final static int NAME_SIZE = 100;
     public final static int DESCRIPTION_SIZE = 1000;
 
-    @Column(name = "NAME", length = NAME_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "DESCRIPTION", length = DESCRIPTION_SIZE, nullable = false)
+    @Column(name = "description", length = DESCRIPTION_SIZE, nullable = false)
     private String description = "";
 
     public Group() {

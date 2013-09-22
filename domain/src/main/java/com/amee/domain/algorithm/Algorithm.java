@@ -21,18 +21,18 @@ import javax.script.ScriptException;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("AL")
+@DiscriminatorValue("al")
 public class Algorithm extends AbstractAlgorithm implements com.amee.platform.science.Algorithm, Pathable {
 
     // Default Algorithm name to use in calculations
     public final static String DEFAULT = "default";
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ITEM_DEFINITION_ID", nullable = true)
+    @JoinColumn(name = "item_definition_id", nullable = true)
     private ItemDefinition itemDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "ALGORITHM_CONTEXT_ID")
+    @JoinColumn(name = "algorithm_context_id")
     private AlgorithmContext algorithmContext;
 
     public Algorithm() {

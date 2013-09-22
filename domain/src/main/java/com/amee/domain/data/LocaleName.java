@@ -18,16 +18,16 @@ import java.util.Locale;
  * Modelled as a One-to-Many relationship with the owning entity.
  */
 @Entity
-@Table(name = "LOCALE_NAME")
+@Table(name = "locale_name")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class LocaleName extends AMEEEntity {
 
     // The locale identifier (e.g. Fr or Fr_fr).
-    @Column(name = "LOCALE", nullable = false)
+    @Column(name = "locale", nullable = false)
     private String locale;
 
     // The locale-specific name.
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name = "";
 
     @Embedded

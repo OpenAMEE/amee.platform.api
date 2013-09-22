@@ -50,7 +50,7 @@ public class DataServiceImpl implements DataService, IDataService {
     private DataItemService dataItemService;
 
     @Autowired
-    private DataServiceDAOImpl dao;
+    private DataServiceDAO dao;
 
     private CacheHelper cacheHelper = CacheHelper.getInstance();
 

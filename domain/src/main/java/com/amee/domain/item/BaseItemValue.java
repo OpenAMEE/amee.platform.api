@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class BaseItemValue extends AMEEEntity implements Pathable, ExternalGenericValue {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ITEM_VALUE_DEFINITION_ID")
+    @JoinColumn(name = "item_value_definition_id")
     private ItemValueDefinition itemValueDefinition;
 
     @Transient

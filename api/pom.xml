@@ -1,10 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Project Metadata. -->
     <name>amee-platform-api</name>
     <artifactId>amee-platform-api</artifactId>
     <packaging>jar</packaging>
@@ -14,6 +13,101 @@
         <artifactId>amee-platform</artifactId>
         <version>${amee-platform.version}</version>
     </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+
+            <!-- Unit tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
+            <!-- Integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <runOrder>alphabetical</runOrder>
+                    <environmentVariables>
+                        <!-- H2 -->
+                        <!--
+                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <DB_URL>h2:mem:amee_test</DB_URL>
+                        <DB_DRIVER>org.h2.Driver</DB_DRIVER>
+                        <DB_USERNAME>sa</DB_USERNAME>
+                        <DB_PSWD>NULL</DB_PSWD>
+                        <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
+                         -->
+
+                        <!-- HSQLDB -->
+                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
+                        <DB_URL>hsqldb:mem:amee_test</DB_URL>
+                        <DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>
+                        <DB_USERNAME>sa</DB_USERNAME>
+                        <DB_PSWD>NULL</DB_PSWD>
+                        <VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>
+
+                        <!-- MySQL -->
+                        <!--
+                        <DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>
+                        <DB_URL>mysql://localhost:3306/amee_test?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL>
+                        <DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER>
+                        <DB_USERNAME>amee</DB_USERNAME>
+                        <DB_PSWD>amee</DB_PSWD>
+                        <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
+                        -->
+
+                        <!-- AMEE -->
+                        <HOST_NAME>localhost</HOST_NAME>
+                        <PROTOCOL>http</PROTOCOL>
+                        <PORT>7777</PORT>
+                        <SECURE_PORT>7778</SECURE_PORT>
+
+                        <LOG_LEVEL>DEBUG</LOG_LEVEL>
+                        <DEFAULT_LOG_LEVEL>WARN</DEFAULT_LOG_LEVEL>
+                        <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
+                        <RESOURCE_DEFAULT_TIMEOUT>15</RESOURCE_DEFAULT_TIMEOUT>
+                    </environmentVariables>
+                    <systemPropertyVariables>
+                        <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
+                        <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
+                        <java.awt.headless>true</java.awt.headless>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
 
@@ -62,13 +156,27 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate-core.version}</version>
+            <version>${hibernate.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core.version}</version>
+            <version>${hibernate.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Override the included ehcache version from hibernate-ehcache -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>${hibernate.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -129,6 +237,25 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${org-aspectj.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Janino needed for logback conditionals -->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>${janino.version}</version>
             <scope>runtime</scope>
         </dependency>
 

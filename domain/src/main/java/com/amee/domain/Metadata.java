@@ -3,30 +3,29 @@ package com.amee.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * An entity for storing misc. metadata values for other entities.
  */
 @Entity
-@Table(name = "METADATA")
+@Table(name = "metadata")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Metadata extends AMEEEntity {
 
     public final static int NAME_MAX_SIZE = 255;
-    // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
-    public final static int VALUE_MAX_SIZE = 32767;
+
+    // MySQL mediumtext: http://stackoverflow.com/a/3507664
+    public final static int VALUE_MAX_SIZE = 16_777_215;
 
     @Embedded
     private AMEEEntityReference entityReference = new AMEEEntityReference();
 
-    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
+    @Column(name = "name", nullable = false, length = NAME_MAX_SIZE)
     private String name = "";
 
-    @Column(name = "VALUE", nullable = false, length = VALUE_MAX_SIZE)
+    @Lob
+    @Column(name = "value", nullable = false, length = VALUE_MAX_SIZE)
     private String value = "";
 
     public Metadata() {

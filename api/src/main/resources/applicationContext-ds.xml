@@ -4,9 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <!-- DataSource, em/tx configuration -->
-    <!-- See: http://commons.apache.org/dbcp/configuration.html -->
-    <!-- See: http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-configuration-properties.html -->
+    <!-- The JDBC DataSource for the JPA persistence provider. This is an alternative to keeping the
+	     JDBC configuration in persistence.xml, passing in a Spring-managed DataSource instead. -->
     <bean id="ameeDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${DB_DRIVER}"/>
         <property name="url" value="${DB_URL_PREFIX}:${DB_URL}"/>

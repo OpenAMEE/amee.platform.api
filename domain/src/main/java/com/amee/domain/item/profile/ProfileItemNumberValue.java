@@ -19,20 +19,20 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 @Entity
-@Table(name = "PROFILE_ITEM_NUMBER_VALUE")
+@Table(name = "profile_item_number_value")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProfileItemNumberValue extends BaseProfileItemValue implements NumberValue {
 
     public final static int UNIT_SIZE = 255;
     public final static int PER_UNIT_SIZE = 255;
 
-    @Column(name = "UNIT", nullable = true, length = UNIT_SIZE)
+    @Column(name = "unit", nullable = true, length = UNIT_SIZE)
     private String unit = "";
 
-    @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
+    @Column(name = "per_unit", nullable = true, length = PER_UNIT_SIZE)
     private String perUnit = "";
 
-    @Column(name = "VALUE", nullable = true)
+    @Column(name = "value", nullable = true)
     private Double value = null;
 
     /**

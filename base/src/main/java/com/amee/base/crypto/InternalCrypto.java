@@ -14,6 +14,8 @@ public class InternalCrypto extends BaseCrypto {
 
     private final static String KEY_FILE = "amee.keyFile";
     private final static String SALT_FILE = "amee.saltFile";
+    private final static String AMEE_KEY = "AMEE_KEY";
+    private final static String AMEE_SALT = "AMEE_SALT";
     private static byte[] salt = null;
     private static SecretKeySpec secretKeySpec = null;
     private static IvParameterSpec iv = null;
@@ -24,7 +26,7 @@ public class InternalCrypto extends BaseCrypto {
     private InternalCrypto() {
         throw new AssertionError();
     }
-    
+
     /**
      * Initialise the static properties of this Class from the key and salt files. The key file is identified by
      * the amee.keyFile system property and the salt file by the amee.saltFile system property. See
@@ -34,19 +36,30 @@ public class InternalCrypto extends BaseCrypto {
      */
     private synchronized static void initialise() throws CryptoException {//NOPMD
         if (InternalCrypto.secretKeySpec == null) {
-            String keyFileName = System.getProperty(KEY_FILE);
-            String saltFileName = System.getProperty(SALT_FILE);
-            if ((keyFileName != null) && (saltFileName != null)) {
-                File keyFile = new File(keyFileName);
-                File saltFile = new File(saltFileName);
-                if (keyFile.isFile() && saltFile.isFile()) {
-                    // Load from filesystem
-                    initialise(InternalCrypto.readKeyFromFile(keyFile), InternalCrypto.readSaltFromFile(saltFile));
-                } else {
-                    // Load from classpath
-                    initialise(InternalCrypto.readKeyFromClasspath(keyFileName), InternalCrypto.readSaltFromClasspath(saltFileName));
+
+            // First try environment
+            String key = System.getenv(AMEE_KEY);
+            String salt = System.getenv(AMEE_SALT);
+            if (key != null && salt != null) {
+                initialise(InternalCrypto.readKeyFromString(System.getenv(AMEE_KEY)),
+                    InternalCrypto.readSaltFromString(System.getenv(AMEE_SALT)));
+            } else {
+
+                // Try loading from files
+                String keyFileName = System.getProperty(KEY_FILE);
+                String saltFileName = System.getProperty(SALT_FILE);
+                if ((keyFileName != null) && (saltFileName != null)) {
+                    File keyFile = new File(keyFileName);
+                    File saltFile = new File(saltFileName);
+                    if (keyFile.isFile() && saltFile.isFile()) {
+                        // Load from filesystem
+                        initialise(InternalCrypto.readKeyFromFile(keyFile), InternalCrypto.readSaltFromFile(saltFile));
+                    } else {
+                        // Load from classpath
+                        initialise(InternalCrypto.readKeyFromClasspath(keyFileName), InternalCrypto.readSaltFromClasspath(saltFileName));
+                    }
                 }
-            } 
+            }
             if ((secretKeySpec == null) || (iv == null)) {
                 throw new RuntimeException("Could not create SecretKeySpec or IvParameterSpec instances. Check key and salt files.");
             }

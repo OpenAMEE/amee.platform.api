@@ -23,7 +23,7 @@ public abstract class AMEEEntity extends BaseEntity implements IAMEEEntity {
     /**
      * Represents the state of the entity.
      */
-    @Column(name = "STATUS")
+    @Column(name = "status")
     protected AMEEStatus status = AMEEStatus.ACTIVE;
 
     /**

@@ -20,7 +20,8 @@ import javax.persistence.*;
 import java.util.*;
 
 @Repository
-public class DataServiceDAOImpl implements DataServiceDAO {
+public class
+    DataServiceDAOImpl implements DataServiceDAO {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

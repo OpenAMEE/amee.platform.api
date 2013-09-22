@@ -13,3 +13,6 @@ smoke.*.properties
 .settings
 .groovy
 smoke.*.properties
+target
+
+/.env

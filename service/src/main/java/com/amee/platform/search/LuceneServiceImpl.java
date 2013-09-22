@@ -815,7 +815,7 @@ public class LuceneServiceImpl implements LuceneService {
         }
     }
 
-    @Value("#{ systemProperties['amee.masterIndex'] }")
+    @Value("${MASTER_INDEX}")
     public void setMasterIndex(Boolean masterIndex) {
         this.masterIndex = masterIndex;
     }
@@ -826,32 +826,32 @@ public class LuceneServiceImpl implements LuceneService {
     }
 
     @Override
-    @Value("#{ systemProperties['amee.clearIndex'] }")
+    @Value("${CLEAR_INDEX}")
     public void setClearIndex(Boolean clearIndex) {
         this.clearIndex = clearIndex;
     }
 
-    @Value("#{ systemProperties['amee.snapshotEnabled'] }")
+    @Value("${SNAPSHOT_ENABLED}")
     public void setSnapshotEnabled(Boolean snapshotEnabled) {
         this.snapshotEnabled = snapshotEnabled;
     }
 
-    @Value("#{ systemProperties['amee.indexPath'] }")
+    @Value("${INDEX_PATH}")
     public void setIndexPath(String indexPath) {
         this.indexPath = indexPath;
     }
 
-    @Value("#{ systemProperties['amee.lucenePath'] }")
+    @Value("${LUCENE_PATH}")
     public void setLucenePath(String lucenePath) {
         this.lucenePath = lucenePath;
     }
 
-    @Value("#{ systemProperties['amee.snapShooterPath'] }")
+    @Value("${SNAPSHOOTER_PATH}")
     public void setSnapShooterPath(String snapShooterPath) {
         this.snapShooterPath = snapShooterPath;
     }
 
-    @Value("#{ systemProperties['amee.indexCheckSearcherOnCommit'] }")
+    @Value("${INDEX_CHECK_SEARCHER_ON_COMMIT}")
     public void setCheckSearcherOnCommit(Boolean checkSearcherOnCommit) {
         this.checkSearcherOnCommit = checkSearcherOnCommit;
     }

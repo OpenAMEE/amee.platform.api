@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "API_VERSION")
+@Table(name = "api_version")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class APIVersion extends AMEEEntity {
 
@@ -21,7 +21,7 @@ public class APIVersion extends AMEEEntity {
     public static final APIVersion TWO = new APIVersion("2.0");
     public final static int API_VERSION_SIZE = 3;
 
-    @Column(name = "VERSION", length = API_VERSION_SIZE, nullable = true)
+    @Column(name = "version", length = API_VERSION_SIZE, nullable = true)
     private String version;
 
     public APIVersion() {

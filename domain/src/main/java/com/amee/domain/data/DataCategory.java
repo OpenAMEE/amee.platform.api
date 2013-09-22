@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Table(name = "DATA_CATEGORY")
+@Table(name = "data_category")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DataCategory extends AMEEEntity implements IDataCategoryReference, Pathable {
 
@@ -33,20 +33,20 @@ public class DataCategory extends AMEEEntity implements IDataCategoryReference, 
     public final static int HISTORY_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "DATA_CATEGORY_ID")
+    @JoinColumn(name = "data_category_id")
     private DataCategory dataCategory;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "ITEM_DEFINITION_ID")
+    @JoinColumn(name = "item_definition_id")
     private ItemDefinition itemDefinition;
 
-    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
+    @Column(name = "path", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
 
-    @Column(name = "WIKI_NAME", length = WIKI_NAME_MAX_SIZE, nullable = false)
+    @Column(name = "wiki_name", length = WIKI_NAME_MAX_SIZE, nullable = false)
     private String wikiName = "";
 
     @Transient

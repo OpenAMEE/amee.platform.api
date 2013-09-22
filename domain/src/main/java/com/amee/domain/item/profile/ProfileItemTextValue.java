@@ -13,14 +13,13 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PROFILE_ITEM_TEXT_VALUE")
+@Table(name = "profile_item_text_value")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProfileItemTextValue extends BaseProfileItemValue implements ExternalTextValue {
 
-    // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
-    public final static int VALUE_SIZE = 32767;
+    public final static int VALUE_SIZE = 255;
 
-    @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
+    @Column(name = "value", nullable = false, length = VALUE_SIZE)
     private String value = "";
 
     public ProfileItemTextValue() {

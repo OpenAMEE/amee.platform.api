@@ -13,58 +13,84 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-    <!-- Placeholder property configuration -->
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <!-- Set a value that should be treated as <code>null</code> when resolved as a placeholder value -->
-        <property name="nullValue" value="NULL"/>
-    </bean>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
-    <!-- Annotations and other stuff -->
-    <context:annotation-config/>
     <context:component-scan base-package="com"/>
+
     <tx:annotation-driven/>
+
+    <!-- Enable @AspectJ Support -->
     <aop:aspectj-autoproxy/>
-    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+
+    <!-- Inject the JPA EntityManager into DAOs using @PersistenceContext -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- Translate persistence exceptions into Spring data exceptions -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
 
     <!-- An aspect to support the perf4j @Profiled annotation.  -->
     <bean id="timingAspect" class="org.perf4j.slf4j.aop.TimingAspect"/>
-
-    <!-- TransactionController Implementation. -->
-    <bean id="transactionController" class="com.amee.persist.TransactionControllerImpl"/>
-
-    <!-- EhCacheManagerFactoryBean -->
-    <bean id="cacheManager" class="${CACHE_MANAGER_CLASS}">
-        <property name="configLocation" value="classpath:ehcache.xml"/>
-        <property name="shared" value="true"/>
-    </bean>
-
-    <!-- CacheService -->
-    <bean id="cacheService" class="${CACHE_SERVICE_CLASS}"/>
 
     <!-- jpaDialect -->
     <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
 
     <!-- entityManagerFactory -->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="amee"/>
         <property name="dataSource" ref="ameeDataSource"/>
-        <property name="jpaDialect" ref="jpaDialect"/>
+        <property name="jpaVendorAdapter" ref="jpaVendorAdaptor"/>
+        <property name="packagesToScan" value="com.amee"/>
+
+        <!-- Specify hibernate specific stuff in here instead of in persistence.xml -->
+        <property name="jpaPropertyMap">
+            <props>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop>
+                <prop key="hibernate.generate_statistics">false</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <!-- JPA Vendor Adaptor -->
+    <bean id="jpaVendorAdaptor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="database" value="${DATABASE}"/>
+        <property name="databasePlatform" value="${DATABASE_PLATFORM}"/>
+        <property name="showSql" value="${SHOW_SQL}"/>
     </bean>
 
     <!-- transactionManager -->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="ameeDataSource"/>
+
+        <!-- Allow transactions on simple JDBC operations on the same DataSource -->
         <property name="jpaDialect" ref="jpaDialect"/>
-        <property name="transactionSynchronization">
-            <bean id="org.springframework.transaction.jta.JtaTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION"
-                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
-        </property>
+
+        <!--<property name="transactionSynchronization">-->
+            <!--<bean id="org.springframework.transaction.jta.JtaTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION"-->
+                  <!--class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>-->
+        <!--</property>-->
     </bean>
+
+    <!-- TransactionController Implementation. -->
+    <bean id="transactionController" class="com.amee.persist.TransactionControllerImpl"/>
+
+    <!-- EhCacheManagerFactoryBean -->
+    <!--<bean id="cacheManager" class="${CACHE_MANAGER_CLASS}">-->
+        <!--<property name="configLocation" value="classpath:ehcache.xml"/>-->
+        <!--<property name="shared" value="true"/>-->
+    <!--</bean>-->
+
+    <!-- CacheService -->
+    <bean id="cacheService" class="${CACHE_SERVICE_CLASS}"/>
 
     <!-- Messages for validation -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="basename" value="${CONF_HOME}/validationMessages"/>
+        <property name="basename" value="/validationMessages"/>
         <property name="cacheSeconds" value="60"/>
         <property name="useCodeAsDefaultMessage" value="true"/>
     </bean>

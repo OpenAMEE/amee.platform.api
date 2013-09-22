@@ -12,10 +12,9 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class BaseDataItemTextValue extends BaseDataItemValue implements ExternalTextValue {
 
-    // 32767 because this is bigger than 255, smaller than 65535 and fits into an exact number of bits.
-    public final static int VALUE_SIZE = 32767;
+    public final static int VALUE_SIZE = 255;
 
-    @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
+    @Column(name = "value", nullable = false, length = VALUE_SIZE)
     private String value = "";
 
     public BaseDataItemTextValue() {

@@ -21,7 +21,7 @@ import javax.persistence.*;
  * @author Diggory Briercliffe
  */
 @Entity
-@Table(name = "GROUP_PRINCIPAL")
+@Table(name = "group_principal")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class GroupPrincipal extends AMEEEntity implements Comparable {
 
@@ -29,7 +29,7 @@ public class GroupPrincipal extends AMEEEntity implements Comparable {
      * The Group that the principal is a member of.
      */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "GROUP_ID")
+    @JoinColumn(name = "group_id")
     private Group group;
 
     /**
@@ -37,9 +37,9 @@ public class GroupPrincipal extends AMEEEntity implements Comparable {
      */
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "entityId", column = @Column(name = "PRINCIPAL_ID")),
-            @AttributeOverride(name = "entityUid", column = @Column(name = "PRINCIPAL_UID")),
-            @AttributeOverride(name = "entityType", column = @Column(name = "PRINCIPAL_TYPE"))})
+            @AttributeOverride(name = "entityId", column = @Column(name = "principal_id")),
+            @AttributeOverride(name = "entityUid", column = @Column(name = "principal_uid")),
+            @AttributeOverride(name = "entityType", column = @Column(name = "principal_type"))})
     private AMEEEntityReference principalReference = new AMEEEntityReference();
 
     public GroupPrincipal() {

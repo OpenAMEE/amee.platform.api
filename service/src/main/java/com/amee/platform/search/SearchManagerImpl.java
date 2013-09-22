@@ -354,27 +354,27 @@ public class SearchManagerImpl implements SearchManager, ApplicationContextAware
         this.applicationContext = applicationContext;
     }
 
-    @Value("#{ systemProperties['amee.masterIndex'] }")
+    @Value("#{ systemEnvironment['MASTER_INDEX'] }")
     public void setMasterIndex(Boolean masterIndex) {
         this.masterIndex = masterIndex;
     }
 
-    @Value("#{ systemProperties['amee.checkDataCategories'] }")
+    @Value("#{ systemEnvironment['CHECK_DATA_CATEGORIES'] }")
     public void setCheckDataCategories(Boolean checkDataCategories) {
         this.checkDataCategories = checkDataCategories;
     }
 
-    @Value("#{ systemProperties['amee.indexDataCategories'] }")
+    @Value("#{ systemEnvironment['INDEX_DATA_CATEGORIES'] }")
     public void setIndexDataCategories(Boolean indexDataCategories) {
         this.indexDataCategories = indexDataCategories;
     }
 
-    @Value("#{ systemProperties['amee.indexDataItems'] }")
+    @Value("#{ systemEnvironment['INDEX_DATA_ITEMS'] }")
     public void setIndexDataItems(Boolean indexDataItems) {
         this.indexDataItems = indexDataItems;
     }
 
-    @Value("#{ systemProperties['amee.dataCategoryPathPrefix'] }")
+    @Value("#{ systemEnvironment['DATA_CATEGORY_PATH_PREFIX'] }")
     public void setDataCategoryPathPrefix(String dataCategoryPathPrefix) {
         this.dataCategoryPathPrefix = dataCategoryPathPrefix;
     }

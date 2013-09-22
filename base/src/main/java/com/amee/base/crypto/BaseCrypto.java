@@ -20,6 +20,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
@@ -226,7 +227,7 @@ public class BaseCrypto {
 
     /**
      * Loads a {@link SecretKeySpec} from a file on the classpath.
-     * 
+     *
      * @param keyFileName       the name of the classpath resource to load the key from
      * @return                  the SecretKeySpec loaded from the classpath
      * @throws CryptoException  encapsulates various potential cryptography exceptions
@@ -246,11 +247,11 @@ public class BaseCrypto {
             throw new CryptoException(true, e);
         }
     }
-    
+
     /**
      * Loads a salt from a file on the classpath.  Salt must be exactly 16 bytes long otherwise a 
      * RuntimeException is thrown.
-     * 
+     *
      * @param saltFileName      the name of the classpath resource to load the key from
      * @return                  the salt as a byte array
      * @throws CryptoException  encapsulates various potential cryptography exceptions
@@ -274,6 +275,22 @@ public class BaseCrypto {
             throw new CryptoException(true, e);
         }
     }
+
+    /**
+     * Read key byte array from base 64 encoded string.
+     *
+     * @param base64Encoded
+     * @return
+     */
+    public static SecretKeySpec readKeyFromString(String base64Encoded) {
+        byte[] keyAsBytes = DatatypeConverter.parseBase64Binary(base64Encoded);
+        return new SecretKeySpec(keyAsBytes, "AES");
+    }
+
+    public static byte[] readSaltFromString(String salt) {
+        return salt.getBytes();
+    }
+
 
     /**
      * Return an MD5 Base64 encoded digest of the supplied String & salt. Only the first
@@ -308,7 +325,11 @@ public class BaseCrypto {
         System.out.println("Creating new key...");
         System.out.flush();
         SecretKey secretKey = getNewKey();
-        saveKeyToFile(secretKey, new File(args[0]));
-        System.out.println("...done.");
+        if (args.length > 0) {
+            saveKeyToFile(secretKey, new File(args[0]));
+            System.out.println("...done.");
+        } else {
+            System.out.println(getKeyAsString(secretKey));
+        }
     }
 }

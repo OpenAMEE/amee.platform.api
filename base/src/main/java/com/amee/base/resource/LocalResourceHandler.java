@@ -171,7 +171,7 @@ public class LocalResourceHandler implements ResourceHandler {
      *
      * @param defaultTimeout timeout value in seconds
      */
-    @Value("#{ systemProperties['amee.resourceDefaultTimeout'] }")
+    @Value("#{ systemEnvironment['RESOURCE_DEFAULT_TIMEOUT'] }")
     public void setDefaultTimeout(Integer defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
     }
