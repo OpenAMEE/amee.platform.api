@@ -163,7 +163,7 @@
                         -->
                         <!--<compilerArguments>-->
                             <!--<verbose />-->
-                            <!--<bootclasspath>${java.home}/lib/rt.jar</bootclasspath>-->
+                            <!--<bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>-->
                         <!--</compilerArguments>-->
                     </configuration>
                     <dependencies>
@@ -200,12 +200,6 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven-release-plugin.version}</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-report-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                 </plugin>
@@ -215,7 +209,6 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
-                        <skipTests>false</skipTests>
 
                         <!-- Exclude the smoke tests -->
                         <excludes>
@@ -225,28 +218,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-            <!--</plugin>-->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-release-plugin</artifactId>-->
-            <!--</plugin>-->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-report-plugin</artifactId>-->
-            <!--</plugin>-->
-
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
     </build>
 
     <repositories>
@@ -256,36 +227,4 @@
             <url>http://maven.restlet.org</url>
         </repository>
     </repositories>
-
-    <!-- Profile required to compile on linux. sun.* packages are not included on javac bootclasspath on linux. See: http://java.sun.com/products/jdk/faq/faq-sun-packages.html -->
-    <profiles>
-        <profile>
-            <id>linux</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <name>Linux</name>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-compiler-plugin</artifactId>
-                            <configuration>
-                                <source>1.7</source>
-                                <target>1.7</target>
-                                <compilerArguments>
-                                    <verbose />
-                                    <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
-                                </compilerArguments>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
 </project>
