@@ -11,10 +11,10 @@
         <property name="url" value="${DB_URL_PREFIX}:${DB_URL}"/>
         <property name="username" value="${DB_USERNAME}"/>
         <property name="password" value="${DB_PSWD}"/>
-        <property name="initialSize" value="10"/>
-        <property name="maxActive" value="250"/>
-        <property name="maxIdle" value="50"/>
-        <property name="minIdle" value="10"/>
+        <property name="initialSize" value="5"/>
+        <property name="maxActive" value="10"/>
+        <property name="maxIdle" value="5"/>
+        <property name="minIdle" value="2"/>
         <property name="maxWait" value="-1"/>
         <property name="validationQuery" value="${VALIDATION_QUERY}"/>
         <property name="testOnBorrow" value="true"/>
