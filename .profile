@@ -1,0 +1,1 @@
+AMEE_INSTANCE_NAME=`hostname`
