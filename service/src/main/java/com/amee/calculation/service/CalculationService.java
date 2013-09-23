@@ -27,7 +27,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.org.mozilla.javascript.internal.JavaScriptException;
+//import sun.org.mozilla.javascript.internal.JavaScriptException;
 
 import javax.script.ScriptException;
 import java.util.HashMap;
@@ -122,6 +122,7 @@ public class CalculationService implements CO2CalculationService, BeanFactoryAwa
                 throw iae;
             }
 
+            /*
             // Throw CalculationException for Exceptions from the JavaScript 'throw' keyword.
             if ((e.getCause() != null) && e.getCause() instanceof JavaScriptException) {
 
@@ -140,6 +141,7 @@ public class CalculationService implements CO2CalculationService, BeanFactoryAwa
                                 "): " + jse.getValue());
 
             }
+            */
 
             // Log all other errors to the science log...
             scienceLog.warn(

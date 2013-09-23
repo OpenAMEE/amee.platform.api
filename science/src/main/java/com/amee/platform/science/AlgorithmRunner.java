@@ -2,10 +2,10 @@ package com.amee.platform.science;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.org.mozilla.javascript.internal.JavaScriptException;
-import sun.org.mozilla.javascript.internal.NativeJavaObject;
-import sun.org.mozilla.javascript.internal.Scriptable;
-import sun.org.mozilla.javascript.internal.ScriptableObject;
+//import sun.org.mozilla.javascript.internal.JavaScriptException;
+//import sun.org.mozilla.javascript.internal.NativeJavaObject;
+//import sun.org.mozilla.javascript.internal.Scriptable;
+//import sun.org.mozilla.javascript.internal.ScriptableObject;
 
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
@@ -99,6 +99,9 @@ public class AlgorithmRunner {
             return (IllegalArgumentException) e.getCause();
         }
 
+        Object value = null;
+
+        /*
         // Is there a wrapped JavaScriptException?
         if (!(e.getCause() instanceof JavaScriptException)) {
             return null;
@@ -132,6 +135,7 @@ public class AlgorithmRunner {
         if (value instanceof NativeJavaObject) {
             value = ((NativeJavaObject) value).unwrap();
         }
+        */
 
         // Did we find an IllegalArgumentException?
         if (value instanceof IllegalArgumentException) {
