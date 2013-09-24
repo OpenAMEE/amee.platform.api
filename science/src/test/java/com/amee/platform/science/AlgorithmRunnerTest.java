@@ -2,6 +2,7 @@ package com.amee.platform.science;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -103,6 +104,7 @@ public class AlgorithmRunnerTest {
 //    }
 
     @Test
+    @Ignore("Relies on sun internal classes")
     public void algorithmCanThrowIllegalArgumentException() throws ScriptException {
         final String algorithmContent = "throw new java.lang.IllegalArgumentException('Bang!');";
         stubGetCompiledScript(algorithmContent);
