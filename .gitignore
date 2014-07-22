@@ -16,3 +16,8 @@ smoke.*.properties
 target
 
 /.env
+/amee-platform-core/index/
+
+/amee-platform-core/src/main/config/amee.salt
+
+/amee-platform-core/src/main/config/amee.key
