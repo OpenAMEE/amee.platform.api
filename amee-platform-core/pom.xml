@@ -267,7 +267,7 @@
                             <value>false</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DATA_CATEGORY_PATH_PREFIX</key>
+                            <key>INDEX_DATA_CATEGORY_PATH_PREFIX</key>
                             <value>/</value>
                         </systemProperty>
                         <systemProperty>
@@ -363,6 +363,10 @@
                                 </generatorConfiguration>
                             </generatorConfigurations>
                             <jvmSettings>
+                                <systemProperties>
+                                    <systemProperty>amee.keyFile=amee.key</systemProperty>
+                                    <systemProperty>amee.saltFile=amee.salt</systemProperty>
+                                </systemProperties>
                                 <extraArguments>
                                     <extraArgument>-server</extraArgument>
                                 </extraArguments>
