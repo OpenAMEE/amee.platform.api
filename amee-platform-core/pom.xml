@@ -19,6 +19,8 @@
     <properties>
         <appassembler-maven-plugin.version>1.8.1</appassembler-maven-plugin.version>
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+
+        <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
         <package-name>amee-platform</package-name>
     </properties>
 
@@ -610,5 +612,35 @@
         </dependency>
 
     </dependencies>
+
+    <profiles>
+
+        <!-- Profile to create the tar file -->
+        <profile>
+            <id>tar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${maven-assembly-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <descriptor>src/assembly/bin.xml</descriptor>
+                            <finalName>amee-platform-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
