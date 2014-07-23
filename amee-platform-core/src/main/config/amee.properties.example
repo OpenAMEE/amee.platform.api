@@ -4,6 +4,7 @@ AMEE_APP_NAME=platform
 HOST_NAME=localhost
 LOG_LEVEL=DEBUG
 DEFAULT_LOG_LEVEL=INFO
+smtp.log.enabled=false
 AIRBRAKE=false
 PROTOCOL=http
 PORT=8888

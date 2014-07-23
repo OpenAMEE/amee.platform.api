@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
+    <property resource="amee.properties"/>
+
     <!-- Declare the 'CONSOLE' ConsoleAppender. -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 
@@ -11,28 +13,27 @@
     </appender>
 
     <!-- Declare the 'PLATFORM_EMAIL' SMTPAppender. -->
-    <appender name="PLATFORM_EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
-        <smtpHost>localhost</smtpHost>
-        <from>platform.issues@amee.cc</from>
-        <to>platform.issues@amee.cc</to>
-        <subject>AMEE Platform Issue - %c %m</subject>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%date %-5level %logger{35} - %message%n</pattern>
-        </layout>
+    <if condition='property("smtp.log.enabled").equals("true")'>
+        <then>
+            <appender name="PLATFORM_EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+                <smtpHost>localhost</smtpHost>
+                <from>platform.issues@amee.cc</from>
+                <to>platform.issues@amee.cc</to>
+                <subject>AMEE Platform Issue - %c %m</subject>
+                <layout class="ch.qos.logback.classic.PatternLayout">
+                    <pattern>%date %-5level %logger{35} - %message%n</pattern>
+                </layout>
 
-        <!-- Only send the triggering event in the email -->
-        <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
-            <bufferSize>1</bufferSize>
-        </cyclicBufferTracker>
-
-        <!-- Only log if level is >= ERROR and amee.maillog property is true -->
-        <evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
-                <expression>
-                    return "true".equals(System.getProperty("amee.maillog")) &amp;&amp;
-                    event.getLevel().levelInt >= ch.qos.logback.classic.Level.ERROR_INT;
-                </expression>
-        </evaluator>
-    </appender>
+                <!-- Send last 10 log entries per email -->
+                <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
+                    <bufferSize>10</bufferSize>
+                </cyclicBufferTracker>
+            </appender>
+            <root>
+                <appender-ref ref="PLATFORM_EMAIL"/>
+            </root>
+        </then>
+    </if>
 
     <!-- Declare the 'AIRBRAKE' HoptoadAppender. -->
     <!--<appender name="AIRBRAKE" class="hoptoad.HoptoadAppender">-->
@@ -171,7 +172,7 @@
 
     <!-- ############### AMEE ################### -->
 
-    <logger name="com.amee" level="${amee.logLevel}"/>
+    <logger name="com.amee" level="${LOG_LEVEL:-INFO}"/>
 
     <!--<logger name="transactions" level="INFO" additivity="false">-->
         <!--<appender-ref ref="TRANSACTIONS_ROLLER"/>-->
@@ -192,7 +193,7 @@
     <logger name="science" level="INFO"/>
 
     <!-- The root logger -->
-    <root level="${DEFAULT_LOG_LEVEL}">
+    <root level="${DEFAULT_LOG_LEVEL:-INFO}">
         <appender-ref ref="CONSOLE" />
         <!--<appender-ref ref="PLATFORM_EMAIL"/>-->
         <!--<appender-ref ref="AIRBRAKE"/>-->
