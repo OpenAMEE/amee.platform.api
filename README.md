@@ -37,4 +37,7 @@ TODO
 Packaging the platform
 ----------------------
 
-TODO
+From the amee-platform-core directory:
+```sh
+mvn clean package -P tar
+```
