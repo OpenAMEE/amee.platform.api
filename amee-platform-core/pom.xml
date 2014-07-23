@@ -166,11 +166,11 @@
                         </systemProperty>
                         <systemProperty>
                             <key>DB_USERNAME</key>
-                            <value>amee</value>
+                            <value>${db.username}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>DB_PSWD</key>
-                            <value>amee</value>
+                            <value>${db.pswd}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>DB_URL_PREFIX</key>
@@ -178,7 +178,7 @@
                         </systemProperty>
                         <systemProperty>
                             <key>DB_URL</key>
-                            <value>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</value>
+                            <value>${db.url}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>DB_DRIVER</key>
@@ -210,23 +210,23 @@
                         </systemProperty>
                         <systemProperty>
                             <key>RABBIT_MQ_ADDRESS</key>
-                            <value>localhost</value>
+                            <value>${rabbitmq.address}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>RABBIT_MQ_PORT</key>
-                            <value>5672</value>
+                            <value>${rabbitmq.port}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>RABBIT_MQ_VHOST</key>
-                            <value>/</value>
+                            <value>${rabbitmq.vhost}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>RABBIT_MQ_USERNAME</key>
-                            <value>guest</value>
+                            <value>${rabbitmq.username}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>RABBIT_MQ_PASSWORD</key>
-                            <value>guest</value>
+                            <value>${rabbitmq.password}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>MESSAGING_SCOPE</key>

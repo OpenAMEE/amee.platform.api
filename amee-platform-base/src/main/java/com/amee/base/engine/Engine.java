@@ -72,6 +72,8 @@ public class Engine {
         log.debug("Starting Engine...");
 
         // Initialise Spring ApplicationContext.
+        // See http://docs.spring.io/spring/docs/current/spring-framework-reference/html/resources.html#resources-classpath-wildcards
+        // for why the 'classpath*' pattern will not retrieve files from the root of jar files, hence the 'context' prefix.
         springContext = new ClassPathXmlApplicationContext("applicationContext*.xml", "classpath*:/context/applicationContext*.xml");
 
         // Initialise TransactionController (for controlling Spring).
