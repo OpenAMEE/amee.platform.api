@@ -235,14 +235,6 @@
                             <value>local</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>CACHE_MANAGER_CLASS</key>
-                            <value>org.springframework.cache.ehcache.EhCacheManagerFactoryBean</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>CACHE_SERVICE_CLASS</key>
-                            <value>com.amee.base.cache.EhCacheCacheService</value>
-                        </systemProperty>
-                        <systemProperty>
                             <key>DATABASE_PLATFORM</key>
                             <value>org.hibernate.dialect.MySQL5InnoDBDialect</value>
                         </systemProperty>
