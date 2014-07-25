@@ -252,19 +252,19 @@
                         </systemProperty>
                         <systemProperty>
                             <key>CLEAR_INDEX</key>
-                            <value>false</value>
+                            <value>true</value>
                         </systemProperty>
                         <systemProperty>
                             <key>CHECK_DATA_CATEGORIES</key>
-                            <value>false</value>
+                            <value>true</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_DATA_CATEGORIES</key>
-                            <value>false</value>
+                            <value>true</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_DATA_ITEMS</key>
-                            <value>false</value>
+                            <value>true</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_DATA_CATEGORY_PATH_PREFIX</key>
@@ -369,6 +369,7 @@
                                 </systemProperties>
                                 <extraArguments>
                                     <extraArgument>-server</extraArgument>
+                                    <!--<extraArgument>-Xbootclasspath:$JAVA_HOME/lib/rt.jar</extraArgument>-->
                                 </extraArguments>
                             </jvmSettings>
                         </daemon>

@@ -16,6 +16,7 @@ LOG_LEVEL=INFO
 DEFAULT_LOG_LEVEL=INFO
 MAILLOG=false
 AIRBRAKE=false
+amee.logDir=/var/www/apps/amee-platform/current/logs
 
 # Search index
 INDEX_PATH=/var/www/apps/amee-platform/index

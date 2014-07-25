@@ -50,62 +50,62 @@
     <!--</appender>-->
 
     <!-- Declare the 'TRANSACTIONS_ROLLER' Daily RollingFileAppender. -->
-    <!--<appender name="TRANSACTIONS_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--<file>${amee.logDir}/transactions.log</file>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <appender name="TRANSACTIONS_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${amee.logDir}/transactions.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <!--&lt;!&ndash; daily rollover &ndash;&gt;-->
-            <!--<fileNamePattern>${amee.logDir}/transactions.log.%d{yyyy-MM-dd}</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+            <!-- daily rollover -->
+            <fileNamePattern>${amee.logDir}/transactions.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
 
-        <!--<encoder>-->
-            <!--<pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>-->
-        <!--</encoder>-->
+        <encoder>
+            <pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>
+        </encoder>
 
-        <!--&lt;!&ndash; deny all events with a level below INFO, that is TRACE, DEBUG &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>INFO</level>-->
-        <!--</filter>-->
-    <!--</appender>-->
+        <!-- deny all events with a level below INFO, that is TRACE, DEBUG -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
 
     <!-- Declare the 'SEARCH_ROLLER' Daily RollingFileAppender. -->
-    <!--<appender name="SEARCH_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--<file>${amee.logDir}/search.log</file>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <appender name="SEARCH_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${amee.logDir}/search.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <!--&lt;!&ndash; daily rollover &ndash;&gt;-->
-            <!--<fileNamePattern>${amee.logDir}/search.log.%d{yyyy-MM-dd}</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+            <!-- daily rollover -->
+            <fileNamePattern>${amee.logDir}/search.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
 
-        <!--<encoder>-->
-            <!--<pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>-->
-        <!--</encoder>-->
+        <encoder>
+            <pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>
+        </encoder>
 
-        <!--&lt;!&ndash; deny all events with a level below INFO, that is TRACE, DEBUG &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>INFO</level>-->
-        <!--</filter>-->
-    <!--</appender>-->
+        <!-- deny all events with a level below INFO, that is TRACE, DEBUG -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
 
     <!-- Declare the 'SCIENCE_ROLLER' Daily RollingFileAppender. -->
-    <!--<appender name="SCIENCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--<file>${amee.logDir}/science.log</file>-->
+    <appender name="SCIENCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${amee.logDir}/science.log</file>
 
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <!--&lt;!&ndash; daily rollover &ndash;&gt;-->
-            <!--<fileNamePattern>${amee.logDir}/science.log.%d{yyyy-MM-dd}</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+            <!-- daily rollover -->
+            <fileNamePattern>${amee.logDir}/science.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
 
-        <!--<encoder>-->
-            <!--<pattern>[%date] [%-5level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] %msg%n</pattern>-->
-        <!--</encoder>-->
+        <encoder>
+            <pattern>[%date] [%-5level] [%thread] [%property{server.name}] [%mdc{ipAddress}] [%mdc{userUid}] %msg%n</pattern>
+        </encoder>
 
-        <!--&lt;!&ndash; deny all events with a level below INFO, that is TRACE, DEBUG &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>INFO</level>-->
-        <!--</filter>-->
-    <!--</appender>-->
+        <!-- deny all events with a level below INFO, that is TRACE, DEBUG -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
 
     <!-- Declare the 'PERFORMANCE_ROLLER' DailyRollingFileAppender. -->
     <!--<appender name="PERFORMANCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
@@ -174,23 +174,23 @@
 
     <logger name="com.amee" level="${LOG_LEVEL:-INFO}"/>
 
-    <!--<logger name="transactions" level="INFO" additivity="false">-->
-        <!--<appender-ref ref="TRANSACTIONS_ROLLER"/>-->
-    <!--</logger>-->
+    <logger name="transactions" level="INFO" additivity="false">
+        <appender-ref ref="TRANSACTIONS_ROLLER"/>
+    </logger>
 
-    <logger name="transactions" level="INFO"/>
+    <!--<logger name="transactions" level="INFO"/>-->
 
-    <!--<logger name="search" level="INFO" additivity="false">-->
-        <!--<appender-ref ref="SEARCH_ROLLER"/>-->
-    <!--</logger>-->
+    <logger name="search" level="INFO" additivity="false">
+        <appender-ref ref="SEARCH_ROLLER"/>
+    </logger>
 
-    <logger name="search" level="INFO"/>
+    <!--<logger name="search" level="INFO"/>-->
 
-    <!--<logger name="science" level="INFO" additivity="false">-->
-        <!--<appender-ref ref="SCIENCE_ROLLER"/>-->
-    <!--</logger>-->
+    <logger name="science" level="INFO" additivity="false">
+        <appender-ref ref="SCIENCE_ROLLER"/>
+    </logger>
 
-    <logger name="science" level="INFO"/>
+    <!--<logger name="science" level="INFO"/>-->
 
     <!-- The root logger -->
     <root level="${DEFAULT_LOG_LEVEL:-INFO}">
