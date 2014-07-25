@@ -21,3 +21,5 @@ target
 /amee-platform-core/src/main/config/amee.salt
 
 /amee-platform-core/src/main/config/amee.key
+
+/amee-platform-core/logs/

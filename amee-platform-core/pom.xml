@@ -298,6 +298,10 @@
                             <key>amee.saltFile</key>
                             <value>amee.salt</value>
                         </systemProperty>
+                        <systemProperty>
+                            <key>amee.logDir</key>
+                            <value>${basedir}/logs</value>
+                        </systemProperty>
                     </systemProperties>
                 </configuration>
             </plugin>
