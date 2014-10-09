@@ -8,7 +8,6 @@
         <groupId>com.amee.platform</groupId>
         <artifactId>amee-platform</artifactId>
         <version>3.11.0-SNAPSHOT</version>
-        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>amee-platform-core</artifactId>
