@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "data_item")
+@Table(name = "DATA_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DataItem extends BaseItem {
 
@@ -29,7 +29,7 @@ public class DataItem extends BaseItem {
     public final static int WIKI_DOC_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
     public final static int PROVENANCE_MAX_SIZE = 255;
 
-    @Column(name = "path", length = PATH_MAX_SIZE, nullable = false)
+    @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
 
     /**

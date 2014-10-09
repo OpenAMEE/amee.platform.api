@@ -14,7 +14,7 @@ public abstract class BaseDataItemTextValue extends BaseDataItemValue implements
 
     public final static int VALUE_SIZE = 255;
 
-    @Column(name = "value", nullable = false, length = VALUE_SIZE)
+    @Column(name = "VALUE", nullable = false, length = VALUE_SIZE)
     private String value = "";
 
     public BaseDataItemTextValue() {

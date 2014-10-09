@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "entity_tag")
+@Table(name = "ENTITY_TAG")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class EntityTag extends AMEEEntity {
 
@@ -20,7 +20,7 @@ public class EntityTag extends AMEEEntity {
     private AMEEEntityReference entityReference = new AMEEEntityReference();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tag_id")
+    @JoinColumn(name = "TAG_ID")
     private Tag tag;
 
     @Transient

@@ -37,7 +37,7 @@ import java.util.Set;
  * @author Diggory Briercliffe
  */
 @Entity
-@Table(name = "permission")
+@Table(name = "PERMISSION")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Permission extends AMEEEntity implements Comparable {
 
@@ -59,9 +59,9 @@ public class Permission extends AMEEEntity implements Comparable {
      */
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "entityId", column = @Column(name = "principal_id")),
-            @AttributeOverride(name = "entityUid", column = @Column(name = "principal_uid")),
-            @AttributeOverride(name = "entityType", column = @Column(name = "principal_type"))})
+            @AttributeOverride(name = "entityId", column = @Column(name = "PRINCIPAL_ID")),
+            @AttributeOverride(name = "entityUid", column = @Column(name = "PRINCIPAL_UID")),
+            @AttributeOverride(name = "entityType", column = @Column(name = "PRINCIPAL_TYPE"))})
     private AMEEEntityReference principalReference = new AMEEEntityReference();
 
     /**

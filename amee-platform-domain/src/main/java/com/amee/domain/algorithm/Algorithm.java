@@ -28,11 +28,11 @@ public class Algorithm extends AbstractAlgorithm implements com.amee.platform.sc
     public final static String DEFAULT = "default";
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_definition_id", nullable = true)
+    @JoinColumn(name = "ITEM_DEFINITION_ID", nullable = true)
     private ItemDefinition itemDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "algorithm_context_id")
+    @JoinColumn(name = "ALGORITHM_CONTEXT_ID")
     private AlgorithmContext algorithmContext;
 
     public Algorithm() {

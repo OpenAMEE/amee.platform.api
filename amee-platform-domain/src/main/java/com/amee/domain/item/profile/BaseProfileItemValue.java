@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class BaseProfileItemValue extends BaseItemValue implements Pathable {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "profile_item_id")
+    @JoinColumn(name = "PROFILE_ITEM_ID")
     private ProfileItem profileItem;
 
     public BaseProfileItemValue() {

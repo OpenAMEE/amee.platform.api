@@ -31,22 +31,22 @@ import com.amee.platform.science.ReturnValues;
 import com.amee.platform.science.StartEndDate;
 
 @Entity
-@Table(name = "profile_item")
+@Table(name = "PROFILE_ITEM")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProfileItem extends BaseItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "PROFILE_ID")
     private Profile profile;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "data_item_id")
+    @JoinColumn(name = "DATA_ITEM_ID")
     private DataItem dataItem;
 
-    @Column(name = "start_date")
+    @Column(name = "START_DATE")
     protected Date startDate = new Date();
 
-    @Column(name = "end_date")
+    @Column(name = "END_DATE")
     protected Date endDate;
 
     @Transient

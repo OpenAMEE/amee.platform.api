@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "data_item_text_value")
+@Table(name = "DATA_ITEM_TEXT_VALUE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DataItemTextValue extends BaseDataItemTextValue {
 

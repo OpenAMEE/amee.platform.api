@@ -14,11 +14,11 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "data_item_text_value_history")
+@Table(name = "DATA_ITEM_TEXT_VALUE_HISTORY")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class DataItemTextValueHistory extends BaseDataItemTextValue implements HistoryValue {
 
-    @Column(name = "start_date")
+    @Column(name = "START_DATE")
     private Date startDate = new Date();
 
     public DataItemTextValueHistory() {

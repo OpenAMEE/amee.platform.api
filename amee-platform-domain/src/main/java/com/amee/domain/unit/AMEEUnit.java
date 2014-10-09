@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "unit")
+@Table(name = "UNIT")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class AMEEUnit extends AMEEEntity implements Pathable {
 
@@ -24,16 +24,16 @@ public class AMEEUnit extends AMEEEntity implements Pathable {
     public final static int SYMBOL_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "unit_type_id")
+    @JoinColumn(name = "UNIT_TYPE_ID")
     private AMEEUnitType unitType;
 
-    @Column(name = "name", nullable = false, length = NAME_MAX_SIZE)
+    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
     private String name = "";
 
-    @Column(name = "internal_symbol", nullable = false, length = SYMBOL_MAX_SIZE)
+    @Column(name = "INTERNAL_SYMBOL", nullable = false, length = SYMBOL_MAX_SIZE)
     private String internalSymbol = "";
 
-    @Column(name = "external_symbol", nullable = false, length = SYMBOL_MAX_SIZE)
+    @Column(name = "EXTERNAL_SYMBOL", nullable = false, length = SYMBOL_MAX_SIZE)
     private String externalSymbol = "";
 
     public AMEEUnit() {

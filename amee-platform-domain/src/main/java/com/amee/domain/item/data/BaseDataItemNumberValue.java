@@ -19,13 +19,13 @@ public abstract class BaseDataItemNumberValue extends BaseDataItemValue implemen
     public final static int UNIT_SIZE = 255;
     public final static int PER_UNIT_SIZE = 255;
 
-    @Column(name = "unit", nullable = true, length = UNIT_SIZE)
+    @Column(name = "UNIT", nullable = true, length = UNIT_SIZE)
     private String unit = "";
 
-    @Column(name = "per_unit", nullable = true, length = PER_UNIT_SIZE)
+    @Column(name = "PER_UNIT", nullable = true, length = PER_UNIT_SIZE)
     private String perUnit = "";
 
-    @Column(name = "value", nullable = true)
+    @Column(name = "VALUE", nullable = true)
     private Double value = null;
 
     public BaseDataItemNumberValue() {

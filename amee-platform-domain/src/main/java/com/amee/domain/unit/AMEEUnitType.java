@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "unit_type")
+@Table(name = "UNIT_TYPE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class AMEEUnitType extends AMEEEntity implements Pathable {
 
     public final static int NAME_MAX_SIZE = 255;
 
-    @Column(name = "name", nullable = false, length = NAME_MAX_SIZE)
+    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
     private String name = "";
 
     public AMEEUnitType() {

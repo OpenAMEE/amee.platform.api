@@ -9,7 +9,7 @@ import javax.persistence.*;
  * An entity for storing misc. metadata values for other entities.
  */
 @Entity
-@Table(name = "metadata")
+@Table(name = "METADATA")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Metadata extends AMEEEntity {
 
@@ -21,11 +21,11 @@ public class Metadata extends AMEEEntity {
     @Embedded
     private AMEEEntityReference entityReference = new AMEEEntityReference();
 
-    @Column(name = "name", nullable = false, length = NAME_MAX_SIZE)
+    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
     private String name = "";
 
     @Lob
-    @Column(name = "value", nullable = false, length = VALUE_MAX_SIZE)
+    @Column(name = "VALUE", nullable = false, length = VALUE_MAX_SIZE)
     private String value = "";
 
     public Metadata() {

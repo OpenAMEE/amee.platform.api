@@ -28,7 +28,7 @@ import java.util.TimeZone;
  * @author Diggory Briercliffe
  */
 @Entity
-@Table(name = "user")
+@Table(name = "USER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AMEEEntity implements Comparable {
 
@@ -40,29 +40,29 @@ public class User extends AMEEEntity implements Comparable {
 
     // TODO: This column name should be USER_TYPE_ID.
     // TODO: See: https://jira.amee.com/browse/PL-289
-    @Column(name = "user_type")
+    @Column(name = "USER_TYPE")
     private UserType type = UserType.STANDARD;
 
-    @Column(name = "username", length = USERNAME_SIZE, nullable = false)
+    @Column(name = "USERNAME", length = USERNAME_SIZE, nullable = false)
     private String username = "";
 
-    @Column(name = "password", length = PASSWORD_SIZE, nullable = false)
+    @Column(name = "PASSWORD", length = PASSWORD_SIZE, nullable = false)
     private String password = "";
 
-    @Column(name = "name", length = NAME_SIZE, nullable = false)
+    @Column(name = "NAME", length = NAME_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "email", length = EMAIL_SIZE, nullable = false)
+    @Column(name = "EMAIL", length = EMAIL_SIZE, nullable = false)
     private String email = "";
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "api_version_id")
+    @JoinColumn(name = "API_VERSION_ID")
     private APIVersion apiVersion;
 
-    @Column(name = "locale")
+    @Column(name = "LOCALE")
     private String locale = LocaleConstants.DEFAULT_LOCALE.toString();
 
-    @Column(name = "time_zone")
+    @Column(name = "TIME_ZONE")
     private TimeZone timeZone = TimeZone.getTimeZone("UTC");
 
     public User() {
