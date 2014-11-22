@@ -6,13 +6,13 @@
 
     <groupId>com.amee.platform</groupId>
     <artifactId>amee-platform</artifactId>
-    <version>3.11.0-SNAPSHOT</version>
+    <version>3.11.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>AMEE Platform</name>
 
     <properties>
-        <amee-platform.version>3.11.0-SNAPSHOT</amee-platform.version>
+        <amee-platform.version>3.11.1-SNAPSHOT</amee-platform.version>
 
         <!-- Note: These versions were last checked & upgraded on 12/06/2012. -->
         <!-- Note: Keep Restlet, Jetty and servlet-api versions in sync. -->
