@@ -21,7 +21,7 @@ import javax.script.ScriptException;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("al")
+@DiscriminatorValue("AL")
 public class Algorithm extends AbstractAlgorithm implements com.amee.platform.science.Algorithm, Pathable {
 
     // Default Algorithm name to use in calculations

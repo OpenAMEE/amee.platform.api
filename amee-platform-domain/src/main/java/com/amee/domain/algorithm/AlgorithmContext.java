@@ -12,7 +12,7 @@ import javax.persistence.Entity;
  * This class defines a global algorithm context that can be inherited by algorithms
  */
 @Entity
-@DiscriminatorValue("alc")
+@DiscriminatorValue("ALC")
 public class AlgorithmContext extends AbstractAlgorithm {
 
     public AlgorithmContext() {
