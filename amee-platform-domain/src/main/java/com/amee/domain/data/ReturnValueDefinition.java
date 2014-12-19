@@ -25,7 +25,7 @@ import com.amee.platform.science.AmountPerUnit;
 import com.amee.platform.science.AmountUnit;
 
 @Entity
-@Table(name = "RETURN_VALUE_DEFINITION")
+@Table(name = "return_value_definition")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ReturnValueDefinition extends AMEEEntity implements Pathable {
 
@@ -37,26 +37,26 @@ public class ReturnValueDefinition extends AMEEEntity implements Pathable {
     public static final int PER_UNIT_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "ITEM_DEFINITION_ID")
+    @JoinColumn(name = "item_definition_id")
     private ItemDefinition itemDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "VALUE_DEFINITION_ID")
+    @JoinColumn(name = "value_definition_id")
     private ValueDefinition valueDefinition;
 
-    @Column(name = "TYPE", length = TYPE_MAX_SIZE, nullable = false)
+    @Column(name = "type", length = TYPE_MAX_SIZE, nullable = false)
     private String type = "";
 
-    @Column(name = "UNIT", length = UNIT_MAX_SIZE, nullable = false)
+    @Column(name = "unit", length = UNIT_MAX_SIZE, nullable = false)
     private String unit = "";
 
-    @Column(name = "PER_UNIT", length = PER_UNIT_MAX_SIZE, nullable = false)
+    @Column(name = "per_unit", length = PER_UNIT_MAX_SIZE, nullable = false)
     private String perUnit = "";
     
-    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "DEFAULT_TYPE")
+    @Column(name = "default_type")
     private boolean defaultType = false;
 
     @Transient

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Table(name = "DUMMY_ENTITY")
 public class DummyEntity extends BaseEntity {
 
-    @Column(name = "DUMMY_TEXT", length = 100, nullable = false)
+    @Column(name = "dummy_text", length = 100, nullable = false)
     private String dummyText = "";
 
     public DummyEntity() {

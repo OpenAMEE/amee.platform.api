@@ -14,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance
-@Table(name = "ALGORITHM")
+@Table(name = "algorithm")
 @DiscriminatorColumn(name = "type", length = 3)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public abstract class AbstractAlgorithm extends AMEEEntity {
@@ -24,11 +24,11 @@ public abstract class AbstractAlgorithm extends AMEEEntity {
     // MySQL mediumtext: http://stackoverflow.com/a/3507664
     public final static int CONTENT_MAX_SIZE = 16_777_215;
 
-    @Column(name = "NAME", nullable = false, length = NAME_MAX_SIZE)
+    @Column(name = "name", nullable = false, length = NAME_MAX_SIZE)
     private String name = "";
 
     @Lob
-    @Column(name = "CONTENT", nullable = true, length = CONTENT_MAX_SIZE)
+    @Column(name = "content", nullable = true, length = CONTENT_MAX_SIZE)
     private String content = "";
 
     public AbstractAlgorithm() {

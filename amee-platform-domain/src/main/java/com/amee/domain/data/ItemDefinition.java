@@ -20,7 +20,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "ITEM_DEFINITION")
+@Table(name = "item_definition")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemDefinition extends AMEEEntity implements Pathable {
 
@@ -31,10 +31,10 @@ public class ItemDefinition extends AMEEEntity implements Pathable {
     public final static int USAGES_MIN_SIZE = 0;
     public final static int USAGES_MAX_SIZE = Metadata.VALUE_MAX_SIZE;
 
-    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "DRILL_DOWN", length = DRILL_DOWN_MAX_SIZE, nullable = true)
+    @Column(name = "drill_down", length = DRILL_DOWN_MAX_SIZE, nullable = true)
     private String drillDown = "";
 
     @OneToMany(mappedBy = "itemDefinition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

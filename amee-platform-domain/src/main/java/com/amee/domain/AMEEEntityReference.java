@@ -25,20 +25,20 @@ public class AMEEEntityReference implements IAMEEEntityReference, Serializable {
     /**
      * The ID of the entity an AMEEEntityReference is referring to.
      */
-    @Column(name = "ENTITY_ID", nullable = false)
+    @Column(name = "entity_id", nullable = false)
     private Long entityId;
 
     /**
      * The UID of the entity an AMEEEntityReference is referring to.
      */
-    @Column(name = "ENTITY_UID", length = AMEEEntity.UID_SIZE, nullable = false)
+    @Column(name = "entity_uid", length = AMEEEntity.UID_SIZE, nullable = false)
     private String entityUid = "";
 
     /**
      * The entity type of the entity an AMEEEntityReference is referring to. The entityType
      * property is exposed externally as an ObjectType but stored internally as a String.
      */
-    @Column(name = "ENTITY_TYPE", length = ENTITY_TYPE_MAX_SIZE, nullable = false)
+    @Column(name = "entity_type", length = ENTITY_TYPE_MAX_SIZE, nullable = false)
     private String entityType = "";
 
     /**

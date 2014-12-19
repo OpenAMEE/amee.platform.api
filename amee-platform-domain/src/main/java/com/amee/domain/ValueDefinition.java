@@ -14,17 +14,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "VALUE_DEFINITION")
+@Table(name = "value_definition")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ValueDefinition extends AMEEEntity {
 
-    @Column(name = "NAME")
+    @Column(name = "name")
     private String name = "";
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     private String description = "";
 
-    @Column(name = "VALUE_TYPE")
+    @Column(name = "value_type")
     private ValueType valueType = ValueType.TEXT;
 
     public ValueDefinition() {

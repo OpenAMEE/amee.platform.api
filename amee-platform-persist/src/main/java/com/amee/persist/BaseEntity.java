@@ -28,28 +28,28 @@ public abstract class BaseEntity implements DatedObject, Serializable {
      */
     @Id
     @GeneratedValue
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
     /**
      * The unique UID of the entity.
      */
     @NaturalId
-    @Column(name = "UID", unique = true, nullable = false, length = UID_SIZE)
+    @Column(name = "uid", unique = true, nullable = false, length = UID_SIZE)
     private String uid = "";
 
     /**
      * Timestamp of when the entity was created. Set by onCreate().
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED", nullable = false)
+    @Column(name = "created", nullable = false)
     private Date created = null;
 
     /**
      * Timestamp of when the entity was modified. Set by onModify().
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "MODIFIED", nullable = false)
+    @Column(name = "modified", nullable = false)
     private Date modified = null;
 
     public BaseEntity() {

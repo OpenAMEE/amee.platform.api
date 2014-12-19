@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "ITEM_VALUE_DEFINITION")
+@Table(name = "item_value_definition")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pathable {
 
@@ -37,52 +37,52 @@ public class ItemValueDefinition extends AMEEEntity implements ExternalValue, Pa
     public static final int CHOICES_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "ITEM_DEFINITION_ID")
+    @JoinColumn(name = "item_definition_id")
     private ItemDefinition itemDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "VALUE_DEFINITION_ID")
+    @JoinColumn(name = "value_definition_id")
     private ValueDefinition valueDefinition;
 
-    @Column(name = "UNIT")
+    @Column(name = "unit")
     private String unit = "";
 
-    @Column(name = "PER_UNIT")
+    @Column(name = "per_unit")
     private String perUnit = "";
 
-    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
-    @Column(name = "PATH", length = PATH_MAX_SIZE, nullable = false)
+    @Column(name = "path", length = PATH_MAX_SIZE, nullable = false)
     private String path = "";
 
-    @Column(name = "VALUE", length = VALUE_MAX_SIZE, nullable = true)
+    @Column(name = "value", length = VALUE_MAX_SIZE, nullable = true)
     private String value = "";
 
     // Comma separated key/value pairs. Value is key if key not supplied. Example: "key=value,key=value"
-    @Column(name = "CHOICES")
+    @Column(name = "choices")
     private String choices = "";
 
-    @Column(name = "FROM_PROFILE")
+    @Column(name = "from_profile")
     private boolean fromProfile = false;
 
-    @Column(name = "FROM_DATA")
+    @Column(name = "from_data")
     private boolean fromData = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "ITEM_VALUE_DEFINITION_API_VERSION",
-            joinColumns = {@JoinColumn(name = "ITEM_VALUE_DEFINITION_ID")},
-            inverseJoinColumns = {@JoinColumn(name = "API_VERSION_ID")})
+            name = "item_value_definition_api_version",
+            joinColumns = {@JoinColumn(name = "item_value_definition_id")},
+            inverseJoinColumns = {@JoinColumn(name = "api_version_id")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<APIVersion> apiVersions = new HashSet<APIVersion>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ALIASED_TO_ID")
+    @JoinColumn(name = "aliased_to_id")
     private ItemValueDefinition aliasedTo = null;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ALIASED_TO_ID")
+    @JoinColumn(name = "aliased_to_id")
     private List<ItemValueDefinition> aliases = new ArrayList<ItemValueDefinition>();
 
     /**

@@ -24,12 +24,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Table(name = "PROFILE")
+@Table(name = "profile")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Profile extends AMEEEntity implements Pathable {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Profile() {

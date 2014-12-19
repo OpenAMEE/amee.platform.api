@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "TAG")
+@Table(name = "tag")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Tag extends AMEEEntity implements Pathable {
 
@@ -26,7 +26,7 @@ public class Tag extends AMEEEntity implements Pathable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<EntityTag> entityTags;
 
-    @Column(name = "TAG", nullable = false, length = TAG_MAX_SIZE)
+    @Column(name = "tag", nullable = false, length = TAG_MAX_SIZE)
     private String tag = "";
 
     @Transient

@@ -20,14 +20,14 @@ public abstract class BaseItem extends AMEEEntity implements Pathable {
     public final static int NAME_MAX_SIZE = 255;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ITEM_DEFINITION_ID")
+    @JoinColumn(name = "item_definition_id")
     private ItemDefinition itemDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "DATA_CATEGORY_ID")
+    @JoinColumn(name = "data_category_id")
     private DataCategory dataCategory;
 
-    @Column(name = "NAME", length = NAME_MAX_SIZE, nullable = false)
+    @Column(name = "name", length = NAME_MAX_SIZE, nullable = false)
     private String name = "";
 
     @Transient
