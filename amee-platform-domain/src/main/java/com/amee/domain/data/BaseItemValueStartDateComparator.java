@@ -33,13 +33,11 @@ public class BaseItemValueStartDateComparator implements Comparator<BaseItemValu
             // The new BaseItemValue will not be added to the TreeSet (see class note about inconsistency with equals).
             // Note: In JDK 7 TreeMap and TreeSet has been changed to validate the first element inserted into the map
             // with respect to the map's associated Comparator by comparing the element to itself.
-            // This will trigger this warning. See: http://www.oracle.com/technetwork/java/javase/jdk7-relnotes-418459.html
-            log.warn("put() Two non-historical BaseItemValues with the same path should not exist.");
+            // This will trigger this warning.
+            // See: http://www.oracle.com/technetwork/java/javase/jdk7-relnotes-418459.html
+            // and: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5045147
+            log.debug("put() Two non-historical BaseItemValues with the same path should not exist.");
             return 0;
-
-            // Note: Java 7 may cause this branch to be executed due to changes in TreeMap implementation.
-            // See: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5045147
-            // and: http://www.oracle.com/technetwork/java/javase/jdk7-relnotes-418459.html#jdk7changes
         }
     }
 
