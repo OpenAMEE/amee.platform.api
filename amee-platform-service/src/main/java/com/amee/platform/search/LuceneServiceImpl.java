@@ -46,12 +46,12 @@ public class LuceneServiceImpl implements LuceneService {
     private String snapShooterPath = "";
 
     /**
-     * Path to the dir containing lucene index and snapshots.
+     * Path to the dir containing lucene index and snapshots. Usually this is: lucene
      */
     private String indexPath = "";
 
     /**
-     * Path to the dir of the current lucene index. Usually this is: indexPath + '/lucene'
+     * Path to the dir of the current lucene index. Usually this is: indexPath + '/index'
      */
     private String lucenePath = "";
 

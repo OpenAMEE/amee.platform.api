@@ -23,6 +23,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      * Supported POST parameters are:
      *
      * <ul>
+     * <li>name
      * <li>type
      * <li>unit
      * <li>perUnit

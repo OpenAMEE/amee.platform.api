@@ -14,7 +14,7 @@ class AlgorithmIT extends BaseApiTest {
     /**
      * Tests for creation, fetch and deletion of an Algorithm using JSON responses.
      *
-     * Create a new Algorithm by POSTing to '/definitions/{UID}'. The UID value is for the
+     * Create a new Algorithm by POSTing to '/definitions/{UID}/algorithms'. The UID value is for the
      * Item Definition the new Algorithm should belong to.
      *
      * Supported POST parameters are:

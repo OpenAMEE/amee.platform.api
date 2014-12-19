@@ -22,7 +22,7 @@ class ItemValueDefinitionIT extends BaseApiTest {
      * <ul>
      * <li>name
      * <li>path
-     * <li>wikioc
+     * <li>wikidoc
      * <li>value
      * <li>choices
      * <li>fromProfile
