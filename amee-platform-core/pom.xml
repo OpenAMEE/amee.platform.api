@@ -279,15 +279,15 @@
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_PATH</key>
-                            <value>${basedir}/index</value>
+                            <value>${project.build.directory}/lucene</value>
                         </systemProperty>
                         <systemProperty>
                             <key>LUCENE_PATH</key>
-                            <value>${basedir}/index/lucene</value>
+                            <value>${project.build.directory}/lucene/index</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_CHECK_SEARCHER_ON_COMMIT</key>
-                            <value>false</value>
+                            <value>true</value>
                         </systemProperty>
                         <systemProperty>
                             <key>amee.keyFile</key>
@@ -299,7 +299,7 @@
                         </systemProperty>
                         <systemProperty>
                             <key>amee.logDir</key>
-                            <value>${basedir}/logs</value>
+                            <value>${project.build.directory}/logs</value>
                         </systemProperty>
                     </systemProperties>
                 </configuration>
