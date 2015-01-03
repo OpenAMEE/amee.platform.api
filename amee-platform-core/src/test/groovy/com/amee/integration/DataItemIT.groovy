@@ -1271,7 +1271,7 @@ class DataItemIT extends BaseApiTest {
      * <ul>
      * <li>integer values must not be empty and must be a Java integer.
      * <li>double values must not be empty and must be a Java double.
-     * <li>text values are optional and must be no longer than 32767 characters.
+     * <li>text values are optional and must be no longer than 32767 characters. TODO: 255 chars?
      * </ul>
      */
     @Test
