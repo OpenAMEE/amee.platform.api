@@ -120,7 +120,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.amee.restlet.engine.RestletEngine</mainClass>
+                    <mainClass>com.amee.engine.RestletEngine</mainClass>
                     <additionalClasspathElements>
                         <additionalClasspathElement>${basedir}/src/main/config</additionalClasspathElement>
                     </additionalClasspathElements>
@@ -319,7 +319,7 @@
                     <daemons>
                         <daemon>
                             <id>${package-name}</id>
-                            <mainClass>com.amee.restlet.engine.RestletEngine</mainClass>
+                            <mainClass>com.amee.engine.RestletEngine</mainClass>
                             <platforms>
                                 <platform>jsw</platform>
                             </platforms>
@@ -528,13 +528,11 @@
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-ajp</artifactId>
             <version>${jetty.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
             <version>${jetty.version}</version>
-            <scope>runtime</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.mortbay.jetty</groupId>
@@ -546,7 +544,6 @@
             <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <version>${jetty.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.noelios.restlet</groupId>

@@ -1,1 +1,1 @@
-web: java -cp api/target/classes:api/target/dependency/* -server -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Dsun.lang.ClassLoader.allowArraySyntax=true -Dnet.sf.ehcache.disableShutdownHook=true com.amee.restlet.engine.RestletEngine
+web: java -cp api/target/classes:api/target/dependency/* -server -Dfile.encoding=UTF-8 -Djava.awt.headless=true -Dsun.lang.ClassLoader.allowArraySyntax=true -Dnet.sf.ehcache.disableShutdownHook=true com.amee.engine.RestletEngine
