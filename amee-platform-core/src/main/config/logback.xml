@@ -108,23 +108,23 @@
     </appender>
 
     <!-- Declare the 'PERFORMANCE_ROLLER' DailyRollingFileAppender. -->
-    <!--<appender name="PERFORMANCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-        <!--<file>${amee.logDir}/performance.log</file>-->
-        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <appender name="PERFORMANCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${amee.logDir}/performance.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <!--&lt;!&ndash; daily rollover &ndash;&gt;-->
-            <!--<fileNamePattern>${amee.logDir}/performance.log.%d{yyyy-MM-dd}</fileNamePattern>-->
-        <!--</rollingPolicy>-->
+            <!-- daily rollover -->
+            <fileNamePattern>${amee.logDir}/performance.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
 
-        <!--<encoder>-->
-            <!--<pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>-->
-        <!--</encoder>-->
+        <encoder>
+            <pattern>%d{yyyy:MM:dd:HH:mm:ss:SSS}|%m%n</pattern>
+        </encoder>
 
-        <!--&lt;!&ndash; deny all events with a level below INFO, that is TRACE, DEBUG &ndash;&gt;-->
-        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-            <!--<level>INFO</level>-->
-        <!--</filter>-->
-    <!--</appender>-->
+        <!-- deny all events with a level below INFO, that is TRACE, DEBUG -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
 
     <!-- ############### Perf4J ################# -->
 
@@ -133,17 +133,17 @@
        into GroupedTimingStatistics messages which it sends on the
        file appender defined below
     -->
-    <!--<appender name="CoalescingStatistics"-->
-              <!--class="org.perf4j.logback.AsyncCoalescingStatisticsAppender">-->
-        <!--&lt;!&ndash;-->
-          <!--The TimeSlice option is used to determine the time window for which-->
-          <!--all received StopWatch logs are aggregated to create a single-->
-          <!--GroupedTimingStatistics log. Here we set it to 60 seconds, overriding-->
-          <!--the default of 30000 ms-->
-        <!--&ndash;&gt;-->
-        <!--<timeSlice>60000</timeSlice>-->
-        <!--<appender-ref ref="PERFORMANCE_ROLLER"/>-->
-    <!--</appender>-->
+    <appender name="CoalescingStatistics"
+              class="org.perf4j.logback.AsyncCoalescingStatisticsAppender">
+        <!--
+          The TimeSlice option is used to determine the time window for which
+          all received StopWatch logs are aggregated to create a single
+          GroupedTimingStatistics log. Here we set it to 60 seconds, overriding
+          the default of 30000 ms
+        -->
+        <timeSlice>60000</timeSlice>
+        <appender-ref ref="PERFORMANCE_ROLLER"/>
+    </appender>
 
     <!-- Loggers -->
     <!--
@@ -153,9 +153,9 @@
       that timing statements will only be sent to this logger and NOT to
       upstream loggers.
     -->
-    <!--<logger name="org.perf4j.TimingLogger" level="INFO" additivity="false">-->
-        <!--<appender-ref ref="CoalescingStatistics"/>-->
-    <!--</logger>-->
+    <logger name="org.perf4j.TimingLogger" level="INFO" additivity="false">
+        <appender-ref ref="CoalescingStatistics"/>
+    </logger>
 
     <!-- ############### log4jdbc ################### -->
     <!-- See: http://code.google.com/p/log4jdbc/ -->
@@ -184,13 +184,9 @@
         <appender-ref ref="SEARCH_ROLLER"/>
     </logger>
 
-    <!--<logger name="search" level="INFO"/>-->
-
     <logger name="science" level="INFO" additivity="false">
         <appender-ref ref="SCIENCE_ROLLER"/>
     </logger>
-
-    <!--<logger name="science" level="INFO"/>-->
 
     <!-- The root logger -->
     <root level="${DEFAULT_LOG_LEVEL:-INFO}">
