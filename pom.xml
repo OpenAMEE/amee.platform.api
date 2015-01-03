@@ -64,16 +64,16 @@
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
-        <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>2.12</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
         <gmaven-plugin.version>1.4</gmaven-plugin.version>
         <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
 
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <skipUnitTests>false</skipUnitTests>
+        <skipIntegrationTests>true</skipIntegrationTests>
     </properties>
 
     <!-- Modules. -->
@@ -210,6 +210,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
+                        <skipTests>${skipUnitTests}</skipTests>
 
                         <!-- Exclude the smoke tests -->
                         <excludes>
@@ -238,4 +239,23 @@
             <url>http://maven.restlet.org</url>
         </repository>
     </repositories>
+
+    <profiles>
+
+        <!-- Profile to run integration tests -->
+        <profile>
+            <id>it</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+
+                <!-- Skip the unit tests -->
+                <skipUnitTests>true</skipUnitTests>
+
+                <!-- Enable the integration tests -->
+                <skipIntegrationTests>false</skipIntegrationTests>
+            </properties>
+        </profile>
+    </profiles>
 </project>
