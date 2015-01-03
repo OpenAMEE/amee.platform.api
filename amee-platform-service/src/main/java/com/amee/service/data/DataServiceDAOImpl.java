@@ -6,14 +6,15 @@ import com.amee.domain.data.DataCategory;
 import com.amee.domain.data.DataCategoryReference;
 import com.amee.domain.data.ItemDefinition;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
+import org.hibernate.SimpleNaturalIdLoadAccess;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -80,15 +81,10 @@ public class
         DataCategory dataCategory = null;
         if (!StringUtils.isBlank(uid)) {
             Session session = (Session) entityManager.getDelegate();
-            Criteria criteria = session.createCriteria(DataCategory.class);
-            criteria.add(Restrictions.naturalId().set("uid", uid.toUpperCase()));
-            criteria.setCacheable(true);
-            criteria.setCacheRegion(CACHE_REGION);
-            List<DataCategory> dataCategories = criteria.list();
-            if (dataCategories.size() == 0) {
+            SimpleNaturalIdLoadAccess query = session.bySimpleNaturalId(DataCategory.class);
+            dataCategory = (DataCategory) query.load(uid.toUpperCase());
+            if (dataCategory == null) {
                 log.debug("getDataCategoryByUid() NOT found: {}", uid);
-            } else {
-                dataCategory = dataCategories.get(0);
             }
         }
         return dataCategory;

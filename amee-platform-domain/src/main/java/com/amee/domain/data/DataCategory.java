@@ -6,6 +6,7 @@ import com.amee.domain.environment.Environment;
 import com.amee.domain.path.Pathable;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalIdCache;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -19,6 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "data_category")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@NaturalIdCache(region = "query.dataService")
 public class DataCategory extends AMEEEntity implements IDataCategoryReference, Pathable {
 
     public final static int NAME_MIN_SIZE = 2;
