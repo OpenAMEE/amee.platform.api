@@ -1,1 +1,4 @@
 The AMEEconnect platform v3.
+
+This is a maintenance branch for the old 'multiple library' structure (separate projects for base, persist, etc). 
+The develop branch is now a maven multi-module project.
