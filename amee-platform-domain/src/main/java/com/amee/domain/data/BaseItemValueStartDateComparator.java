@@ -36,7 +36,7 @@ public class BaseItemValueStartDateComparator implements Comparator<BaseItemValu
             // This will trigger this warning.
             // See: http://www.oracle.com/technetwork/java/javase/jdk7-relnotes-418459.html
             // and: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5045147
-            log.debug("put() Two non-historical BaseItemValues with the same path should not exist.");
+//            log.debug("put() Two non-historical BaseItemValues with the same path should not exist.");
             return 0;
         }
     }
