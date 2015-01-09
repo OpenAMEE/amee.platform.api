@@ -12,6 +12,8 @@
 
     <logger name="com.amee" level="DEBUG"/>
 
+    <logger name="org.perf4j.TimingLogger" level="OFF"/>
+
     <!-- The root logger -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
