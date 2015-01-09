@@ -103,6 +103,33 @@
                         <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
                         <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
                         <java.awt.headless>true</java.awt.headless>
+                        <TRAIN_ROUTE_SERVICE_URI>http://example.com</TRAIN_ROUTE_SERVICE_URI>
+                        <AUTO_START_SCHEDULER>true</AUTO_START_SCHEDULER>
+                        <MESSAGING_RUN_SLEEP>5000</MESSAGING_RUN_SLEEP>
+                        <RABBIT_MQ_ADDRESS>localhost</RABBIT_MQ_ADDRESS>
+                        <RABBIT_MQ_PORT>5672</RABBIT_MQ_PORT>
+                        <RABBIT_MQ_USERNAME>guest</RABBIT_MQ_USERNAME>
+                        <RABBIT_MQ_PASSWORD>guest</RABBIT_MQ_PASSWORD>
+                        <RABBIT_MQ_VHOST>/</RABBIT_MQ_VHOST>
+                        <MESSAGING_SCOPE>local</MESSAGING_SCOPE>
+                        <AMEE_APP_NAME>platform</AMEE_APP_NAME>
+                        <AMEE_INSTANCE_NAME>local</AMEE_INSTANCE_NAME>
+                        <DATABASE>HSQL</DATABASE>
+                        <DATABASE_PLATFORM>org.hibernate.dialect.HSQLDialect</DATABASE_PLATFORM>
+                        <SHOW_SQL>false</SHOW_SQL>
+                        <MASTER_INDEX>true</MASTER_INDEX>
+                        <CLEAR_INDEX>true</CLEAR_INDEX>
+                        <INDEX_CHECK_SEARCHER_ON_COMMIT>true</INDEX_CHECK_SEARCHER_ON_COMMIT>
+                        <CHECK_DATA_CATEGORIES>true</CHECK_DATA_CATEGORIES>
+                        <INDEX_DATA_CATEGORIES>true</INDEX_DATA_CATEGORIES>
+                        <INDEX_DATA_ITEMS>true</INDEX_DATA_ITEMS>
+                        <INDEX_DATA_CATEGORY_PATH_PREFIX/>
+                        <SNAPSHOT_ENABLED>false</SNAPSHOT_ENABLED>
+                        <INDEX_PATH>${project.build.directory}/lucene</INDEX_PATH>
+                        <LUCENE_PATH>${project.build.directory}/lucene/index</LUCENE_PATH>
+                        <SNAPSHOOTER_PATH>/</SNAPSHOOTER_PATH>
+                        <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
+                        <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -454,6 +481,12 @@
             <groupId>org.codehaus.groovy.modules.http-builder</groupId>
             <artifactId>http-builder</artifactId>
             <version>${http-builder.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.2</version>
             <scope>test</scope>
         </dependency>
 

@@ -43,7 +43,7 @@ abstract class BaseApiTest {
         SearchIndexerImpl.resetCount();
 
         // Spring application context.
-        context = new ClassPathXmlApplicationContext("classpath*:applicationContext*.xml")
+        context = new ClassPathXmlApplicationContext("classpath*:/context/applicationContext*.xml")
 
         // Load config.
         config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL());
@@ -178,32 +178,30 @@ abstract class BaseApiTest {
                 body[field] = value;
                 // Update UnitType.
                 client.put(
-                        path: "/${version}${path}",
+                        path: "/$version$path",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON);
-                fail "Response status code should have been 400 ('${field}', '${code}').";
+                fail "Response status code should have been 400 ('$field', '$code').";
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
-                def response = e.response;
-                assertEquals 400, response.status;
-                assertEquals 'application/json', response.contentType;
-                assertTrue response.data instanceof net.sf.json.JSON;
-                assertEquals 'INVALID', response.data.status;
-                def actualField = response.data.validationResult.errors.collect {it.field}[0];
-                assertTrue("The 'field' value should be '${field}' but was '${actualField}' instead.", field == actualField);
-                def actualCode = response.data.validationResult.errors.collect {it.code}[0];
-                assertTrue("The 'code' value should be '${code}' but was '${actualCode}' instead.", code == actualCode);
+                def response = e.response
+                assert response.status == 400
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                def actualField = response.data.validationResult.errors.collect { it.field }[0]
+                assertTrue("The 'field' value should be '$field' but was '$actualField' instead.", field == actualField)
+                def actualCode = response.data.validationResult.errors.collect {it.code}[0]
+                assertTrue("The 'code' value should be '$code' but was '$actualCode' instead.", code == actualCode)
             }
         }
     }
 
     def assertOkJson(response, statusCode, uid) {
-        assertEquals statusCode, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals uid, response.data.entity.uid
+        assert response.status == statusCode
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.entity.uid == uid
     }
     
     def assertOkXml(response, statusCode, uid) {
