@@ -1,7 +1,9 @@
 package com.amee.integration
 
+import com.amee.domain.data.DataCategory
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import static org.restlet.data.Status.*
@@ -14,52 +16,22 @@ class CategoryIT extends BaseApiTest {
     // NOTE: Keep these lists up to date if you add new categories to import.sql.
 
     static def categoryNames = [
-        'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-        'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
-        'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child',
-        'Embodied', 'Clm',
-        'ICE Building Materials LCA', 'V2', 'Inventory of Carbon & Energy methodology for materials by mass',
-        'Integration', 'Api', 'Item history test', 'Item history dimless test',
-        'LCA', 'Ecoinvent', 'chemicals', 'inorganics', 'chlorine, gaseous, diaphragm cell, at plant', 'chlorine, gaseous, diaphragm cell, at plant',
-        'Grid',
+        'Root',
+        'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
+        'Business', 'Energy', 'Electricity', 'US', 'Greenhouse Gas Protocol methodology for US grid electricity', 'Waste',
+        'Embodied', 'ICE Building Materials LCA', 'V2', 'Inventory of Carbon & Energy methodology for materials by mass',
         'Transport', 'Plane', 'Specific', 'Military', 'Ipcc',
-        'Processes']
-
-    static def categoryNamesExcEcoinvent = [
-        'Root', 'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-        'Business', 'Energy', 'Electricity', 'US', 'Subregion', 'Waste',
-        'Benchmark', 'CO2 Benchmark', 'CO2 Benchmark Two', 'CO2 Benchmark Child',
-        'Embodied', 'Clm',
-        'ICE Building Materials LCA', 'V2', 'Inventory of Carbon & Energy methodology for materials by mass',
         'Integration', 'Api', 'Item history test', 'Item history dimless test',
-        'LCA',
-        'Grid',
-        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc',
-        'Processes']
+        'Greenhouse Gas Protocol methodology for international grid electricity']
 
     static def categoryWikiNames = [
-        'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-        'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-        'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child',
-        'Embodied', 'CLM_food_life_cycle_database',
-        'ICE_Building_Materials_LCA', 'ICE_v2', 'ICE_v2_by_mass',
-        'Integration', 'Api', 'Item_history_test', 'Item_history_dimless_test',
-        'LCA', 'Ecoinvent', 'Ecoinvent_chemicals', 'Ecoinvent_chemicals_inorganics', 'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant', 'Ecoinvent_chemicals_inorganics_chlorine_gaseous_diaphragm_cell_at_plant_UPR_RER_kg',
-        'Greenhouse_Gas_Protocol_international_electricity',
+        'Root',
+        'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
+        'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Subregion_Electricity', 'Waste',
+        'Embodied', 'ICE_Building_Materials_LCA', 'ICE_v2', 'ICE_v2_by_mass',
         'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft',
-        'CLM_food_processing_emissions']
-
-    static def categoryWikiNamesExcEcoinvent = [
-        'Root', 'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-        'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Egrid', 'Waste',
-        'Benchmarking', 'CO2_Benchmark', 'CO2_Benchmark_Two', 'CO2_Benchmark_Child',
-        'Embodied', 'CLM_food_life_cycle_database',
-        'ICE_Building_Materials_LCA', 'ICE_v2', 'ICE_v2_by_mass',
         'Integration', 'Api', 'Item_history_test', 'Item_history_dimless_test',
-        'LCA',
-        'Greenhouse_Gas_Protocol_international_electricity',
-        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft',
-        'CLM_food_processing_emissions']
+        'Greenhouse_Gas_Protocol_international_electricity']
 
     /**
      * Tests for creation, fetch and deletion of a Data Category using JSON responses.
@@ -94,39 +66,34 @@ class CategoryIT extends BaseApiTest {
 
             // Create a DataCategory.
             def responsePost = client.post(
-                    path: "/${version}/categories",
-                    body: [
-                            dataCategory: 'Root',
-                            path: 'testPath',
-                            name: 'Test Name',
-                            wikiName: 'Test_Wiki_Name'],
+                    path: "/$version/categories",
+                    body: [dataCategory: 'Root', path: 'testPath', name: 'Test Name', wikiName: 'Test_Wiki_Name'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
-            def uid = location.split('/')[5]
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("${config.api.protocol}://${config.api.host}")
+            String uid = location.split('/')[5]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the new DataCategory.
             def responseGet = client.get(
-                    path: "/${version}/categories/Test_Wiki_Name",
+                    path: "/$version/categories/Test_Wiki_Name",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals "Test_Wiki_Name", responseGet.data.category.wikiName
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.category.wikiName == "Test_Wiki_Name"
 
             // Then delete it.
-            def responseDelete = client.delete(path: "/${version}/categories/Test_Wiki_Name")
+            def responseDelete = client.delete(path: "/$version/categories/Test_Wiki_Name")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/categories/Test_Wiki_Name")
+                client.get(path: "/$version/categories/Test_Wiki_Name")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -175,14 +142,13 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoryByWikiNameJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Kitchen_generic;audit")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals "3C03A03B5F3A", response.data.category.uid
-        assertEquals "ACTIVE", response.data.category.status
-        assertEquals "Kitchen_generic", response.data.category.wikiName
+        def response = client.get(path: "/$version/categories/Kitchen_generic;audit")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.category.uid == 'AZCW0FZTL52Y'
+        assert response.data.category.status == 'ACTIVE'
+        assert response.data.category.wikiName == 'Kitchen_generic'
     }
 
     /**
@@ -195,18 +161,19 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoryByUidJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/3C03A03B5F3A;audit")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals "3C03A03B5F3A", response.data.category.uid
-        assertEquals "ACTIVE", response.data.category.status
-        assertEquals "Kitchen_generic", response.data.category.wikiName
+        def response = client.get(path: "/$version/categories/AZCW0FZTL52Y;audit")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.category.uid == 'AZCW0FZTL52Y'
+        assert response.data.category.status == 'ACTIVE'
+        assert response.data.category.wikiName == 'Kitchen_generic'
     }
 
     /**
      * Tests fetching a previously deleted Data Category by wikiName using JSON responses.
+     * If more than one Data Category is found (may happen when searching by wikiName and status),
+     * the most recently modified category is returned.
      */
     @Test
     void getTrashedCategoryByWikiNameJson() {
@@ -217,15 +184,14 @@ class CategoryIT extends BaseApiTest {
         setRootUser()
         client.contentType = JSON
         def response = client.get(
-                path: "/${version}/categories/Kitchen_generic;audit",
-                query: ['status': 'trash'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals "3C03A03B5F2A", response.data.category.uid
-        assertEquals "TRASH", response.data.category.status
-        assertEquals "Kitchen_generic", response.data.category.wikiName
+                path: "/$version/categories/Kitchen_generic;audit",
+                query: [status: 'trash'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.category.uid == 'AZCW0FZTL56Y'
+        assert response.data.category.status == 'TRASH'
+        assert response.data.category.wikiName == 'Kitchen_generic'
     }
 
     /**
@@ -240,15 +206,14 @@ class CategoryIT extends BaseApiTest {
         setRootUser()
         client.contentType = JSON
         def response = client.get(
-                path: "/${version}/categories/3C03A03B5F1A;audit",
-                query: ['status': 'trash'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals "3C03A03B5F1A", response.data.category.uid
-        assertEquals "TRASH", response.data.category.status
-        assertEquals "Kitchen_generic", response.data.category.wikiName
+                path: "/$version/categories/AZCW0FZTL54Y;audit",
+                query: [status: 'trash'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.category.uid == 'AZCW0FZTL54Y'
+        assert response.data.category.status == 'TRASH'
+        assert response.data.category.wikiName == 'Kitchen_generic'
     }
 
     /**
@@ -263,15 +228,14 @@ class CategoryIT extends BaseApiTest {
         setRootUser()
         client.contentType = JSON
         def response = client.get(
-                path: "/${version}/categories/3C03A03B5F4A;audit",
-                query: ['status': 'trash'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals "3C03A03B5F4A", response.data.category.uid
-        assertEquals "ACTIVE", response.data.category.status
-        assertEquals "Kitchen_generic_child", response.data.category.wikiName
+                path: "/$version/categories/AZCW0FZTL58Y;audit",
+                query: [status: 'trash'])
+        assert SUCCESS_OK.code, response.status
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.category.uid == 'AZCW0FZTL58Y'
+        assert response.data.category.status == 'ACTIVE'
+        assert response.data.category.wikiName == 'Kitchen_generic_child'
     }
 
     /**
@@ -284,10 +248,10 @@ class CategoryIT extends BaseApiTest {
 
     def getMissingCategoryByWikiName(version) {
         try {
-            client.get(path: "/${version}/categories/Wibble")
+            client.get(path: "/$version/categories/Wibble")
             fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
         }
     }
 
@@ -303,16 +267,15 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoriesJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertFalse response.data.resultsTruncated
-        assertEquals categoryNames.size(), response.data.categories.size()
+        def response = client.get(path: "/$version/categories")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.resultsTruncated == false
+        assert response.data.categories.size() == categoryNames.size()
 
         // Results are sorted by wikiName
-        assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.categories.collect {it.wikiName}
+        assert response.data.categories.collect { it.wikiName } == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
     }
     
     /**
@@ -326,43 +289,17 @@ class CategoryIT extends BaseApiTest {
     def getCategoriesWithNamesJson(version) {
         if (version >= 3.3) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories;name")
-            assert SUCCESS_OK.code == response.status
-            assert 'application/json' == response.contentType
-            assert response.data instanceof net.sf.json.JSON
-            assert 'OK' == response.data.status
-            assert !response.data.resultsTruncated
-            assert categoryNames.size() == response.data.categories.size()
-            assert categoryNames.sort() == response.data.categories.collect {it.name}.sort()
+            def response = client.get(path: "/$version/categories;name")
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.resultsTruncated == false
+            assert response.data.categories.size() == categoryNames.size()
+            assert response.data.categories.collect { it.name }.sort() == categoryNames.sort()
     
             // Results are sorted by wikiName
-            assert categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) } == response.data.categories.collect {it.wikiName}
+            assert response.data.categories.collect { it.wikiName } == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
         }
-    }
-
-    /**
-     * Tests getting a list of categories using JSON responses with some categories excluded by tag.
-     */
-    @Test
-    void getCategoriesWithTagsExcludedJson() {
-        versions.each { version -> getCategoriesWithTagsExcludedJson(version) }
-    }
-
-    def getCategoriesWithTagsExcludedJson(version) {
-        client.contentType = JSON
-        def response = client.get(
-                path: "/${version}/categories",
-                query: ['excTags': 'ecoinvent'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertFalse response.data.resultsTruncated
-        assertEquals categoryNamesExcEcoinvent.size(), response.data.categories.size()
-
-        // Results should NOT be sorted
-        assert categoryWikiNamesExcEcoinvent.sort { a, b -> a.compareToIgnoreCase(b) } != response.data.categories.collect {it.wikiName}
-        assert categoryWikiNamesExcEcoinvent.sort() == response.data.categories.collect {it.wikiName}.sort()
     }
 
     /**
@@ -375,16 +312,16 @@ class CategoryIT extends BaseApiTest {
 
     def getCategoriesXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals 'false', response.data.Categories.@truncated.text()
+        def response = client.get(path: "/$version/categories")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Categories.@truncated.text() == 'false'
         def allCategories = response.data.Categories.Category
-        assertEquals categoryNames.size(), allCategories.size()
+        assert allCategories.size() == categoryNames.size()
 
         // Should be sorted by wikiName
-        assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, allCategories.WikiName*.text()
+        assert allCategories.WikiName*.text() == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
     }
 
     /**
@@ -398,17 +335,17 @@ class CategoryIT extends BaseApiTest {
    def getCategoriesWithNamesXml(version) {
        if (version >= 3.3) {
            client.contentType = XML
-           def response = client.get(path: "/${version}/categories;name")
-           assertEquals SUCCESS_OK.code, response.status
-           assertEquals 'application/xml', response.contentType
-           assertEquals 'OK', response.data.Status.text()
-           assertEquals 'false', response.data.Categories.@truncated.text()
+           def response = client.get(path: "/$version/categories;name")
+           assert response.status == SUCCESS_OK.code
+           assert response.contentType == 'application/xml'
+           assert response.data.Status.text() == 'OK'
+           assert response.data.Categories.@truncated.text() == 'false'
            def allCategories = response.data.Categories.Category
-           assertEquals categoryNames.size(), allCategories.size()
-           assert categoryNames.sort() == allCategories.Name*.text().sort()
+           assert allCategories.size() == categoryNames.size()
+           assert allCategories.Name*.text().sort() == categoryNames.sort()
     
            // Should be sorted by wikiName
-           assertEquals categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }, allCategories.WikiName*.text()
+           assert allCategories.WikiName*.text() == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
        }
    }
     
@@ -423,16 +360,15 @@ class CategoryIT extends BaseApiTest {
     def filterByAuthorityJson(version) {
         client.contentType = JSON
         def response = client.get(
-                path: "/${version}/categories",
-                query: ['authority': 'enterprise'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals 9, response.data.categories.size()
+                path: "/$version/categories",
+                query: [authority: 'enterprise'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.categories.size() == 9
 
         // Should NOT be sorted
-        assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) > 0
+        assert response.data.categories.collect { it.wikiName } != response.data.categories.collect { it.wikiName }.sort()
     }
 
     /**
@@ -446,16 +382,16 @@ class CategoryIT extends BaseApiTest {
     def filterByAuthorityXml(version) {
         client.contentType = XML
         def response = client.get(
-                path: "/${version}/categories",
-                query: ['authority': 'enterprise'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories",
+                query: [authority: 'enterprise'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def allCategories = response.data.Categories.Category
-        assertEquals 9, allCategories.size()
+        assert allCategories.size() == 9
 
         // Should NOT be sorted
-        assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) > 0
+        assert allCategories.collect { it.WikiName.text() } != allCategories.collect { it.WikiName.text()}.sort()
     }
 
     /**
@@ -469,16 +405,15 @@ class CategoryIT extends BaseApiTest {
     def filterByTagsJson(version) {
         client.contentType = JSON
         def response = client.get(
-                path: "/${version}/categories",
-                query: ['tags': 'electrical'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals 4, response.data.categories.size()
+                path: "/$version/categories",
+                query: [tags: 'electricity'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.categories.size() == 4
 
         // Should NOT be sorted
-        assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) > 0
+        assert response.data.categories.collect { it.wikiName } != response.data.categories.collect { it.wikiName }.sort()
     }
 
     /**
@@ -492,16 +427,42 @@ class CategoryIT extends BaseApiTest {
     def filterByTagsXml(version) {
         client.contentType = XML
         def response = client.get(
-                path: "/${version}/categories",
-                query: ['tags': 'electrical'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories",
+                query: [tags: 'electricity'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def allCategories = response.data.Categories.Category
-        assertEquals 4, allCategories.size()
+        assert allCategories.size() == 4
 
         // Should NOT be sorted
-        assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) > 0
+        assert allCategories.collect { it.WikiName.text() } != allCategories.collect { it.WikiName.text()}.sort()
+    }
+
+    /**
+     * Tests getting a list of categories using JSON responses with some categories excluded by tag.
+     */
+    @Test
+    void filterByTagsExcludedJson() {
+        versions.each { version -> getCategoriesWithTagsExcludedJson(version) }
+    }
+
+    def getCategoriesWithTagsExcludedJson(version) {
+        client.contentType = JSON
+        def response = client.get(path: "/$version/categories", query: [excTags: 'electricity'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.resultsTruncated == false
+
+        def electricityCategoryWikiNames = ['Electricity_by_Country', 'Greenhouse_Gas_Protocol_international_electricity',
+                                            'US_Subregion_Electricity', 'Kitchen_generic']
+        def categoryWikiNamesExcElectricity = categoryWikiNames - electricityCategoryWikiNames
+
+        assert response.data.categories.size() == categoryWikiNamesExcElectricity.size()
+
+        // Results should NOT be sorted
+        assert response.data.categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) } != response.data.categories.collect {it.wikiName}
     }
 
     /**
@@ -516,16 +477,15 @@ class CategoryIT extends BaseApiTest {
         client.contentType = JSON
         def response = client.get(
                 path: "/${version}/categories",
-                query: ['fullPath': '/home/appliances/*'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
+                query: [fullPath: '/home/appliances/*'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
         def allCategories = response.data.categories
-        assertEquals 7, allCategories.size()
+        assert allCategories.size() == 7
 
         // Should be sorted
-        assertTrue response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) < 0
+        assert response.data.categories.first().wikiName.compareToIgnoreCase(response.data.categories.last().wikiName) < 0
     }
 
     /**
@@ -539,13 +499,13 @@ class CategoryIT extends BaseApiTest {
     def filterByPathXml(version) {
         client.contentType = XML
         def response = client.get(
-                path: "/${version}/categories",
-                query: ['fullPath': '/home/appliances/*'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories",
+                query: [fullPath: '/home/appliances/*'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def allCategories = response.data.Categories.Category
-        assertEquals 7, allCategories.size()
+        assert allCategories.size() == 7
 
         // Should be sorted
         assertTrue allCategories[0].WikiName.text().compareToIgnoreCase(allCategories[-1].WikiName.text()) < 0
@@ -566,37 +526,35 @@ class CategoryIT extends BaseApiTest {
     def updateCategoryJson(version) {
         setAdminUser()
 
-        // 1) Do the update (CO2_Benchmark).
+        // 1) Do the update (Integration).
         def responsePut = client.put(
-                path: "/${version}/categories/245CBD734418",
-                body: [
-                        'path': 'newPath',
-                        'name': 'New Name',
-                        'wikiName': 'New_Wiki_Name',
-                        'provenance': 'New Provenance.',
-                        'authority': 'New Authority.',
-                        'history': 'New History.', // This parameter will be ignored pre version 3.3.
-                        'wikiDoc': 'New WikiDoc.'],
+                path: "/$version/categories/6153F468BE05",
+                body: [path: 'newPath',
+                       name: 'New Name',
+                       wikiName: 'New_Wiki_Name',
+                       provenance: 'New Provenance.',
+                       authority: 'New Authority.',
+                       history: 'New History.', // This parameter will be ignored pre version 3.3.
+                       wikiDoc: 'New WikiDoc.'],
                 requestContentType: URLENC,
                 contentType: JSON)
-        assertOkJson(responsePut, SUCCESS_OK.code, '245CBD734418')
+        assertOkJson(responsePut, SUCCESS_OK.code, '6153F468BE05')
 
-        // 2) Check values have been updated (CO2_Benchmark).
+        // 2) Check values have been updated (Integration).
         def responseGet = client.get(
-                path: "/${version}/categories/245CBD734418;full",
+                path: "/${version}/categories/6153F468BE05;full",
                 contentType: JSON)
-        assertEquals SUCCESS_OK.code, responseGet.status
-        assertEquals 'application/json', responseGet.contentType
-        assertTrue responseGet.data instanceof net.sf.json.JSON
-        assertEquals 'OK', responseGet.data.status
-        assertEquals 'newPath', responseGet.data.category.path
-        assertEquals 'New Name', responseGet.data.category.name
-        assertEquals 'New_Wiki_Name', responseGet.data.category.wikiName
-        assertEquals 'New Provenance.', responseGet.data.category.provenance
-        assertEquals 'New Authority.', responseGet.data.category.authority
-        assertEquals 'New WikiDoc.', responseGet.data.category.wikiDoc
+        assert responseGet.status == SUCCESS_OK.code
+        assert responseGet.contentType == 'application/json'
+        assert responseGet.data.status == 'OK'
+        assert responseGet.data.category.path == 'newPath'
+        assert responseGet.data.category.name == 'New Name'
+        assert responseGet.data.category.wikiName == 'New_Wiki_Name'
+        assert responseGet.data.category.provenance == 'New Provenance.'
+        assert responseGet.data.category.authority == 'New Authority.'
+        assert responseGet.data.category.wikiDoc == 'New WikiDoc.'
         if (version >= 3.3) {
-            assertEquals 'New History.', responseGet.data.category.history
+            assert responseGet.data.category.history == 'New History.'
         }
     }
 
@@ -612,25 +570,19 @@ class CategoryIT extends BaseApiTest {
     def updateInvalidCategoryJson(version) {
         setAdminUser()
         try {
-
-            // 1) Do the update (CO2_Benchmark).
             client.put(
-                    path: "/${version}/categories/245CBD734418",
-                    body: [
-                            'wikiName': 'CLM_food_life_cycle_database', // duplicate
-                            'provenance': String.randomString(256), // too long
-                            'wikiDoc': String.randomString(32768)], // too long
+                    path: "/${version}/categories/6153F468BE05",
+                    body: [wikiName: 'business', // duplicate
+                           provenance: String.randomString(256), // too long
+                           wikiDoc: String.randomString(32768)], // too long
                     requestContentType: URLENC,
                     contentType: JSON)
-            fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
+            fail 'Response status code should have been 400.'
         } catch (HttpResponseException e) {
-
-            // Handle error response containing a ValidationResult.
             def response = e.response
-            assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'INVALID', response.data.status
+            assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'INVALID'
         }
     }
 
@@ -648,11 +600,8 @@ class CategoryIT extends BaseApiTest {
 
             // Should not be allowed to update the root Data Category.
             client.put(
-                    path: "/${version}/categories/Root",
-                    body: [
-                            'path': 'bad',
-                            'provenance': 'bad',
-                            'wikiDoc': 'bad'],
+                    path: "/$version/categories/Root",
+                    body: [path: 'bad', provenance: 'bad', wikiDoc: 'bad'],
                     requestContentType: URLENC,
                     contentType: JSON)
             fail 'Response status code should have been 403'
@@ -660,7 +609,7 @@ class CategoryIT extends BaseApiTest {
 
             // Expect a 403.
             def response = e.response
-            assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
+            assert response.status == CLIENT_ERROR_FORBIDDEN.code
         }
     }
 
@@ -678,72 +627,67 @@ class CategoryIT extends BaseApiTest {
 
             // Create Item Definition.
             def itemDefinitionPost = client.post(
-                    path: "/${version}/definitions",
-                    body: ['name': 'Test Item Definition'],
+                    path: "/$version/definitions",
+                    body: [name: 'Test Item Definition'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def itemDefinitionLocation = itemDefinitionPost.headers['Location'].value
-            def itemDefinitionUid = itemDefinitionLocation.split('/')[5]
+            String itemDefinitionLocation = itemDefinitionPost.headers['Location'].value
+            String itemDefinitionUid = itemDefinitionLocation.split('/')[5]
             assertOkJson(itemDefinitionPost, SUCCESS_CREATED.code, itemDefinitionUid)
 
             // Create Item Value Definition.
             def itemValueDefinitionPost = client.post(
-                    path: "/${version}/definitions/${itemDefinitionUid}/values",
-                    body: ['valueDefinition': '45433E48B39F',
-                            'name': 'Test Item Value Definition',
-                            'path': 'test_item_value_definition',
-                            'value': 'true',
-                            'fromProfile': 'false',
-                            'fromData': 'true',
-                            'unit': 'kg',
-                            'perUnit': 'month',
-                            'apiVersions': '2.0'],
+                    path: "/$version/definitions/$itemDefinitionUid/values",
+                    body: [valueDefinition: 'OMU53CZCY970',
+                           name: 'Test Item Value Definition',
+                           path: 'test_item_value_definition',
+                           value: 'true',
+                           fromProfile: 'false',
+                           fromData: 'true',
+                           unit: 'kg',
+                           perUnit: 'month',
+                           apiVersions: '2.0'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def itemValueDefinitionLocation = itemValueDefinitionPost.headers['Location'].value
-            def itemValueDefinitionUid = itemValueDefinitionLocation.split('/')[7]
+            String itemValueDefinitionLocation = itemValueDefinitionPost.headers['Location'].value
+            String itemValueDefinitionUid = itemValueDefinitionLocation.split('/')[7]
             assertOkJson(itemValueDefinitionPost, SUCCESS_CREATED.code, itemValueDefinitionUid)
 
             // Create Data Category.
             def dataCategoryPost = client.post(
-                    path: "/${version}/categories",
-                    body: [
-                            dataCategory: 'Root',
-                            itemDefinition: itemDefinitionUid,
-                            path: 'testPath',
-                            name: 'Test Name',
-                            wikiName: 'Test_Wiki_Name'],
+                    path: "/$version/categories",
+                    body: [dataCategory: 'Root',
+                           itemDefinition: itemDefinitionUid,
+                           path: 'testPath',
+                           name: 'Test Name',
+                           wikiName: 'Test_Wiki_Name'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def dataCategoryLocation = dataCategoryPost.headers['Location'].value
-            def dataCategoryUid = dataCategoryLocation.split('/')[5]
+            String dataCategoryLocation = dataCategoryPost.headers['Location'].value
+            String dataCategoryUid = dataCategoryLocation.split('/')[5]
             assertOkJson(dataCategoryPost, SUCCESS_CREATED.code, dataCategoryUid)
 
             // Check Data Category is available.
-            def dataCategoryGet1 = client.get(
-                    path: "${dataCategoryLocation};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, dataCategoryGet1.status
-            assertEquals "Test Item Definition", dataCategoryGet1.data.category.itemDefinition.name
+            def dataCategoryGet1 = client.get(path: "$dataCategoryLocation;full", contentType: JSON)
+            assert dataCategoryGet1.status == SUCCESS_OK.code
+            assert dataCategoryGet1.data.category.itemDefinition.name == "Test Item Definition"
 
             // Create Data Item.
             def dataItemPost = client.post(
-                    path: "${dataCategoryLocation}/items",
+                    path: "$dataCategoryLocation/items",
                     body: ['values.test_item_value_definition': 10],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def dataItemLocation = dataItemPost.headers['Location'].value
-            def dataItemUid = dataItemLocation.split('/')[7]
+            String dataItemLocation = dataItemPost.headers['Location'].value
+            String dataItemUid = dataItemLocation.split('/')[7]
             assertOkJson dataItemPost, SUCCESS_CREATED.code, dataItemUid
 
             // Check Data Item is available.
-            def dataItemGet = client.get(
-                    path: "${dataItemLocation};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, dataItemGet.status
-            assertEquals 1, dataItemGet.data.item.values.size()
-            assertTrue([10].sort() == dataItemGet.data.item.values.collect {it.value}.sort())
-            assertTrue(['test_item_value_definition'].sort() == dataItemGet.data.item.values.collect {it.path}.sort())
+            def dataItemGet = client.get(path: "$dataItemLocation;full", contentType: JSON)
+            assert dataItemGet.status == SUCCESS_OK.code
+            assert dataItemGet.data.item.values.size() == 1
+            assert dataItemGet.data.item.values.collect { it.value } == [10]
+            assert dataItemGet.data.item.values.collect { it.path } == ['test_item_value_definition']
 
             // Delete Item Definition.
             def itemDefinitionDelete = client.delete(path: itemDefinitionLocation)
@@ -752,32 +696,30 @@ class CategoryIT extends BaseApiTest {
                 client.get(path: itemDefinitionLocation)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
 
             // Check Data Category is available and there is no Item Definition.
-            def dataCategoryGet2 = client.get(
-                    path: "${dataCategoryLocation};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, dataCategoryGet2.status
-            assertNull dataCategoryGet2.data.category.itemDefinition
+            def dataCategoryGet2 = client.get(path: "${dataCategoryLocation};full", contentType: JSON)
+            assert dataCategoryGet2.status == SUCCESS_OK.code
+            assert dataCategoryGet2.data.category.itemDefinition == null
 
             // Check Data Item is not available.
             try {
                 client.get(path: dataItemLocation)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
 
             // Delete Data Category.
             def dataCategoryDelete = client.delete(path: dataCategoryLocation)
-            assertEquals SUCCESS_OK.code, dataCategoryDelete.status
+            assert dataCategoryDelete.status == SUCCESS_OK.code
             try {
                 client.get(path: itemDefinitionLocation)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -826,7 +768,7 @@ class CategoryIT extends BaseApiTest {
         setAdminUser()
         updateCategoryFieldJson('path', 'long', String.randomString(256))
         updateCategoryFieldJson('path', 'format', 'n o t v a l i d')
-        updateCategoryFieldJson('path', 'duplicate', 'co2benchmark2')
+        updateCategoryFieldJson('path', 'duplicate', 'business')
     }
 
     /**
@@ -852,7 +794,7 @@ class CategoryIT extends BaseApiTest {
         updateCategoryFieldJson('wikiName', 'empty', '')
         updateCategoryFieldJson('wikiName', 'short', '12')
         updateCategoryFieldJson('wikiName', 'long', String.randomString(256))
-        updateCategoryFieldJson('wikiName', 'duplicate', 'CLM_food_life_cycle_database')
+        updateCategoryFieldJson('wikiName', 'duplicate', 'Business')
     }
 
     /**
@@ -862,17 +804,17 @@ class CategoryIT extends BaseApiTest {
      *
      * <ul>
      * <li>All are optional.
-     * <li>wikiDoc and history (since 3.3.0) must be no longer than 32767 characters.
+     * <li>wikiDoc and history (since 3.3.0) must be no longer than 32767?? characters.
      * <li>provenance and authority must be no longer than 255 characters.
      * </ul>
      */
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
-        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(32768))
-        updateCategoryFieldJson('provenance', 'long', String.randomString(256))
-        updateCategoryFieldJson('authority', 'long', String.randomString(256))
-        updateCategoryFieldJson('history', 'long', String.randomString(32768), 3.3)
+        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(DataCategory.WIKI_DOC_MAX_SIZE + 1))
+        updateCategoryFieldJson('provenance', 'long', String.randomString(DataCategory.PROVENANCE_MAX_SIZE + 1))
+        updateCategoryFieldJson('authority', 'long', String.randomString(DataCategory.AUTHORITY_MAX_SIZE + 1))
+        updateCategoryFieldJson('history', 'long', String.randomString(DataCategory.HISTORY_MAX_SIZE + 1), 3.3)
     }
 
     /**
@@ -892,8 +834,8 @@ class CategoryIT extends BaseApiTest {
     @Test
     void updateWithInvalidParentCategory() {
         setAdminUser()
-        updateCategoryFieldJson('dataCategory', 'same', '245CBD734418', 3.3)
-        updateCategoryFieldJson('dataCategory', 'child', 'CO2_Benchmark_Child', 3.3)
+        updateCategoryFieldJson('dataCategory', 'same', '6153F468BE05', 3.3)
+        updateCategoryFieldJson('dataCategory', 'child', 'Item_history_test', 3.3)
         updateCategoryFieldJson('dataCategory', 'empty', 'XXX', 3.3)
     }
 
@@ -917,7 +859,7 @@ class CategoryIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateCategoryFieldJson(field, code, value, since) {
-        updateInvalidFieldJson("/categories/245CBD734418", field, code, value, since)
+        updateInvalidFieldJson('/categories/6153F468BE05', field, code, value, since)
     }
 
     /**
@@ -949,42 +891,41 @@ class CategoryIT extends BaseApiTest {
 
             // Default units
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                path: "/$version/categories/Electricity_by_Country/calculation;full",
                 query: [country: 'Albania', 'values.energyPerTime': '10'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
-            assertEquals 1, response.data.output.amounts.size()
+            assert response.data.output.amounts.size() == 1
             def amount = response.data.output.amounts[0]
-            assertEquals 'CO2', amount.type
-            assertEquals 'kg/year', amount.unit
-            assertEquals true, amount.default
-            assertEquals "", 20.0, amount.value, 0.000001
+            assert amount.type == 'CO2'
+            assert amount.unit == 'kg/year'
+            assert amount.default == true
+            assertEquals(20.0, amount.value as double, 0.000001)
 
             // Notes
-            assertEquals 1, response.data.output.notes.size()
-            assertEquals 'comment', response.data.output.notes[0].type
-            assertEquals 'This is a comment', response.data.output.notes[0].value
+            assert response.data.output.notes.size() == 1
+            assert response.data.output.notes[0].type == 'comment'
+            assert response.data.output.notes[0].value == 'This is a comment'
 
             // User input values
-            assertEquals 8, response.data.input.values.size()
+            assert response.data.input.values.size() == 8
             def userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 'user', userItemValue.source
-            assertEquals 10, userItemValue.value
-            assertEquals 'kWh', userItemValue.unit
-            assertEquals 'year', userItemValue.perUnit
+            assert userItemValue != null
+            assert userItemValue.source == 'user'
+            assert userItemValue.value == 10
+            assert userItemValue.unit == 'kWh'
+            assert userItemValue.perUnit == 'year'
 
             // Data item input values
             def dataItemValue
             dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
-            assertNotNull dataItemValue
-            assertEquals 0.0324402, dataItemValue.value, 0.000001
-            assertEquals 'amee', dataItemValue.source
-            assertEquals 'kg/(kW·h)', dataItemValue.unit
+            assert dataItemValue != null
+            assertEquals(0.0324402, dataItemValue.value as double, 0.000001)
+            assert dataItemValue.source == 'amee'
+            assert dataItemValue.unit == 'kg/(kW·h)'
         }
     }
 
@@ -1005,42 +946,42 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation;full",
+                path: "/$version/categories/Electricity_by_Country/calculation;full",
                 query: [country: 'Albania', 'values.energyPerTime': '10'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
-            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            assert response.data.Output.Amounts.Amount.size() == 1
             def amount = response.data.Output.Amounts.Amount[0]
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'kg/year', amount.@unit.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@type.text() == 'CO2'
+            assert amount.@unit.text() == 'kg/year'
+            assert amount.@default.text() == 'true'
+            assertEquals(20.0, amount.text() as double, 0.000001)
 
             // Notes
-            assertEquals 1, response.data.Output.Notes.size()
-            assertEquals 'comment', response.data.Output.Notes.Note[0].@type.text()
-            assertEquals 'This is a comment', response.data.Output.Notes.Note[0].text()
+            assert response.data.Output.Notes.size() == 1
+            assert response.data.Output.Notes.Note[0].@type.text() == 'comment'
+            assert response.data.Output.Notes.Note[0].text() == 'This is a comment'
 
             // User input values
-            assertEquals 8, response.data.Input.Values.Value.size()
+            assert response.data.Input.Values.Value.size() == 8
             def userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 'user', userItemValue.@source.text()
-            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
-            assertEquals 'kWh', userItemValue.@unit.text()
-            assertEquals 'year', userItemValue.@perUnit.text()
+            assert userItemValue != null
+            assert userItemValue.@source.text() == 'user'
+            assertEquals(10.0, userItemValue.text() as double, 0.000001)
+            assert userItemValue.@unit.text() == 'kWh'
+            assert userItemValue.@perUnit.text() == 'year'
 
             // Data item input values
             def dataItemValue
             if (version >= 3.6) {
                 dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
-                assertNotNull dataItemValue
-                assertEquals 'amee', dataItemValue.@source.text()
-                assertEquals 0.0324402, Double.parseDouble(dataItemValue.text()), 0.000001
-                assertEquals 'kg/(kW·h)', dataItemValue.@unit.text()
+                assert dataItemValue != null
+                assert dataItemValue.@source.text() == 'amee'
+                assertEquals(0.0324402, dataItemValue.text() as double, 0.000001)
+                assert dataItemValue.@unit.text() == 'kg/(kW·h)'
             }
         }
     }
@@ -1059,38 +1000,34 @@ class CategoryIT extends BaseApiTest {
 
             // Default units
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation;full",
-                query: [
-                    country: 'Albania',
-                    'values.energyPerTime': '10',
-                    'units.energyPerTime': 'MWh',
-                    'perUnits.energyPerTime': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+                path: "/$version/categories/Electricity_by_Country/calculation;full",
+                query: [country: 'Albania', 'values.energyPerTime': '10', 'units.energyPerTime': 'MWh',
+                        'perUnits.energyPerTime': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
-            assertEquals 1, response.data.output.amounts.size()
+            assert response.data.output.amounts.size() == 1
             def amount = response.data.output.amounts[0]
-            assertEquals 'CO2', amount.type
-            assertEquals 'kg/year', amount.unit
-            assertEquals true, amount.default
-            assertEquals "", 240000.0, amount.value, 0.000001
+            assert amount.type == 'CO2'
+            assert amount.unit == 'kg/year'
+            assert amount.default == true
+            assertEquals(240000.0, amount.value as double, 0.000001)
 
             // Notes
-            assertEquals 1, response.data.output.notes.size()
-            assertEquals 'comment', response.data.output.notes[0].type
-            assertEquals 'This is a comment', response.data.output.notes[0].value
+            assert response.data.output.notes.size() == 1
+            assert response.data.output.notes[0].type == 'comment'
+            assert response.data.output.notes[0].value == 'This is a comment'
 
             // Input values
-            assertEquals 8, response.data.input.values.size()
+            assert response.data.input.values.size() == 8
             def itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-            assertNotNull itemValue
-            assertEquals 'user', itemValue.source
-            assertEquals 10, itemValue.value
-            assertEquals 'MWh', itemValue.unit
-            assertEquals 'month', itemValue.perUnit
+            assert itemValue != null
+            assert itemValue.source == 'user'
+            assert itemValue.value == 10
+            assert itemValue.unit == 'MWh'
+            assert itemValue.perUnit == 'month'
         }
     }
 
@@ -1103,37 +1040,34 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation;full",
-                query: [
-                    country: 'Albania',
-                    'values.energyPerTime': '10',
-                    'units.energyPerTime': 'MWh',
-                    'perUnits.energyPerTime': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories/Electricity_by_Country/calculation;full",
+                query: [country: 'Albania', 'values.energyPerTime': '10', 'units.energyPerTime': 'MWh',
+                        'perUnits.energyPerTime': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
-            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            assert response.data.Output.Amounts.Amount.size() == 1
             def amount = response.data.Output.Amounts.Amount[0]
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'kg/year', amount.@unit.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@type.text() == 'CO2'
+            assert amount.@unit.text() == 'kg/year'
+            assert amount.@default.text() == 'true'
+            assertEquals(240000.0, amount.text() as double, 0.000001)
 
             // Notes
-            assertEquals 1, response.data.Output.Notes.size()
-            assertEquals 'comment', response.data.Output.Notes.Note[0].@type.text()
-            assertEquals 'This is a comment', response.data.Output.Notes.Note[0].text()
+            assert response.data.Output.Notes.size() == 1
+            assert response.data.Output.Notes.Note[0].@type.text() == 'comment'
+            assert response.data.Output.Notes.Note[0].text() == 'This is a comment'
 
             // Input values
-            assertEquals 8, response.data.Input.Values.Value.size()
+            assert response.data.Input.Values.Value.size() == 8
             def itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull itemValue
-            assertEquals 'user', itemValue.@source.text()
-            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
-            assertEquals 'MWh', itemValue.@unit.text()
-            assertEquals 'month', itemValue.@perUnit.text()
+            assert itemValue != null
+            assert itemValue.@source.text() == 'user'
+            assertEquals(10.0, itemValue.text() as double, 0.000001)
+            assert itemValue.@unit.text() == 'MWh'
+            assert itemValue.@perUnit.text() == 'month'
         }
     }
 
@@ -1149,25 +1083,21 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = JSON
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation",
-                query: [
-                    country: 'Albania',
-                    'values.energyPerTime': '10',
-                    'returnUnits.CO2': 'g',
-                    'returnPerUnits.CO2': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+                path: "/$version/categories/Electricity_by_Country/calculation",
+                query: [country: 'Albania', 'values.energyPerTime': '10', 'returnUnits.CO2': 'g',
+                        'returnPerUnits.CO2': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.output.amounts.size()
+            assert response.data.output.amounts.size() == 1
             amount = response.data.output.amounts[0]
-            assertEquals 'g/month', amount.unit
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals "", 1666.66666666667, amount.value, 0.000001
+            assert amount.unit == 'g/month'
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(1666.66666666667, amount.value as double, 0.000001)
         }
     }
 
@@ -1180,24 +1110,21 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/calculation",
-                query: [
-                    country: 'Albania',
-                    'values.energyPerTime': '10',
-                    'returnUnits.CO2': 'g',
-                    'returnPerUnits.CO2': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories/Electricity_by_Country/calculation",
+                query: [country: 'Albania', 'values.energyPerTime': '10', 'returnUnits.CO2': 'g',
+                        'returnPerUnits.CO2': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            assert response.data.Output.Amounts.Amount.size() == 1
             amount = response.data.Output.Amounts.Amount[0]
-            assertEquals 'g/month', amount.@unit.text()
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 1666.66666666667, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@unit.text() == 'g/month'
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(1666.66666666667, amount.text() as double, 0.000001)
         }
     }
 
@@ -1217,13 +1144,12 @@ class CategoryIT extends BaseApiTest {
     def getCategoryCalculationInfinityAndNanJson(version) {
         if (version >= 3.6) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories/Computers_generic/calculation;full",
+            def response = client.get(path: "/$version/categories/Computers_generic/calculation;full",
                 query: [device: 'Personal Computers', rating: 'Desktop no monitor'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 2, response.data.output.amounts.size()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.output.amounts.size() == 2
             assertTrue "Should have Infinity and NaN", hasInfinityAndNan(response.data.output.amounts)
         }
     }
@@ -1244,44 +1170,40 @@ class CategoryIT extends BaseApiTest {
             // Default units
             // Georgia
             def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
-                query: [
-                    country: 'Georgia',
-                    'values.energyPerTime': '10',
-                    startDate: '2000-01-01T00:00:00Z',
-                    endDate: '2004-01-01T00:00:00Z'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+                path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/39MEKTNO2AKJ/calculation;full",
+                query: [country: 'Georgia', 'values.energyPerTime': '10', startDate: '2000-01-01T00:00:00Z',
+                        endDate: '2004-01-01T00:00:00Z'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.output.amounts.size()
+            assert response.data.output.amounts.size() == 1
             amount = response.data.output.amounts[0]
-            assertEquals 'kg/year', amount.unit
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals 1.1839605065023955, amount.value, 0.000001
+            assert amount.unit == 'kg/year'
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(1.1839605065023955, amount.value as double, 0.000001)
 
             // User input values
             def userItemValue
             assertEquals 6, response.data.input.values.size()
             userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 10, userItemValue.value
-            assertEquals 'user', userItemValue.source
-            assertEquals 'kWh', userItemValue.unit
+            assert userItemValue != null
+            assert userItemValue.value == 10
+            assert userItemValue.source == 'user'
+            assert userItemValue.unit == 'kWh'
 
             // Data item input values
             def dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
-            assertNotNull dataItemValue
-            assertEquals 'amee', dataItemValue.source
+            assert dataItemValue != null
+            assert dataItemValue.source == 'amee'
             assert dataItemValue.value.size() == 5
             def firstValue = dataItemValue.value.first()
             assert firstValue.startDate == '1970-01-01T00:00:00Z'
             assert firstValue.unit == 'kg/(kW·h)'
-            assertEquals 0.1449678, firstValue.value, 0.000001
+            assertEquals(0.1449678, firstValue.value as double, 0.000001)
         }
     }
 
@@ -1294,43 +1216,40 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
-                query: [
-                    country: 'Georgia',
-                    'values.energyPerTime': '10',
-                    startDate: '2000-01-01T00:00:00Z',
-                    endDate: '2004-01-01T00:00:00Z'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/39MEKTNO2AKJ/calculation;full",
+                query: [country: 'Georgia', 'values.energyPerTime': '10', startDate: '2000-01-01T00:00:00Z',
+                        endDate: '2004-01-01T00:00:00Z'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            assert response.data.Output.Amounts.Amount.size() == 1
             amount = response.data.Output.Amounts.Amount[0]
-            assertEquals 'kg/year', amount.@unit.text()
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 1.1839605065023955, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@unit.text() == 'kg/year'
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(1.1839605065023955, amount.text() as double, 0.000001)
 
             // User input values
             def userItemValue
-            assertEquals 6, response.data.Input.Values.Value.size()
+            assert response.data.Input.Values.Value.size() == 6
             userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 'user', userItemValue.@source.text()
-            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
-            assertEquals 'kWh', userItemValue.@unit.text()
+            assert userItemValue != null
+            assert userItemValue.@source.text() == 'user'
+            assertEquals(10.0, userItemValue.text() as double, 0.000001)
+            assert userItemValue.@unit.text() == 'kWh'
 
             // Data item input values
             def dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
-            assertNotNull dataItemValue
-            assertEquals 'amee', dataItemValue.@source.text()
+            assert dataItemValue != null
+            assert dataItemValue.@source.text() == 'amee'
             assert dataItemValue.DataSeries.DataPoint.size() == 5
             def firstValue = dataItemValue.DataSeries.DataPoint[0]
             assert firstValue.@startDate == '1970-01-01T00:00:00Z'
             assert firstValue.@unit == 'kg/(kW·h)'
-            assertEquals 0.1449678, Double.parseDouble(firstValue.text()), 0.000001
+            assertEquals(0.1449678, firstValue.text() as double, 0.000001)
         }
     }
 }
