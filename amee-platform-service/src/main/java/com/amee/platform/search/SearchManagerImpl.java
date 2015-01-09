@@ -374,7 +374,7 @@ public class SearchManagerImpl implements SearchManager, ApplicationContextAware
         this.indexDataItems = indexDataItems;
     }
 
-    @Value("${INDEX_DATA_CATEGORY_PATH_PREFIX}")
+    @Value("${INDEX_DATA_CATEGORY_PATH_PREFIX:}")
     public void setDataCategoryPathPrefix(String dataCategoryPathPrefix) {
         this.dataCategoryPathPrefix = dataCategoryPathPrefix;
     }
