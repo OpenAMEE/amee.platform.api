@@ -12,7 +12,6 @@ smoke.*.properties
 .classpath
 .settings
 .groovy
-smoke.*.properties
 target
 
 /.env
@@ -23,3 +22,6 @@ target
 /amee-platform-core/src/main/config/amee.key
 
 /amee-platform-core/logs/
+
+release.properties
+pom.xml.releaseBackup

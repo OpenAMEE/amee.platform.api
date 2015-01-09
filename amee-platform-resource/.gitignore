@@ -1,9 +1,0 @@
-*.iws
-target
-release.properties
-pom.xml.releaseBackup
-
-.classpath
-.project
-.settings
-.groovy
