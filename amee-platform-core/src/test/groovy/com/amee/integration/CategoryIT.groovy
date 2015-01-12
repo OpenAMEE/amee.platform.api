@@ -366,9 +366,6 @@ class CategoryIT extends BaseApiTest {
         assert response.contentType == 'application/json'
         assert response.data.status == 'OK'
         assert response.data.categories.size() == 9
-
-        // Should NOT be sorted
-        assert response.data.categories.collect { it.wikiName } != response.data.categories.collect { it.wikiName }.sort()
     }
 
     /**
@@ -389,9 +386,6 @@ class CategoryIT extends BaseApiTest {
         assert response.data.Status.text() == 'OK'
         def allCategories = response.data.Categories.Category
         assert allCategories.size() == 9
-
-        // Should NOT be sorted
-        assert allCategories.collect { it.WikiName.text() } != allCategories.collect { it.WikiName.text()}.sort()
     }
 
     /**
@@ -411,9 +405,6 @@ class CategoryIT extends BaseApiTest {
         assert response.contentType == 'application/json'
         assert response.data.status == 'OK'
         assert response.data.categories.size() == 4
-
-        // Should NOT be sorted
-        assert response.data.categories.collect { it.wikiName } != response.data.categories.collect { it.wikiName }.sort()
     }
 
     /**
@@ -434,9 +425,6 @@ class CategoryIT extends BaseApiTest {
         assert response.data.Status.text() == 'OK'
         def allCategories = response.data.Categories.Category
         assert allCategories.size() == 4
-
-        // Should NOT be sorted
-        assert allCategories.collect { it.WikiName.text() } != allCategories.collect { it.WikiName.text()}.sort()
     }
 
     /**
@@ -460,9 +448,6 @@ class CategoryIT extends BaseApiTest {
         def categoryWikiNamesExcElectricity = categoryWikiNames - electricityCategoryWikiNames
 
         assert response.data.categories.size() == categoryWikiNamesExcElectricity.size()
-
-        // Results should NOT be sorted
-        assert response.data.categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) } != response.data.categories.collect {it.wikiName}
     }
 
     /**
