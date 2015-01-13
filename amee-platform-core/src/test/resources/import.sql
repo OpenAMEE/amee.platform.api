@@ -902,7 +902,7 @@ INSERT INTO data_item_text_value (id, created, modified, uid, status, value, ite
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (223285,'2014-12-29 20:46:46','2014-12-29 20:46:46','WG4XMIMUYCI3',1,'Four engine long-range strategic bomber. Used by USA only',2829,39758);
 
 -- data_item_number_value - For data_items in data_category Cooking
--- mysqldump --single-transaction --compact --no-create-info --skip-extended-insert --complete-insert --skip-quote-names --where "data_item_id IN (SELECT id from data_item where data_category_id = 268)" openamee data_item_text_value
+-- mysqldump --single-transaction --compact --no-create-info --skip-extended-insert --complete-insert --skip-quote-names --where "data_item_id IN (SELECT id from data_item where data_category_id = 268)" openamee data_item_number_value
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41787,'2014-12-29 17:01:13','2014-12-29 17:01:13','HGIQEWLS57E2',1,'','',188,1433,9943);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41788,'2014-12-29 17:01:13','2014-12-29 17:01:13','2UOZR3GPEUPO',1,'','',1,1432,9943);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41789,'2014-12-29 17:01:13','2014-12-29 17:01:13','P16ZNGHX9PRC',1,'','',205,1433,9944);

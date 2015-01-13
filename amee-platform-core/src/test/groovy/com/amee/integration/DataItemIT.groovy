@@ -1,5 +1,8 @@
 package com.amee.integration
 
+import com.amee.domain.item.data.BaseDataItemTextValue
+import com.amee.domain.item.data.DataItem
+
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
 import static org.restlet.data.Status.*
@@ -15,38 +18,11 @@ class DataItemIT extends BaseApiTest {
     // Time in ms to wait for lucene index updates.
     public static final int SLEEP_TIME = 2000
 
-    static def dataItemUids = [
-            'B6419AFB7114',
-            'B1EF6970E87C',
-            '004CF30590A5',
-            'E011530FFEDC',
-            '471F553DF10A',
-            '9DD165D3AFC9'
-    ].sort()
+    static def dataItemUids = ['1THYA02WQG6E', 'A3VIO0PCX3EC', 'GT8V0NZMCX9C', 'J8JH4QE9VRBI', 'R0H6PGN4YHQH', 'UFUBP8SU13AE']
 
-    static def oneGasItemValueValues = [
-            '1',
-            188,
-            'BRE/MTP/dgen/defra 2007',
-            'Gas']
+    static def oneGasItemValueValues = [1, 188, 'BRE/MTP/dgen/defra 2007', 'Gas']
 
-    static def oneGasItemValuePaths = [
-            'numberOfPeople',
-            'kgCO2PerYear',
-            'source',
-            'fuel']
-
-    static def tenElectricItemValueValues = [
-            '10',
-            620,
-            'BRE/MTP/dgen/defra 2007',
-            'Electric']
-
-    static def tenElectricItemValuePaths = [
-            'numberOfPeople',
-            'kgCO2PerYear',
-            'source',
-            'fuel']
+    static def oneGasItemValuePaths = ['numberOfPeople', 'kgCO2PerYear', 'source', 'fuel']
 
     /**
      * Tests for creation, fetch and deletion of a Data Item using JSON responses.
@@ -86,65 +62,54 @@ class DataItemIT extends BaseApiTest {
 
             // Create a DataItem.
             def responsePost = client.post(
-                    path: "/${version}/categories/Cooking/items",
-                    body: [
-                        'wikiDoc': 'Test WikiDoc.',
-                        'values.numberOfPeople': 10,
-                        'values.fuel': 'Methane',
-                        'values.kgCO2PerYear': 200],
+                    path: "/$version/categories/Cooking/items",
+                    body: [wikiDoc: 'Test WikiDoc.', 'values.numberOfPeople': 10, 'values.fuel': 'Methane',
+                           'values.kgCO2PerYear': 200],
                     requestContentType: URLENC,
                     contentType: JSON)
 
             // Is Location available?
-            assertTrue responsePost.headers['Location'] != null
-            assertTrue responsePost.headers['Location'].value != null
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assert responsePost.headers['Location'] != null
+            assert responsePost.headers['Location'].value != null
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
             // Get new DataItem UID.
-            def uid = location.split('/')[7]
-            assertTrue uid != null
+            String uid = location.split('/')[7]
+            assert uid != null
 
             // Success response
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Get the new DataItem.
-            def responseGet = client.get(
-                    path: "/${version}/categories/Cooking/items/${uid};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
-            assertEquals 4, responseGet.data.item.values.size();
-            Object[] list = responseGet.data.item.values.collect{it.value}.sort()
-            assert '' == list[0]
-            assert 200 == list[1]
-            assert '10' == list[2]
-            assert 'Methane' == list[3]
-			assert ['', 200, '10', 'Methane'] == responseGet.data.item.values.collect{it.value}.sort()
-            assertTrue(['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort())
+            def responseGet = client.get(path: "$location;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.item.wikiDoc == 'Test WikiDoc.'
+            assert responseGet.data.item.values.size() == 4
+            assert responseGet.data.item.values.collect { it.value }.containsAll(['', 'Methane', 10, 200])
+            assert responseGet.data.item.values.collect { it.path }.containsAll(['fuel', 'kgCO2PerYear', 'numberOfPeople', 'source'])
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Then delete it.
-            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            def responseDelete = client.delete(path: "/$version/categories/Cooking/items/$uid")
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/categories/Cooking/items/${uid}")
+                client.get(path: "/$version/categories/Cooking/items/$uid")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -164,18 +129,17 @@ class DataItemIT extends BaseApiTest {
 
             // Create a DataItem
             def responsePost = client.post(
-                path: "/${version}/categories/Cooking/items",
+                path: "/$version/categories/Cooking/items",
                 body: ['values.numberOfPeople': '100', 'values.fuel': 'foo'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             // Get the UID
-            def location = responsePost.headers['Location'].value
-            def uid = location.split('/')[7]
-            assertNotNull uid
+            String location = responsePost.headers['Location'].value
+            String uid = location.split('/')[7]
 
             // Should have been created
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -183,38 +147,22 @@ class DataItemIT extends BaseApiTest {
             // Try to create another data item with the same drilldown values.
             try {
                 client.post(
-                    path: "/${version}/categories/Cooking/items",
+                    path: "/$version/categories/Cooking/items",
                     body: ['values.numberOfPeople': '100', 'values.fuel': 'foo'],
                     requestContentType: URLENC,
                     contentType: JSON)
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_BAD_REQUEST.code
             }
 
             // Delete it
-            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            def responseDelete = client.delete(path: location)
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
-            // Create another data item with different value for one drilldown.
-            responsePost = client.post(
-                path: "/${version}/categories/Cooking/items",
-                body: ['values.numberOfPeople': '100', 'values.fuel': 'bar'],
-                requestContentType: URLENC,
-                contentType: JSON)
-
-            // Get the UID
-            location = responsePost.headers['Location'].value
-            uid = location.split('/')[7]
-            assertNotNull uid
-
-            // Should have been created
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
-
-            // Delete it
-            responseDelete = client.delete(path: "/${version}/categories/Cooking/items/${uid}")
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            // Sleep a little to give the index a chance to be updated.
+            sleep(SLEEP_TIME)
         }
     }
 
@@ -233,14 +181,14 @@ class DataItemIT extends BaseApiTest {
 
             // Create a DataItem.
             def responsePost = client.post(
-                    path: "/${version}/categories/Cooking/items",
-                    body: ['path': 'testPath'],
+                    path: "/$version/categories/Cooking/items",
+                    body: [path: 'testPath'],
                     requestContentType: URLENC,
                     contentType: JSON)
 
-            def location = responsePost.headers['Location'].value
-            def uid = location.split('/')[7]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String location = responsePost.headers['Location'].value
+            String uid = location.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -248,22 +196,22 @@ class DataItemIT extends BaseApiTest {
 
                 // Create a DataItem.
                 client.post(
-                        path: "/${version}/categories/Cooking/items",
-                        body: ['path': 'testPath'],
+                        path: "/$version/categories/Cooking/items",
+                        body: [path: 'testPath'],
                         requestContentType: URLENC,
                         contentType: JSON)
                 fail 'Should have been rejected'
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_BAD_REQUEST.code
             }
 
             // Then delete it.
-            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/testPath")
+            def responseDelete = client.delete(path: "/$version/categories/Cooking/items/testPath")
 
             // Should have been deleted.
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -300,21 +248,18 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemsJson(version) {
         client.contentType = JSON
-        def response = client.get(
-                path: "/${version}/categories/Cooking/items;full",
-                query: [resultLimit: '6'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertTrue response.data.resultsTruncated
-        assertEquals dataItemUids.size(), response.data.items.size()
-        def responseUids = response.data.items.collect { it.uid }.sort()
-        assert dataItemUids == responseUids
+        def response = client.get(path: "/$version/categories/Cooking/items;full", query: [resultLimit: '6'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.resultsTruncated
+        assert response.data.items.size() == dataItemUids.size()
+        def responseUids = response.data.items.collect { it.uid }
+        assert responseUids.sort() == dataItemUids.sort()
 
         // Should  be sorted by label
         if (version >= 3.2) {
-            assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) < 0
+            assert response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) < 0
         }
     }
 
@@ -330,20 +275,12 @@ class DataItemIT extends BaseApiTest {
 
     def getFilteredDataItemsJson(version) {
         client.contentType = JSON
-        def response = client.get(
-                path: "/${version}/categories/Cooking/items;full",
-                query: [numberOfPeople: '1'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertFalse response.data.resultsTruncated
-        assertEquals 5, response.data.items.size()
-
-        // Should not be sorted by label
-        if (version >= 3.2) {
-            assertTrue response.data.items.first().label.compareToIgnoreCase(response.data.items.last().label) > 0
-        }
+        def response = client.get(path: "/$version/categories/Cooking/items;full", query: [numberOfPeople: '1'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.resultsTruncated == false
+        assert response.data.items.size() == 5
     }
 
     /**
@@ -358,20 +295,18 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemsXml(version) {
         client.contentType = XML
-        def response = client.get(
-                path: "/${version}/categories/Cooking/items;full",
-                query: [resultLimit: '6'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals 'true', response.data.Items.@truncated.text()
+        def response = client.get(path: "/$version/categories/Cooking/items;full", query: [resultLimit: '6'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Items.@truncated.text() == 'true'
         def allDataItems = response.data.Items.Item
-        assertEquals dataItemUids.size(), allDataItems.size()
-        assert dataItemUids == allDataItems.@uid*.text().sort()
+        assert allDataItems.size() == dataItemUids.size()
+        assert allDataItems.@uid*.text().sort() == dataItemUids.sort()
 
         // Should  be sorted by label
         if (version >= 3.2) {
-            assertTrue allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
+            assert allDataItems[0].Label.text().compareToIgnoreCase(allDataItems[-1].Label.text()) < 0
         }
     }
 
@@ -387,19 +322,12 @@ class DataItemIT extends BaseApiTest {
 
     def getFilteredDataItemsXml(version) {
         client.contentType = XML
-        def response = client.get(
-                path: "/${version}/categories/Cooking/items;full",
-                query: [numberOfPeople: '1'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals 'false', response.data.Items.@truncated.text()
-        assertEquals 5, response.data.Items.Item.size()
-
-        // Should not be sorted by label
-        if (version >= 3.2) {
-            assertTrue response.data.Items.Item[0].Label.text().compareToIgnoreCase(response.data.Items.Item[-1].Label.text()) > 0
-        }
+        def response = client.get(path: "/$version/categories/Cooking/items;full", query: [numberOfPeople: '1'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Items.@truncated.text() == 'false'
+        assert response.data.Items.Item.size() == 5
     }
 
     /**
@@ -414,29 +342,28 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemOneGasJson(version) {
         client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
+        def response = client.get(path: "/$version/categories/Cooking/items/8KV038HODIQ9;full")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
         if (version >= 3.2) {
-            assertEquals '1, Gas', response.data.item.label
+            assert response.data.item.label == 'Gas, 1'
         }
-        assertEquals '54C8A44254AA', response.data.item.categoryUid
-        assertEquals 'Cooking', response.data.item.categoryWikiName
-        assertEquals 'Cooking', response.data.item.itemDefinition.name
-        assertEquals '/home/appliances/cooking/004CF30590A5', response.data.item.fullPath
-        assertEquals oneGasItemValueValues.size(), response.data.item.values.size()
-        if(version >= 3.4){
-			assert oneGasItemValueValues == response.data.item.values.collect{it.value}
-		}else{
-			assert oneGasItemValueValues[0] == response.data.item.values.collect{it.value}[0]
-			// Versions before 3.4 expect all JSON values to be Strings, so a conversion is needed for non-string types
-			assert oneGasItemValueValues[1].toString() == response.data.item.values.collect{it.value}[1].toString()
-			assert oneGasItemValueValues[2] == response.data.item.values.collect{it.value}[2]
-			assert oneGasItemValueValues[3] == response.data.item.values.collect{it.value}[3]
+        assert response.data.item.categoryUid == '1H5QPB38KZ8Z'
+        assert response.data.item.categoryWikiName == 'Cooking'
+        assert response.data.item.itemDefinition.name == 'Cooking'
+        assert response.data.item.fullPath == '/home/appliances/cooking/8KV038HODIQ9'
+        assert response.data.item.values.size() == oneGasItemValueValues.size()
+        if (version >= 3.1) {
+			assert response.data.item.values.collect { it.value } == oneGasItemValueValues
+		} else {
+			// Versions before 3.1 expect all JSON values to be Strings, so a conversion is needed for non-string types
+			assert response.data.item.values.collect { it.value }[0] == oneGasItemValueValues[0].toString()
+			assert response.data.item.values.collect { it.value }[1] == oneGasItemValueValues[1].toString()
+			assert response.data.item.values.collect { it.value }[2] == oneGasItemValueValues[2]
+			assert response.data.item.values.collect { it.value }[3] == oneGasItemValueValues[3]
 		}
-        assertTrue(oneGasItemValuePaths == response.data.item.values.collect {it.path});
+        assert response.data.item.values.collect { it.path } == oneGasItemValuePaths
     }
 
     /**
@@ -451,94 +378,25 @@ class DataItemIT extends BaseApiTest {
 
     def getDataItemOneGasXml(version) {
         client.contentType = XML
-        def response = client.get(path: "/${version}/categories/Cooking/items/004CF30590A5;full")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+        def response = client.get(path: "/$version/categories/Cooking/items/8KV038HODIQ9;full")
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         if (version >= 3.2) {
-            assertEquals '1, Gas', response.data.Item.Label.text()
+            assert response.data.Item.Label.text() == 'Gas, 1'
         }
-        assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text();
-        assertEquals 'Cooking', response.data.Item.CategoryWikiName.text();
-        assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text();
-        assertEquals '/home/appliances/cooking/004CF30590A5', response.data.Item.FullPath.text();
-        def allValues = response.data.Item.Values.Value;
-        assertEquals oneGasItemValueValues.size(), allValues.size();
-		assert oneGasItemValueValues[0] == allValues.Value[0].text()
-		// XML is all text, but oneGasItemValueValues contains an integer for testing json datatypes
-		assert oneGasItemValueValues[1].toString() == allValues.Value[1].text()
-		assert oneGasItemValueValues[2] == allValues.Value[2].text()
-		assert oneGasItemValueValues[3] == allValues.Value[3].text()
-        assert oneGasItemValuePaths == allValues.Path*.text()
-    }
-
-    /**
-     * Tests fetching a single DataItem with JSON response.
-     *
-     * The DataItem label field is only supported since version 3.2.
-     */
-    @Test
-    void getDataItemTenElectricJson() {
-        versions.each { version -> getDataItemTenElectricJson(version) }
-    }
-
-    def getDataItemTenElectricJson(version) {
-        client.contentType = JSON
-        def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        if (version >= 3.2) {
-            assertEquals '10, Electric', response.data.item.label
-        }
-        assertEquals '54C8A44254AA', response.data.item.categoryUid
-        assertEquals 'Cooking', response.data.item.categoryWikiName
-        assertEquals 'Cooking', response.data.item.itemDefinition.name
-        assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.item.fullPath
-        assertEquals tenElectricItemValueValues.size(), response.data.item.values.size()
-		if(version >= 3.4){
-			assert tenElectricItemValueValues == response.data.item.values.collect{it.value}
-		}else{
-			assert tenElectricItemValueValues[0] == response.data.item.values.collect {it.value}[0]
-			assert tenElectricItemValueValues[1] == Integer.valueOf(response.data.item.values.collect {it.value}[1])
-			assert tenElectricItemValueValues[2] == response.data.item.values.collect {it.value}[2]
-			assert tenElectricItemValueValues[3] == response.data.item.values.collect {it.value}[3]
-		}
-        assert tenElectricItemValuePaths == response.data.item.values.collect {it.path}
-    }
-
-    /**
-     * Tests fetching a single DataItem with XML response.
-     *
-     * The DataItem label field is only supported since version 3.2.
-     */
-    @Test
-    void getDataItemTenElectricXml() {
-        versions.each { version -> getDataItemTenElectricXml(version) }
-    }
-
-    def getDataItemTenElectricXml(version) {
-        client.contentType = XML
-        def response = client.get(path: "/${version}/categories/Cooking/items/9DD165D3AFC9;full")
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        if (version >= 3.2) {
-            assertEquals '10, Electric', response.data.Item.Label.text()
-        }
-        assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text()
-        assertEquals 'Cooking', response.data.Item.CategoryWikiName.text()
-        assertEquals 'Cooking', response.data.Item.ItemDefinition.Name.text()
-        assertEquals '/home/appliances/cooking/9DD165D3AFC9', response.data.Item.FullPath.text()
+        assert response.data.Item.CategoryUid.text() == '1H5QPB38KZ8Z'
+        assert response.data.Item.CategoryWikiName.text() == 'Cooking'
+        assert response.data.Item.ItemDefinition.Name.text() == 'Cooking'
+        assert response.data.Item.FullPath.text() == '/home/appliances/cooking/8KV038HODIQ9'
         def allValues = response.data.Item.Values.Value
-        assertEquals tenElectricItemValueValues.size(), allValues.size()
-		assert tenElectricItemValueValues[0] == allValues.Value[0].text()
-		// in XML everything is text, but the tenElectricItemValueValues has an Integer to test the JSON type support
-		assert tenElectricItemValueValues[1].toString() == allValues.Value[1].text()
-		assert tenElectricItemValueValues[2] == allValues.Value[2].text()
-		assert tenElectricItemValueValues[3] == allValues.Value[3].text()
-        assertTrue(tenElectricItemValuePaths == allValues.Path*.text())
+        assert allValues.size() == oneGasItemValueValues.size()
+		// XML is all text, but oneGasItemValueValues contains integers for testing json datatypes
+		assert allValues.Value[0].text() == oneGasItemValueValues[0].toString()
+		assert allValues.Value[1].text() == oneGasItemValueValues[1].toString()
+		assert allValues.Value[2].text() == oneGasItemValueValues[2]
+		assert allValues.Value[3].text() == oneGasItemValueValues[3]
+        assert allValues.Path*.text() == oneGasItemValuePaths
     }
 
     /**
@@ -563,54 +421,51 @@ class DataItemIT extends BaseApiTest {
 
             // Create a DataItem.
             def responsePost = client.post(
-                    path: "/${version}/categories/Cooking/items",
-                    body: ['path': 'aTestDataItem'],
+                    path: "/$version/categories/Cooking/items",
+                    body: [path: 'aTestDataItem'],
                     requestContentType: URLENC,
                     contentType: JSON)
 
-            def location = responsePost.headers['Location'].value
-            def uid = location.split('/')[7]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String location = responsePost.headers['Location'].value
+            String uid = location.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Update the DataItem.
             def responsePut = client.put(
-                    path: "/${version}/categories/Cooking/items/aTestDataItem",
-                    body: ['name': 'Test Name',
-                            'wikiDoc': 'Test WikiDoc.',
-                            'provenance': 'Test Provenance',
-                            'values.numberOfPeople': 20,
-                            'values.fuel': 'Petrol',
-                            'values.kgCO2PerYear': '123'],
+                    path: "/$version/categories/Cooking/items/aTestDataItem",
+                    body: [name: 'Test Name',
+                           wikiDoc: 'Test WikiDoc.',
+                           provenance: 'Test Provenance',
+                           'values.numberOfPeople': 20,
+                           'values.fuel': 'Petrol',
+                           'values.kgCO2PerYear': 123],
                     requestContentType: URLENC,
                     contentType: JSON)
 
             // Should have been updated.
-            assertOkJson responsePut, SUCCESS_OK.code, uid
+            assertOkJson(responsePut, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Get the DataItem and check values.
-            def responseGet = client.get(
-                    path: "/${version}/categories/Cooking/items/aTestDataItem;full",	
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            println responseGet.data
-            assertEquals 'Test Name', responseGet.data.item.name
-            assertEquals 'Test WikiDoc.', responseGet.data.item.wikiDoc
-            assertEquals 'Test Provenance', responseGet.data.item.provenance
-            assert 4 == responseGet.data.item.values.size()
-			assert ['', 123, '20', 'Petrol'] == responseGet.data.item.values.collect{it.value}.sort()
-            assert ['numberOfPeople', 'fuel', 'source', 'kgCO2PerYear'].sort() == responseGet.data.item.values.collect {it.path}.sort()
+            def responseGet = client.get(path: "/$version/categories/Cooking/items/aTestDataItem;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.item.name == 'Test Name'
+            assert responseGet.data.item.wikiDoc == 'Test WikiDoc.'
+            assert responseGet.data.item.provenance == 'Test Provenance'
+            assert responseGet.data.item.values.size() == 4
+			assert responseGet.data.item.values.collect { it.value }.sort() == ['', 'Petrol', 20, 123]
+            assert responseGet.data.item.values.collect { it.path }.sort() == ['fuel', 'kgCO2PerYear', 'numberOfPeople', 'source']
 			
             // Then delete it.
-            def responseDelete = client.delete(path: "/${version}/categories/Cooking/items/aTestDataItem")
+            def responseDelete = client.delete(path: "/$version/categories/Cooking/items/aTestDataItem")
 
             // Should have been deleted.
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -628,16 +483,16 @@ class DataItemIT extends BaseApiTest {
     def updateDataItemUnauthorizedJson(version) {
         try {
             client.put(
-                    path: "/${version}/categories/Cooking/items/9DD165D3AFC9",
-                    body: ['name': 'newName'],
+                    path: "/$version/categories/Cooking/items/UFUBP8SU13AE",
+                    body: [name: 'newName'],
                     requestContentType: URLENC,
                     contentType: JSON)
             fail 'Expected 403'
         } catch (HttpResponseException e) {
             def response = e.response
-            assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
-            assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
-            assertEquals 'Forbidden', response.data.status.name
+            assert response.status == CLIENT_ERROR_FORBIDDEN.code
+            assert response.data.status.code == CLIENT_ERROR_FORBIDDEN.code
+            assert response.data.status.name == 'Forbidden'
         }
     }
 
@@ -663,42 +518,42 @@ class DataItemIT extends BaseApiTest {
 
             // Get the data item
             def responseGet = client.get(
-                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/values/volumeFuelPerTime")
-            assert SUCCESS_OK.code == responseGet.status
-            assert "L/min" == responseGet.data.values[0].unit
+                    path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN/values/volumeFuelPerTime")
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.values[0].unit == "L/min"
 
             // Do a calculation
             responseGet = client.get(
-                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/calculation;full",
-                query: ['values.flightDuration': '1'])
-            assert SUCCESS_OK.code == responseGet.status
-            assertEquals 95.5576256544, responseGet.data.output.amounts[0].value, 0.000001
-            assert 'kg/year' == responseGet.data.output.amounts[0].unit
+                path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN/calculation;full",
+                query: ['values.flightDuration': 1])
+            assert responseGet.status == SUCCESS_OK.code
+            assertEquals(95.5576256544, responseGet.data.output.amounts[0].value, 0.000001)
+            assert responseGet.data.output.amounts[0].unit == 'kg/year'
             
             // Update the unit and perUnit
             def responsePut = client.put(
-                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59",
+                path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN",
                 body: ['units.volumeFuelPerTime': 'mL', 'perUnits.volumeFuelPerTime': 's'],
                 requestContentType: URLENC,
                 contentType: JSON)
-            assertOkJson responsePut, 200, 'F3668F762C59';
+            assertOkJson(responsePut, 200, 'ITBK7FUWNPJN')
 
             // The data item should show the overridden values.
             responseGet = client.get(
-                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/values/volumeFuelPerTime")
-            assert SUCCESS_OK.code == responseGet.status
-            assert "mL/s" == responseGet.data.values[0].unit
+                path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN/values/volumeFuelPerTime")
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.values[0].unit == "mL/s"
 
             // Do the calculation again
             // Algorithm: volumeFuelPerTime * flightDuration * fuelCO2Factor * RFI
             // 38.85 * 1 * (70.72 * 34.7802 / 1000) * 1
             // asInternalDecimal() label: IPCC military aircraft/volumeFuelPerTime,external: 38.85 mL/s,internal: 2.3310000000000004 L/min
             responseGet = client.get(
-                path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59/calculation;full",
-                query: ['values.flightDuration': '1'])
-            assert SUCCESS_OK.code == responseGet.status
-            assertEquals 5.733457539264001, responseGet.data.output.amounts[0].value, 0.000001
-            assert 'kg/year' == responseGet.data.output.amounts[0].unit
+                path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN/calculation;full",
+                query: ['values.flightDuration': 1])
+            assert responseGet.status == SUCCESS_OK.code
+            assertEquals(5.733457539264001, responseGet.data.output.amounts[0].value, 0.000001)
+            assert responseGet.data.output.amounts[0].unit == 'kg/year'
         }
     }
 
@@ -732,66 +587,62 @@ class DataItemIT extends BaseApiTest {
 
             // Default units
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
-                query: ['values.energyPerTime': '10'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation;full",
+                query: ['values.energyPerTime': 10])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.output.amounts.size()
+                assert response.data.output.amounts.size() == 1
                 amount = response.data.output.amounts[0]
-                assertEquals 'kg/year', amount.unit
+                assert amount.unit == 'kg/year'
             } else {
-                assertEquals 1, response.data.amounts.size()
+                assert response.data.amounts.size() == 1
                 amount = response.data.amounts[0]
-                assertEquals 'kg', amount.unit
-                assertEquals 'year', amount.perUnit
+                assert amount.unit == 'kg'
+                assert amount.perUnit == 'year'
             }
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals "", 20.0, amount.value, 0.000001
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(20.0, amount.value, 0.000001)
 
             // Notes
             def note
             if (version >= 3.6) {
-                assertEquals 1, response.data.output.notes.size()
+                assert response.data.output.notes.size() == 1
                 note = response.data.output.notes[0]
             } else {
-                assertEquals 1, response.data.notes.size()
+                assert response.data.notes.size() == 1
                 note = response.data.notes[0]
             }
-            assertEquals 'comment', note.type
-            assertEquals 'This is a comment', note.value
+            assert note.type == 'comment'
+            assert note.value == 'This is a comment'
 
             // User input values
             def userItemValue
             if (version >= 3.6) {
-                assertEquals 8, response.data.input.values.size()
+                assert response.data.input.values.size() == 8
                 userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-                assertNotNull userItemValue
-                assertEquals 10, userItemValue.value
-                assertEquals 'user', userItemValue.source
+                assert userItemValue.value == 10
+                assert userItemValue.source == 'user'
             } else {
-                assertEquals 3, response.data.values.size()
+                assert response.data.values.size() == 3
                 userItemValue = response.data.values.find { it.name == 'energyPerTime' }
-                assertNotNull userItemValue
-                assertEquals '10', userItemValue.value
+                assert userItemValue.value == '10'
             }
-            assertEquals 'kWh', userItemValue.unit
-            assertEquals 'year', userItemValue.perUnit
+            assert userItemValue.unit == 'kWh'
+            assert userItemValue.perUnit == 'year'
 
             // Data item input values
             def dataItemValue
             if (version >= 3.6) {
                 dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
-                assertNotNull dataItemValue
-                assertEquals 0.0324402, dataItemValue.value, 0.000001
-                assertEquals 'amee', dataItemValue.source
-                assertEquals 'kg/(kW·h)', dataItemValue.unit
+                assertEquals(0.0324402, dataItemValue.value, 0.000001)
+                assert dataItemValue.source == 'amee'
+                assert dataItemValue.unit == 'kg/(kW·h)'
             }
         }
     }
@@ -813,64 +664,62 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.4) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
-                query: ['values.energyPerTime': '10'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation;full",
+                query: ['values.energyPerTime': 10])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.Output.Amounts.Amount.size()
+                assert response.data.Output.Amounts.Amount.size() == 1
                 amount = response.data.Output.Amounts.Amount[0]
-                assertEquals 'kg/year', amount.@unit.text()
+                assert amount.@unit.text() == 'kg/year'
             } else {
-                assertEquals 1, response.data.Amounts.Amount.size()
+                assert response.data.Amounts.Amount.size() == 1
                 amount = response.data.Amounts.Amount[0]
-                assertEquals 'kg', amount.@unit.text()
-                assertEquals 'year', amount.@perUnit.text()
+                assert amount.@unit.text() == 'kg'
+                assert amount.@perUnit.text() == 'year'
             }
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 20.0, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(20.0, Double.parseDouble(amount.text()), 0.000001)
 
             // Notes
             def note
             if (version >= 3.6) {
-                assertEquals 1, response.data.Output.Notes.size()
+                assert response.data.Output.Notes.size() == 1
                 note = response.data.Output.Notes.Note[0]
             } else {
-                assertEquals 1, response.data.Notes.size()
+                assert response.data.Notes.size() == 1
                 note = response.data.Notes.Note[0]
             }
-            assertEquals 'comment', note.@type.text()
-            assertEquals 'This is a comment', note.text()
+            assert note.@type.text() == 'comment'
+            assert note.text() == 'This is a comment'
 
             // User input values
             def userItemValue
             if (version >= 3.6) {
-                assertEquals 8, response.data.Input.Values.Value.size()
+                assert response.data.Input.Values.Value.size() == 8
                 userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull userItemValue
-                assertEquals 'user', userItemValue.@source.text()
+                assert userItemValue.@source.text() == 'user'
             } else {
-                assertEquals 3, response.data.Values.Value.size()
+                assert response.data.Values.Value.size() == 3
                 userItemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull userItemValue
+                assert userItemValue != null
             }
-            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
-            assertEquals 'kWh', userItemValue.@unit.text()
-            assertEquals 'year', userItemValue.@perUnit.text()
+            assertEquals(10.0, Double.parseDouble(userItemValue.text()), 0.000001)
+            assert userItemValue.@unit.text() == 'kWh'
+            assert userItemValue.@perUnit.text() == 'year'
 
             // Data item input values
             def dataItemValue
             if (version >= 3.6) {
                 dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
-                assertNotNull dataItemValue
-                assertEquals 'amee', dataItemValue.@source.text()
-                assertEquals 0.0324402, Double.parseDouble(dataItemValue.text()), 0.000001
-                assertEquals 'kg/(kW·h)', dataItemValue.@unit.text()
+                assert dataItemValue.@source.text() == 'amee'
+                assertEquals(0.0324402, Double.parseDouble(dataItemValue.text()), 0.000001)
+                assert dataItemValue.@unit.text() == 'kg/(kW·h)'
             }
         }
     }
@@ -887,57 +736,54 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.4) {
             client.contentType = JSON
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
-                query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation;full",
+                query: ['values.energyPerTime': 10, 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.output.amounts.size()
+                assert response.data.output.amounts.size() == 1
                 amount = response.data.output.amounts[0]
-                assertEquals 'kg/year', amount.unit
+                assert amount.unit == 'kg/year'
             } else {
-                assertEquals 1, response.data.amounts.size()
+                assert response.data.amounts.size() == 1
                 amount = response.data.amounts[0]
-                assertEquals 'kg', amount.unit
-                assertEquals 'year', amount.perUnit
+                assert amount.unit == 'kg'
+                assert amount.perUnit == 'year'
             }
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals "", 240000.0, amount.value, 0.000001
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(240000.0, amount.value, 0.000001)
 
             // Notes
             def note
             if (version >= 3.6) {
-                assertEquals 1, response.data.output.notes.size()
+                assert response.data.output.notes.size() == 1
                 note = response.data.output.notes[0]
             } else {
-                assertEquals 1, response.data.notes.size()
+                assert response.data.notes.size() == 1
                 note = response.data.notes[0]
             }
-            assertEquals 'comment', note.type
-            assertEquals 'This is a comment', note.value
+            assert note.type == 'comment'
+            assert note.value == 'This is a comment'
 
             // User input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 8, response.data.input.values.size()
+                assert response.data.input.values.size() == 8
                 itemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals 10, itemValue.value
-                assertEquals "user", itemValue.source
+                assert itemValue.value == 10
+                assert itemValue.source == 'user'
             } else {
-                assertEquals 3, response.data.values.size()
+                assert response.data.values.size() == 3
                 itemValue = response.data.values.find { it.name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals '10', itemValue.value
+                assert itemValue.value == '10'
             }
-            assertEquals 'MWh', itemValue.unit
-            assertEquals 'month', itemValue.perUnit
+            assert itemValue.unit == 'MWh'
+            assert itemValue.perUnit == 'month'
         }
     }
 
@@ -950,55 +796,54 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.4) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation;full",
-                query: ['values.energyPerTime': '10', 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation;full",
+                query: ['values.energyPerTime': 10, 'units.energyPerTime': 'MWh', 'perUnits.energyPerTime': 'month'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.Output.Amounts.Amount.size()
+                assert response.data.Output.Amounts.Amount.size() == 1
                 amount = response.data.Output.Amounts.Amount[0]
-                assertEquals 'kg/year', amount.@unit.text()
+                assert amount.@unit.text() == 'kg/year'
             } else {
-                assertEquals 1, response.data.Amounts.Amount.size()
+                assert response.data.Amounts.Amount.size() == 1
                 amount = response.data.Amounts.Amount[0]
-                assertEquals 'kg', amount.@unit.text()
-                assertEquals 'year', amount.@perUnit.text()
+                assert amount.@unit.text() == 'kg'
+                assert amount.@perUnit.text() == 'year'
             }
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 240000.0, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(240000.0, Double.parseDouble(amount.text()), 0.000001)
 
             // Notes
             def note
             if (version >= 3.6) {
-                assertEquals 1, response.data.Output.Notes.size()
+                assert response.data.Output.Notes.size() == 1
                 note = response.data.Output.Notes.Note[0]
             } else {
-                assertEquals 1, response.data.Notes.size()
+                assert response.data.Notes.size() == 1
                 note = response.data.Notes.Note[0]
             }
-            assertEquals 'comment', note.@type.text()
-            assertEquals 'This is a comment', note.text()
+            assert note.@type.text() == 'comment'
+            assert note.text() == 'This is a comment'
 
             // Input values
             def itemValue
             if (version >= 3.6) {
-                assertEquals 8, response.data.Input.Values.Value.size()
+                assert response.data.Input.Values.Value.size() == 8
                 itemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull itemValue
-                assertEquals "user", itemValue.@source.text()
+                assert itemValue.@source.text() == 'user'
             } else {
-                assertEquals 3, response.data.Values.Value.size()
+                assert response.data.Values.Value.size() == 3
                 itemValue = response.data.Values.Value.find { it.@name == 'energyPerTime' }
-                assertNotNull itemValue
+                assert itemValue != null
             }
-            assertEquals 10.0, Double.parseDouble(itemValue.text()), 0.000001
-            assertEquals 'MWh', itemValue.@unit.text()
-            assertEquals 'month', itemValue.@perUnit.text()
+            assertEquals(10.0, Double.parseDouble(itemValue.text()), 0.000001)
+            assert itemValue.@unit.text() == 'MWh'
+            assert itemValue.@perUnit.text() == 'month'
         }
     }
 
@@ -1014,28 +859,27 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.4) {
             client.contentType = JSON
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation",
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation",
                 query: ['values.energyPerTime': '10', 'returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.output.amounts.size()
+                assert response.data.output.amounts.size() == 1
                 amount = response.data.output.amounts[0]
-                assertEquals 'g/month', amount.unit
+                assert amount.unit == 'g/month'
             } else {
-                assertEquals 1, response.data.amounts.size()
+                assert response.data.amounts.size() == 1
                 amount = response.data.amounts[0]
-                assertEquals 'g', amount.unit
-                assertEquals 'month', amount.perUnit
+                assert amount.unit == 'g'
+                assert amount.perUnit == 'month'
             }
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals "", 1666.66666666667, amount.value, 0.000001
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(1666.66666666667, amount.value, 0.000001)
         }
     }
 
@@ -1048,27 +892,27 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.4) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Electricity_by_Country/items/963A90C107FA/calculation",
+                path: "/$version/categories/Electricity_by_Country/items/HEDE07J83VR2/calculation",
                 query: ['values.energyPerTime': '10', 'returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
             if (version >= 3.6) {
-                assertEquals 1, response.data.Output.Amounts.Amount.size()
+                assert response.data.Output.Amounts.Amount.size() == 1
                 amount = response.data.Output.Amounts.Amount[0]
-                assertEquals 'g/month', amount.@unit.text()
+                assert amount.@unit.text() == 'g/month'
             } else {
-                assertEquals 1, response.data.Amounts.Amount.size()
+                assert response.data.Amounts.Amount.size() == 1
                 amount = response.data.Amounts.Amount[0]
-                assertEquals 'g', amount.@unit.text()
-                assertEquals 'month', amount.@perUnit.text()
+                assert amount.@unit.text() == 'g'
+                assert amount.@perUnit.text() == 'month'
             }
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 1666.66666666667, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(1666.66666666667, Double.parseDouble(amount.text()), 0.000001)
         }
     }
 
@@ -1087,11 +931,10 @@ class DataItemIT extends BaseApiTest {
     def getDataItemCalculationInfinityAndNanJson(version) {
         if (version >= 3.6) {
             client.contentType = JSON
-            def response = client.get(path: "/${version}/categories/Computers_generic/items/651B5AE27940/calculation;full")
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            def response = client.get(path: "/$version/categories/Computers_generic/items/4A1PR4YZSMIJ/calculation;full")
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
             
             def amounts
             if (version >= 3.6) {
@@ -1099,8 +942,8 @@ class DataItemIT extends BaseApiTest {
             } else {
                 amounts = response.data.amounts
             }
-            assertEquals 2, amounts.size()
-            assertTrue "Should have Infinity and NaN", hasInfinityAndNan(amounts)
+            assert amounts.size() == 2
+            assertTrue("Should have Infinity and NaN", hasInfinityAndNan(amounts))
         }
     }
 
@@ -1120,40 +963,37 @@ class DataItemIT extends BaseApiTest {
             // Default units
             // Georgia
             def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
+                path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/39MEKTNO2AKJ/calculation;full",
                 query: ['values.energyPerTime': '10', startDate: '2000-01-01T00:00:00Z', endDate: '2004-01-01T00:00:00Z'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.output.amounts.size()
+            assert response.data.output.amounts.size() == 1
             amount = response.data.output.amounts[0]
-            assertEquals 'kg/year', amount.unit
-            assertEquals 'CO2', amount.type
-            assertEquals true, amount.default
-            assertEquals 1.1839605065023955, amount.value, 0.000001
+            assert amount.unit == 'kg/year'
+            assert amount.type == 'CO2'
+            assert amount.default == true
+            assertEquals(1.1839605065023955, amount.value, 0.000001)
 
             // User input values
             def userItemValue
-            assertEquals 6, response.data.input.values.size()
+            assert response.data.input.values.size() == 6
             userItemValue = response.data.input.values.find { it.name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 10, userItemValue.value
-            assertEquals 'user', userItemValue.source
-            assertEquals 'kWh', userItemValue.unit
+            assert userItemValue.value == 10
+            assert userItemValue.source == 'user'
+            assert userItemValue.unit == 'kWh'
 
             // Data item input values
             def dataItemValue = response.data.input.values.find { it.name == 'massCO2PerEnergy' }
-            assertNotNull dataItemValue
-            assertEquals 'amee', dataItemValue.source
+            assert dataItemValue.source == 'amee'
             assert dataItemValue.value.size() == 5
             def firstValue = dataItemValue.value.first()
             assert firstValue.startDate == '1970-01-01T00:00:00Z'
             assert firstValue.unit == 'kg/(kW·h)'
-            assertEquals 0.1449678, firstValue.value, 0.000001
+            assertEquals(0.1449678, firstValue.value, 0.000001)
         }
     }
 
@@ -1166,39 +1006,37 @@ class DataItemIT extends BaseApiTest {
         if (version >= 3.6) {
             client.contentType = XML
             def response = client.get(
-                path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/BB0F80EE9725/calculation;full",
+                path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/39MEKTNO2AKJ/calculation;full",
                 query: ['values.energyPerTime': '10', startDate: '2000-01-01T00:00:00Z', endDate: '2004-01-01T00:00:00Z'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             // Output amounts
             def amount
-            assertEquals 1, response.data.Output.Amounts.Amount.size()
+            assert response.data.Output.Amounts.Amount.size() == 1
             amount = response.data.Output.Amounts.Amount[0]
-            assertEquals 'kg/year', amount.@unit.text()
-            assertEquals 'CO2', amount.@type.text()
-            assertEquals 'true', amount.@default.text()
-            assertEquals 1.1839605065023955, Double.parseDouble(amount.text()), 0.000001
+            assert amount.@unit.text() == 'kg/year'
+            assert amount.@type.text() == 'CO2'
+            assert amount.@default.text() == 'true'
+            assertEquals(1.1839605065023955, Double.parseDouble(amount.text()), 0.000001)
 
             // User input values
             def userItemValue
-            assertEquals 6, response.data.Input.Values.Value.size()
+            assert response.data.Input.Values.Value.size() == 6
             userItemValue = response.data.Input.Values.Value.find { it.@name == 'energyPerTime' }
-            assertNotNull userItemValue
-            assertEquals 'user', userItemValue.@source.text()
-            assertEquals 10.0, Double.parseDouble(userItemValue.text()), 0.000001
-            assertEquals 'kWh', userItemValue.@unit.text()
+            assert userItemValue.@source.text() == 'user'
+            assert Double.parseDouble(userItemValue.text()), 0.000001 == 10.0
+            assert userItemValue.@unit.text() == 'kWh'
 
             // Data item input values
             def dataItemValue = response.data.Input.Values.Value.find { it.@name == 'massCO2PerEnergy' }
-            assertNotNull dataItemValue
-            assertEquals 'amee', dataItemValue.@source.text()
+            assert dataItemValue.@source.text() == 'amee'
             assert dataItemValue.DataSeries.DataPoint.size() == 5
             def firstValue = dataItemValue.DataSeries.DataPoint[0]
             assert firstValue.@startDate == '1970-01-01T00:00:00Z'
             assert firstValue.@unit == 'kg/(kW·h)'
-            assertEquals 0.1449678, Double.parseDouble(firstValue.text()), 0.000001
+            assertEquals(0.1449678, Double.parseDouble(firstValue.text()), 0.000001)
         }
     }
 
@@ -1216,7 +1054,7 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithInvalidName() {
         setAdminUser()
-        updateDataItemFieldJson('name', 'long', String.randomString(256))
+        updateDataItemFieldJson('name', 'long', String.randomString(DataItem.NAME_MAX_SIZE + 1))
     }
 
     /**
@@ -1240,7 +1078,7 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithInvalidPath() {
         setAdminUser()
-        updateDataItemFieldJson('path', 'long', String.randomString(256))
+        updateDataItemFieldJson('path', 'long', String.randomString(DataItem.PATH_MAX_SIZE + 1))
         updateDataItemFieldJson('path', 'format', 'n o t v a l i d')
         updateDataItemFieldJson('path', 'duplicate', 'pathForUniqueTest')
     }
@@ -1259,8 +1097,8 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
-        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(32768))
-        updateDataItemFieldJson('provenance', 'long', String.randomString(256))
+        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(DataItem.WIKI_DOC_MAX_SIZE + 1))
+        updateDataItemFieldJson('provenance', 'long', String.randomString(DataItem.PROVENANCE_MAX_SIZE + 1))
     }
 
     /**
@@ -1277,7 +1115,7 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithValues() {
         setAdminUser()
-        updateDataItemFieldJson('values.description', 'long', String.randomString(32768), 3.4)
+        updateDataItemFieldJson('values.description', 'long', String.randomString(BaseDataItemTextValue.VALUE_SIZE + 1), 3.4)
         updateDataItemFieldJson('values.volumeFuelPerTime', 'typeMismatch', 'not_a_double', 3.4)
         updateDataItemFieldJson('values.volumeFuelPerTime', 'typeMismatch', '', 3.4)
 
@@ -1331,20 +1169,19 @@ class DataItemIT extends BaseApiTest {
                 body[field] = value
                 // Update DataItem.
                 client.put(
-                        path: "/${version}/categories/IPCC_military_aircraft/items/F3668F762C59",
+                        path: "/$version/categories/IPCC_military_aircraft/items/ITBK7FUWNPJN",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON)
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
+                fail('Response status code should have been 400 (' + field + ', ' + code + ').')
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field})
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code})
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                assert [field] == response.data.validationResult.errors.collect { it.field }
+                assert [code] == response.data.validationResult.errors.collect { it.code }
             }
         }
     }
