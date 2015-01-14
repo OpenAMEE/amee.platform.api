@@ -1,12 +1,13 @@
 package com.amee.integration
 
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
 import groovyx.net.http.HttpResponseException
-
 import org.joda.time.DateTime
 import org.junit.Test
+
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.fail
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Data Item Value API. This API has been available since version 3.4.
@@ -53,47 +54,43 @@ class DataItemValueIT extends BaseApiTest {
 
             // Create a DataItemValue.
             def responsePost = client.post(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
-                    body: ['value': 10],
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy",
+                    body: [value: 10],
                     requestContentType: URLENC,
                     contentType: JSON)
 
             // Is Location available?
-            assertTrue responsePost.headers['Location'] != null
-            assertTrue responsePost.headers['Location'].value != null
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assert responsePost.headers['Location'] != null
+            assert responsePost.headers['Location'].value != null
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
             // Get new DataItemValue UID.
-            def uid = location.split('/')[10]
-            assertTrue uid != null
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String uid = location.split('/')[10]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Get the new DataItemValue.
-            def responseGetDIV = client.get(
-                    path: "${location};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGetDIV.status
-            assertEquals 'application/json', responseGetDIV.contentType
-            assertTrue responseGetDIV.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGetDIV.data.status
-            assertEquals 10, responseGetDIV.data.value.value
+            def responseGetDIV = client.get(path: "$location;full", contentType: JSON)
+            assert responseGetDIV.status == SUCCESS_OK.code
+            assert responseGetDIV.contentType == 'application/json'
+            assert responseGetDIV.data.status == 'OK'
+            assert responseGetDIV.data.value.value == 10
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0;full",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGetDI.status
-            def modifiedDI = new DateTime(responseGetDI.data.item.modified)
-            def modifiedDIV = new DateTime(responseGetDIV.data.value.modified)
-            assertTrue isNear(modifiedDIV, modifiedDI)
+            assert responseGetDI.status == SUCCESS_OK.code
+            DateTime modifiedDI = new DateTime(responseGetDI.data.item.modified)
+            DateTime modifiedDIV = new DateTime(responseGetDIV.data.value.modified)
+            assert isNear(modifiedDIV, modifiedDI)
 
             // Then delete the DIV.
             def responseDelete = client.delete(path: location)
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -103,7 +100,7 @@ class DataItemValueIT extends BaseApiTest {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -127,46 +124,43 @@ class DataItemValueIT extends BaseApiTest {
 
             // Create a DataItemValue.
             def responsePost = client.post(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
-                    body: ['value': 10],
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy",
+                    body: [value: 10],
                     requestContentType: URLENC,
                     contentType: XML)
 
             // Is Location available?
-            assertTrue responsePost.headers['Location'] != null
-            assertTrue responsePost.headers['Location'].value != null
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assert responsePost.headers['Location'] != null
+            assert responsePost.headers['Location'].value != null
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
             // Get new DataItemValue UID.
-            def uid = location.split('/')[10]
-            assertTrue uid != null
-            assertOkXml responsePost, SUCCESS_CREATED.code, uid
+            String uid = location.split('/')[10]
+            assertOkXml(responsePost, SUCCESS_CREATED.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
 
             // Get the new DataItemValue.
-            def responseGetDIV = client.get(
-                    path: "${location};full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, responseGetDIV.status
-            assertEquals 'application/xml', responseGetDIV.contentType
-            assertEquals 'OK', responseGetDIV.data.Status.text()
-            assertEquals "10", responseGetDIV.data.Value.Value.text()
+            def responseGetDIV = client.get(path: "$location;full", contentType: XML)
+            assert responseGetDIV.status == SUCCESS_OK.code
+            assert responseGetDIV.contentType == 'application/xml'
+            assert responseGetDIV.data.Status.text() == 'OK'
+            assert responseGetDIV.data.Value.Value.text() == '10'
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0;full",
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, responseGetDI.status
-            def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
-            def modifiedDIV = new DateTime(responseGetDIV.data.Value.@modified.text())
-            assertTrue isNear(modifiedDIV, modifiedDI)
+            assert responseGetDI.status == SUCCESS_OK.code
+            DateTime modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
+            DateTime modifiedDIV = new DateTime(responseGetDIV.data.Value.@modified.text())
+            assert isNear(modifiedDIV, modifiedDI)
 
             // Then delete the DIV.
             def responseDelete = client.delete(path: location)
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -176,7 +170,7 @@ class DataItemValueIT extends BaseApiTest {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -211,34 +205,34 @@ class DataItemValueIT extends BaseApiTest {
 
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP;full",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGetDIV1.status
-            assertTrue responseGetDIV1.data.value.value.startsWith('United Kingdom')
+            assert responseGetDIV1.status == SUCCESS_OK.code
+            assert responseGetDIV1.data.value.value.startsWith('United Kingdom')
 
             // Update the DataItemValue.
             def responsePut = client.put(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
-                    body: ['value': "United Kingdom (modified by createDataItemValueJson_${version})"],
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP",
+                    body: [value: "United Kingdom (modified by createDataItemValueJson_$version)"],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertOkJson responsePut, SUCCESS_OK.code, '902F1ED2C15F'
+            assertOkJson(responsePut, SUCCESS_OK.code, 'V57YBZDLNELP')
 
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP;full",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGetDIV2.status
-            assertTrue "United Kingdom (modified by createDataItemValueJson_${version})" == responseGetDIV2.data.value.value
+            assert responseGetDIV2.status == SUCCESS_OK.code
+            assert "United Kingdom (modified by createDataItemValueJson_$version)" == responseGetDIV2.data.value.value
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO;full",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGetDI.status
-            def modifiedDI = new DateTime(responseGetDI.data.item.modified)
-            def modifiedDIV = new DateTime(responseGetDIV2.data.value.modified)
-            assertTrue isNear(modifiedDIV, modifiedDI)
+            assert responseGetDI.status == SUCCESS_OK.code
+            DateTime modifiedDI = new DateTime(responseGetDI.data.item.modified)
+            DateTime modifiedDIV = new DateTime(responseGetDIV2.data.value.modified)
+            assert isNear(modifiedDIV, modifiedDI)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -264,34 +258,34 @@ class DataItemValueIT extends BaseApiTest {
 
             // Get the DataItemValue.
             def responseGetDIV1 = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP;full",
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, responseGetDIV1.status
-            assertTrue responseGetDIV1.data.Value.Value.text().startsWith('United Kingdom')
+            assert responseGetDIV1.status == SUCCESS_OK.code
+            assert responseGetDIV1.data.Value.Value.text().startsWith('United Kingdom')
 
             // Update the DataItemValue.
             def responsePut = client.put(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F",
-                    body: ['value': "United Kingdom (modified by createDataItemValueXml_${version})"],
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP",
+                    body: ['value': "United Kingdom (modified by createDataItemValueXml_$version)"],
                     requestContentType: URLENC,
                     contentType: XML)
-            assertOkXml responsePut, SUCCESS_OK.code, '902F1ED2C15F'
+            assertOkXml(responsePut, SUCCESS_OK.code, 'V57YBZDLNELP')
 
             // Get the DataItemValue again.
             def responseGetDIV2 = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233/values/country/902F1ED2C15F;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO/values/country/V57YBZDLNELP;full",
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, responseGetDIV2.status
-            assertTrue "United Kingdom (modified by createDataItemValueXml_${version})" == responseGetDIV2.data.Value.Value.text()
+            assert responseGetDIV2.status == SUCCESS_OK.code
+            assert "United Kingdom (modified by createDataItemValueXml_$version)" == responseGetDIV2.data.Value.Value.text()
 
             // Get the DataItem, check it has same modified time-stamp as the DIV.
             def responseGetDI = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/4E920EFDB233;full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/FZPGSLDK8HJO;full",
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, responseGetDI.status
-            def modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
-            def modifiedDIV = new DateTime(responseGetDIV2.data.Value.@modified.text())
-            assertTrue isNear(modifiedDIV, modifiedDI)
+            assert responseGetDI.status == SUCCESS_OK.code
+            DateTime modifiedDI = new DateTime(responseGetDI.data.Item.@modified.text())
+            DateTime modifiedDIV = new DateTime(responseGetDIV2.data.Value.@modified.text())
+            assert isNear(modifiedDIV, modifiedDI)
 
             // Sleep a little to give the index a chance to be updated.
             sleep(SLEEP_TIME)
@@ -303,7 +297,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForDefault() {
-        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', null)
+        getDataItemValues('91119I4I1CIS', 0.81999, '2006-01-01T00:00:00Z', null)
     }
 
     /**
@@ -311,7 +305,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForCurrent() {
-        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
+        getDataItemValues('91119I4I1CIS', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
     }
 
     /**
@@ -319,7 +313,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithStartDateJustBeforeNextStartDate() {
-        getDataItemValues('DD6A1E4E829B', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
+        getDataItemValues('MLTM20389T5F', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
     }
 
     /**
@@ -327,7 +321,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithExactStartDate() {
-        getDataItemValues('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
+        getDataItemValues('H10OSN5NJ2WQ', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
     }
 
     /**
@@ -335,7 +329,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesWithInBetweenStartDate() {
-        getDataItemValues('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
+        getDataItemValues('H10OSN5NJ2WQ', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
     }
 
     /**
@@ -343,7 +337,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForFirstDate() {
-        getDataItemValues('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
+        getDataItemValues('1I8KS6GEROR8', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST'); // The unix EPOCH.
     }
 
     /**
@@ -351,7 +345,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValuesForLastDate() {
-        getDataItemValues('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'LAST') // The end of unix time.
+        getDataItemValues('91119I4I1CIS', 0.81999, '2006-01-01T00:00:00Z', 'LAST') // The end of unix time.
     }
 
     /**
@@ -382,10 +376,10 @@ class DataItemValueIT extends BaseApiTest {
      */
     def getDataItemValues(uid, value, actualStartDate, queryStartDate) {
         // Test the values within the DataItem values resource.
-        versions.each { version -> getDataItemValuesJson(version, uid, 0D+value, actualStartDate, queryStartDate, true) }
+        versions.each { version -> getDataItemValuesJson(version, uid, value as double, actualStartDate, queryStartDate, true) }
         versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, true) }
         // Test the values embedded within the DataItem resource itself.
-        versions.each { version -> getDataItemValuesJson(version, uid, 0D+value, actualStartDate, queryStartDate, false) }
+        versions.each { version -> getDataItemValuesJson(version, uid, value as double, actualStartDate, queryStartDate, false) }
         versions.each { version -> getDataItemValuesXml(version, uid, value, actualStartDate, queryStartDate, false) }
     }
 
@@ -396,25 +390,24 @@ class DataItemValueIT extends BaseApiTest {
                 query['startDate'] = queryStartDate
             }
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0${testValuesResource ? '/values' : ''};full",
                     query: query,
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
             def values = testValuesResource ? response.data.values : response.data.item.values
-            assertEquals 3, values.size()
-            assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.collect { it.path }.sort()
-            assert [true, false, false].sort() == values.collect { it.history }.sort()
+            assert values.size() == 3
+            assert values.collect { it.path }.sort() == ['country', 'massCO2PerEnergy', 'source']
+            assert values.collect { it.history }.sort() == [false, false, true]
             if (testValuesResource) {
-                assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.collect { it.uid }.sort()
+                assert values.collect { it.uid }.sort() == [uid, 'GPY14DZ73PC9', 'AH3CUBC3VNP6'].sort()
             }
-            assert [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.collect { it.value }.sort()
+            assert values.collect { it.value }.sort { it as String }  == [value, 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort { it as String }
             if (testValuesResource) {
-                assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.collect { it.startDate }.sort()
+                assert values.collect { it.startDate }.sort() == [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort()
             }
-            assert ['kg/(kW·h)', null, null] == values.collect { it?.unit }
+            assert values.collect { it?.unit } == ['kg/(kW·h)', null, null]
         }
     }
 
@@ -425,24 +418,24 @@ class DataItemValueIT extends BaseApiTest {
                 query['startDate'] = queryStartDate
             }
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE${testValuesResource ? '/values' : ''};full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0${testValuesResource ? '/values' : ''};full",
                     query: query,
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def values = testValuesResource ? response.data.Values.Value : response.data.Item.Values.Value
-            assertEquals 3, values.size()
-            assert ['massCO2PerEnergy', 'source', 'country'].sort() == values.Path*.text().sort()
-            assert ['true', 'false', 'false'].sort() == values.@history*.text().sort()
+            assert values.size() == 3
+            assert values.Path*.text().sort() == ['country', 'massCO2PerEnergy', 'source']
+            assert values.@history*.text().sort() == ['false', 'false', 'true']
             if (testValuesResource) {
-                assert [uid, '609405C3BC0C', '4097E4D3851A'].sort() == values.@uid*.text().sort()
+                assert values.@uid*.text().sort() == [uid, 'GPY14DZ73PC9', 'AH3CUBC3VNP6'].sort()
             }
-            assert [value+"", 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort() == values.Value*.text().sort()
+            assert values.Value*.text().sort() == [value + "", 'http://www.ghgprotocol.org/calculation-tools/all-tools', 'United Arab Emirates'].sort()
             if (testValuesResource) {
-                assert [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort() == values.StartDate*.text().sort()
+                assert values.StartDate*.text().sort() == [actualStartDate, '1970-01-01T00:00:00Z', '1970-01-01T00:00:00Z'].sort()
             }
-            assert ['kg/(kW·h)'] == values.Unit*.text().sort()
+            assert values.Unit*.text().sort() == ['kg/(kW·h)']
         }
     }
 
@@ -540,34 +533,33 @@ class DataItemValueIT extends BaseApiTest {
     def getDataItemValueHistoryJson(version, count, truncated, sum, query) {
         if (version >= 3.4) {
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy",
                     query: query,
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals truncated, response.data.resultsTruncated
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.resultsTruncated == truncated
             def values = response.data.values
-            assertEquals count, values.size()
-            assertEquals("", sum, (values.collect { new Double(it.value) }).sum(), 0.0001)
+            assert values.size() == count
+            assertEquals(sum, (values.collect { new Double(it.value) }).sum(), 0.0001)
         }
     }
 
     def getDataItemValueHistoryXml(version, count, truncated, sum, query) {
         if (version >= 3.4) {
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy",
                     query: query,
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals truncated, new Boolean(response.data.Values.@truncated.text())
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert new Boolean(response.data.Values.@truncated.text()) == truncated
             def values = response.data.Values.Value.Value*.text()
-            values = values.collect {new Double(it)}
-            assertEquals count, values.size()
-            assertEquals("", sum, values.sum(), 0.0001)
+            values = values.collect { new Double(it) }
+            assert values.size() == count
+            assertEquals(sum, values.sum(), 0.0001)
         }
     }
 
@@ -576,7 +568,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForCurrent() {
-        getDataItemValue('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
+        getDataItemValue('91119I4I1CIS', 0.81999, '2006-01-01T00:00:00Z', 'CURRENT')
     }
 
     /**
@@ -584,7 +576,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithStartDateJustBeforeNextStartDate() {
-        getDataItemValue('DD6A1E4E829B', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
+        getDataItemValue('MLTM20389T5F', 0.74639, '2001-01-01T00:00:00Z', '2001-12-31T23:59:59Z')
     }
 
     /**
@@ -592,7 +584,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithExactStartDate() {
-        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
+        getDataItemValue('H10OSN5NJ2WQ', 0.76426, '2002-01-01T00:00:00Z', '2002-01-01T00:00:00Z')
     }
 
     /**
@@ -600,7 +592,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueWithInBetweenStartDate() {
-        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
+        getDataItemValue('H10OSN5NJ2WQ', 0.76426, '2002-01-01T00:00:00Z', '2002-08-01T00:00:00Z')
     }
 
     /**
@@ -608,7 +600,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForFirstDate() {
-        getDataItemValue('B3823E43A635', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST')
+        getDataItemValue('1I8KS6GEROR8', 0.8199856, '1970-01-01T00:00:00Z', 'FIRST')
     }
 
     /**
@@ -616,7 +608,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueForLastDate() {
-        getDataItemValue('289CCD5394AC', 0.81999, '2006-01-01T00:00:00Z', 'LAST')
+        getDataItemValue('91119I4I1CIS', 0.81999, '2006-01-01T00:00:00Z', 'LAST')
     }
 
     /**
@@ -624,7 +616,7 @@ class DataItemValueIT extends BaseApiTest {
      */
     @Test
     void getDataItemValueByUid() {
-        getDataItemValue('387C597FF2C4', 0.76426, '2002-01-01T00:00:00Z', '387C597FF2C4')
+        getDataItemValue('H10OSN5NJ2WQ', 0.76426, '2002-01-01T00:00:00Z', 'H10OSN5NJ2WQ')
     }
 
     /**
@@ -644,92 +636,91 @@ class DataItemValueIT extends BaseApiTest {
     def getDataItemValueJson(version, uid, value, startDate, path) {
         if (version >= 3.4) {
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy/$path;full",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
             def itemValue = response.data.value
-            assert 'massCO2PerEnergy' == itemValue.path
+            assert itemValue.path == 'massCO2PerEnergy'
             assert itemValue.history
-            assert uid == itemValue.uid
-            assert value == itemValue.value
-            assert startDate == itemValue.startDate
-            assert 'kg/(kW·h)' == itemValue.unit
+            assert itemValue.uid == uid
+            assert itemValue.value == value
+            assert itemValue.startDate == startDate
+            assert itemValue.unit == 'kg/(kW·h)'
         }
     }
 
     def getDataItemValueXml(version, uid, value, startDate, path) {
         if (version >= 3.4) {
             def response = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path};full",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy/$path;full",
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def itemValue = response.data.Value
-            assert 'massCO2PerEnergy' == itemValue.Path.text()
+            assert itemValue.Path.text() == 'massCO2PerEnergy'
             assert itemValue.@history.text()
-            assert uid == itemValue.@uid.text()
-            assert ""+value == itemValue.Value.text()
-            assert startDate == itemValue.StartDate.text()
-            assert 'kg/(kW·h)' == itemValue.Unit.text()
+            assert itemValue.@uid.text() == uid
+            assert itemValue.Value.text() == value as String
+            assert itemValue.StartDate.text() == startDate
+            assert itemValue.Unit.text() == 'kg/(kW·h)'
         }
     }
 
     @Test
     void updateWithNoValue() {
         setAdminUser()
-        updateDataItemValueField('387C597FF2C4', 'value', 'typeMismatch', '')
+        updateDataItemValueField('H10OSN5NJ2WQ', 'value', 'typeMismatch', '')
     }
 
     @Test
     void updateWithSomethingThatIsNotANumber() {
         setAdminUser()
-        updateDataItemValueField('387C597FF2C4', 'value', 'typeMismatch', 'not_a_number')
+        updateDataItemValueField('H10OSN5NJ2WQ', 'value', 'typeMismatch', 'not_a_number')
     }
 
     @Test
     void updateWithBadStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'typeMismatch', 'not_a_date')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'typeMismatch', 'not_a_date')
     }
 
     @Test
     void updateWithDuplicateStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'duplicate', '2002-01-01T00:00:00Z')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'duplicate', '2002-01-01T00:00:00Z')
     }
 
     @Test
     void updateWithMinStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'start_before_min', '1970-01-01T00:00:00Z')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'start_before_min', '1970-01-01T00:00:00Z')
     }
 
     @Test
     void updateWithBeforeMinStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'start_before_min', '0999-01-01T00:00:00Z')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'start_before_min', '0999-01-01T00:00:00Z')
     }
 
     @Test
     void updateWithFirstStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'start_before_min', 'FIRST')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'start_before_min', 'FIRST')
     }
 
     @Test
     void updateWithLastStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_after_max', 'LAST')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'end_after_max', 'LAST')
     }
 
     @Test
     void updateWithAfterMaxStartDate() {
         setAdminUser()
-        updateDataItemValueField('289CCD5394AC', 'startDate', 'end_after_max', '10000-01-01T00:00:00Z')
+        updateDataItemValueField('91119I4I1CIS', 'startDate', 'end_after_max', '10000-01-01T00:00:00Z')
     }
 
     /**
@@ -771,9 +762,9 @@ class DataItemValueIT extends BaseApiTest {
         if (version >= since) {
             // Get value before update.
             def responseBefore = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy/$path",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseBefore.status
+            assert responseBefore.status == SUCCESS_OK.code
             def valueBefore = responseBefore.data.value.value
             try {
                 // Create form body.
@@ -781,26 +772,25 @@ class DataItemValueIT extends BaseApiTest {
                 body[field] = value
                 // Update Data Item Value.
                 client.put(
-                        path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                        path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy/$path",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON)
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
+                fail('Response status code should have been 400 (' + field + ', ' + code + ').')
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field})
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code})
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                assert [field] == response.data.validationResult.errors.collect { it.field }
+                assert [code] == response.data.validationResult.errors.collect { it.code }
             }
             // Get value after update.
             def responseAfter = client.get(
-                    path: "/${version}/categories/Greenhouse_Gas_Protocol_international_electricity/items/585E708CB4BE/values/massCO2PerEnergy/${path}",
+                    path: "/$version/categories/Greenhouse_Gas_Protocol_international_electricity/items/AWPA0IZH4VQ0/values/massCO2PerEnergy/$path",
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseAfter.status
+            assert responseAfter.status == SUCCESS_OK.code
             def valueAfter = responseAfter.data.value.value
             assert valueAfter == valueBefore
         }
