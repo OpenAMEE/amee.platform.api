@@ -1,11 +1,10 @@
 package com.amee.integration
 
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.ContentType.XML
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-import static org.restlet.data.Status.*
+import static org.restlet.data.Status.SUCCESS_OK
 
 /**
  * Tests for the Data Category drill down API. This API has been available since version 3.3.
@@ -24,9 +23,9 @@ class DrillDownIT extends BaseApiTest {
      */
     @Test
     void canDrillDownJson() {
-        doDrillDownJson(['nothing_to_see': 'here'], 21, 'numberOfPeople')
-        doDrillDownJson(['numberOfPeople': '5'], 5, 'fuel')
-        doDrillDownJson(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid')
+        doDrillDownJson([nothing_to_see: 'here'], 5, 'fuel')
+        doDrillDownJson([fuel: 'gas'], 21, 'numberOfPeople')
+        doDrillDownJson([fuel: 'gas', numberOfPeople: '5'], 1, 'uid')
     }
 
     def doDrillDownJson(query, choicesSize, choicesName) {
@@ -36,15 +35,14 @@ class DrillDownIT extends BaseApiTest {
     def doDrillDownJson(query, choicesSize, choicesName, version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/categories/Cooking/drill",
+                    path: "/$version/categories/Cooking/drill",
                     query: query,
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals choicesSize, response.data.drill.choices.values.size()
-            assertEquals choicesName, response.data.drill.choices.name
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.drill.choices.values.size() == choicesSize
+            assert response.data.drill.choices.name == choicesName
         }
     }
 
@@ -55,9 +53,9 @@ class DrillDownIT extends BaseApiTest {
      */
     @Test
     void canDrillDownXml() {
-        doDrillDownXml(['nothing_to_see': 'here'], 21, 'numberOfPeople')
-        doDrillDownXml(['numberOfPeople': '5'], 5, 'fuel')
-        doDrillDownXml(['numberOfPeople': '5', 'fuel': 'Gas'], 1, 'uid')
+        doDrillDownXml([nothing_to_see: 'here'], 5, 'fuel')
+        doDrillDownXml([fuel: 'gas'], 21, 'numberOfPeople')
+        doDrillDownXml([fuel: 'Gas', numberOfPeople: '5'], 1, 'uid')
     }
 
     def doDrillDownXml(query, choicesSize, choicesName) {
@@ -67,19 +65,20 @@ class DrillDownIT extends BaseApiTest {
     def doDrillDownXml(query, choicesSize, choicesName, version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/categories/Cooking/drill",
+                    path: "/$version/categories/Cooking/drill",
                     query: query,
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals choicesSize, response.data.Drill.Choices.Values.Value.size()
-            assertEquals choicesName, response.data.Drill.Choices.Name.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.Drill.Choices.Values.Value.size() == choicesSize
+            assert response.data.Drill.Choices.Name.text() == choicesName
         }
     }
 
     /**
      * Tests a UID is retrieved when one or more of the drill downs has an empty value.
+     * Should auto-select the next choice if there is only one.
      */
     @Test
     void emptyDrillDownValue() {
@@ -88,21 +87,16 @@ class DrillDownIT extends BaseApiTest {
 
     def emptyDrillDownValue(version) {
         if (version >= 3.3) {
-
-            // Access to CLM cats is restricted.
-            setAdminUser()
-
             def response = client.get(
-                path: "/${version}/categories/CLM_food_processing_emissions/drill",
-                query: [process: 'canning', type: 'meat'],
+                path: "/$version/categories/ICE_v2_by_mass/drill",
+                query: [subtype: 'General'],
                 contentType: JSON);
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 1, response.data.drill.choices.values.size()
-            assertEquals 'uid', response.data.drill.choices.name
-            assertEquals 'B4F0278F0CD8', response.data.drill.choices.values[0]
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.drill.choices.values.size() == 1
+            assert response.data.drill.choices.name == 'uid'
+            assert response.data.drill.choices.values[0] == 'LNW3AVZB0A2D'
         }
     }
 }

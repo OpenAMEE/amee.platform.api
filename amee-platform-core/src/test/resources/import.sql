@@ -53,8 +53,8 @@ INSERT INTO item_definition (id, created, modified, uid, status, drill_down, nam
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (184,'2014-12-29 17:11:21','2014-12-29 17:11:21','KHTYL38MRAC3',1,'device,rating,age,temperature','Kitchen Generic');
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (317,'2014-12-29 20:46:34','2014-12-29 20:46:34','VUO34XE7KEOF',1,'subtype,type','Military aircraft');
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (318,'2014-12-29 20:46:45','2014-12-29 20:46:45','1E3Z77Y62WW6',1,'type','IPCC military aircraft');
-INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (4583, 'EC676C1ED453', 'APITestGHGElectricity', 'country', '2010-04-29 08:04:57', '2010-04-29 08:04:57', 1);
-INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (7023, '8E143AAC1F72', 'APITestDimlessHistory', 'country', '2010-05-26 15:05:59', '2010-05-26 15:06:00', 1);
+INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (4583,'EC676C1ED453','APITestGHGElectricity','country', '2010-04-29 08:04:57', '2010-04-29 08:04:57', 1);
+INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (7023,'8E143AAC1F72','APITestDimlessHistory','country', '2010-05-26 15:05:59', '2010-05-26 15:06:00', 1);
 
 -- item_value_definition - For Item Definition 'Computers Generic'
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1424,'2014-12-29 17:00:52','2014-12-29 17:00:52','BVMO8CCM8JW2',1,'',1,0,'Rating','rating','','','',NULL,164,1);
@@ -646,8 +646,7 @@ INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_i
 INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (26221133,'0BE050A60037','','','2010-05-26 16:06:09','2010-05-26 16:06:09',7023,9913,1);
 
 -- DATA_ITEM - For drill down empty value test
--- INSERT INTO DATA_ITEM (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (236660566,'NX9WAFL8MUCL','','','2011-03-10 11:57:28','2011-03-10 11:57:28',41226,134438,1);
--- INSERT INTO DATA_ITEM (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (29305553,'B4F0278F0CD8','','','2010-06-25 14:00:09','2010-06-25 14:00:09',7933,15613,1);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (9499,'2014-12-29 16:58:36','2014-12-29 16:58:36','LNW3AVZB0A2D',1,'','',259,159);
 
 -- data_item_text_value - For data_items in data_category Cooking
 -- mysqldump --single-transaction --compact --no-create-info --skip-extended-insert --complete-insert --skip-quote-names --where "data_item_id IN (SELECT id from data_item where data_category_id = 268)" openamee data_item_text_value
@@ -862,21 +861,13 @@ INSERT INTO data_item_text_value (id, created, modified, uid, status, value, ite
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (43816,'2014-12-29 17:01:15','2014-12-29 17:01:15','GTQ7Q8623I6E',1,'BRE/MTP/dgen/defra 2007',1431,10047);
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (43817,'2014-12-29 17:01:15','2014-12-29 17:01:15','TZ08UGKWCTJB',1,'Electric hob only',1430,10047);
 
--- DATA_ITEM_TEXT_VALUE - For DATA_ITEM with ID 236660566 (drill down empty value test)
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324526,'G5DU9VGYQ41N',1,'Embodied carbon was difficult to estimate','2011-03-10 11:57:29','2011-03-10 11:57:29',93502,236660566);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324530,'TDMB6OAZK1IJ',1,'http://people.bath.ac.uk/cj219/','2011-03-10 11:57:29','2011-03-10 11:57:29',93510,236660566);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324534,'AN77OGM647EU',1,'General','2011-03-10 11:57:29','2011-03-10 11:57:29',93478,236660566);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324538,'6TP9ZOYSUC4G',1,'','2011-03-10 11:57:29','2011-03-10 11:57:29',93482,236660566);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324542,'RWSS3344NMQO',1,'Lime','2011-03-10 11:57:29','2011-03-10 11:57:29',93474,236660566);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (1959324546,'6QHZAQY1595I',1,'Cradle to gate','2011-03-10 11:57:29','2011-03-10 11:57:29',93498,236660566);
-
--- DATA_ITEM_TEXT_VALUE - For DATA_ITEM with ID 29305553 (drill down empty value test)
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789343,'18F666438E99',1,'meat','2010-06-25 14:00:14','2010-06-25 14:00:14',38453,29305553);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789353,'8A5B4420DFD8',1,'','2010-06-25 14:00:14','2010-06-25 14:00:14',38463,29305553);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789373,'DA49C77E9B7F',1,'canning','2010-06-25 14:00:14','2010-06-25 14:00:14',38443,29305553);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789403,'782EDDEACE2F',1,'http://www.clm.nl/index_eng.php?','2010-06-25 14:00:14','2010-06-25 14:00:14',38583,29305553);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789413,'64B0A9F30F76',1,'CLM0562','2010-06-25 14:00:14','2010-06-25 14:00:14',38563,29305553);
--- INSERT INTO DATA_ITEM_TEXT_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (160789463,'7E4B978825D8',1,'','2010-06-25 14:00:14','2010-06-25 14:00:14',38473,29305553);
+-- data_item_text_value - For drill down empty value test
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40722,'2014-12-29 16:58:36','2014-12-29 16:58:36','V636CE8E5QDX',1,'PVC',1390,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40723,'2014-12-29 16:58:36','2014-12-29 16:58:36','5D82JQ5SHBF9',1,'28.1 MJ/kg Feedstock Energy  (Included). Based on market average consumption of types of PVC in the European construction industry',1385,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40724,'2014-12-29 16:58:36','2014-12-29 16:58:36','C9TBZWSJCPQX',1,'Plastics',1383,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40725,'2014-12-29 16:58:36','2014-12-29 16:58:36','7NUPYEZALU0H',1,'Cradle to gate',1389,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40726,'2014-12-29 16:58:36','2014-12-29 16:58:36','DHMP6YMM6Z4V',1,'http://people.bath.ac.uk/cj219/',1388,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40727,'2014-12-29 16:58:36','2014-12-29 16:58:36','XWYT2973OQR2',1,'General',1386,9499);
 
 -- data_item_text_value - For prorata tests
 INSERT INTO data_item_text_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (98835683,'9745B35F496E',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls','2010-04-29 09:14:00','2010-04-29 09:14:00',23033,18181853);
@@ -1114,37 +1105,27 @@ INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41995,'2014-12-29 17:01:15','2014-12-29 17:01:15','MD5ITMOUMEI4',1,'','',239,1433,10047);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41996,'2014-12-29 17:01:15','2014-12-29 17:01:15','62YBMGL5X23A',1,'','',2.4,1432,10047);
 
--- DATA_ITEM_NUMBER_VALUE - For DATA_ITEM with ID 236660566 (drill down empty value test)
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (1769499558,'QF6WLSOF1U97',1,0.76,'2011-03-10 11:57:29','2011-03-10 11:57:29',93490,236660566,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (1769499562,'358T7H2982VM',1,0.78,'2011-03-10 11:57:29','2011-03-10 11:57:29',93494,236660566,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (1769499566,'BLYKDN60TNTH',1,5.3,'2011-03-10 11:57:29','2011-03-10 11:57:29',93486,236660566,'','');
+-- data_item_number_value - For drill down empty value test
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41391,'2014-12-29 16:58:36','2014-12-29 16:58:36','JEI3K0CJ2XBX',1,'','',2.61,1382,9499);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41392,'2014-12-29 16:58:36','2014-12-29 16:58:36','K5WBCZD1FTZS',1,'','',3.1,1384,9499);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41393,'2014-12-29 16:58:36','2014-12-29 16:58:36','C9HUTX5APBZ5',1,'','',77.2,1381,9499);
 
--- DATA_ITEM_NUMBER_VALUE - For DATA_ITEM with ID 29305553 (drill down empty value test)
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789363,'BAD40BB750BD',1,NULL,'2010-06-25 14:00:14','2010-06-25 14:00:14',38483,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789383,'35370B638CF2',1,NULL,'2010-06-25 14:00:14','2010-06-25 14:00:14',38493,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789393,'1B3FB0AB0520',1,5.2,'2010-06-25 14:00:14','2010-06-25 14:00:14',38523,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789423,'01076041B401',1,5.2,'2010-06-25 14:00:14','2010-06-25 14:00:14',38533,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789433,'E051EF4CCE0C',1,NULL,'2010-06-25 14:00:14','2010-06-25 14:00:14',38503,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789443,'F34035BEBA4B',1,0.404582466716905,'2010-06-25 14:00:14','2010-06-25 14:00:14',38553,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789453,'2AFE14E627E3',1,0.0778043205224818,'2010-06-25 14:00:14','2010-06-25 14:00:14',38543,29305553,'','');
--- INSERT INTO DATA_ITEM_NUMBER_VALUE (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (160789473,'1D007118CF34',1,NULL,'2010-06-25 14:00:14','2010-06-25 14:00:14',38513,29305553,'','');
-
--- DATA_ITEM_NUMBER_VALUE - With series,without perUnit,algeria (massCO2PerEnergy set to test value)
+-- data_item_number_value - With series,without perUnit,algeria (massCO2PerEnergy set to test value)
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372863,'53991E76B48B',1,2.0,'2010-05-26 16:06:10','2011-12-12 04:57:09',34153,26221023,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372873,'63A62AAB05CC',1,0.0016108,'2010-05-26 16:06:10','2010-05-26 16:06:10',34163,26221023,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372893,'8F70AB9BA8D0',1,0.0150624,'2010-05-26 16:06:10','2010-05-26 16:06:10',34143,26221023,'','');
 
--- DATA_ITEM_NUMBER_VALUE - Without series,without perUnit,benin (massCO2PerEnergy set to test value)
+-- data_item_number_value - Without series,without perUnit,benin (massCO2PerEnergy set to test value)
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373413,'982E38D5081B',1,2.0,'2010-05-26 16:06:10','2011-12-12 04:57:10',34153,26221133,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373423,'9FEE073B3273',1,0.0095523,'2010-05-26 16:06:10','2010-05-26 16:06:10',34163,26221133,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373443,'88DB6038C423',1,0.0097723,'2010-05-26 16:06:10','2010-05-26 16:06:10',34143,26221133,'','');
 
--- DATA_ITEM_NUMBER_VALUE - With series,has perUnit,algeria (massCO2PerEnergy set to test value)
+-- data_item_number_value - With series,has perUnit,algeria (massCO2PerEnergy set to test value)
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835663,'2263ACD2D97A',1,0.0016108,'2010-04-29 09:14:00','2010-04-29 09:14:00',23023,18181853,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835673,'3753287F50B3',1,0.0150624,'2010-04-29 09:14:00','2010-04-29 09:14:00',23003,18181853,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835703,'757F71D1B090',1,2.0,'2010-04-29 09:14:00','2011-12-12 04:57:07',23013,18181853,'','');
 
--- DATA_ITEM_NUMBER_VALUE - Without series,has perUnit,benin (massCO2PerEnergy set to test value)
+-- data_item_number_value - Without series,has perUnit,benin (massCO2PerEnergy set to test value)
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836213,'220797F69AF2',1,0.0095523,'2010-04-29 09:14:00','2010-04-29 09:14:00',23023,18181963,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836223,'82542639D23F',1,0.0097723,'2010-04-29 09:14:00','2010-04-29 09:14:00',23003,18181963,'','');
 INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836253,'19A354C346C5',1,2.0,'2010-04-29 09:14:00','2011-12-12 04:57:08',23013,18181963,'','');
@@ -2414,7 +2395,7 @@ INSERT INTO data_item_number_value_history (id, created, modified, uid, status, 
 INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (19259,'2014-12-29 14:59:27','2014-12-29 14:59:27','DKNAGDMIGPIM',1,'','',0.7283,'2005-01-01 00:00:00',281,6418);
 INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (19260,'2014-12-29 14:59:27','2014-12-29 14:59:27','VNP3YS144AKX',1,'','',0.7283,'2006-01-01 00:00:00',281,6418);
 
--- DIVH - DATA_ITEM_NUMBER_VALUE
+-- DIVH - data_item_number_value
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (31286,'2014-12-29 14:59:04','2014-12-29 14:59:04','1DD00UX55X5T',1,'','',0.0324402,281,6265);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (31287,'2014-12-29 14:59:04','2014-12-29 14:59:04','143MUCIXIAZT',1,'','',0.6881182,281,6266);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (31288,'2014-12-29 14:59:04','2014-12-29 14:59:04','2IJ0N3BDZQBG',1,'','',0.0982004,281,6267);
@@ -2570,7 +2551,7 @@ INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (31438,'2014-12-29 14:59:06','2014-12-29 14:59:06','R4QJST2N9YEF',1,'','',0.35147,281,6417);
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (31439,'2014-12-29 14:59:06','2014-12-29 14:59:06','X22X8SJK2ER1',1,'','',0.7283,281,6418);
 
--- DIVH - DATA_ITEM_TEXT_VALUE
+-- DIVH - data_item_text_value
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (28998,'2014-12-29 14:59:04','2014-12-29 14:59:04','2EC3XA21NAG9',1,'Albania',282,6265);
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (28999,'2014-12-29 14:59:04','2014-12-29 14:59:04','O06DRJPK0GV1',1,'http://www.ghgprotocol.org/calculation-tools/all-tools',284,6265);
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (29000,'2014-12-29 14:59:04','2014-12-29 14:59:04','X083CBD5EK50',1,'Algeria',282,6266);
