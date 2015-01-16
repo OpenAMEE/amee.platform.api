@@ -269,7 +269,7 @@
                         </systemProperty>
                         <systemProperty>
                             <key>CLEAR_INDEX</key>
-                            <value>true</value>
+                            <value>false</value>
                         </systemProperty>
                         <systemProperty>
                             <key>CHECK_DATA_CATEGORIES</key>
@@ -297,11 +297,11 @@
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_PATH</key>
-                            <value>${project.build.directory}/lucene</value>
+                            <value>${project.basedir}/lucene</value>
                         </systemProperty>
                         <systemProperty>
                             <key>LUCENE_PATH</key>
-                            <value>${project.build.directory}/lucene/index</value>
+                            <value>${project.basedir}/lucene/index</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_CHECK_SEARCHER_ON_COMMIT</key>
