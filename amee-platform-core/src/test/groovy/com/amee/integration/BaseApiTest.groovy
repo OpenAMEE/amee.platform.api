@@ -60,11 +60,13 @@ abstract class BaseApiTest {
         container.start()
 
         // Wait to allow the search index to be built.
-        // NOTE: The count figure below needs to be updated when more DataCategories are added to import.sql.
-        // NOTE: Remember to exclude trashed and implicitly trashed categories in the count.
+        // NOTE: When more DataCategories are added to import.sql you must also update the list in CategoryIT.
+        // NOTE: Trashed and implicitly trashed categories are not included in the count.
         println 'Waiting while the index is built...'
         int count = 0;
-        while (SearchIndexerImpl.getCount() < (CategoryIT.categoryNames.size() - 1)) {
+
+        // TODO: Should we be indexing root category?
+        while (SearchIndexerImpl.getCount() < (CategoryIT.categoryNames.size())) {
             sleep(1000);
             count++;
             println 'Waited ' + count + ' second(s) whilst the index is being built... (' + SearchIndexerImpl.getCount() + '/' + CategoryIT.categoryNames.size() + ')';

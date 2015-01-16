@@ -123,7 +123,8 @@
                         <CHECK_DATA_CATEGORIES>true</CHECK_DATA_CATEGORIES>
                         <INDEX_DATA_CATEGORIES>true</INDEX_DATA_CATEGORIES>
                         <INDEX_DATA_ITEMS>true</INDEX_DATA_ITEMS>
-                        <INDEX_DATA_CATEGORY_PATH_PREFIX/>
+                        <!-- Setting the following to '/' means the root category will not be indexed -->
+                        <!--<INDEX_DATA_CATEGORY_PATH_PREFIX>/</INDEX_DATA_CATEGORY_PATH_PREFIX>-->
                         <SNAPSHOT_ENABLED>false</SNAPSHOT_ENABLED>
                         <INDEX_PATH>${project.build.directory}/lucene</INDEX_PATH>
                         <LUCENE_PATH>${project.build.directory}/lucene/index</LUCENE_PATH>
@@ -142,6 +143,9 @@
                     <additionalClasspathElements>
                         <additionalClasspathElement>${basedir}/src/main/config</additionalClasspathElement>
                     </additionalClasspathElements>
+
+                    <!-- TODO: Put properties file in src/main/config to load properties from there. -->
+                    <!-- TODO: Remember to exclude from any jars that are built -->
                     <systemProperties>
                         <systemProperty>
                             <key>AMEE_SERVER_NAME</key>
@@ -283,10 +287,12 @@
                             <key>INDEX_DATA_ITEMS</key>
                             <value>true</value>
                         </systemProperty>
-                        <systemProperty>
-                            <key>INDEX_DATA_CATEGORY_PATH_PREFIX</key>
-                            <value>/</value>
-                        </systemProperty>
+
+                        <!-- Setting the following to '/' means the root category will not be indexed -->
+                        <!--<systemProperty>-->
+                            <!--<key>INDEX_DATA_CATEGORY_PATH_PREFIX</key>-->
+                            <!--<value>/</value>-->
+                        <!--</systemProperty>-->
                         <systemProperty>
                             <key>SNAPSHOT_ENABLED</key>
                             <value>false</value>
