@@ -1,6 +1,7 @@
 package com.amee.integration
 
 import groovyx.net.http.HttpResponseException
+import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.XML
 import static org.junit.Assert.assertEquals
@@ -10,6 +11,7 @@ import static org.restlet.data.Status.*
 /**
  * Tests for the Data Category API for ecoinvent data.
  */
+@Ignore
 class EcospoldIT extends BaseApiTest {
 
     @Test
