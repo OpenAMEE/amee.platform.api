@@ -53,8 +53,8 @@ INSERT INTO item_definition (id, created, modified, uid, status, drill_down, nam
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (184,'2014-12-29 17:11:21','2014-12-29 17:11:21','KHTYL38MRAC3',1,'device,rating,age,temperature','Kitchen Generic');
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (317,'2014-12-29 20:46:34','2014-12-29 20:46:34','VUO34XE7KEOF',1,'subtype,type','Military aircraft');
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (318,'2014-12-29 20:46:45','2014-12-29 20:46:45','1E3Z77Y62WW6',1,'type','IPCC military aircraft');
-INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (4583,'EC676C1ED453','APITestGHGElectricity','country', '2010-04-29 08:04:57', '2010-04-29 08:04:57', 1);
-INSERT INTO item_definition (id, uid, name, drill_down, created, modified, status) VALUES (7023,'8E143AAC1F72','APITestDimlessHistory','country', '2010-05-26 15:05:59', '2010-05-26 15:06:00', 1);
+INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (4583,'2010-04-29 08:04:57','2010-04-29 08:04:57','EC676C1ED453',1,'country','APITestGHGElectricity');
+INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (7023,'2010-05-26 15:05:59','2010-05-26 15:06:00','8E143AAC1F72',1,'country','APITestDimlessHistory');
 
 -- item_value_definition - For Item Definition 'Computers Generic'
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1424,'2014-12-29 17:00:52','2014-12-29 17:00:52','BVMO8CCM8JW2',1,'',1,0,'Rating','rating','','','',NULL,164,1);
@@ -640,10 +640,10 @@ INSERT INTO data_item (id, created, modified, uid, status, name, path, data_cate
 INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (39758, '2014-12-29 20:46:46', '2014-12-29 20:46:46', 'VYEE3CAIJ3NU', 1, '', 'pathForUniqueTest', 487, 318);
 
 -- data_item - For data_category with ID 7063,9913
-INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (18181853,'1F6B12D982B5','','','2010-04-29 09:13:59','2011-12-12 04:57:07',4583,7063,1);
-INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (18181963,'A68029BBC709','','','2010-04-29 09:13:59','2010-04-29 09:13:59',4583,7063,1);
-INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (26221023,'58E2285C5310','','','2010-05-26 16:06:09','2011-12-12 04:57:09',7023,9913,1);
-INSERT INTO data_item (id, uid, name, path, created, modified, item_definition_id, data_category_id, status) VALUES (26221133,'0BE050A60037','','','2010-05-26 16:06:09','2010-05-26 16:06:09',7023,9913,1);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (18181853,'2010-04-29 09:13:59','2011-12-12 04:57:07','1F6B12D982B5',1,'','',7063,4583);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (18181963,'2010-04-29 09:13:59','2010-04-29 09:13:59','A68029BBC709',1,'','',7063,4583);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (26221023,'2010-05-26 16:06:09','2011-12-12 04:57:09','58E2285C5310',1,'','',9913,7023);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (26221133,'2010-05-26 16:06:09','2010-05-26 16:06:09','0BE050A60037',1,'','',9913,7023);
 
 -- DATA_ITEM - For drill down empty value test
 INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (9499,'2014-12-29 16:58:36','2014-12-29 16:58:36','LNW3AVZB0A2D',1,'','',259,159);
@@ -870,10 +870,10 @@ INSERT INTO data_item_text_value (id, created, modified, uid, status, value, ite
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40727,'2014-12-29 16:58:36','2014-12-29 16:58:36','XWYT2973OQR2',1,'General',1386,9499);
 
 -- data_item_text_value - For prorata tests
-INSERT INTO data_item_text_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (98835683,'9745B35F496E',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls','2010-04-29 09:14:00','2010-04-29 09:14:00',23033,18181853);
-INSERT INTO data_item_text_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (98835693,'2D5F312D6BAD',1,'Algeria','2010-04-29 09:14:00','2010-04-29 09:14:00',22993,18181853);
-INSERT INTO data_item_text_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (98836233,'0780931B4C07',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls','2010-04-29 09:14:00','2010-04-29 09:14:00',23033,18181963);
-INSERT INTO data_item_text_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id) VALUES (98836243,'BB56D8231F62',1,'Benin','2010-04-29 09:14:00','2010-04-29 09:14:00',22993,18181963);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (98835683,'2010-04-29 09:14:00','2010-04-29 09:14:00','9745B35F496E',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls',23033,18181853);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (98835693,'2010-04-29 09:14:00','2010-04-29 09:14:00','2D5F312D6BAD',1,'Algeria',22993,18181853);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (98836233,'2010-04-29 09:14:00','2010-04-29 09:14:00','0780931B4C07',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls',23033,18181963);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (98836243,'2010-04-29 09:14:00','2010-04-29 09:14:00','BB56D8231F62',1,'Benin',22993,18181963);
 
 -- data_item_text_value - For data_item with ID 5279 (Electricity_by_Country,Albania)
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (25764,'2014-12-29 14:52:43','2014-12-29 14:52:43','YKOQZS5NXAFK',1,'Albania',170,5279);
@@ -1111,24 +1111,24 @@ INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41393,'2014-12-29 16:58:36','2014-12-29 16:58:36','C9HUTX5APBZ5',1,'','',77.2,1381,9499);
 
 -- data_item_number_value - With series,without perUnit,algeria (massCO2PerEnergy set to test value)
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372863,'53991E76B48B',1,2.0,'2010-05-26 16:06:10','2011-12-12 04:57:09',34153,26221023,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372873,'63A62AAB05CC',1,0.0016108,'2010-05-26 16:06:10','2010-05-26 16:06:10',34163,26221023,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143372893,'8F70AB9BA8D0',1,0.0150624,'2010-05-26 16:06:10','2010-05-26 16:06:10',34143,26221023,'','');
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143372863,'2010-05-26 16:06:10','2011-12-12 04:57:09','53991E76B48B',1,'','',2,34153,26221023);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143372873,'2010-05-26 16:06:10','2010-05-26 16:06:10','63A62AAB05CC',1,'','',0.0016108,34163,26221023);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143372893,'2010-05-26 16:06:10','2010-05-26 16:06:10','8F70AB9BA8D0',1,'','',0.0150624,34143,26221023);
 
 -- data_item_number_value - Without series,without perUnit,benin (massCO2PerEnergy set to test value)
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373413,'982E38D5081B',1,2.0,'2010-05-26 16:06:10','2011-12-12 04:57:10',34153,26221133,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373423,'9FEE073B3273',1,0.0095523,'2010-05-26 16:06:10','2010-05-26 16:06:10',34163,26221133,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (143373443,'88DB6038C423',1,0.0097723,'2010-05-26 16:06:10','2010-05-26 16:06:10',34143,26221133,'','');
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143373413,'2010-05-26 16:06:10','2011-12-12 04:57:10','982E38D5081B',1,'','',2,34153,26221133);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143373423,'2010-05-26 16:06:10','2010-05-26 16:06:10','9FEE073B3273',1,'','',0.0095523,34163,26221133);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143373443,'2010-05-26 16:06:10','2010-05-26 16:06:10','88DB6038C423',1,'','',0.0097723,34143,26221133);
 
 -- data_item_number_value - With series,has perUnit,algeria (massCO2PerEnergy set to test value)
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835663,'2263ACD2D97A',1,0.0016108,'2010-04-29 09:14:00','2010-04-29 09:14:00',23023,18181853,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835673,'3753287F50B3',1,0.0150624,'2010-04-29 09:14:00','2010-04-29 09:14:00',23003,18181853,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98835703,'757F71D1B090',1,2.0,'2010-04-29 09:14:00','2011-12-12 04:57:07',23013,18181853,'','');
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98835663,'2010-04-29 09:14:00','2010-04-29 09:14:00','2263ACD2D97A',1,'','',0.0016108,23023,18181853);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98835673,'2010-04-29 09:14:00','2010-04-29 09:14:00','3753287F50B3',1,'','',0.0150624,23003,18181853);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98835703,'2010-04-29 09:14:00','2011-12-12 04:57:07','757F71D1B090',1,'','',2,23013,18181853);
 
 -- data_item_number_value - Without series,has perUnit,benin (massCO2PerEnergy set to test value)
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836213,'220797F69AF2',1,0.0095523,'2010-04-29 09:14:00','2010-04-29 09:14:00',23023,18181963,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836223,'82542639D23F',1,0.0097723,'2010-04-29 09:14:00','2010-04-29 09:14:00',23003,18181963,'','');
-INSERT INTO data_item_number_value (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit) VALUES (98836253,'19A354C346C5',1,2.0,'2010-04-29 09:14:00','2011-12-12 04:57:08',23013,18181963,'','');
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98836213,'2010-04-29 09:14:00','2010-04-29 09:14:00','220797F69AF2',1,'','',0.0095523,23023,18181963);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98836223,'2010-04-29 09:14:00','2010-04-29 09:14:00','82542639D23F',1,'','',0.0097723,23003,18181963);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (98836253,'2010-04-29 09:14:00','2011-12-12 04:57:08','19A354C346C5',1,'','',2,23013,18181963);
 
 -- data_item_number_value - For data_item with ID 5279 (Electricity_by_Country,Albania)
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (25756,'2014-12-29 14:52:43','2014-12-29 14:52:43','Y93S84U20R5E',1,'','',0.0324402,168,5279);
@@ -1304,16 +1304,16 @@ INSERT INTO data_item (id, created, modified, uid, status, name, path, data_cate
 
 -- DATA_ITEM_NUMBER_VALUE_HISTORY - For prorata tests
 -- With series,without perUnit,algeria (massCO2PerEnergy set to test values)
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (143383363,'5A2AF2DE3F0F',1,3,'2010-05-26 16:07:33','2010-05-26 16:10:17',34153,26221023,'','','1970-01-11 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (143383343,'4010AB68EF93',1,11,'2010-05-26 16:07:28','2010-05-26 16:10:09',34153,26221023,'','','1970-01-21 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (143383603,'DF705780DB41',1,13,'2010-05-26 16:07:40','2010-05-26 16:10:24',34153,26221023,'','','1970-01-31 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (143383353,'E2748DDA0F52',1,17,'2010-05-26 16:07:32','2010-05-26 16:10:09',34153,26221023,'','','1970-02-10 00:00:00');
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (143383343,'2010-05-26 16:07:28','2010-05-26 16:10:09','4010AB68EF93',1,'','',11,'1970-01-21 00:00:00',34153,26221023);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (143383353,'2010-05-26 16:07:32','2010-05-26 16:10:09','E2748DDA0F52',1,'','',17,'1970-02-10 00:00:00',34153,26221023);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (143383363,'2010-05-26 16:07:33','2010-05-26 16:10:17','5A2AF2DE3F0F',1,'','',3,'1970-01-11 00:00:00',34153,26221023);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (143383603,'2010-05-26 16:07:40','2010-05-26 16:10:24','DF705780DB41',1,'','',13,'1970-01-31 00:00:00',34153,26221023);
 
 -- With series,with perUnit,algeria (massCO2PerEnergy set to test values)
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (98954693,'C7543BB9CA41',1,3,'2010-04-29 12:16:22','2010-04-29 12:16:53',23013,18181853,'','','1970-01-11 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (98954673,'2B24818B67C1',1,11,'2010-04-29 12:16:11','2010-04-29 12:16:42',23013,18181853,'','','1970-01-21 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (98954703,'AD11D36F4566',1,13,'2010-04-29 12:16:28','2010-04-29 12:16:59',23013,18181853,'','','1970-01-31 00:00:00');
-INSERT INTO data_item_number_value_history (id, uid, status, value, created, modified, item_value_definition_id, data_item_id, unit, per_unit, start_date) VALUES (98954683,'E616B3FBB4BD',1,17,'2010-04-29 12:16:17','2010-04-29 12:16:48',23013,18181853,'','','1970-02-10 00:00:00');
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (98954673,'2010-04-29 12:16:11','2010-04-29 12:16:42','2B24818B67C1',1,'','',11,'1970-01-21 00:00:00',23013,18181853);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (98954683,'2010-04-29 12:16:17','2010-04-29 12:16:48','E616B3FBB4BD',1,'','',17,'1970-02-10 00:00:00',23013,18181853);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (98954693,'2010-04-29 12:16:22','2010-04-29 12:16:53','C7543BB9CA41',1,'','',3,'1970-01-11 00:00:00',23013,18181853);
+INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (98954703,'2010-04-29 12:16:28','2010-04-29 12:16:59','AD11D36F4566',1,'','',13,'1970-01-31 00:00:00',23013,18181853);
 
 -- DIVH - DATA_ITEM_NUMBER_VALUE_HISTORY
 INSERT INTO data_item_number_value_history (id, created, modified, uid, status, per_unit, unit, value, start_date, item_value_definition_id, data_item_id) VALUES (19219,'2014-12-29 14:59:26','2014-12-29 14:59:26','I5I5H6RI4PRR',1,'','',0.04864,'2000-01-01 00:00:00',281,6265);
