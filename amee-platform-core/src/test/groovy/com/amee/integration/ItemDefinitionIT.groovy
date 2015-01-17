@@ -1,9 +1,11 @@
 package com.amee.integration
 
+import com.amee.domain.data.ItemDefinition
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 import static org.restlet.data.Status.*
 
 /**
@@ -15,15 +17,15 @@ class ItemDefinitionIT extends BaseApiTest {
     static def itemDefinitionNames1 = [
         'APITestDimlessHistory',
         'APITestGHGElectricity',
-        'CLM food processing',
-        'Computers Generic']
+        'Computers Generic',
+        'Cooking']
 
     // Page two when sorted by name, resultStart is 4 and resultLimit is 4.
     static def itemDefinitionNames2 = [
-        'Cooking',
-        'EcoSpold',
         'Entertainment Generic',
-        'GHGElectricity']
+        'GHGElectricity',
+        'GHGP international grid electricity',
+        'GHGUSSubregion']
 
     def static expectedUsageNames = ['usage1', 'usage2']
     def static expectedUsagePresents = ['false', 'true']
@@ -56,42 +58,36 @@ class ItemDefinitionIT extends BaseApiTest {
 
             // Create a new ItemDefinition
             def responsePost = client.post(
-                    path: "/${version}/definitions",
-                    body: [
-                            'name': 'test',
-                            'drillDown': 'foo,bar',
-                            'usages': 'baz,quux'],
+                    path: "/$version/definitions",
+                    body: [name: 'test', drillDown: 'foo,bar', usages: 'baz,quux'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
-            def uid = location.split('/')[5]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("$config.api.protocol://$config.api.host")
+            String uid = location.split('/')[5]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the new ItemDefinition
-            def responseGet = client.get(
-                    path: "${location};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals 'test', responseGet.data.itemDefinition.name
-            assertEquals 'foo,bar', responseGet.data.itemDefinition.drillDown
-            assertEquals 2, responseGet.data.itemDefinition.usages.size()
-            assertEquals(['baz', 'quux'], responseGet.data.itemDefinition.usages.collect {it.name})
-            assertEquals(['false', 'false'], responseGet.data.itemDefinition.usages.collect {it.present})
+            def responseGet = client.get(path: "$location;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.itemDefinition.name == 'test'
+            assert responseGet.data.itemDefinition.drillDown == 'foo,bar'
+            assert responseGet.data.itemDefinition.usages.size() == 2
+            assert responseGet.data.itemDefinition.usages.collect { it.name } == ['baz', 'quux']
+            assert responseGet.data.itemDefinition.usages.collect { it.present } == ['false', 'false']
 
             // Delete it
             def responseDelete = client.delete(path: location)
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Should get a 404 here
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -124,15 +120,14 @@ class ItemDefinitionIT extends BaseApiTest {
     def getItemDefinitionsPageOneJson(version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/definitions;name",
-                    query: ['resultStart': 0, 'resultLimit': 4],
+                    path: "/$version/definitions;name",
+                    query: [resultStart: 0, resultLimit: 4],
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals itemDefinitionNames1.size(), response.data.itemDefinitions.size()
-            assert itemDefinitionNames1 == response.data.itemDefinitions.collect {it.name}
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.itemDefinitions.size() == itemDefinitionNames1.size()
+            assert response.data.itemDefinitions.collect { it.name } == itemDefinitionNames1
         }
     }
 
@@ -144,16 +139,15 @@ class ItemDefinitionIT extends BaseApiTest {
     def getItemDefinitionsPageTwoJson(version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/definitions;name",
-                    query: ['resultStart': 4, 'resultLimit': 4],
+                    path: "/$version/definitions;name",
+                    query: [resultStart: 4, resultLimit: 4],
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertTrue response.data.resultsTruncated
-            assertEquals itemDefinitionNames2.size(), response.data.itemDefinitions.size()
-            assert itemDefinitionNames2 == response.data.itemDefinitions.collect {it.name}
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.resultsTruncated
+            assert response.data.itemDefinitions.size() == itemDefinitionNames2.size()
+            assert response.data.itemDefinitions.collect { it.name } == itemDefinitionNames2
         }
     }
 
@@ -170,17 +164,16 @@ class ItemDefinitionIT extends BaseApiTest {
     def getItemDefinitionsByNameJson(version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/definitions;name",
-                    query: ['name': 'cooking'],
+                    path: "/$version/definitions;name",
+                    query: [name: 'cooking'],
                     contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertFalse response.data.resultsTruncated
-            assertEquals 1, response.data.itemDefinitions.size()
-            assert ['1B3B44CAE90C'] == response.data.itemDefinitions.collect {it.uid}
-            assert ['Cooking'] == response.data.itemDefinitions.collect {it.name}
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert !response.data.resultsTruncated
+            assert response.data.itemDefinitions.size() == 1
+            assert response.data.itemDefinitions.collect { it.uid } == ['WD5M1LM2X3W4']
+            assert response.data.itemDefinitions.collect { it.name } == ['Cooking']
         }
     }
 
@@ -190,7 +183,7 @@ class ItemDefinitionIT extends BaseApiTest {
     @Test
     void getItemDefinitionsByNameInvalidJson() {
         getItemDefinitionsByNameJson('short', '12')
-        getItemDefinitionsByNameJson('long', String.randomString(256))
+        getItemDefinitionsByNameJson('long', String.randomString(ItemDefinition.NAME_MAX_SIZE + 1))
     }
 
     def getItemDefinitionsByNameJson(code, value) {
@@ -203,17 +196,16 @@ class ItemDefinitionIT extends BaseApiTest {
                 def query = [:]
                 query['name'] = value
                 client.get(
-                        path: "/${version}/definitions;name",
+                        path: "/$version/definitions;name",
                         query: query,
                         contentType: JSON)
                 fail 'Response status code should have been 400 (' + code + ').'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code})
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                assert response.data.validationResult.errors.collect { it.code } == [code]
             }
         }
     }
@@ -229,16 +221,16 @@ class ItemDefinitionIT extends BaseApiTest {
     def getItemDefinitionsPageOneXml(version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/definitions;name",
-                    query: ['resultStart': 0, 'resultLimit': 4],
+                    path: "/$version/definitions;name",
+                    query: [resultStart: 0, resultLimit: 4],
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals 'true', response.data.ItemDefinitions.@truncated.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.ItemDefinitions.@truncated.text() == 'true'
             def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
-            assertEquals itemDefinitionNames1.size(), allItemDefinitions.size()
-            assert itemDefinitionNames1 == allItemDefinitions.Name*.text()
+            assert allItemDefinitions.size() == itemDefinitionNames1.size()
+            assert allItemDefinitions.Name*.text() == itemDefinitionNames1
         }
     }
 
@@ -250,16 +242,16 @@ class ItemDefinitionIT extends BaseApiTest {
     def getItemDefinitionsPageTwoXml(version) {
         if (version >= 3.3) {
             def response = client.get(
-                    path: "/${version}/definitions;name",
-                    query: ['resultStart': 4, 'resultLimit': 4],
+                    path: "/$version/definitions;name",
+                    query: [resultStart: 4, resultLimit: 4],
                     contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals 'true', response.data.ItemDefinitions.@truncated.text()
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.ItemDefinitions.@truncated.text() == 'true'
             def allItemDefinitions = response.data.ItemDefinitions.ItemDefinition
-            assertEquals itemDefinitionNames2.size(), allItemDefinitions.size()
-            assert itemDefinitionNames2 == allItemDefinitions.Name*.text()
+            assert allItemDefinitions.size() == itemDefinitionNames2.size()
+            assert allItemDefinitions.Name*.text() == itemDefinitionNames2
         }
     }
 
@@ -273,18 +265,15 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def getItemDefinitionJson(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 'Computers Generic', response.data.itemDefinition.name
-            assertEquals 'device,rating', response.data.itemDefinition.drillDown
-            assertEquals expectedUsageNames.size(), response.data.itemDefinition.usages.size()
-            assert expectedUsageNames == response.data.itemDefinition.usages.collect {it.name}
-            assert expectedUsagePresents == response.data.itemDefinition.usages.collect {it.present}
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.itemDefinition.name == 'Computers Generic'
+            assert response.data.itemDefinition.drillDown == 'device,rating'
+            assert response.data.itemDefinition.usages.size() == expectedUsageNames.size()
+            assert response.data.itemDefinition.usages.collect { it.name } == expectedUsageNames
+            assert response.data.itemDefinition.usages.collect { it.present } == expectedUsagePresents
         }
     }
 
@@ -298,18 +287,16 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def getItemDefinitionXml(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals 'Computers Generic', response.data.ItemDefinition.Name.text()
-            assertEquals 'device,rating', response.data.ItemDefinition.DrillDown.text()
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.ItemDefinition.Name.text() == 'Computers Generic'
+            assert response.data.ItemDefinition.DrillDown.text() == 'device,rating'
             def allUsages = response.data.ItemDefinition.Usages.Usage
-            assertEquals expectedUsageNames.size(), allUsages.size()
-            assertTrue(expectedUsageNames == allUsages.Name*.text())
-            assertTrue(expectedUsagePresents == allUsages.@present*.text())
+            assert allUsages.size() == expectedUsageNames.size()
+            assert allUsages.Name*.text() == expectedUsageNames
+            assert allUsages.@present*.text() == expectedUsagePresents
         }
     }
 
@@ -323,19 +310,16 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def getItemDefinitionWithAlgorithmsJson(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/1B3B44CAE90C;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 'Cooking', response.data.itemDefinition.name
-            assertEquals 'numberOfPeople,fuel', response.data.itemDefinition.drillDown
+            def response = client.get(path: "/$version/definitions/WD5M1LM2X3W4;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.itemDefinition.name == 'Cooking'
+            assert response.data.itemDefinition.drillDown == 'fuel,numberOfPeople'
 
             if (version > 3.4) {
-                assertEquals 2, response.data.itemDefinition.algorithms.size()
-                assert ['default', 'ZZZ Name'].sort() == response.data.itemDefinition.algorithms.collect {it.name}.sort()
+                assert response.data.itemDefinition.algorithms.size() == 2
+                assert response.data.itemDefinition.algorithms.collect { it.name }.sort() == ['ZZZ Name', 'default']
             }
         }
     }
@@ -350,19 +334,17 @@ class ItemDefinitionIT extends BaseApiTest {
 
     def getItemDefinitionWithAlgorithmsXml(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/1B3B44CAE90C;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals 'Cooking', response.data.ItemDefinition.Name.text()
-            assertEquals 'numberOfPeople,fuel', response.data.ItemDefinition.DrillDown.text()
+            def response = client.get(path: "/$version/definitions/WD5M1LM2X3W4;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.ItemDefinition.Name.text() == 'Cooking'
+            assert response.data.ItemDefinition.DrillDown.text() == 'fuel,numberOfPeople'
 
             if (version > 3.4) {
                 def allAlgorithms = response.data.ItemDefinition.Algorithms.Algorithm
-                assertEquals 2, allAlgorithms.size()
-                assertTrue(['default', 'ZZZ Name'].sort() == allAlgorithms.Name*.text().sort())
+                assert allAlgorithms.size() == 2
+                assert allAlgorithms.Name*.text().sort() == ['ZZZ Name', 'default']
             }
         }
     }
@@ -385,32 +367,26 @@ class ItemDefinitionIT extends BaseApiTest {
 
             // 1) Do the update.
             def responsePut = client.put(
-                    path: "/${version}/definitions/11D3548466F2",
-                    body: [
-                            'name': 'newName',
-                            'drillDown': 'newDrillDownA,newDrillDownB',
-                            'usages': 'usage1,usage2,usage3'],
+                    path: "/$version/definitions/65RC86G6KMRA",
+                    body: [name: 'newName', drillDown: 'newDrillDownA,newDrillDownB', usages: 'usage1,usage2,usage3'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertOkJson responsePut, SUCCESS_OK.code, '11D3548466F2'
+            assertOkJson(responsePut, SUCCESS_OK.code, '65RC86G6KMRA')
 
             // We added a usage.
             expectedUsageNames[2] = 'usage3'
             expectedUsagePresents[2] = 'true'
 
             // 2) Check values have been updated.
-            def responseGet = client.get(
-                    path: "/${version}/definitions/11D3548466F2;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals 'newName', responseGet.data.itemDefinition.name
-            assertEquals 'newDrillDownA,newDrillDownB', responseGet.data.itemDefinition.drillDown
-            assertEquals expectedUsageNames.size(), responseGet.data.itemDefinition.usages.size()
-            assertTrue(expectedUsageNames == responseGet.data.itemDefinition.usages.collect {it.name})
-            assertTrue(expectedUsagePresents == responseGet.data.itemDefinition.usages.collect {it.present})
+            def responseGet = client.get(path: "/$version/definitions/65RC86G6KMRA;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.itemDefinition.name == 'newName'
+            assert responseGet.data.itemDefinition.drillDown == 'newDrillDownA,newDrillDownB'
+            assert responseGet.data.itemDefinition.usages.size() == expectedUsageNames.size()
+            assert responseGet.data.itemDefinition.usages.collect { it.name } == expectedUsageNames
+            assert responseGet.data.itemDefinition.usages.collect { it.present } == expectedUsagePresents
         }
     }
 
@@ -428,9 +404,9 @@ class ItemDefinitionIT extends BaseApiTest {
         setAdminUser()
         updateItemDefinitionFieldJson('name', 'empty', '')
         updateItemDefinitionFieldJson('name', 'short', 'a')
-        updateItemDefinitionFieldJson('name', 'long', String.randomString(256))
-        updateItemDefinitionFieldJson('drillDown', 'long', String.randomString(256))
-        updateItemDefinitionFieldJson('usages', 'long', String.randomString(32768))
+        updateItemDefinitionFieldJson('name', 'long', String.randomString(ItemDefinition.NAME_MAX_SIZE + 1))
+        updateItemDefinitionFieldJson('drillDown', 'long', String.randomString(ItemDefinition.DRILL_DOWN_MAX_SIZE + 1))
+        updateItemDefinitionFieldJson('usages', 'long', String.randomString(ItemDefinition.USAGES_MAX_SIZE + 1))
     }
 
     /**
@@ -470,25 +446,24 @@ class ItemDefinitionIT extends BaseApiTest {
             try {
                 def body = [(field): value]
                 client.put(
-                        path: "/${version}/definitions/BB33FDB20228",
+                        path: "/$version/definitions/46IYVBS555M7",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON)
-                fail "Response status code should have been 400 (${field}, ${code})."
+                fail("Response status code should have been 400 (${field}, ${code}).")
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
 
                 // NOTE: 'usages' becomes 'usagesString' on the server-side.
-                def fieldErrors = response.data.validationResult.errors.collect {it.field}
+                def fieldErrors = response.data.validationResult.errors.collect { it.field }
                 if (field == 'usages') {
                     field = 'usagesString'
                 }
-                assertEquals([field], fieldErrors)
-                assertEquals([code], response.data.validationResult.errors.collect {it.code})
+                assert fieldErrors == [field]
+                assert response.data.validationResult.errors.collect { it.code } == [code]
             }
         }
     }
