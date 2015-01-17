@@ -1,11 +1,12 @@
 package com.amee.integration
 
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
+import com.amee.base.utils.UidGen
 import groovyx.net.http.HttpResponseException
-
 import org.junit.Test
+
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.fail
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile API. This API has been available since version 3.6.
@@ -49,36 +50,35 @@ class ProfileIT extends BaseApiTest {
 
         // Create a new Profile.
         def responsePost = client.post(
-            path: "/${version}/profiles",
+            path: "/$version/profiles",
             body: [profile: "true"],
             requestContentType: URLENC,
             contentType: JSON)
 
         // Get and check the Location.
-        def profileLocation = responsePost.headers['Location'].value
-        def profileUid = profileLocation.split('/')[5]
-        assertEquals 12, profileUid.size()
-        assertOkJson responsePost, SUCCESS_CREATED.code, profileUid
+        String profileLocation = responsePost.headers['Location'].value
+        String profileUid = profileLocation.split('/')[5]
+        assert UidGen.INSTANCE_12.isValid(profileUid)
+        assertOkJson(responsePost, SUCCESS_CREATED.code, profileUid)
 
         // Fetch the Profile.
-        def responseGet = client.get(path: "${profileLocation};full", contentType: JSON)
-        assertEquals SUCCESS_OK.code, responseGet.status
-        assertEquals 'application/json', responseGet.contentType
-        assertTrue responseGet.data instanceof net.sf.json.JSON
-        assertEquals 'OK', responseGet.data.status
-        assertEquals profileUid, responseGet.data.profile.uid
-        assertTrue responseGet.data.profile.categories.isEmpty()
+        def responseGet = client.get(path: "$profileLocation;full", contentType: JSON)
+        assert responseGet.status == SUCCESS_OK.code
+        assert responseGet.contentType == 'application/json'
+        assert responseGet.data.status == 'OK'
+        assert responseGet.data.profile.uid == profileUid
+        assert responseGet.data.profile.categories.isEmpty()
 
         // Delete it
         def responseDelete = client.delete(path: profileLocation)
-        assertOkJson responseDelete, SUCCESS_OK.code, profileUid
+        assertOkJson(responseDelete, SUCCESS_OK.code, profileUid)
 
         // Check it has been deleted
         try {
             client.get(path: profileLocation)
             fail 'Should have thrown Exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
         }
     }
 
@@ -86,35 +86,35 @@ class ProfileIT extends BaseApiTest {
 
         // Create a new Profile.
         def responsePost = client.post(
-            path: "/${version}/profiles",
+            path: "/$version/profiles",
             body: [profile: "true"],
             requestContentType: URLENC,
             contentType: XML)
 
         // Get and check the Location.
-        def profileLocation = responsePost.headers['Location'].value
-        def profileUid = profileLocation.split('/')[5]
-        assertEquals 12, profileUid.size()
-        assertOkXml responsePost, SUCCESS_CREATED.code, profileUid
+        String profileLocation = responsePost.headers['Location'].value
+        String profileUid = profileLocation.split('/')[5]
+        assert UidGen.INSTANCE_12.isValid(profileUid)
+        assertOkXml(responsePost, SUCCESS_CREATED.code, profileUid)
 
         // Fetch the Profile.
-        def responseGet = client.get(path: "${profileLocation};full", contentType: XML)
-        assertEquals SUCCESS_OK.code, responseGet.status
-        assertEquals 'application/xml', responseGet.contentType
-        assertEquals 'OK', responseGet.data.Status.text()
-        assertEquals profileUid, responseGet.data.Profile.@uid.text()
-        assertTrue responseGet.data.Profile.Categories.Category.isEmpty()
+        def responseGet = client.get(path: "$profileLocation;full", contentType: XML)
+        assert responseGet.status == SUCCESS_OK.code
+        assert responseGet.contentType == 'application/xml'
+        assert responseGet.data.Status.text() == 'OK'
+        assert responseGet.data.Profile.@uid.text() == profileUid
+        assert responseGet.data.Profile.Categories.Category.isEmpty()
 
         // Delete it
         def responseDelete = client.delete(path: profileLocation, contentType: XML)
-        assertOkXml responseDelete, SUCCESS_OK.code, profileUid
+        assertOkXml(responseDelete, SUCCESS_OK.code, profileUid)
 
         // Check it has been deleted
         try {
             client.get(path: profileLocation)
             fail 'Should have thrown Exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
         }
     }
 
@@ -144,31 +144,26 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getSingleProfileJson(version) {
-        def response = client.get(
-            path: "/${version}/profiles/${profileUids[0]};full",
-            contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals profileUids[0], response.data.profile.uid
-        assertEquals 1, response.data.profile.categories.size()
-        assertEquals categoryNames[0], response.data.profile.categories[0].name
-        assertEquals categoryWikiNames[0], response.data.profile.categories[0].wikiName
+        def response = client.get(path: "/$version/profiles/${profileUids[0]};full", contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.profile.uid == profileUids[0]
+        assert response.data.profile.categories.size() == 1
+        assert response.data.profile.categories[0].name == categoryNames[0]
+        assert response.data.profile.categories[0].wikiName == categoryWikiNames[0]
     }
 
     def getSingleProfileXml(version) {
-        def response = client.get(
-            path: "/${version}/profiles/${profileUids[1]};full",
-            contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals profileUids[1], response.data.Profile.@uid.text()
+        def response = client.get(path: "/$version/profiles/${profileUids[1]};full", contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Profile.@uid.text() == profileUids[1]
         def allCategories = response.data.Profile.Categories.Category
-        assertEquals 1, allCategories.size()
-        assertEquals categoryNames[1], allCategories[0].Name.text()
-        assertEquals categoryWikiNames[1], allCategories[0].WikiName.text()
+        assert allCategories.size() == 1
+        assert allCategories[0].Name.text() == categoryNames[1]
+        assert allCategories[0].WikiName.text() == categoryWikiNames[1]
     }
 
     /**
@@ -199,38 +194,34 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getAllProfilesJson(version) {
-        def response = client.get(
-            path: "/${version}/profiles;full",
-            contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals profileUids.size(), response.data.profiles.size()
-        assertEquals profileUids.sort(), response.data.profiles.collect { it.uid }.sort()
+        def response = client.get(path: "/$version/profiles;full", contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.profiles.size() == profileUids.size()
+        assert response.data.profiles.collect { it.uid }.sort() == profileUids.sort()
 
         def nameList = []
-        response.data.profiles.each { profile -> profile.categories.each { nameList.add(it.name) } }
-        assertEquals categoryNames.sort(), nameList.sort()
         def wikiNameList = []
-        response.data.profiles.each { profile -> profile.categories.each { wikiNameList.add(it.wikiName) } }
-        assertEquals categoryWikiNames.sort(), wikiNameList.sort()
+        response.data.profiles.each { profile -> profile.categories.each { nameList.add(it.name); wikiNameList.add(it.wikiName) } }
+        assert nameList.sort() == categoryNames.sort()
+        assert wikiNameList.sort() == categoryWikiNames.sort()
     }
 
     def getAllProfilesXml(version) {
-        def response = client.get(
-            path: "/${version}/profiles;full",
-            contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+        def response = client.get(path: "/$version/profiles;full", contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def allProfiles = response.data.Profiles.Profile
-        assertEquals profileUids.size(), allProfiles.size()
-        assertEquals profileUids.sort(), allProfiles.@uid*.text().sort()
+        assert allProfiles.size() == profileUids.size()
+        assert allProfiles.@uid*.text().sort() == profileUids.sort()
 
         def nameList = []
-        allProfiles.each { profile -> profile.Categories.Category.each { nameList.add(it.Name.text()) } }
-        assertEquals nameList.sort(), categoryNames.sort()
+        def wikiNameList = []
+        allProfiles.each { profile -> profile.Categories.Category.each { nameList.add(it.Name.text()); wikiNameList.add(it.WikiName.text()) } }
+        assert categoryNames.sort() == nameList.sort()
+        assert wikiNameList.sort() == categoryWikiNames.sort()
     }
 
     /**
@@ -250,27 +241,20 @@ class ProfileIT extends BaseApiTest {
     }
 
     def getSomeProfilesJson(version) {
-        def response = client.get(
-            path: "/${version}/profiles",
-            query: [resultStart:'1', resultLimit: '1'],
-            contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals 1, response.data.profiles.size()
+        def response = client.get(path: "/$version/profiles", query: [resultStart:'1', resultLimit: '1'], contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.profiles.size() == 1
     }
 
     def getSomeProfilesXml(version) {
-        def response = client.get(
-            path: "/${version}/profiles",
-            query: [resultStart:'1', resultLimit: '1'],
-            contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+        def response = client.get(path: "/$version/profiles", query: [resultStart:'1', resultLimit: '1'], contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def profiles = response.data.Profiles.Profile
-        assertEquals 1, profiles.size()
+        assert profiles.size() == 1
     }
 
     /**
@@ -283,17 +267,15 @@ class ProfileIT extends BaseApiTest {
 
     def getSingleProfileUnauthorised(version) {
         if (version >= 3.6) {
-
-            // We just use the ecoinvent user because it is a different user.
-            setEcoinventUser()
+            setOtherUser()
             try {
-                client.get(path: "/${version}/profiles/UCP4SKANF6CS", contentType: JSON)
+                client.get(path: "/$version/profiles/UCP4SKANF6CS", contentType: JSON)
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
-                assertEquals 'Forbidden', response.data.status.name
+                assert response.status == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.code == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.name == 'Forbidden'
             }
         }
     }

@@ -16,6 +16,7 @@ INSERT INTO groups (id, created, modified, uid, status, description, name) VALUE
 INSERT INTO user (id, uid, status, username, password, name, email, created, modified, user_type, api_version_id, locale, time_zone) VALUES (1,'36C95YJJALQP',1,'root','mKt4x7scAGGptxp2wl0sUg==','Root','root@example.com','2007-07-27 08:30:47','2009-03-20 20:27:03',3,2,NULL,'Europe/London');
 INSERT INTO user (id, uid, status, username, password, name, email, created, modified, user_type, api_version_id, locale, time_zone) VALUES (2,'3D7D11293ECA',1,'standard','+1OFlFkeN0S4zO9B/KeeLw==','Standard','standard@example.com','2007-07-27 08:30:48','2009-03-20 20:27:03',0,2,NULL,'Europe/London');
 INSERT INTO user (id, uid, status, username, password, name, email, created, modified, user_type, api_version_id, locale, time_zone) VALUES (3,'F9037BC66ECD',1,'admin','P7w/6Dz8fV6L7fSmzXDZ1Q==','Admin','admin@example.com','2007-07-27 08:30:48','2009-03-20 20:27:03',0,2,NULL,'Europe/London');
+INSERT INTO user (id, uid, status, username, password, name, email, created, modified, user_type, api_version_id, locale, time_zone) VALUES (4,'NNT6GE88IUN7',1,'other','29g0VdWkehRtpSySyE8qHA==','Other','other@example.com','2007-07-27 08:30:48','2009-03-20 20:27:03',0,2,NULL,'Europe/London');
 
 -- group_principal
 INSERT INTO group_principal (id, uid, status, group_id, principal_id, principal_uid, principal_type, created, modified) VALUES (1,'R2X3HIGTS9HT',1,2,1,'36C95YJJALQP','USR','2009-09-30 22:56:06','2009-09-30 22:56:06');

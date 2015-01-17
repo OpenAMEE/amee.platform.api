@@ -32,7 +32,7 @@ abstract class BaseApiTest {
     static void start() {
 
         // Augment String with a random method.
-        addRandomStringMethodToString();
+        addRandomStringMethodToString()
 
         // Set the default timezone
         def timeZone = TimeZone.getTimeZone(System.getProperty("AMEE_TIME_ZONE", "UTC"))
@@ -40,19 +40,19 @@ abstract class BaseApiTest {
         DateTimeZone.setDefault(DateTimeZone.forTimeZone(timeZone))
 
         // Clear the SearchIndexer DataCategory count.
-        SearchIndexerImpl.resetCount();
+        SearchIndexerImpl.resetCount()
 
         // Spring application context.
         context = new ClassPathXmlApplicationContext("classpath*:/context/applicationContext*.xml")
 
         // Load config.
-        config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL());
+        config = new ConfigSlurper().parse(context.getResource('classpath:api.properties').getURL())
 
         // Configure Restlet server (ajp, http, etc).
         def server = context.getBean("platformServer")
         def transactionController = context.getBean("transactionController")
         server.context.attributes.transactionController = transactionController
-        server.context.attributes.springContext = context;
+        server.context.attributes.springContext = context
 
         // Start the Restlet container.
         println "Starting container..."
@@ -74,17 +74,17 @@ abstract class BaseApiTest {
 
         // Now the index has been built reset the clearIndex flag & ensure index reader is re-opened.
         luceneService = context.getBean("luceneService")
-        luceneService.setClearIndex(new Boolean(false));
-        luceneService.checkSearcher();
+        luceneService.setClearIndex(new Boolean(false))
+        luceneService.checkSearcher()
     }
 
     @AfterClass
     static void stop() {
         try {
             println "Stopping container..."
-            luceneService.closeEverything();
+            luceneService.closeEverything()
             container.stop()
-            context.close();
+            context.close()
         } catch (e) {
             // Do nothing.
         }
@@ -93,37 +93,41 @@ abstract class BaseApiTest {
     @Before
     void setUp() {
         // Get the HTTP client
-        client = new RESTClient("${config.api.protocol}://${config.api.host}:${config.api.port}");
+        client = new RESTClient("${config.api.protocol}://${config.api.host}:${config.api.port}")
 
         // Accept JSON by default
         client.contentType = JSON
 
         // Set standard user as default.
-        setStandardUser();
+        setStandardUser()
     }
 
     void setStandardUser() {
-        client.auth.basic config.api.standard.user, config.api.standard.password;
+        client.auth.basic(config.api.standard.user, config.api.standard.password)
     }
 
     void setAdminUser() {
-        client.auth.basic config.api.admin.user, config.api.admin.password;
+        client.auth.basic(config.api.admin.user, config.api.admin.password)
     }
 
     void setRootUser() {
-        client.auth.basic config.api.root.user, config.api.root.password;
+        client.auth.basic(config.api.root.user, config.api.root.password)
+    }
+
+    void setOtherUser() {
+        client.auth.basic(config.api.other.user, config.api.other.password)
     }
 
     // Add a random character generator to the String class.
     static void addRandomStringMethodToString() {
         String.metaClass.'static'.randomString = { length ->
             // The chars used for the random string.
-            def list = ('a'..'z') + ('A'..'Z') + ('0'..'9');
+            def list = ('a'..'z') + ('A'..'Z') + ('0'..'9')
             // Make sure the list is long enough.
-            list = list * (1 + length / list.size());
+            list = list * (1 + length / list.size())
             // Shuffle it up good.
-            Collections.shuffle(list);
-            length > 0 ? list[0..length - 1].join() : '';
+            Collections.shuffle(list)
+            length > 0 ? list[0..length - 1].join() : ''
         }
     }
 
@@ -147,7 +151,7 @@ abstract class BaseApiTest {
      * @return true if d2 is near d1
      */
     boolean isNear(DateTime d1, DateTime d2, int delta) {
-        return Math.abs(d2.millis - d1.millis) <= delta;
+        return Math.abs(d2.millis - d1.millis) <= delta
     }
 
     /**
@@ -159,7 +163,7 @@ abstract class BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateInvalidFieldJson(path, field, code, value, since) {
-        versions.each { version -> updateInvalidFieldJson(path, field, code, value, since, version) };
+        versions.each { version -> updateInvalidFieldJson(path, field, code, value, since, version) }
     }
 
     /**
@@ -176,15 +180,15 @@ abstract class BaseApiTest {
         if (version >= since) {
             try {
                 // Create form body.
-                def body = [:];
-                body[field] = value;
+                def body = [:]
+                body[field] = value
                 // Update UnitType.
                 client.put(
                         path: "/$version$path",
                         body: body,
                         requestContentType: URLENC,
-                        contentType: JSON);
-                fail "Response status code should have been 400 ('$field', '$code').";
+                        contentType: JSON)
+                fail("Response status code should have been 400 ('$field', '$code').")
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
