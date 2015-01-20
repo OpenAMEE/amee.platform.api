@@ -1,16 +1,16 @@
 package com.amee.integration
 
-import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
-import static org.restlet.data.Status.*
-
 import com.amee.domain.DataItemService
-
+import com.amee.domain.item.profile.ProfileItem
+import com.amee.domain.item.profile.ProfileItemTextValue
 import groovyx.net.http.HttpResponseException
-
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 import org.junit.Test
+
+import static groovyx.net.http.ContentType.*
+import static org.junit.Assert.*
+import static org.restlet.data.Status.*
 
 /**
  * Tests for the Profile Item API. This API has been available since version 3.6.
@@ -21,18 +21,15 @@ class ProfileItemIT extends BaseApiTest {
     static def DAYS_IN_YEAR = 365.242199
 
     def cookingProfileUid = 'UCP4SKANF6CS'
-    def cookingProfileItemUids = [
-        'J7TICQCEMGEA',
-        'CR2IS4R423WK'
-    ]
+    def cookingProfileItemUids = ['J7TICQCEMGEA',  'CR2IS4R423WK']
     def computersGenericProfileUid = '46OLHG2D9LWM'
 
     def selectByProfileUid = 'TP437QW12VEV'
     def selectByProfileItemUids = [start: '8G534LCOMF8Z', end: '5W6K9PWM5OXD', span: '7LXKYQAY237H']
 
     // ICE_v2_by_mass; material=Lime, type=General
-    def dataItemUid = 'NX9WAFL8MUCL'
-    def categoryUid = 'IPQZMZPFQBDB'
+    def dataItemUid = 'R80Z2HQRYRR6'
+    def categoryUid = 'G7TA4MLV5R8Q'
     def categoryWikiName = 'ICE_v2_by_mass'
 
     /**
@@ -84,7 +81,7 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create the profile item
             def responsePost = client.post(
-                path: "/${version}/profiles/${cookingProfileUid}/items",
+                path: "/$version/profiles/$cookingProfileUid/items",
                 body: [
                     name: 'test1',
                     dataItemUid: dataItemUid,
@@ -96,67 +93,58 @@ class ProfileItemIT extends BaseApiTest {
                 contentType: JSON)
 
             // Is Location available?
-            assertNotNull responsePost.headers['Location']
-            assertNotNull responsePost.headers['Location'].value
             String location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
             // Get new ProfileItem UID.
-            def uid = location.split('/')[7]
-            assertNotNull uid
+            String uid = location.split('/')[7]
 
             // Success response
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the profile item
-            def responseGet = client.get(
-                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
-                contentType: JSON)
+            def responseGet = client.get(path: "/$version/profiles/$cookingProfileUid/items/$uid;full", contentType: JSON)
 
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals 'test1', responseGet.data.item.name
-            assertEquals '2012-01-26T10:00:00Z', responseGet.data.item.startDate
-            assertEquals '2012-02-26T12:00:00Z', responseGet.data.item.endDate
-            assertEquals categoryUid, responseGet.data.item.categoryUid
-            assertEquals categoryWikiName, responseGet.data.item.categoryWikiName
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.item.name == 'test1'
+            assert responseGet.data.item.startDate == '2012-01-26T10:00:00Z'
+            assert responseGet.data.item.endDate == '2012-02-26T12:00:00Z'
+            assert responseGet.data.item.categoryUid == categoryUid
+            assert responseGet.data.item.categoryWikiName == categoryWikiName
             assert responseGet.data.item.note == 'Test note'
 
             // Amounts
-            assertEquals 3, responseGet.data.item.output.amounts.size()
+            assert responseGet.data.item.output.amounts.size() == 3
             assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2', 3.8, 'kg', true)
             assertContainsAmountJson(responseGet.data.item.output.amounts, 'energy', 26.5, 'MJ', false)
             assertContainsAmountJson(responseGet.data.item.output.amounts, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Update the profile item
             def responsePut = client.put(
-                path: "/${version}/profiles/${cookingProfileUid}/items/${uid}",
+                path: "/$version/profiles/$cookingProfileUid/items/$uid",
                 body: [note: 'Updated note'],
                 requestContentType: URLENC,
-                contentType: JSON
-                )
+                contentType: JSON)
             assertOkJson(responsePut, SUCCESS_OK.code, uid)
 
             // Get the updated profile item
-            responseGet = client.get(
-                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
-                contentType: JSON)
-            assert SUCCESS_OK.code, responseGet.status
+            responseGet = client.get(path: "/$version/profiles/$cookingProfileUid/items/$uid;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
             assert responseGet.data.item.note == 'Updated note'
 
             // Delete the profile item
-            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
+            def responseDelete = client.delete(path: "/$version/profiles/$cookingProfileUid/items/$uid")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Check it was deleted
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
+                client.get(path: "/$version/profiles/$cookingProfileUid/items/$uid")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -166,7 +154,7 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create the profile item
             def responsePost = client.post(
-                path: "/${version}/profiles/${cookingProfileUid}/items",
+                path: "/$version/profiles/$cookingProfileUid/items",
                 body: [
                     name: 'test2',
                     category: 'ICE_v2_by_mass',
@@ -179,55 +167,50 @@ class ProfileItemIT extends BaseApiTest {
                 contentType: XML)
 
             // Is Location available?
-            assertNotNull responsePost.headers['Location']
-            assertNotNull responsePost.headers['Location'].value
             String location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${config.api.protocol}://${config.api.host}")
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
             // Get new ProfileItem UID.
-            def uid = location.split('/')[7]
-            assertNotNull uid
+            String uid = location.split('/')[7]
 
             // Success response
             assertOkXml(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the profile item
-            def responseGet = client.get(
-                path: "/${version}/profiles/${cookingProfileUid}/items/${uid};full",
-                contentType: XML)
+            def responseGet = client.get(path: "/$version/profiles/$cookingProfileUid/items/$uid;full", contentType: XML)
 
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/xml', responseGet.contentType
-            assertEquals 'OK', responseGet.data.Status.text()
-            assertEquals 'test2', responseGet.data.Item.Name.text()
-            assertEquals '2012-01-26T10:00:00Z', responseGet.data.Item.StartDate.text()
-            assertEquals '2012-02-26T12:00:00Z', responseGet.data.Item.EndDate.text()
-            assertEquals categoryUid, responseGet.data.Item.CategoryUid.text()
-            assertEquals categoryWikiName, responseGet.data.Item.CategoryWikiName.text()
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/xml'
+            assert responseGet.data.Status.text() == 'OK'
+            assert responseGet.data.Item.Name.text() == 'test2'
+            assert responseGet.data.Item.StartDate.text() == '2012-01-26T10:00:00Z'
+            assert responseGet.data.Item.EndDate.text() == '2012-02-26T12:00:00Z'
+            assert responseGet.data.Item.CategoryUid.text() == categoryUid
+            assert responseGet.data.Item.CategoryWikiName.text() == categoryWikiName
 
             // Amounts
-            assertEquals 3, responseGet.data.Item.Output.Amounts.Amount.size()
+            assert responseGet.data.Item.Output.Amounts.Amount.size() == 3
             assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2', 3.8, 'kg', true)
             assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'energy', 26.5, 'MJ', false)
             assertContainsAmountXml(responseGet.data.Item.Output.Amounts.Amount, 'CO2e', 3.9000000000000004, 'kg', false)
 
             // Delete the profile item
-            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
+            def responseDelete = client.delete(path: "/$version/profiles/$cookingProfileUid/items/$uid", contentType: XML)
             assertOkXml(responseDelete, SUCCESS_OK.code, uid)
 
             // Check it was deleted
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}", contentType: XML)
+                client.get(path: "/$version/profiles/$cookingProfileUid/items/$uid", contentType: XML)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
 
     @Test
-    void createAndRemoveProfileItemsJson(){
+    void createAndRemoveProfileItemsByUid(){
         versions.each { version -> createAndRemoveProfileItemsByUidJson(version) }
         versions.each { version -> createAndRemoveProfileItemsByUidXML(version) }
     }
@@ -238,13 +221,13 @@ class ProfileItemIT extends BaseApiTest {
             {
               "profileItems":[
                 {
-                  "dataItemUid":"963A90C107FA",
+                  "dataItemUid":"HEDE07J83VR2",
                   "energyPerTime":101,
                   "responsibleArea":101,
                   "totalArea":101
                 },
                 {
-                  "dataItemUid":"963A90C107FA",
+                  "dataItemUid":"HEDE07J83VR2",
                   "energyPerTime":201,
                   "responsibleArea":201,
                   "totalArea":201
@@ -255,25 +238,25 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create the profile items
             def responsePost = client.post(
-                path: "/${version}/profiles/UCP4SKANF6CS/items",
+                path: "/$version/profiles/$cookingProfileUid/items",
                 body: requestBody,
                 requestContentType: JSON,
                 contentType: JSON)
 
-            assert SUCCESS_CREATED.code == responsePost.status
+            assert responsePost.status == SUCCESS_CREATED.code
             assert responsePost.headers['Location'] == null
 
             assert responsePost.data.profileItems.size() == 2
 
-            def uid0 = responsePost.data.profileItems[0].uid
+            String uid0 = responsePost.data.profileItems[0].uid
             assert uid0 != null
-            def location0 = responsePost.data.profileItems[0].location
-            assert location0.contains("/profiles/UCP4SKANF6CS/items")
+            String location0 = responsePost.data.profileItems[0].location
+            assert location0.contains("/profiles/$cookingProfileUid/items")
 
-            def uid1 = responsePost.data.profileItems[1].uid
+            String uid1 = responsePost.data.profileItems[1].uid
             assert uid1 != null
-            def location1 = responsePost.data.profileItems[1].location
-            assert location1.contains("/profiles/UCP4SKANF6CS/items")
+            String location1 = responsePost.data.profileItems[1].location
+            assert location1.contains("/profiles/$cookingProfileUid/items")
 
             // Cleanup first profile item
             def responseDelete = client.delete(path: location0, contentType: JSON)
@@ -284,7 +267,7 @@ class ProfileItemIT extends BaseApiTest {
                 client.get(path: location0, contentType: JSON)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
 
             // Cleanup second profile item
@@ -296,7 +279,7 @@ class ProfileItemIT extends BaseApiTest {
                 client.get(path: location1, contentType: JSON)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -308,13 +291,13 @@ class ProfileItemIT extends BaseApiTest {
             <ProfileCategory>
               <ProfileItems>
                 <ProfileItem>
-                  <dataItemUid>963A90C107FA</dataItemUid>
+                  <dataItemUid>HEDE07J83VR2</dataItemUid>
                   <energyPerTime>101</energyPerTime>
                   <responsibleArea>101</responsibleArea>
                   <totalArea>101</totalArea>
                 </ProfileItem>
                 <ProfileItem>
-                  <dataItemUid>963A90C107FA</dataItemUid>
+                  <dataItemUid>HEDE07J83VR2</dataItemUid>
                   <energyPerTime>201</energyPerTime>
                   <responsibleArea>201</responsibleArea>
                   <totalArea>201</totalArea>
@@ -325,25 +308,25 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create the profile items
             def responsePost = client.post(
-                path: "/${version}/profiles/UCP4SKANF6CS/items",
+                path: "/$version/profiles/$cookingProfileUid/items",
                 body: requestBody,
                 requestContentType: XML,
                 contentType: XML)
 
-            assert SUCCESS_CREATED.code == responsePost.status
+            assert responsePost.status == SUCCESS_CREATED.code
             assert responsePost.headers['Location'] == null
 
             assert responsePost.data.ProfileItems.ProfileItem.size() == 2
 
-            def uid0 = responsePost.data.ProfileItems.ProfileItem[0].Entity.text()
+            String uid0 = responsePost.data.ProfileItems.ProfileItem[0].Entity.text()
             assert uid0 != null
-            def location0 = responsePost.data.ProfileItems.ProfileItem[0].Location.text()
-            assert location0.contains("/profiles/UCP4SKANF6CS/items")
+            String location0 = responsePost.data.ProfileItems.ProfileItem[0].Location.text()
+            assert location0.contains("/profiles/$cookingProfileUid/items")
 
-            def uid1 = responsePost.data.ProfileItems.ProfileItem[1].Entity.text()
+            String uid1 = responsePost.data.ProfileItems.ProfileItem[1].Entity.text()
             assert uid1 != null
-            def location1 = responsePost.data.ProfileItems.ProfileItem[1].Location.text()
-            assert location1.contains("/profiles/UCP4SKANF6CS/items")
+            String location1 = responsePost.data.ProfileItems.ProfileItem[1].Location.text()
+            assert location1.contains("/profiles/$cookingProfileUid/items")
 
             // Cleanup first profile item
             def responseDelete = client.delete(path: location0, contentType: XML)
@@ -354,7 +337,7 @@ class ProfileItemIT extends BaseApiTest {
                 client.get(path: location0, contentType: XML)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
 
             // Cleanup second profile item
@@ -366,7 +349,7 @@ class ProfileItemIT extends BaseApiTest {
                 client.get(path: location1, contentType: XML)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -385,37 +368,31 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create a profile item
             def responsePost = client.post(
-                path: "/${version}/profiles/${cookingProfileUid}/items",
-                body: [
-                    name: 'dupe',
-                    dataItemUid: dataItemUid,
-                    startDate: '2012-01-26T10:00:00Z'],
+                path: "/$version/profiles/$cookingProfileUid/items",
+                body: [name: 'dupe', dataItemUid: dataItemUid, startDate: '2012-01-26T10:00:00Z'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             // Should have been created
-            def uid = responsePost.headers['Location'].value.split('/')[7]
+            String uid = responsePost.headers['Location'].value.split('/')[7]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Try creating a duplicate
             try {
                 client.post(
-                    path: "/${version}/profiles/${cookingProfileUid}/items",
-                    body: [
-                        name: 'dupe',
-                        dataItemUid: dataItemUid,
-                        startDate: '2012-01-26T10:00:00Z'],
+                    path: "/$version/profiles/$cookingProfileUid/items",
+                    body: [name: 'dupe', dataItemUid: dataItemUid, startDate: '2012-01-26T10:00:00Z'],
                     requestContentType: URLENC,
                     contentType: JSON)
                 fail 'Should have thrown exception'
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_BAD_REQUEST.code
             }
 
             // Clean up
-            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid}")
+            def responseDelete = client.delete(path: "/$version/profiles/$cookingProfileUid/items/$uid")
 
             // Should have been deleted
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
@@ -436,57 +413,45 @@ class ProfileItemIT extends BaseApiTest {
 
             // Create a profile item
             def responsePost = client.post(
-                path: "/${version}/profiles/${cookingProfileUid}/items",
-                body: [
-                    name: 'overlap',
-                    dataItemUid: dataItemUid,
-                    startDate: '2012-01-26T10:00:00Z',
-                    endDate: '2012-05-10T12:00:00Z'],
+                path: "/$version/profiles/$cookingProfileUid/items",
+                body: [name: 'overlap', dataItemUid: dataItemUid, startDate: '2012-01-26T10:00:00Z', endDate: '2012-05-10T12:00:00Z'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             // Should have been created
-            def uid1 = responsePost.headers['Location'].value.split('/')[7]
+            String uid1 = responsePost.headers['Location'].value.split('/')[7]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid1)
 
             // Try creating an overlapping item with the same name
             try {
                 client.post(
-                    path: "/${version}/profiles/${cookingProfileUid}/items",
-                    body: [
-                        name: 'overlap',
-                        dataItemUid: dataItemUid,
-                        startDate: '2012-03-26T10:00:00Z',
-                        endDate: '2012-10-15T13:00:00Z'],
+                    path: "/$version/profiles/$cookingProfileUid/items",
+                    body: [name: 'overlap', dataItemUid: dataItemUid, startDate: '2012-03-26T10:00:00Z', endDate: '2012-10-15T13:00:00Z'],
                     requestContentType: URLENC,
                     contentType: JSON)
                 fail 'Should have thrown exception'
             } catch (HttpResponseException e) {
 
                 // Should have been rejected.
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_BAD_REQUEST.code
             }
 
             // Create an overlapping item with a different name
             responsePost = client.post(
-                path: "/${version}/profiles/${cookingProfileUid}/items",
-                body: [
-                    name: 'overlap with different name',
-                    dataItemUid: dataItemUid,
-                    startDate: '2012-03-26T10:00:00Z',
-                    endDate: '2012-10-15T13:00:00Z'],
+                path: "/$version/profiles/$cookingProfileUid/items",
+                body: [name: 'overlap with different name', dataItemUid: dataItemUid, startDate: '2012-03-26T10:00:00Z', endDate: '2012-10-15T13:00:00Z'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             // Should have been created
-            def uid2 = responsePost.headers['Location'].value.split('/')[7]
+            String uid2 = responsePost.headers['Location'].value.split('/')[7]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid2)
 
             // Clean up
-            def responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid1}")
+            def responseDelete = client.delete(path: "/$version/profiles/$cookingProfileUid/items/$uid1")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid1)
 
-            responseDelete = client.delete(path: "/${version}/profiles/${cookingProfileUid}/items/${uid2}")
+            responseDelete = client.delete(path: "/$version/profiles/$cookingProfileUid/items/$uid2")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid2)
         }
     }
@@ -504,11 +469,8 @@ class ProfileItemIT extends BaseApiTest {
             // Try creating a profile item with an invalid choice
             try{
                 client.post(
-                    path: "/${version}/profiles/${computersGenericProfileUid}/items",
-                    body: [
-                        name: 'invalidChoice',
-                        dataItemUid: '651B5AE27940',
-                        'values.onStandby': 'notAValidChoice'],
+                    path: "/$version/profiles/$computersGenericProfileUid/items",
+                    body: [name: 'invalidChoice', dataItemUid: '4A1PR4YZSMIJ', 'values.onStandby': 'notAValidChoice'],
                     requestContentType: URLENC,
                     contentType: JSON)
                 fail 'Should have thrown exception'
@@ -520,19 +482,16 @@ class ProfileItemIT extends BaseApiTest {
             // Try creating a profile item with a valid choice
             def responsePost = client.post(
                 path: "/${version}/profiles/${computersGenericProfileUid}/items",
-                body: [
-                    name: 'validChoice',
-                    dataItemUid: '651B5AE27940',
-                    'values.onStandby': 'always'],
+                body: [name: 'validChoice', dataItemUid: '4A1PR4YZSMIJ', 'values.onStandby': 'always'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             // Should have been created
-            def uid = responsePost.headers['Location'].value.split('/')[7]
+            String uid = responsePost.headers['Location'].value.split('/')[7]
             assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Clean up
-            def responseDelete = client.delete(path: "/${version}/profiles/${computersGenericProfileUid}/items/${uid}")
+            def responseDelete = client.delete(path: "/$version/profiles/$computersGenericProfileUid/items/$uid")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid)
         }
     }
@@ -584,31 +543,30 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getProfileItemsJson(version) {
-        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertFalse response.data.resultsTruncated
-        assertEquals cookingProfileItemUids.size(), response.data.items.size()
-        assert cookingProfileItemUids.sort() == response.data.items.collect { it.uid }.sort()
+        def response = client.get(path: "/$version/profiles/$cookingProfileUid/items;full", contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert !response.data.resultsTruncated
+        assert response.data.items.size() == cookingProfileItemUids.size()
+        assert response.data.items.collect { it.uid }.sort() == cookingProfileItemUids.sort()
 
         // Should  be sorted by creation date
-        assertTrue response.data.items.first().created < response.data.items.last().created
+        assert response.data.items.first().created < response.data.items.last().created
     }
 
     def getProfileItemsXml(version) {
-        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items;full", contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals 'false', response.data.Items.@truncated.text()
+        def response = client.get(path: "/$version/profiles/$cookingProfileUid/items;full", contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Items.@truncated.text() == 'false'
         def profileItems = response.data.Items.Item
-        assertEquals cookingProfileItemUids.size(), profileItems.size()
-        assert cookingProfileItemUids.sort() == profileItems.@uid*.text().sort()
+        assert profileItems.size() == cookingProfileItemUids.size()
+        assert profileItems.@uid*.text().sort() == cookingProfileItemUids.sort()
 
         // Should be sorted by creation date
-        assertTrue profileItems[0].@created.text() < profileItems[-1].@created.text()
+        assert profileItems[0].@created.text() < profileItems[-1].@created.text()
     }
 
     /**
@@ -626,52 +584,52 @@ class ProfileItemIT extends BaseApiTest {
 
             // Default is to get all items that intersect query window
             def response = client.get(
-                path: "/${version}/profiles/${selectByProfileUid}/items",
+                path: "/$version/profiles/$selectByProfileUid/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertFalse response.data.resultsTruncated
-            assertEquals selectByProfileItemUids.size(), response.data.items.size()
-            assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
+            assert response.status == SUCCESS_OK.code
+            assert !response.data.resultsTruncated
+            assert response.data.items.size() == selectByProfileItemUids.size()
+            assert response.data.items.collect { it.uid }.sort() == selectByProfileItemUids.collect { it.value }.sort()
 
             // duration parameter can be used instead of endDate
             response = client.get(
-                path: "/${version}/profiles/${selectByProfileUid}/items",
+                path: "/$version/profiles/$selectByProfileUid/items",
                 query: [startDate: '2012-04-01T09:00:00Z', duration: 'P2M'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertFalse response.data.resultsTruncated
-            assertEquals selectByProfileItemUids.size(), response.data.items.size()
-            assert selectByProfileItemUids.collect { it.value }.sort() == response.data.items.collect { it.uid }.sort()
+            assert response.status == SUCCESS_OK.code
+            assert !response.data.resultsTruncated
+            assert response.data.items.size() == selectByProfileItemUids.size()
+            assert response.data.items.collect { it.uid }.sort() == selectByProfileItemUids.collect { it.value }.sort()
 
             // selectBy=startDate selects items that start in the window
             response = client.get(
-                path: "/${version}/profiles/${selectByProfileUid}/items",
+                path: "/$version/profiles/$selectByProfileUid/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'start'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertFalse response.data.resultsTruncated
-            assertEquals 1, response.data.items.size()
-            assert selectByProfileItemUids['start'] == response.data.items[0].uid
+            assert response.status == SUCCESS_OK.code
+            assert !response.data.resultsTruncated
+            assert response.data.items.size() == 1
+            assert response.data.items[0].uid == selectByProfileItemUids['start']
 
             // selectBy=endDate selects items that end in the window
             response = client.get(
-                path: "/${version}/profiles/${selectByProfileUid}/items",
+                path: "/$version/profiles/$selectByProfileUid/items",
                 query: [startDate: '2012-04-01T09:00:00Z', endDate: '2012-06-01T09:00:00Z', selectBy: 'end'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertFalse response.data.resultsTruncated
-            assertEquals 1, response.data.items.size()
-            assert selectByProfileItemUids['end'] == response.data.items[0].uid
+            assert response.status == SUCCESS_OK.code
+            assert !response.data.resultsTruncated
+            assert response.data.items.size() == 1
+            assert response.data.items[0].uid == selectByProfileItemUids['end']
 
             // No items in the window
             response = client.get(
-                path: "/${version}/profiles/${selectByProfileUid}/items",
+                path: "/$version/profiles/$selectByProfileUid/items",
                 query: [startDate: '2000-04-01T09:00:00Z', endDate: '2000-06-01T09:00:00Z'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertFalse response.data.resultsTruncated
-            assertEquals 0, response.data.items.size()
+            assert response.status == SUCCESS_OK.code
+            assert !response.data.resultsTruncated
+            assert response.data.items.size() == 0
         }
     }
 
@@ -711,56 +669,55 @@ class ProfileItemIT extends BaseApiTest {
     }
 
     def getSingleProfileItemJson(version) {
-        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals '54C8A44254AA', response.data.item.categoryUid
-        assertEquals 'Cooking', response.data.item.categoryWikiName
-        assertEquals 'test', response.data.item.name
+        def response = client.get(path: "/$version/profiles/$cookingProfileUid/items/J7TICQCEMGEA;full", contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.item.categoryUid == '1H5QPB38KZ8Z'
+        assert response.data.item.categoryWikiName == 'Cooking'
+        assert response.data.item.name == 'test'
 
         // The test user's time zone is Europe/London so 2011-10-12T16:13:00Z == 2011-10-12T17:13:00+01:00
-        assertEquals '2011-10-12T17:13:00+01:00', response.data.item.startDate
-        assertEquals '', response.data.item.endDate
+        assert response.data.item.startDate == '2011-10-12T17:13:00+01:00'
+        assert response.data.item.endDate == ''
 
         // Amounts
-        assertEquals 1, response.data.item.output.amounts.size()
-        assertEquals 'CO2', response.data.item.output.amounts[0].type
-        assertEquals 'kg/year', response.data.item.output.amounts[0].unit
-        assertTrue response.data.item.output.amounts[0].default
-        assertEquals 233.35999999999999, response.data.item.output.amounts[0].value, 0.000001
+        assert response.data.item.output.amounts.size() == 1
+        assert response.data.item.output.amounts[0].type == 'CO2'
+        assert response.data.item.output.amounts[0].unit == 'kg/year'
+        assert response.data.item.output.amounts[0].default
+        assertEquals(233.35999999999999, response.data.item.output.amounts[0].value, 0.000001)
 
         // Notes
-        assertEquals 1, response.data.item.output.notes.size()
-        assertEquals 'comment', response.data.item.output.notes[0].type
-        assertEquals 'This is a comment', response.data.item.output.notes[0].value
+        assert response.data.item.output.notes.size() == 1
+        assert response.data.item.output.notes[0].type == 'comment'
+        assert response.data.item.output.notes[0].value == 'This is a comment'
     }
 
     def getSingleProfileItemXml(version) {
-        def response = client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;full", contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals '54C8A44254AA', response.data.Item.CategoryUid.text()
-        assertEquals 'Cooking', response.data.Item.CategoryWikiName.text()
-        assertEquals 'test', response.data.Item.Name.text()
+        def response = client.get(path: "/$version/profiles/$cookingProfileUid/items/J7TICQCEMGEA;full", contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Item.CategoryUid.text() == '1H5QPB38KZ8Z'
+        assert response.data.Item.CategoryWikiName.text() == 'Cooking'
+        assert response.data.Item.Name.text() == 'test'
 
         // The test user's time zone is Europe/London so 2011-10-12T16:13:00Z == 2011-10-12T17:13:00+01:00
-        assertEquals '2011-10-12T17:13:00+01:00', response.data.Item.StartDate.text()
-        assertEquals '', response.data.Item.EndDate.text()
+        assert response.data.Item.StartDate.text() == '2011-10-12T17:13:00+01:00'
+        assert response.data.Item.EndDate.text() == ''
 
         // Amounts
-        assertEquals 1, response.data.Item.Output.Amounts.Amount.size()
-        assertEquals 'CO2', response.data.Item.Output.Amounts.Amount[0].@type.text()
-        assertEquals 'kg/year', response.data.Item.Output.Amounts.Amount[0].@unit.text()
-        assertEquals 'true', response.data.Item.Output.Amounts.Amount[0].@default.text()
-        assertEquals '233.35999999999999', response.data.Item.Output.Amounts.Amount[0].text()
+        assert response.data.Item.Output.Amounts.Amount.size() == 1
+        assert response.data.Item.Output.Amounts.Amount[0].@type.text() == 'CO2'
+        assert response.data.Item.Output.Amounts.Amount[0].@unit.text() == 'kg/year'
+        assert response.data.Item.Output.Amounts.Amount[0].@default.text() == 'true'
+        assert response.data.Item.Output.Amounts.Amount[0].text() == '233.35999999999999'
 
         // Notes
-        assertEquals 1, response.data.Item.Output.Notes.Note.size()
-        assertEquals 'comment', response.data.Item.Output.Notes.Note[0].@type.text()
-        assertEquals 'This is a comment', response.data.Item.Output.Notes.Note[0].text()
+        assert response.data.Item.Output.Notes.Note.size() == 1
+        assert response.data.Item.Output.Notes.Note[0].@type.text() == 'comment'
+        assert response.data.Item.Output.Notes.Note[0].text() == 'This is a comment'
     }
 
     @Test
@@ -771,20 +728,19 @@ class ProfileItemIT extends BaseApiTest {
     def getProfileItemCustomReturnUnits(version) {
         if (version >= 3.6) {
             def response = client.get(
-                path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA;amounts",
+                path: "/$version/profiles/$cookingProfileUid/items/J7TICQCEMGEA;amounts",
                 query: ['returnUnits.CO2': 'g', 'returnPerUnits.CO2': 'month'],
                 contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             // Amounts
-            assertEquals 1, response.data.item.output.amounts.size()
-            assertEquals 'CO2', response.data.item.output.amounts[0].type
-            assertEquals 'g/month', response.data.item.output.amounts[0].unit
-            assertTrue response.data.item.output.amounts[0].default
-            assertEquals 19446.6666666667, response.data.item.output.amounts[0].value, 0.000001
+            assert response.data.item.output.amounts.size() == 1
+            assert response.data.item.output.amounts[0].type == 'CO2'
+            assert response.data.item.output.amounts[0].unit == 'g/month'
+            assert response.data.item.output.amounts[0].default
+            assertEquals(19446.6666666667, response.data.item.output.amounts[0].value, 0.000001)
         }
     }
 
@@ -798,17 +754,15 @@ class ProfileItemIT extends BaseApiTest {
 
     def getProfileItemsUnauthorised(version) {
         if (version >= 3.6) {
-
-            // We just use the ecoinvent user because it is a different user.
-            setEcoinventUser()
+            setOtherUser()
             try {
-                client.get(path: "/${version}/profiles/${cookingProfileUid}/items", contentType: JSON)
+                client.get(path: "/$version/profiles/$cookingProfileUid/items", contentType: JSON)
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
-                assertEquals 'Forbidden', response.data.status.name
+                assert response.status == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.code == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.name == 'Forbidden'
             }
         }
     }
@@ -823,17 +777,15 @@ class ProfileItemIT extends BaseApiTest {
 
     def getSingleProfileItemUnauthorised(version) {
         if (version >= 3.6) {
-
-            // We just use the ecoinvent user because it is a different user.
-            setEcoinventUser()
+            setOtherUser()
             try {
-                client.get(path: "/${version}/profiles/${cookingProfileUid}/items/J7TICQCEMGEA", contentType: JSON)
+                client.get(path: "/$version/profiles/$cookingProfileUid/items/J7TICQCEMGEA", contentType: JSON)
                 fail 'Expected 403'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.status
-                assertEquals CLIENT_ERROR_FORBIDDEN.code, response.data.status.code
-                assertEquals 'Forbidden', response.data.status.name
+                assert response.status == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.code == CLIENT_ERROR_FORBIDDEN.code
+                assert response.data.status.name == 'Forbidden'
             }
         }
     }
@@ -852,7 +804,7 @@ class ProfileItemIT extends BaseApiTest {
      */
     @Test
     void updateWithInvalidName() {
-        updateProfileItemFieldJson('name', 'long', String.randomString(256), 3.6)
+        updateProfileItemFieldJson('name', 'long', String.randomString(ProfileItem.NAME_MAX_SIZE + 1), 3.6)
     }
 
     /**
@@ -897,8 +849,7 @@ class ProfileItemIT extends BaseApiTest {
         updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', 'not_an_integer', 3.6)
         updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '1.1', 3.6) // Not an integer either.
         updateProfileItemFieldJson('values.numberOwned', 'typeMismatch', '', 3.6)
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
-        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(32768), 3.6)
+        updateProfileItemFieldJson('values.onStandby', 'long', String.randomString(ProfileItemTextValue.VALUE_SIZE + 1), 3.6)
 
         // TODO: test doubles?
     }
@@ -932,20 +883,19 @@ class ProfileItemIT extends BaseApiTest {
                 body[field] = value
                 // Update ProfileItem.
                 client.put(
-                    path: "/${version}/profiles/${computersGenericProfileUid}/items/J5OCT81E66FT",
+                    path: "/$version/profiles/$computersGenericProfileUid/items/J5OCT81E66FT",
                     body: body,
                     requestContentType: URLENC,
                     contentType: JSON)
-                fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
+                fail('Response status code should have been 400 (' + field + ', ' + code + ').')
             } catch (HttpResponseException e) {
                 // Handle error response containing a ValidationResult.
                 def response = e.response
-                assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
-                assert [field]== response.data.validationResult.errors.collect {it.field}
-                assert [code]== response.data.validationResult.errors.collect {it.code}
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                assert response.data.validationResult.errors.collect { it.field } == [field]
+                assert response.data.validationResult.errors.collect { it.code } == [code]
             }
         }
     }
@@ -1098,14 +1048,13 @@ class ProfileItemIT extends BaseApiTest {
         }
 
         def responsePost = client.post(
-            path: "/${version}/profiles/UCP4SKANF6CS/items",
+            path: "/$version/profiles/UCP4SKANF6CS/items",
             body: postParams,
             requestContentType: URLENC,
             contentType: JSON)
 
-        def location = responsePost.headers['Location'].value
-        def uid = location.split('/')[7]
-        assertNotNull uid
+        String location = responsePost.headers['Location'].value
+        String uid = location.split('/')[7]
         assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
         // Fetch profile items and check values
@@ -1121,31 +1070,27 @@ class ProfileItemIT extends BaseApiTest {
         if (prorata) {
             queryParams.mode = 'prorata'
         }
-        def responseGet = client.get(
-            path: "/${version}/profiles/UCP4SKANF6CS/items;name;amounts",
-            query: queryParams,
-            contentType: JSON)
-
-        assertEquals SUCCESS_OK.code, responseGet.status
+        def responseGet = client.get(path: "/${version}/profiles/UCP4SKANF6CS/items;name;amounts", query: queryParams, contentType: JSON)
+        assert responseGet.status == SUCCESS_OK.code
 
         def item = responseGet.data.items.find { it.uid == uid }
-        assertEquals code, item.name
+        assert item.name == code
 
         // Amounts
-        assertEquals 1, item.output.amounts.size()
+        assert item.output.amounts.size() == 1
         assertContainsAmountJson(item.output.amounts, 'CO2', objective, 'kg/year', true)
 
         // Delete the profile item
-        def responseDelete = client.delete(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
+        def responseDelete = client.delete(path: "/$version/profiles/UCP4SKANF6CS/items/$uid")
         assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
         // Check it was deleted
         // We should get a 404 here.
         try {
-            client.get(path: "/${version}/profiles/UCP4SKANF6CS/items/${uid}")
+            client.get(path: "/$version/profiles/UCP4SKANF6CS/items/$uid")
             fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
         }
     }
 
@@ -1176,12 +1121,12 @@ class ProfileItemIT extends BaseApiTest {
      * @param unit the expected unit, eg kg.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountJson(amounts, type, value, unit, isDefault) {
+    def assertContainsAmountJson(amounts, String type, double value, String unit, String isDefault) {
         def amount = amounts.find { it.type == type }
         assertNotNull amount
-        assertEquals value, amount.value, 0.0001
-        assertEquals unit, amount.unit
-        assertEquals isDefault, amount.default
+        assertEquals(value, amount.value, 0.0001)
+        assert amount.unit == unit
+        assert amount.default == isDefault
     }
 
     /**
@@ -1195,11 +1140,11 @@ class ProfileItemIT extends BaseApiTest {
      * @param unit the expected unit, eg kg.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountXml(amounts, type, value, unit, isDefault) {
+    def assertContainsAmountXml(amounts, String type, double value, String unit, String isDefault) {
         def amount = amounts.find { it.@type.text() == type }
         assertNotNull amount
-        assertEquals value, Double.valueOf(amount.text()), 0.0001
-        assertEquals unit, amount.@unit.text()
-        assertEquals isDefault, Boolean.valueOf(amount.@default.text())
+        assertEquals(value, amount.text() as double, 0.0001)
+        assert amount.@unit.text() == unit
+        assert amount.@default.text() as boolean == isDefault
     }
 }

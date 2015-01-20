@@ -194,7 +194,7 @@ INSERT INTO algorithm (id, uid, name, content, created, modified, item_definitio
 INSERT INTO algorithm (id, uid, name, content, created, modified, item_definition_id, type, algorithm_context_id, status) VALUES (229,'599C0F18A362','default','returnValues.putValue("infinity","kg",null,1 / 0); returnValues.putValue("nan","kg",null,1 * "a"); returnValues.setDefaultType("infinity");','2009-03-20 00:00:00','2009-05-11 21:40:25',164,'AL',NULL,1);
 
 -- algorithm - For Item Definition 'ICE v2 by mass' - This is a genuine algorithm.
-INSERT INTO algorithm (id, uid, name, content, created, modified, item_definition_id, type, algorithm_context_id, status) VALUES (18658,'32GKQRBOHSNN','default','energy = energyPerMass * mass;  try {   var m = massCO2PerMass;   co2Emissions = massCO2PerMass * mass; } catch(error) {   co2Emissions = 0;   returnValues.addNote(''comment'',''CO2 emissions are not explicitly defined for this item''); }  try {   var m = massCO2ePerMass;   co2eEmissions = massCO2ePerMass * mass; } catch(error) {   co2eEmissions = 0;   returnValues.addNote(''comment'',''CO2e emissions are not explicitly defined for this item''); }  returnValues.putValue(''energy'',''MJ'',null,energy); returnValues.putValue(''CO2'',''kg'',null,co2Emissions); returnValues.putValue(''CO2e'',''kg'',null,co2eEmissions); returnValues.setDefaultType(''CO2'');','2011-03-10 11:41:11','2011-03-10 11:45:52',159,'AL',NULL,1);
+INSERT INTO algorithm (id, uid, name, content, created, modified, item_definition_id, type, algorithm_context_id, status) VALUES (18658,'32GKQRBOHSNN','default','energy = energyPerMass * mass;  try {   var m = massCO2PerMass;   co2Emissions = massCO2PerMass * mass; } catch(error) {   co2Emissions = 0;   returnValues.addNote(''comment'', ''CO2 emissions are not explicitly defined for this item''); }  try {   var m = massCO2ePerMass;   co2eEmissions = massCO2ePerMass * mass; } catch(error) {   co2eEmissions = 0;   returnValues.addNote(''comment'', ''CO2e emissions are not explicitly defined for this item''); }  returnValues.putValue(''energy'', ''MJ'',null, energy); returnValues.putValue(''CO2'', ''kg'',null, co2Emissions); returnValues.putValue(''CO2e'', ''kg'',null, co2eEmissions); returnValues.setDefaultType(''CO2'');','2011-03-10 11:41:11','2011-03-10 11:45:52',159,'AL',NULL,1);
 
 -- algorithm - For Item Definition 'GHGElectricity' - This is a simplified algorithm for testing purposes.
 INSERT INTO algorithm (id, uid, name, content, created, modified, item_definition_id, type, algorithm_context_id, status) VALUES (332,'E6823F86458E','default','returnValues.addNote("comment","This is a comment"); co2e = energyPerTime * 2;','2009-04-20 10:24:35','2010-07-06 14:01:15',21,'AL',NULL,1);
@@ -648,7 +648,7 @@ INSERT INTO data_item (id, created, modified, uid, status, name, path, data_cate
 INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (26221133,'2010-05-26 16:06:09','2010-05-26 16:06:09','0BE050A60037',1,'','',9913,7023);
 
 -- DATA_ITEM - For drill down empty value test
-INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (9499,'2014-12-29 16:58:36','2014-12-29 16:58:36','LNW3AVZB0A2D',1,'','',259,159);
+INSERT INTO data_item (id, created, modified, uid, status, name, path, data_category_id, item_definition_id) VALUES (9461,'2014-12-29 16:58:35','2014-12-29 16:58:35','R80Z2HQRYRR6',1,'','',259,159);
 
 -- data_item_text_value - For data_items in data_category Cooking
 -- mysqldump --single-transaction --compact --no-create-info --skip-extended-insert --complete-insert --skip-quote-names --where "data_item_id IN (SELECT id from data_item where data_category_id = 268)" openamee data_item_text_value
@@ -864,12 +864,12 @@ INSERT INTO data_item_text_value (id, created, modified, uid, status, value, ite
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (43817,'2014-12-29 17:01:15','2014-12-29 17:01:15','TZ08UGKWCTJB',1,'Electric hob only',1430,10047);
 
 -- data_item_text_value - For drill down empty value test
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40722,'2014-12-29 16:58:36','2014-12-29 16:58:36','V636CE8E5QDX',1,'PVC',1390,9499);
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40723,'2014-12-29 16:58:36','2014-12-29 16:58:36','5D82JQ5SHBF9',1,'28.1 MJ/kg Feedstock Energy  (Included). Based on market average consumption of types of PVC in the European construction industry',1385,9499);
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40724,'2014-12-29 16:58:36','2014-12-29 16:58:36','C9TBZWSJCPQX',1,'Plastics',1383,9499);
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40725,'2014-12-29 16:58:36','2014-12-29 16:58:36','7NUPYEZALU0H',1,'Cradle to gate',1389,9499);
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40726,'2014-12-29 16:58:36','2014-12-29 16:58:36','DHMP6YMM6Z4V',1,'http://people.bath.ac.uk/cj219/',1388,9499);
-INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40727,'2014-12-29 16:58:36','2014-12-29 16:58:36','XWYT2973OQR2',1,'General',1386,9499);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40494,'2014-12-29 16:58:35','2014-12-29 16:58:35','JLRDIQBNNR8I',1,'General',1390,9461);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40495,'2014-12-29 16:58:35','2014-12-29 16:58:35','2P59T2CY0DU3',1,'Embodied carbon was difficult to estimate',1385,9461);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40496,'2014-12-29 16:58:35','2014-12-29 16:58:35','YMZK6NBY6Y94',1,'Lime',1383,9461);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40497,'2014-12-29 16:58:35','2014-12-29 16:58:35','J6RBW9NRQD9B',1,'Cradle to gate',1389,9461);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40498,'2014-12-29 16:58:35','2014-12-29 16:58:35','8QND9HF7R0HT',1,'http://people.bath.ac.uk/cj219/',1388,9461);
+INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (40499,'2014-12-29 16:58:35','2014-12-29 16:58:35','X1E2SDSKK3N3',1,'',1386,9461);
 
 -- data_item_text_value - For prorata tests
 INSERT INTO data_item_text_value (id, created, modified, uid, status, value, item_value_definition_id, data_item_id) VALUES (98835683,'2010-04-29 09:14:00','2010-04-29 09:14:00','9745B35F496E',1,'GHGP http://www.ghgprotocol.org/calculation-tools/all-tools; EIA http://www.eia.doe.gov/oiaf/1605/excel/electricity_factors_99-02country.xls',23033,18181853);
@@ -1108,9 +1108,9 @@ INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41996,'2014-12-29 17:01:15','2014-12-29 17:01:15','62YBMGL5X23A',1,'','',2.4,1432,10047);
 
 -- data_item_number_value - For drill down empty value test
-INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41391,'2014-12-29 16:58:36','2014-12-29 16:58:36','JEI3K0CJ2XBX',1,'','',2.61,1382,9499);
-INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41392,'2014-12-29 16:58:36','2014-12-29 16:58:36','K5WBCZD1FTZS',1,'','',3.1,1384,9499);
-INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41393,'2014-12-29 16:58:36','2014-12-29 16:58:36','C9HUTX5APBZ5',1,'','',77.2,1381,9499);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41277,'2014-12-29 16:58:35','2014-12-29 16:58:35','714FU1UF8H0V',1,'','',0.76,1382,9461);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41278,'2014-12-29 16:58:35','2014-12-29 16:58:35','QJGP4J23AM2I',1,'','',0.78,1384,9461);
+INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (41279,'2014-12-29 16:58:35','2014-12-29 16:58:35','LFN09FOSW18Y',1,'','',5.3,1381,9461);
 
 -- data_item_number_value - With series,without perUnit,algeria (massCO2PerEnergy set to test value)
 INSERT INTO data_item_number_value (id, created, modified, uid, status, per_unit, unit, value, item_value_definition_id, data_item_id) VALUES (143372863,'2010-05-26 16:06:10','2011-12-12 04:57:09','53991E76B48B',1,'','',2,34153,26221023);
