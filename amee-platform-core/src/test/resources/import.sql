@@ -41,6 +41,7 @@ INSERT INTO unit (id, uid, unit_type_id, name, internal_symbol, external_symbol,
 INSERT INTO value_definition (id, created, modified, uid, status, description, name, value_type) VALUES (1,'2014-12-06 00:00:00','2014-12-06 00:00:00','JYK192X8JDLO',1,NULL,'text',1);
 INSERT INTO value_definition (id, created, modified, uid, status, description, name, value_type) VALUES (2,'2014-12-06 00:00:00','2014-12-06 00:00:00','OMU53CZCY970',1,NULL,'amount',5);
 INSERT INTO value_definition (id, created, modified, uid, status, description, name, value_type) VALUES (3,'2014-12-06 00:00:00','2014-12-06 00:00:00','QG13760PHJRB',1,NULL,'boolean',3);
+INSERT INTO value_definition (id, created, modified, uid, status, description, name, value_type) VALUES (4,'2014-12-06 00:00:00','2014-12-06 00:00:00','GFE7K9WMA2NM',1,NULL,'count',4);
 
 -- item_definition
 INSERT INTO item_definition (id, created, modified, uid, status, drill_down, name) VALUES (21,'2014-12-29 14:52:43','2014-12-29 14:52:43','KLZMD277KA5U',1,'country','GHGElectricity');
@@ -59,7 +60,7 @@ INSERT INTO item_definition (id, created, modified, uid, status, drill_down, nam
 
 -- item_value_definition - For Item Definition 'Computers Generic'
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1424,'2014-12-29 17:00:52','2014-12-29 17:00:52','BVMO8CCM8JW2',1,'',1,0,'Rating','rating','','','',NULL,164,1);
-INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1425,'2014-12-29 17:00:52','2014-12-29 17:00:52','EEQ72W0K4WSK',1,'',0,1,'Number Owned','numberOwned','','','1',NULL,164,2);
+INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1425,'2014-12-29 17:00:52','2014-12-29 17:00:52','EEQ72W0K4WSK',1,'',0,1,'Number Owned','numberOwned','','','1',NULL,164,4);
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1426,'2014-12-29 17:00:52','2014-12-29 17:00:52','KO4LAJQRQP0Q',1,'',1,0,'Source','source','','','',NULL,164,1);
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1427,'2014-12-29 17:00:52','2014-12-29 17:00:52','9OWHW3DE3ZJF',1,'',1,0,'KWh Per Year','kWhPerYear','','','',NULL,164,2);
 INSERT INTO item_value_definition (id, created, modified, uid, status, choices, from_data, from_profile, name, path, per_unit, unit, value, aliased_to_id, item_definition_id, value_definition_id) VALUES (1428,'2014-12-29 17:00:52','2014-12-29 17:00:52','UK2SCL4NICLM',1,'',1,0,'Device','device','','','',NULL,164,1);
