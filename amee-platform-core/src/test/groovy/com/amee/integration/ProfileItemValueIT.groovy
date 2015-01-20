@@ -1,9 +1,10 @@
 package com.amee.integration
 
+import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
-import groovyx.net.http.HttpResponseException
 import static org.restlet.data.Status.*
 
 /**
@@ -35,13 +36,10 @@ class ProfileItemValueIT extends BaseApiTest {
 
     def getProfileItemValuesJson(version) {
         if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${profileItemUid}/values;full",
-                contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
+            def response = client.get(path: "/$version/profiles/$profileUid/items/$profileItemUid/values;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
 
             def itemValues = response.data.values
             assertValueJson(itemValues, 'numberOwned', 1, null, profileItemUid, 'Computers_generic', 'Number Owned')
@@ -51,12 +49,10 @@ class ProfileItemValueIT extends BaseApiTest {
     
     def getProfileItemValuesXml(version) {
         if (version >= 3.6) {
-            def response = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${profileItemUid}/values;full",
-                contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/profiles/$profileUid/items/$profileItemUid/values;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
 
             def itemValues = response.data.Values.Value
             assertValueXml(itemValues, 'numberOwned', '1', null, null, null, profileItemUid, 'Computers_generic', 'Number Owned')
@@ -78,98 +74,81 @@ class ProfileItemValueIT extends BaseApiTest {
             // Create a profile item with standard units (kWH/year)
             // Electricity_by_Country; country=Albania
             def responsePost = client.post(
-                path: "/${version}/profiles/${profileUid}/items",
-                body: [
-                    name: 'standard',
-                    dataItemUid: '963A90C107FA',
-                    'values.energyPerTime': '5'],
+                path: "/$version/profiles/$profileUid/items",
+                body: [name: 'standard', dataItemUid: 'HEDE07J83VR2', 'values.energyPerTime': '5'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
-            def uid = responsePost.headers['Location'].value.split('/')[7]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String uid = responsePost.headers['Location'].value.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the profile item
-            def responseGet = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${uid};amounts",
-                contentType: JSON)
+            def responseGet = client.get(path: "/$version/profiles/$profileUid/items/$uid;amounts", contentType: JSON)
 
             // Check the calculated amount
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.output.amounts.size()
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.item.output.amounts.size() == 1
             def amount = responseGet.data.item.output.amounts[0]
-            assertNotNull amount
-            assertEquals 10.0, amount.value, 0.0001
-            assertEquals 'kg/year', amount.unit
-            assertTrue amount.default
+            assertEquals(10.0, amount.value as double, 0.0001)
+            assert amount.unit == 'kg/year'
+            assert amount.default
 
             // Check the values
-            responseGet = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${uid}/values;full",
-                contentType: JSON)
+            responseGet = client.get(path: "/$version/profiles/$profileUid/items/$uid/values;full", contentType: JSON)
             def itemValues = responseGet.data.values
             assertValueJson(itemValues, 'energyPerTime', 5, 'kW·h/year', uid, 'Electricity_by_Country', 'Energy per Time')
 
             // Delete the profile item
-            def responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
-            assertEquals SUCCESS_OK.code, responseDelete.status
+            def responseDelete = client.delete(path: "/$version/profiles/$profileUid/items/$uid")
+            assert responseDelete.status == SUCCESS_OK.code
 
             // Check it was deleted
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
+                client.get(path: "/$version/profiles/$profileUid/items/$uid")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
 
             // Create a profile item with different units (MWh/month)
             responsePost = client.post(
-                path: "/${version}/profiles/${profileUid}/items",
-                body: [
-                    name: 'non-standard',
-                    dataItemUid: '963A90C107FA',
-                    'values.energyPerTime': '5',
-                    'units.energyPerTime' : 'MWh',
-                    'perUnits.energyPerTime' : 'month'],
+                path: "/$version/profiles/$profileUid/items",
+                body: [name: 'non-standard', dataItemUid: 'HEDE07J83VR2', 'values.energyPerTime': '5',
+                       'units.energyPerTime' : 'MWh', 'perUnits.energyPerTime' : 'month'],
                 requestContentType: URLENC,
                 contentType: JSON)
 
             uid = responsePost.headers['Location'].value.split('/')[7]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the profile item
-            responseGet = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${uid};amounts",
-                contentType: JSON)
+            responseGet = client.get(path: "/$version/profiles/$profileUid/items/$uid;amounts", contentType: JSON)
 
             // Check the calculated amount
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 1, responseGet.data.item.output.amounts.size()
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.item.output.amounts.size() == 1
             amount = responseGet.data.item.output.amounts[0]
-            assertNotNull amount
-            assertEquals 120000.0, amount.value, 0.0001
-            assertEquals 'kg/year', amount.unit
-            assertTrue amount.default
+            assertEquals(120000.0, amount.value as double, 0.0001)
+            assert amount.unit == 'kg/year'
+            assert amount.default
 
             // Check the values
-            responseGet = client.get(
-                path: "/${version}/profiles/${profileUid}/items/${uid}/values;full",
-                contentType: JSON)
+            responseGet = client.get(path: "/$version/profiles/$profileUid/items/$uid/values;full", contentType: JSON)
             itemValues = responseGet.data.values
             assertValueJson(itemValues, 'energyPerTime', 5, 'MW·h/month', uid, 'Electricity_by_Country', 'Energy per Time')
 
             // Delete the profile item
-            responseDelete = client.delete(path: "/${version}/profiles/${profileUid}/items/${uid}")
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            responseDelete = client.delete(path: "/$version/profiles/$profileUid/items/$uid")
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // Check it was deleted
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/profiles/${profileUid}/items/${uid}")
+                client.get(path: "/$version/profiles/$profileUid/items/$uid")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -191,16 +170,16 @@ class ProfileItemValueIT extends BaseApiTest {
         def itemValue = itemValues.find { it.itemValueDefinition.path == path }
         assertNotNull itemValue
         if (itemValue.value instanceof Double) {
-            assertEquals value, itemValue.value, 0.000001
+            assertEquals(value, itemValue.value, 0.000001)
         } else {
-            assertEquals value, itemValue.value
+            assertEquals(value, itemValue.value)
         }
         if (unit) {
-            assertEquals unit, itemValue.unit
+            assertEquals(unit, itemValue.unit)
         }
-        assertEquals itemUid, itemValue.item.uid
-        assertEquals wikiName, itemValue.category.wikiName
-        assertEquals itemValueDefName, itemValue.itemValueDefinition.name
+        assertEquals(itemUid, itemValue.item.uid)
+        assertEquals(wikiName, itemValue.category.wikiName)
+        assertEquals(itemValueDefName, itemValue.itemValueDefinition.name)
     }
 
     /**
@@ -219,18 +198,18 @@ class ProfileItemValueIT extends BaseApiTest {
     def assertValueXml(itemValues, path, value, unit, perUnit, compoundUnit, itemUid, wikiName, itemValueDefName) {
         def itemValue = itemValues.find { it.ItemValueDefinition.Path == path }
         assertNotNull itemValue
-        assertEquals value, itemValue.Value.text()
+        assertEquals(value, itemValue.Value.text())
         if (unit) {
-            assertEquals unit, itemValue.Unit.text()
+            assertEquals(unit, itemValue.Unit.text())
         }
         if (perUnit) {
-            assertEquals perUnit, itemValue.PerUnit.text()
+            assertEquals(perUnit, itemValue.PerUnit.text())
         }
         if (compoundUnit) {
-            assertEquals compoundUnit, itemValue.CompoundUnit.text()
+            assertEquals(compoundUnit, itemValue.CompoundUnit.text())
         }
-        assertEquals itemUid, itemValue.Item.@uid.text()
-        assertEquals wikiName, itemValue.Category.WikiName.text()
-        assertEquals itemValueDefName, itemValue.ItemValueDefinition.Name.text()
+        assertEquals(itemUid, itemValue.Item.@uid.text())
+        assertEquals(wikiName, itemValue.Category.WikiName.text())
+        assertEquals(itemValueDefName, itemValue.ItemValueDefinition.Name.text())
     }
 }
