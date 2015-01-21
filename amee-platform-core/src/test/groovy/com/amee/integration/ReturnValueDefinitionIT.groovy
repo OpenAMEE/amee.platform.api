@@ -1,9 +1,11 @@
 package com.amee.integration
 
+import com.amee.domain.data.ReturnValueDefinition
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 import static org.restlet.data.Status.*
 
 /**
@@ -13,7 +15,6 @@ import static org.restlet.data.Status.*
 class ReturnValueDefinitionIT extends BaseApiTest {
 
     def static returnValueDefinitionUids = ['B0268549CD9C', '6008F958CE20']
-    def static returnValueDefinitionTypes = ['co2', 'co2e']
 
     /**
      * Tests for creation, fetch and deletion of a Return Value Definition using JSON responses.
@@ -39,7 +40,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void createReturnValueDefinition() {
-        com.amee.integration.BaseApiTest.versions.each { version -> createReturnValueDefinition(version) }
+        versions.each { version -> createReturnValueDefinition(version) }
     }
 
     def createReturnValueDefinition(version) {
@@ -51,53 +52,41 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
             // Create a new RVD.
             def responsePost = client.post(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues",
-                    body: ['type': 'CO2',
-                            'unit': 'kg',
-                            'perUnit': 'month',
-                            'valueDefinition': '45433E48B39F',
-							'name': 'Test Return Value Definition'],
+                    path: "/$version/definitions/65RC86G6KMRA/returnvalues",
+                    body: [type: 'CO2', unit: 'kg', perUnit: 'month', valueDefinition: 'OMU53CZCY970', name: 'Test Return Value Definition'],
                     requestContentType: URLENC,
                     contentType: JSON)
 
-            assertTrue responsePost.headers['Location'] != null
-            assertTrue responsePost.headers['Location'].value != null
-            def location = responsePost.headers['Location'].value
-            assertTrue location.startsWith("${com.amee.integration.BaseApiTest.config.api.protocol}://${com.amee.integration.BaseApiTest.config.api.host}")
+            String location = responsePost.headers['Location'].value
+            assert location.startsWith("$config.api.protocol://$config.api.host")
 
-            def uid = location.split('/')[7]
-            assertOkJson responsePost, SUCCESS_CREATED.code, uid
+            String uid = location.split('/')[7]
+            assertOkJson(responsePost, SUCCESS_CREATED.code, uid)
 
             // Get the new RVD.
-            def responseGet = client.get(
-                    path: location,
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
+            def responseGet = client.get(path: location, contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
 
             // Find new RVD in list of RVDs.
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            def uids = response.data.returnValueDefinitions.collect {it.uid}
-            assertTrue uids.contains(uid)
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            def uids = response.data.returnValueDefinitions.collect { it.uid }
+            assert uids.contains(uid)
 
             // Then delete it.
             def responseDelete = client.delete(path: location)
-            assertOkJson responseDelete, SUCCESS_OK.code, uid
+            assertOkJson(responseDelete, SUCCESS_OK.code, uid)
 
             // We should get a 404 here.
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -121,23 +110,20 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionsJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionsJson(version) }
+        versions.each { version -> getReturnValueDefinitionsJson(version) }
     }
 
     def getReturnValueDefinitionsJson(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals returnValueDefinitionUids.size(), response.data.returnValueDefinitions.size()
-            assertEquals returnValueDefinitionUids.sort(), response.data.returnValueDefinitions.collect {it.uid}.sort()
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.returnValueDefinitions.size() == returnValueDefinitionUids.size()
+            assert response.data.returnValueDefinitions.collect { it.uid }.sort() == returnValueDefinitionUids.sort()
 
             // Should  be sorted by type
-            assertTrue response.data.returnValueDefinitions.first().type.compareToIgnoreCase(response.data.returnValueDefinitions.last().type) < 0
+            assert response.data.returnValueDefinitions.first().type.compareToIgnoreCase(response.data.returnValueDefinitions.last().type) < 0
         }
     }
 
@@ -146,23 +132,21 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionsXml() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionsXml(version) }
+        versions.each { version -> getReturnValueDefinitionsXml(version) }
     }
 
     def getReturnValueDefinitionsXml(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def allReturnValueDefinitions = response.data.ReturnValueDefinitions.ReturnValueDefinition
-            assertEquals returnValueDefinitionUids.size(), allReturnValueDefinitions.size()
-            assertEquals returnValueDefinitionUids.sort(), allReturnValueDefinitions.@uid*.text().sort()
+            assert allReturnValueDefinitions.size() == returnValueDefinitionUids.size()
+            assert allReturnValueDefinitions.@uid*.text().sort() == returnValueDefinitionUids.sort()
 
             // Should  be sorted by type
-            assertTrue allReturnValueDefinitions[0].Type.text().compareToIgnoreCase(allReturnValueDefinitions[-1].Type.text()) < 0
+            assert allReturnValueDefinitions[0].Type.text().compareToIgnoreCase(allReturnValueDefinitions[-1].Type.text()) < 0
         }
     }
 
@@ -171,37 +155,34 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionJson(version) }
+        versions.each { version -> getReturnValueDefinitionJson(version) }
     }
 
     def getReturnValueDefinitionJson(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 'B0268549CD9C', response.data.returnValueDefinition.uid
-            assertEquals 'co2', response.data.returnValueDefinition.type
-            assertEquals 'kg', response.data.returnValueDefinition.unit
-            assertEquals 'month', response.data.returnValueDefinition.perUnit
-            assertEquals 'true', response.data.returnValueDefinition['default']
-			assert 'Test Return Value Definition' == response.data.returnValueDefinition.name
-            assertEquals '11D3548466F2', response.data.returnValueDefinition.itemDefinition.uid
-            assertEquals 'Computers Generic', response.data.returnValueDefinition.itemDefinition.name
-            assertEquals '45433E48B39F', response.data.returnValueDefinition.valueDefinition.uid
-            assertEquals 'amount', response.data.returnValueDefinition.valueDefinition.name
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.returnValueDefinition.uid == 'B0268549CD9C'
+            assert response.data.returnValueDefinition.type == 'co2'
+            assert response.data.returnValueDefinition.unit == 'kg'
+            assert response.data.returnValueDefinition.perUnit == 'month'
+            assert response.data.returnValueDefinition['default'] == 'true'
+			assert response.data.returnValueDefinition.name == 'Test Return Value Definition'
+            assert response.data.returnValueDefinition.itemDefinition.uid == '65RC86G6KMRA'
+            assert response.data.returnValueDefinition.itemDefinition.name == 'Computers Generic'
+            assert response.data.returnValueDefinition.valueDefinition.uid == 'OMU53CZCY970'
+            assert response.data.returnValueDefinition.valueDefinition.name == 'amount'
             if (version >= 3.4) {
-                assertEquals 'DOUBLE', response.data.returnValueDefinition.valueDefinition.valueType
+                assert response.data.returnValueDefinition.valueDefinition.valueType == 'DOUBLE'
             } else {
-                assertEquals 'DECIMAL', response.data.returnValueDefinition.valueDefinition.valueType
+                assert response.data.returnValueDefinition.valueDefinition.valueType == 'DECIMAL'
             }
             if (version >= 3.2) {
-                assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.created
-                assertEquals '2010-08-17T15:13:41Z', response.data.returnValueDefinition.modified
-                assertEquals 'ACTIVE', response.data.returnValueDefinition.status
+                assert response.data.returnValueDefinition.created == '2010-08-17T15:13:41Z'
+                assert response.data.returnValueDefinition.modified == '2010-08-17T15:13:41Z'
+                assert response.data.returnValueDefinition.status == 'ACTIVE'
             }
         }
     }
@@ -211,36 +192,34 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void getReturnValueDefinitionXml() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getReturnValueDefinitionXml(version) }
+        versions.each { version -> getReturnValueDefinitionXml(version) }
     }
 
     def getReturnValueDefinitionXml(version) {
         if (version >= 3.1) {
-            def response = client.get(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals 'B0268549CD9C', response.data.ReturnValueDefinition.@uid.text()
-            assertEquals 'co2', response.data.ReturnValueDefinition.Type.text()
-            assertEquals 'kg', response.data.ReturnValueDefinition.Unit.text()
-            assertEquals 'month', response.data.ReturnValueDefinition.PerUnit.text()
-            assertEquals 'true', response.data.ReturnValueDefinition.Default.text()
-			assert 'Test Return Value Definition' == response.data.ReturnValueDefinition.Name.text()
-            assertEquals '11D3548466F2', response.data.ReturnValueDefinition.ItemDefinition.@uid.text()
-            assertEquals 'Computers Generic', response.data.ReturnValueDefinition.ItemDefinition.Name.text()
-            assertEquals '45433E48B39F', response.data.ReturnValueDefinition.ValueDefinition.@uid.text()
-            assertEquals 'amount', response.data.ReturnValueDefinition.ValueDefinition.Name.text()
+            def response = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.ReturnValueDefinition.@uid.text() == 'B0268549CD9C'
+            assert response.data.ReturnValueDefinition.Type.text() == 'co2'
+            assert response.data.ReturnValueDefinition.Unit.text() == 'kg'
+            assert response.data.ReturnValueDefinition.PerUnit.text() == 'month'
+            assert response.data.ReturnValueDefinition.Default.text() == 'true'
+			assert response.data.ReturnValueDefinition.Name.text() == 'Test Return Value Definition'
+            assert response.data.ReturnValueDefinition.ItemDefinition.@uid.text() == '65RC86G6KMRA'
+            assert response.data.ReturnValueDefinition.ItemDefinition.Name.text() == 'Computers Generic'
+            assert response.data.ReturnValueDefinition.ValueDefinition.@uid.text() == 'OMU53CZCY970'
+            assert response.data.ReturnValueDefinition.ValueDefinition.Name.text() == 'amount'
             if (version >= 3.4) {
-                assertEquals 'DOUBLE', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text()
+                assert response.data.ReturnValueDefinition.ValueDefinition.ValueType.text() == 'DOUBLE'
             } else {
-                assertEquals 'DECIMAL', response.data.ReturnValueDefinition.ValueDefinition.ValueType.text()
+                assert response.data.ReturnValueDefinition.ValueDefinition.ValueType.text() == 'DECIMAL'
             }
             if (version >= 3.2) {
-                assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@created.text()
-                assertEquals '2010-08-17T15:13:41Z', response.data.ReturnValueDefinition.@modified.text()
-                assertEquals 'ACTIVE', response.data.ReturnValueDefinition.@status.text()
+                assert response.data.ReturnValueDefinition.@created.text() == '2010-08-17T15:13:41Z'
+                assert response.data.ReturnValueDefinition.@modified.text() == '2010-08-17T15:13:41Z'
+                assert response.data.ReturnValueDefinition.@status.text() == 'ACTIVE'
             }
         }
     }
@@ -250,7 +229,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void updateReturnValueDefinitionJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> updateReturnValueDefinitionJson(version) }
+        versions.each { version -> updateReturnValueDefinitionJson(version) }
     }
 
     def updateReturnValueDefinitionJson(version) {
@@ -259,25 +238,20 @@ class ReturnValueDefinitionIT extends BaseApiTest {
 
             // 1) Do the update.
             def responsePut = client.put(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues/6008F958CE20",
-                    body: ['type': 'drink',
-                            'unit': 'bbl',
-                            'perUnit': 'day'],
+                    path: "/$version/definitions/65RC86G6KMRA/returnvalues/6008F958CE20",
+                    body: [type: 'drink', unit: 'bbl', perUnit: 'day'],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertOkJson responsePut, SUCCESS_OK.code, '6008F958CE20'
+            assertOkJson(responsePut, SUCCESS_OK.code, '6008F958CE20')
 
             // 2) Check values have been updated.
-            def responseGet = client.get(
-                    path: '/3.1/definitions/11D3548466F2/returnvalues/6008F958CE20;full',
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'application/json', responseGet.contentType
-            assertTrue responseGet.data instanceof net.sf.json.JSON
-            assertEquals 'OK', responseGet.data.status
-            assertEquals 'drink', responseGet.data.returnValueDefinition.type
-            assertEquals 'bbl', responseGet.data.returnValueDefinition.unit
-            assertEquals 'day', responseGet.data.returnValueDefinition.perUnit
+            def responseGet = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/6008F958CE20;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.contentType == 'application/json'
+            assert responseGet.data.status == 'OK'
+            assert responseGet.data.returnValueDefinition.type == 'drink'
+            assert responseGet.data.returnValueDefinition.unit == 'bbl'
+            assert responseGet.data.returnValueDefinition.perUnit == 'day'
         }
     }
 
@@ -290,7 +264,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      */
     @Test
     void defaultType() {
-        com.amee.integration.BaseApiTest.versions.each { version -> defaultType(version) }
+        versions.each { version -> defaultType(version) }
     }
 
     def defaultType(version) {
@@ -298,68 +272,61 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             setAdminUser()
 
             // Get the current default type.
-            def responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
-            assertEquals SUCCESS_OK.code, responseGet.status
-            assertEquals 'true', responseGet.data.returnValueDefinition['default']
+            def responseGet = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.returnValueDefinition['default'] == 'true'
 
             // 1. Handle POST.
             // Add a new return value definition with default type true.
             def responsePost = client.post(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues",
-                    body: ['type': 'new',
-                            'unit': 'kg',
-                            'perUnit': 'day',
-                            'valueDefinition': '45433E48B39F',
-							'name': 'Test Return Value Definition',
-                            'defaultType': true],
+                    path: "/$version/definitions/65RC86G6KMRA/returnvalues",
+                    body: [type: 'new', unit: 'kg', perUnit: 'day', valueDefinition: 'OMU53CZCY970',
+                           name: 'Test Return Value Definition', defaultType: true],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 201, responsePost.status
-            def location = responsePost.headers['Location'].value
+            assert responsePost.status == SUCCESS_CREATED.code
+            String location = responsePost.headers['Location'].value
 
             // Check the new one is default.
-            responseGet = client.get(path: location + ';full', contentType: JSON)
-            assertEquals 200, responseGet.status
-            assertEquals 'true', responseGet.data.returnValueDefinition['default']
+            responseGet = client.get(path: "$location;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.returnValueDefinition['default'] == 'true'
 
             // Check the old one is no longer default.
-            responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
-            assertEquals 200, responseGet.status
-            assertEquals 'false', responseGet.data.returnValueDefinition['default']
+            responseGet = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.returnValueDefinition['default'] == 'false'
 
             // 2. Handle PUT.
             // Update the old one to be the default again.
             def responsePut = client.put(
-                    path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C",
-                    body: ['type': 'co2',
-                            'unit': 'kg',
-                            'perUnit': 'month',
-                            'valueDefinition': '45433E48B39F',
-                            'defaultType': true],
+                    path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C",
+                    body: [type: 'co2', unit: 'kg', perUnit: 'month', valueDefinition: 'OMU53CZCY970', defaultType: true],
                     requestContentType: URLENC,
                     contentType: JSON)
-            assertEquals 200, responsePut.status
+            assert responsePut.status == SUCCESS_OK.code
 
             // Check new one is now not the default.
-            responseGet = client.get(path: location + ';full', contentType: JSON)
-            assertEquals 200, responseGet.status
-            assertEquals 'false', responseGet.data.returnValueDefinition['default']
+            responseGet = client.get(path: "$location;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.returnValueDefinition['default'] == 'false'
 
             // Check old one is now the default.
-            responseGet = client.get(path: "/${version}/definitions/11D3548466F2/returnvalues/B0268549CD9C;full", contentType: JSON)
-            assertEquals 200, responseGet.status
-            assertEquals 'true', responseGet.data.returnValueDefinition['default']
+            responseGet = client.get(path: "/$version/definitions/65RC86G6KMRA/returnvalues/B0268549CD9C;full", contentType: JSON)
+            assert responseGet.status == SUCCESS_OK.code
+            assert responseGet.data.returnValueDefinition['default'] == 'true'
 
             // 3. Handle DELETE.
             // Then delete the new one.
             def responseDelete = client.delete(path: location)
-            assertEquals 200, responseDelete.status
+            assert responseDelete.status == SUCCESS_OK.code
+
             // We should get a 404 here.
             try {
                 client.get(path: location)
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals 404, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -379,7 +346,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
     void updateInvalidReturnValueDefinition() {
         setAdminUser()
         updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'empty', '')
-        updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'long', String.randomString(256))
+        updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'long', String.randomString(ReturnValueDefinition.TYPE_MAX_SIZE + 1))
         updateReturnValueDefinitionFieldJson('6008F958CE20', 'type', 'duplicate', 'co2')
         updateReturnValueDefinitionFieldJson('B0268549CD9C', 'defaultType', 'no_default_type', 'false')
         updateReturnValueDefinitionFieldJson('6008F958CE20', 'unit', 'typeMismatch', 'not_a_unit')
@@ -407,7 +374,7 @@ class ReturnValueDefinitionIT extends BaseApiTest {
      * @param since only to versions on or after this since value
      */
     def updateReturnValueDefinitionFieldJson(uid, field, code, value, since) {
-        com.amee.integration.BaseApiTest.versions.each { version -> updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) }
+        versions.each { version -> updateReturnValueDefinitionFieldJson(uid, field, code, value, since, version) }
     }
 
     /**
@@ -425,19 +392,18 @@ class ReturnValueDefinitionIT extends BaseApiTest {
                 def body = [:]
                 body[field] = value
                 client.put(
-                        path: "/${version}/definitions/11D3548466F2/returnvalues/${uid}",
+                        path: "/$version/definitions/65RC86G6KMRA/returnvalues/$uid",
                         body: body,
                         requestContentType: URLENC,
                         contentType: JSON)
                 fail 'Response status code should have been 400 (' + field + ', ' + code + ').'
             } catch (HttpResponseException e) {
                 def response = e.response
-                assertEquals 400, response.status
-                assertEquals 'application/json', response.contentType
-                assertTrue response.data instanceof net.sf.json.JSON
-                assertEquals 'INVALID', response.data.status
-                assertTrue([field] == response.data.validationResult.errors.collect {it.field})
-                assertTrue([code] == response.data.validationResult.errors.collect {it.code})
+                assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+                assert response.contentType == 'application/json'
+                assert response.data.status == 'INVALID'
+                assert response.data.validationResult.errors.collect { it.field } == [field]
+                assert response.data.validationResult.errors.collect { it.code } == [code]
             }
         }
     }
