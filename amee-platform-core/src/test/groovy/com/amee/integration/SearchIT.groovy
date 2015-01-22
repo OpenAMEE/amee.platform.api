@@ -38,20 +38,17 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchJson(version) }
+        versions.each { version -> searchJson(version) }
     }
 
     def searchJson(version) {
         client.contentType = JSON
-        def response = client.get(
-                path: "/${version}/search",
-                query: ['q': 'water', 'types': 'DC'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals 2, response.data.results.size()
-        assert Collections.nCopies(2, 'category') == response.data.results.collect { it.type }
+        def response = client.get(path: "/$version/search", query: [q: 'electricity', types: 'DC'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.results.size() == 9
+        assert response.data.results.collect { it.type } == Collections.nCopies(9, 'category')
     }
 
     /**
@@ -59,22 +56,20 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJsonWithExcTags() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchJsonWithExcTags(version) }
+        versions.each { version -> searchJsonWithExcTags(version) }
     }
 
     def searchJsonWithExcTags(version) {
         if (version >= 3.2) {
             client.contentType = JSON
-            def response = client.get(
-                    path: "/${version}/search",
-                    query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 1, response.data.results.size()
-            assertFalse response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
-            assertEquals 'category', response.data.results.first().type
+            def response = client.get(path: "/$version/search;tags", query: [q: 'electricity', excTags: 'country', types: 'DC'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.results.size() == 7
+            response.data.results.each { cat ->
+                assert !(cat.tags.collect { it.tag }.contains('country'))
+            }
         }
     }
 
@@ -83,22 +78,20 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchJsonWithTags() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchJsonWithTags(version) }
+        versions.each { version -> searchJsonWithTags(version) }
     }
 
     def searchJsonWithTags(version) {
         if (version >= 3.2) {
             client.contentType = JSON
-            def response = client.get(
-                    path: "/${version}/search",
-                    query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals 1, response.data.results.size()
-            assertTrue response.data.results.first().wikiName.toString().startsWith('Ecoinvent')
-            assertEquals 'category', response.data.results.first().type
+            def response = client.get(path: "/$version/search;tags", query: [q: 'electricity', tags: 'country', types: 'DC'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.results.size() == 2
+            response.data.results.each { cat ->
+                assert cat.tags.collect { it.tag }.contains('country')
+            }
         }
     }
 
@@ -107,19 +100,17 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXml() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchXml(version) }
+        versions.each { version -> searchXml(version) }
     }
 
     def searchXml(version) {
         client.contentType = XML
-        def response = client.get(
-                path: "/${version}/search",
-                query: ['q': 'water', 'types': 'DI'])
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
+        def response = client.get(path: "/$version/search", query: [q: 'electricity', types: 'DI'])
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
         def allResults = response.data.Results.Item
-        assertEquals 10, allResults.size()
+        assert allResults.size() == 25
     }
 
     /**
@@ -127,21 +118,20 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXmlWithExcTags() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchXmlWithExcTags(version) }
+        versions.each { version -> searchXmlWithExcTags(version) }
     }
 
     def searchXmlWithExcTags(version) {
         if (version >= 3.2) {
             client.contentType = XML
-            def response = client.get(
-                    path: "/${version}/search",
-                    query: ['q': 'water', 'excTags': 'ecoinvent', 'types': 'DC'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/search;tags", query: [q: 'electricity', excTags: 'country', types: 'DC'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def allResults = response.data.Results.Category
-            assertEquals 1, allResults.size()
-            assertFalse allResults[0].WikiName.text().startsWith('Ecoinvent')
+            assert allResults.size() == 7
+            def allTags = response.data.Results.Category.Tags.Tag.collect{ it.text() }
+            assert !allTags.contains('country')
         }
     }
 
@@ -150,21 +140,20 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchXmlWithTags() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchXmlWithTags(version) }
+        versions.each { version -> searchXmlWithTags(version) }
     }
 
     def searchXmlWithTags(version) {
         if (version >= 3.2) {
             client.contentType = XML
-            def response = client.get(
-                    path: "/${version}/search",
-                    query: ['q': 'water', 'tags': 'ecoinvent', 'types': 'DC'])
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/search;tags", query: [q: 'electricity', tags: 'country', types: 'DC'])
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def allResults = response.data.Results.Category
-            assertEquals 1, allResults.size()
-            assertTrue allResults[0].WikiName.text().startsWith('Ecoinvent')
+            assert allResults.size() == 2
+            def allTags = response.data.Results.Category.Tags.Tag.collect{ it.text() }
+            assert allTags.contains('country')
         }
     }
 
@@ -174,22 +163,19 @@ class SearchIT extends BaseApiTest {
      */
     @Test
     void searchWithInvalidQueryJson() {
-        com.amee.integration.BaseApiTest.versions.each { version -> searchWithInvalidQueryJson(version) }
+        versions.each { version -> searchWithInvalidQueryJson(version) }
     }
 
     def searchWithInvalidQueryJson(version) {
         try {
             client.contentType = JSON
-            client.get(
-                    path: "/${version}/search",
-                    query: ['q': 'cooking\\'])
-            fail 'Response status code should have been 400.';
+            client.get(path: "/$version/search", query: [q: 'cooking\\'])
+            fail 'Response status code should have been 400.'
         } catch (HttpResponseException e) {
-            def response = e.response;
-            assertEquals CLIENT_ERROR_BAD_REQUEST.code, response.status;
-            assertEquals 'application/json', response.contentType;
-            assertTrue response.data instanceof net.sf.json.JSON;
-            assertEquals 'INVALID', response.data.status;
+            def response = e.response
+            assert response.status == CLIENT_ERROR_BAD_REQUEST.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'INVALID'
         }
     }
 }
