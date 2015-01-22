@@ -18,8 +18,8 @@ pom.xml.releaseBackup
 
 /scripts/jmeter/results/
 
-/amee-platform-core/src/main/config/amee.salt
-/amee-platform-core/src/main/config/amee.key
+/amee-platform-core/src/main/config/*.salt
+/amee-platform-core/src/main/config/*.key
 /amee-platform-core/logs/
 /amee-platform-core/lucene
 
