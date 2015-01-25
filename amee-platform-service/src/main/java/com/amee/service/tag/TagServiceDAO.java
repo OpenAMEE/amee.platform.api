@@ -96,10 +96,10 @@ public class TagServiceDAO {
         hql.append("LEFT JOIN t.entityTags et ");
         hql.append("WHERE t.status != :trash ");
         hql.append("AND et.status != :trash ");
-        if ((incEntityIds != null) && (!incEntityIds.isEmpty())) {
+        if (!incEntityIds.isEmpty()) {
             hql.append("AND et.entityReference.entityId IN (:incEntityIds) ");
         }
-        if ((excEntityIds != null) && (!excEntityIds.isEmpty())) {
+        if (!excEntityIds.isEmpty()) {
             hql.append("AND et.entityReference.entityId NOT IN (:excEntityIds) ");
         }
         hql.append("GROUP BY t.tag, t.uid ");
@@ -107,10 +107,10 @@ public class TagServiceDAO {
         // Create Query.
         Query query = entityManager.createQuery(hql.toString());
         query.setParameter("trash", AMEEStatus.TRASH);
-        if ((incEntityIds != null) && (!incEntityIds.isEmpty())) {
+        if (!incEntityIds.isEmpty()) {
             query.setParameter("incEntityIds", incEntityIds);
         }
-        if ((excEntityIds != null) && (!excEntityIds.isEmpty())) {
+        if (!excEntityIds.isEmpty()) {
             query.setParameter("excEntityIds", excEntityIds);
         }
         query.setHint("org.hibernate.timeout", 60);
