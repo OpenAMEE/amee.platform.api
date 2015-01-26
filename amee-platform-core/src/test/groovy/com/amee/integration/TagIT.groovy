@@ -628,6 +628,7 @@ class TagIT extends BaseApiTest {
 
     def filterOnMultipleTagsJson(version) {
         setAdminUser()
+
         // Tag DataCategories.
         String uid1 = postTagToCategory('Kitchen_generic', 'test_tag_1', version)
         postTagToCategory('Entertainment_generic', 'test_tag_1', version)
@@ -648,7 +649,7 @@ class TagIT extends BaseApiTest {
         testFilterCategories([tags: 'test_tag_1,test_tag_2,test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic'], version)
         testFilterCategories([tags: 'test_tag_3,test_tag_2,test_tag_1'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic'], version)
         testFilterCategories([tags: 'test_tag_1 AND test_tag_2 AND test_tag_3'], ['Entertainment_generic'], version)
-        testFilterCategories([tags: 'test_tag_2 OR test_tag_3', 'excTags': 'test_tag_1'], ['Computers_generic'], version)
+        testFilterCategories([tags: 'test_tag_2 OR test_tag_3', excTags: 'test_tag_1'], ['Computers_generic'], version)
         testFilterCategories([tags: '(test_tag_2 OR test_tag_3) NOT test_tag_1'], ['Computers_generic'], version)
 
         // Check the categories can be searched for.
@@ -657,7 +658,7 @@ class TagIT extends BaseApiTest {
             testSearchForCategories([q: 'kitchen', tags: '-test_tag_1'], [], version)
             testSearchForCategories([q: 'generic', tags: 'test_tag_3'], ['Entertainment_generic', 'Computers_generic'], version)
             testSearchForCategories([q: 'generic', tags: 'test_tag_1,test_tag_3'], ['Kitchen_generic', 'Entertainment_generic', 'Computers_generic'], version)
-            testSearchForCategories([q: 'generic', tags: 'test_tag_1,test_tag_3', 'excTags': 'test_tag_2'], ['Kitchen_generic', 'Computers_generic'], version)
+            testSearchForCategories([q: 'generic', tags: 'test_tag_1,test_tag_3', excTags: 'test_tag_2'], ['Kitchen_generic', 'Computers_generic'], version)
             testSearchForCategories([q: 'generic', tags: '(test_tag_1 OR test_tag_3) NOT test_tag_2'], ['Kitchen_generic', 'Computers_generic'], version)
             testSearchForCategories([q: 'blahblah', tags: 'test_tag_1'], [], version)
         }
@@ -665,14 +666,14 @@ class TagIT extends BaseApiTest {
         // Test tag counts.
         if (version >= 3.2) {
             testTags([incTags: 'test_tag_1'],
-                    ['electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
-                    [2, 1, 1, 1, 2, 1, 1], version)
+                    ['electricity', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
+                    [1, 1, 1, 1, 2, 1, 1], version)
             testTags([incTags: 'test_tag_1, test_tag_2, test_tag_3'],
-                    ['computer', 'electrical', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
-                    [1, 3, 1, 1, 1, 2, 1, 2], version)
-            testTags(['excTags': 'test_tag_1'],
-                    ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'Ecoinvent', 'LCA', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste', 'grid'],
-                    [1, 1, 2, 1, 1, 6, 2, 3, 3, 1, 2, 1, 7, 1, 1, 1], version)
+                    ['computer', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
+                    [1, 1, 1, 1, 2, 1, 2], version)
+            testTags([excTags: 'test_tag_1'],
+                    ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste', 'grid'],
+                    [1, 1, 2, 2, 1, 1, 3, 3, 2, 1, 1, 1, 1, 1], version)
         }
 
         // Now delete the Tags.
