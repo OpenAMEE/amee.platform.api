@@ -61,22 +61,20 @@
                     <runOrder>alphabetical</runOrder>
                     <environmentVariables>
                         <!-- H2 -->
-                        <!--
                         <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
                         <DB_URL>h2:mem:amee_test</DB_URL>
                         <DB_DRIVER>org.h2.Driver</DB_DRIVER>
                         <DB_USERNAME>sa</DB_USERNAME>
                         <DB_PSWD>NULL</DB_PSWD>
                         <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
-                         -->
 
                         <!-- HSQLDB -->
-                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
-                        <DB_URL>hsqldb:mem:amee_test</DB_URL>
-                        <DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>
-                        <DB_USERNAME>sa</DB_USERNAME>
-                        <DB_PSWD>NULL</DB_PSWD>
-                        <VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>
+                        <!--<DB_URL_PREFIX>jdbc</DB_URL_PREFIX>-->
+                        <!--<DB_URL>hsqldb:mem:amee_test</DB_URL>-->
+                        <!--<DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>-->
+                        <!--<DB_USERNAME>sa</DB_USERNAME>-->
+                        <!--<DB_PSWD>NULL</DB_PSWD>-->
+                        <!--<VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>-->
 
                         <!-- MySQL -->
                         <!--
@@ -114,8 +112,8 @@
                         <MESSAGING_SCOPE>local</MESSAGING_SCOPE>
                         <AMEE_APP_NAME>platform</AMEE_APP_NAME>
                         <AMEE_INSTANCE_NAME>local</AMEE_INSTANCE_NAME>
-                        <DATABASE>HSQL</DATABASE>
-                        <DATABASE_PLATFORM>org.hibernate.dialect.HSQLDialect</DATABASE_PLATFORM>
+                        <DATABASE>H2</DATABASE>
+                        <DATABASE_PLATFORM>org.hibernate.dialect.H2Dialect</DATABASE_PLATFORM>
                         <SHOW_SQL>false</SHOW_SQL>
                         <MASTER_INDEX>true</MASTER_INDEX>
                         <CLEAR_INDEX>true</CLEAR_INDEX>
@@ -489,10 +487,16 @@
             <version>${http-builder.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hsqldb</groupId>-->
+            <!--<artifactId>hsqldb</artifactId>-->
+            <!--<version>2.3.2</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.3.2</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
 
