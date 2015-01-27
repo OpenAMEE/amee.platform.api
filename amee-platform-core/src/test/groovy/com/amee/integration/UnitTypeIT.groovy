@@ -1,9 +1,12 @@
 package com.amee.integration
 
+import com.amee.base.utils.UidGen
+import com.amee.domain.unit.AMEEUnitType
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
+import static org.junit.Assert.fail
 import static org.restlet.data.Status.*
 
 /**
@@ -11,13 +14,9 @@ import static org.restlet.data.Status.*
  */
 class UnitTypeIT extends BaseApiTest {
 
-    def unitTypeUids = [
-            'AAA3DAA7A390',
-            '1AA3DAA7A390']
-
-    def unitTypeNames = [
-            'Test Unit Type One',
-            'Test Unit Type Two']
+    def unitTypes = [
+            [uid: 'AAA3DAA7A390', name: 'Test Unit Type One'],
+            [uid: '1AA3DAA7A390', name: 'Test Unit Type Two']]
 
     /**
      * Tests for creation, fetch and deletion of a Unit Type using JSON & XML responses.
@@ -37,7 +36,7 @@ class UnitTypeIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveUnitType() {
-        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnitType(version) }
+        versions.each { version -> createAndRemoveUnitType(version) }
     }
 
     def createAndRemoveUnitType(version) {
@@ -54,37 +53,34 @@ class UnitTypeIT extends BaseApiTest {
 
             // Create a new Unit Type.
             def responsePost = client.post(
-                    path: "/${version}/units/types",
+                    path: "/$version/units/types",
                     body: [name: name],
                     requestContentType: URLENC,
                     contentType: JSON)
 
             // Get and check the location.
-            def unitTypeLocation = responsePost.headers['Location'].value
-            def unitTypeUid = unitTypeLocation.split('/')[6]
-            assertTrue unitTypeUid.size() == 12
-            assertOkJson responsePost, SUCCESS_CREATED.code, unitTypeUid
+            String unitTypeLocation = responsePost.headers['Location'].value
+            String unitTypeUid = unitTypeLocation.split('/')[6]
+            assert UidGen.INSTANCE_12.isValid(unitTypeUid)
+            assertOkJson(responsePost, SUCCESS_CREATED.code, unitTypeUid)
 
             // Fetch the Unit Type.
-            def response = client.get(
-                    path: "/${version}/units/types/${name};full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals name, response.data.unitType.name
+            def response = client.get(path: "/$version/units/types/$name;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.unitType.name == name
 
             // Then delete the Unit Type.
-            def responseDelete = client.delete(path: "/${version}/units/types/${name}")
-            assertOkJson responseDelete, SUCCESS_OK.code, unitTypeUid
+            def responseDelete = client.delete(path: "/$version/units/types/$name")
+            assertOkJson(responseDelete, SUCCESS_OK.code, unitTypeUid)
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/units/types/${name}")
+                client.get(path: "/$version/units/types/$name")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -98,36 +94,34 @@ class UnitTypeIT extends BaseApiTest {
 
             // Create a new Unit Type.
             def responsePost = client.post(
-                    path: "/${version}/units/types",
+                    path: "/$version/units/types",
                     body: [name: name],
                     requestContentType: URLENC,
                     contentType: XML)
 
             // Get and check the location.
-            def unitTypeLocation = responsePost.headers['Location'].value
-            def unitTypeUid = unitTypeLocation.split('/')[6]
-            assertTrue unitTypeUid.size() == 12
-            assertOkXml responsePost, SUCCESS_CREATED.code, unitTypeUid
+            String unitTypeLocation = responsePost.headers['Location'].value
+            String unitTypeUid = unitTypeLocation.split('/')[6]
+            assert UidGen.INSTANCE_12.isValid(unitTypeUid)
+            assertOkXml(responsePost, SUCCESS_CREATED.code, unitTypeUid)
 
             // Fetch the Unit Type.
-            def response = client.get(
-                    path: "/${version}/units/types/${name};full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals name, response.data.UnitType.Name.text()
+            def response = client.get(path: "/$version/units/types/$name;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.UnitType.Name.text() == name
 
             // Then delete the Unit Type.
-            def responseDelete = client.delete(path: "/${version}/units/types/${name}", contentType: XML)
-            assertOkXml responseDelete, SUCCESS_OK.code, unitTypeUid
+            def responseDelete = client.delete(path: "/$version/units/types/$name", contentType: XML)
+            assertOkXml(responseDelete, SUCCESS_OK.code, unitTypeUid)
 
             // We should get a 404 here.
             try {
-                client.get(path: "/${version}/units/types/${name}")
+                client.get(path: "/$version/units/types/$name")
                 fail 'Should have thrown an exception'
             } catch (HttpResponseException e) {
-                assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+                assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
             }
         }
     }
@@ -146,7 +140,7 @@ class UnitTypeIT extends BaseApiTest {
      */
     @Test
     void getAllUnitTypes() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnitTypes(version) }
+        versions.each { version -> getAllUnitTypes(version) }
     }
 
     def getAllUnitTypes(version) {
@@ -156,31 +150,26 @@ class UnitTypeIT extends BaseApiTest {
 
     def getAllUnitTypesJson(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals unitTypeUids.size(), response.data.unitTypes.size()
-            assertEquals unitTypeUids.sort(), response.data.unitTypes.collect {it.uid}.sort()
-            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, response.data.unitTypes.collect {it.name}
+            def response = client.get(path: "/$version/units/types", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.unitTypes.size() == unitTypes.size()
+            assert response.data.unitTypes.collect { it.uid }.sort() == unitTypes.collect { it.uid }.sort()
+            assert response.data.unitTypes.collect { it.name } == unitTypes.collect { it.name }.sort { a, b -> a.compareToIgnoreCase(b) }
         }
     }
 
     def getAllUnitTypesXml(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/units/types", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def allUnitTypes = response.data.UnitTypes.UnitType
-            assertEquals unitTypeUids.size(), allUnitTypes.size()
-            assertEquals unitTypeUids.sort(), allUnitTypes.@uid*.text().sort()
-            assertEquals unitTypeNames.sort { a, b -> a.compareToIgnoreCase(b) }, allUnitTypes.Name*.text().sort()
+            assert allUnitTypes.size() == unitTypes.size()
+            assert allUnitTypes.@uid*.text().sort() == unitTypes.collect { it.uid }.sort()
+            assert allUnitTypes.Name*.text().sort() == unitTypes.collect { it.name }.sort { a, b -> a.compareToIgnoreCase(b) }
         }
     }
 
@@ -199,7 +188,7 @@ class UnitTypeIT extends BaseApiTest {
     void updateWithInvalidName() {
         setAdminUser()
         updateUnitTypeFieldJson('name', 'empty', '')
-        updateUnitTypeFieldJson('name', 'long', String.randomString(256))
+        updateUnitTypeFieldJson('name', 'long', String.randomString(AMEEUnitType.NAME_MAX_SIZE + 1))
         updateUnitTypeFieldJson('name', 'duplicate', 'Test Unit Type Two'); // Normal case.
         updateUnitTypeFieldJson('name', 'duplicate', 'test unit type two'); // Lower case.
     }
