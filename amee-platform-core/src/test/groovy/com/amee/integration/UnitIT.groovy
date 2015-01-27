@@ -1,9 +1,15 @@
 package com.amee.integration
 
+import com.amee.base.utils.UidGen
+import com.amee.domain.unit.AMEEUnit
 import groovyx.net.http.HttpResponseException
 import org.junit.Test
+
+import javax.measure.unit.NonSI
+
 import static groovyx.net.http.ContentType.*
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.fail
 import static org.restlet.data.Status.*
 
 /**
@@ -11,33 +17,13 @@ import static org.restlet.data.Status.*
  */
 class UnitIT extends BaseApiTest {
 
-    def unitUids = [
-            '1BB3DAA7A390',
-            '2BB3DAA7A390',
-            '3BB3DAA7A390']
+    def units = [
+            [uid: '1BB3DAA7A390', name: 'Test Unit One', internalSymbol: 'kg', externalSymbol: 'zkg'],
+            [uid: '2BB3DAA7A390', name: 'Test Unit Two', internalSymbol: 'kWh', externalSymbol: 'zkWh'],
+            [uid: '3BB3DAA7A390', name: 'Test Unit Three', internalSymbol: 'm', externalSymbol: 'zm']
+    ]
 
-    def unitNames = [
-            'Test Unit One',
-            'Test Unit Two',
-            'Test Unit Three']
-
-    def unitInternalSymbols = [
-            'kg',
-            'kWh',
-            'm']
-
-    def unitExternalSymbols = [
-            'zkg',
-            'zkWh',
-            'zm']
-
-    def allUnitUids = unitUids + ['4BB3DAA7A390']
-
-    def allUnitNames = unitNames + ['Test Unit Four']
-
-    def allUnitInternalSymbols = unitInternalSymbols + ['km']
-
-    def allUnitExternalSymbols = unitExternalSymbols + ['zkm']
+    def allUnits = units + [uid: '4BB3DAA7A390', name: 'Test Unit Four', internalSymbol: 'km', externalSymbol: 'zkm']
 
     /**
      * Tests for creation, fetch and deletion of a Unit using JSON & XML responses.
@@ -61,14 +47,14 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void createAndRemoveUnit() {
-        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnit(version, true) }
-        com.amee.integration.BaseApiTest.versions.each { version -> createAndRemoveUnit(version, false) }
+        versions.each { version -> createAndRemoveUnit(version, true) }
+        versions.each { version -> createAndRemoveUnit(version, false) }
     }
 
     def createAndRemoveUnit(version, useUnitTypeResource) {
         if (version >= 3.5) {
             createAndRemoveUnit(version, 'Ounce', 'oz', 'ounce', useUnitTypeResource)
-            createAndRemoveUnit(version, 'Angstrom', javax.measure.unit.NonSI.ANGSTROM.toString(), 'ang', useUnitTypeResource)
+            createAndRemoveUnit(version, 'Angstrom', NonSI.ANGSTROM.toString(), 'ang', useUnitTypeResource)
             createAndRemoveUnit(version, 'Meters Per Second', 'm/s', 'm/s', useUnitTypeResource)
         }
     }
@@ -88,55 +74,45 @@ class UnitIT extends BaseApiTest {
 
             // Use the Unit Type Resource.
             responsePost = client.post(
-                    path: "/${version}/units/types/1AA3DAA7A390/units",
-                    body: [
-                            name: name,
-                            internalSymbol: internalSymbol,
-                            externalSymbol: externalSymbol],
+                    path: "/$version/units/types/1AA3DAA7A390/units",
+                    body: [name: name, internalSymbol: internalSymbol, externalSymbol: externalSymbol],
                     requestContentType: URLENC,
                     contentType: JSON)
         } else {
 
             // Use the base Units resource.
             responsePost = client.post(
-                    path: "/${version}/units",
-                    body: [
-                            name: name,
-                            internalSymbol: internalSymbol,
-                            externalSymbol: externalSymbol,
-                            unitType: '1AA3DAA7A390'],
+                    path: "/$version/units",
+                    body: [name: name, internalSymbol: internalSymbol, externalSymbol: externalSymbol, unitType: '1AA3DAA7A390'],
                     requestContentType: URLENC,
                     contentType: JSON)
         }
 
         // Get and check the location.
-        def unitLocation = responsePost.headers['Location'].value
-        def unitUid = unitLocation.split('/')[8]
-        assertTrue unitUid.size() == 12
-        assertOkJson responsePost, SUCCESS_CREATED.code, unitUid
+        String unitLocation = responsePost.headers['Location'].value
+        String unitUid = unitLocation.split('/')[8]
+        assert UidGen.INSTANCE_12.isValid(unitUid)
+        assertOkJson(responsePost, SUCCESS_CREATED.code, unitUid)
 
         // Fetch the Unit.
-        def response = client.get(
-                path: "${unitLocation};full",
-                contentType: JSON)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/json', response.contentType
-        assertTrue response.data instanceof net.sf.json.JSON
-        assertEquals 'OK', response.data.status
-        assertEquals name, response.data.unit.name
-        assertEquals internalSymbol, response.data.unit.internalSymbol
-        assertEquals externalSymbol, response.data.unit.externalSymbol
+        def response = client.get(path: "$unitLocation;full", contentType: JSON)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/json'
+        assert response.data.status == 'OK'
+        assert response.data.unit.name == name
+        assert response.data.unit.internalSymbol == internalSymbol
+        assert response.data.unit.externalSymbol == externalSymbol
 
         // Then delete the Unit.
-        def responseDelete = client.delete(path: "${unitLocation}")
-        assertOkJson responseDelete, SUCCESS_OK.code, unitUid
+        def responseDelete = client.delete(path: unitLocation)
+        assertOkJson(responseDelete, SUCCESS_OK.code, unitUid)
 
         // We should get a 404 here.
         try {
-            client.get(path: "${unitLocation}")
+            client.get(path: unitLocation)
             fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assert e.response.status == CLIENT_ERROR_NOT_FOUND.code
         }
     }
 
@@ -150,54 +126,45 @@ class UnitIT extends BaseApiTest {
 
             // Use the Unit Type Resource.
             responsePost = client.post(
-                    path: "/${version}/units/types/1AA3DAA7A390/units",
-                    body: [
-                            name: name,
-                            internalSymbol: internalSymbol,
-                            externalSymbol: externalSymbol],
+                    path: "/$version/units/types/1AA3DAA7A390/units",
+                    body: [name: name, internalSymbol: internalSymbol, externalSymbol: externalSymbol],
                     requestContentType: URLENC,
                     contentType: XML)
         } else {
 
             // Use the base Units resource.
             responsePost = client.post(
-                    path: "/${version}/units",
-                    body: [
-                            name: name,
-                            internalSymbol: internalSymbol,
-                            externalSymbol: externalSymbol,
-                            unitType: '1AA3DAA7A390'],
+                    path: "/$version/units",
+                    body: [name: name, internalSymbol: internalSymbol, externalSymbol: externalSymbol, unitType: '1AA3DAA7A390'],
                     requestContentType: URLENC,
                     contentType: XML)
         }
 
         // Get and check the location.
-        def unitLocation = responsePost.headers['Location'].value
-        def unitUid = unitLocation.split('/')[8]
-        assertTrue unitUid.size() == 12
-        assertOkXml responsePost, SUCCESS_CREATED.code, unitUid
+        String unitLocation = responsePost.headers['Location'].value
+        String unitUid = unitLocation.split('/')[8]
+        assert UidGen.INSTANCE_12.isValid(unitUid)
+        assertOkXml(responsePost, SUCCESS_CREATED.code, unitUid)
 
         // Fetch the Unit.
-        def response = client.get(
-                path: "${unitLocation};full",
-                contentType: XML)
-        assertEquals SUCCESS_OK.code, response.status
-        assertEquals 'application/xml', response.contentType
-        assertEquals 'OK', response.data.Status.text()
-        assertEquals name, response.data.Unit.Name.text()
-        assertEquals internalSymbol, response.data.Unit.InternalSymbol.text()
-        assertEquals externalSymbol, response.data.Unit.ExternalSymbol.text()
+        def response = client.get(path: "$unitLocation;full", contentType: XML)
+        assert response.status == SUCCESS_OK.code
+        assert response.contentType == 'application/xml'
+        assert response.data.Status.text() == 'OK'
+        assert response.data.Unit.Name.text() == name
+        assert response.data.Unit.InternalSymbol.text() == internalSymbol
+        assert response.data.Unit.ExternalSymbol.text() == externalSymbol
 
         // Then delete the Unit.
-        def responseDelete = client.delete(path: "${unitLocation}", contentType: XML)
-        assertOkXml responseDelete, SUCCESS_OK.code, unitUid
+        def responseDelete = client.delete(path: unitLocation, contentType: XML)
+        assertOkXml(responseDelete, SUCCESS_OK.code, unitUid)
 
         // We should get a 404 here.
         try {
-            client.get(path: "${unitLocation}")
+            client.get(path: unitLocation)
             fail 'Should have thrown an exception'
         } catch (HttpResponseException e) {
-            assertEquals CLIENT_ERROR_NOT_FOUND.code, e.response.status
+            assertEquals(CLIENT_ERROR_NOT_FOUND.code, e.response.status)
         }
     }
 
@@ -219,7 +186,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getSingleUnit() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getSingleUnit(version) }
+        versions.each { version -> getSingleUnit(version) }
     }
 
     def getSingleUnit(version) {
@@ -229,43 +196,38 @@ class UnitIT extends BaseApiTest {
 
     def getSingleUnitJson(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types/AAA3DAA7A390/units/kg;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals '1BB3DAA7A390', response.data.unit.uid
-            assertEquals 'Test Unit One', response.data.unit.name
-            assertEquals 'zkg', response.data.unit.symbol
-            assertEquals 'kg', response.data.unit.internalSymbol
-            assertEquals 'zkg', response.data.unit.externalSymbol
-            assertEquals 2, response.data.alternatives.size()
-            assertEquals(['2BB3DAA7A390', '3BB3DAA7A390'].sort(), response.data.alternatives.collect {it.uid}.sort())
-            assertEquals(['Test Unit Two', 'Test Unit Three'].sort(), response.data.alternatives.collect {it.name}.sort())
-            assertEquals(['zkWh', 'zm'].sort(), response.data.alternatives.collect {it.symbol}.sort())
+            def response = client.get(path: "/$version/units/types/AAA3DAA7A390/units/kg;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.unit.uid == '1BB3DAA7A390'
+            assert response.data.unit.name == 'Test Unit One'
+            assert response.data.unit.symbol == 'zkg'
+            assert response.data.unit.internalSymbol == 'kg'
+            assert response.data.unit.externalSymbol == 'zkg'
+            assert response.data.alternatives.size() == 2
+            assert response.data.alternatives.collect { it.uid }.sort() == ['2BB3DAA7A390', '3BB3DAA7A390'].sort()
+            assert response.data.alternatives.collect { it.name }.sort() == ['Test Unit Two', 'Test Unit Three'].sort()
+            assert response.data.alternatives.collect { it.symbol }.sort() == ['zkWh', 'zm'].sort()
         }
     }
 
     def getSingleUnitXml(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types/AAA3DAA7A390/units/kg;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            assertEquals '1BB3DAA7A390', response.data.Unit.@uid.text()
-            assertEquals 'Test Unit One', response.data.Unit.Name.text()
-            assertEquals 'zkg', response.data.Unit.Symbol.text()
-            assertEquals 'kg', response.data.Unit.InternalSymbol.text()
-            assertEquals 'zkg', response.data.Unit.ExternalSymbol.text()
+            def response = client.get(path: "/$version/units/types/AAA3DAA7A390/units/kg;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            assert response.data.Unit.@uid.text() == '1BB3DAA7A390'
+            assert response.data.Unit.Name.text() == 'Test Unit One'
+            assert response.data.Unit.Symbol.text() == 'zkg'
+            assert response.data.Unit.InternalSymbol.text() == 'kg'
+            assert response.data.Unit.ExternalSymbol.text() == 'zkg'
             def allAlternatives = response.data.Alternatives.Unit
-            assertEquals 2, allAlternatives.size()
-            assertEquals(['2BB3DAA7A390', '3BB3DAA7A390'].sort(), allAlternatives.@uid*.text().sort())
-            assertEquals(['Test Unit Two', 'Test Unit Three'].sort(), allAlternatives.Name*.text().sort())
-            assertEquals(['zkWh', 'zm'].sort(), allAlternatives.Symbol*.text().sort())
+            assert allAlternatives.size() == 2
+            assert allAlternatives.@uid*.text().sort() == ['2BB3DAA7A390', '3BB3DAA7A390'].sort()
+            assert allAlternatives.Name*.text().sort() == ['Test Unit Two', 'Test Unit Three'].sort()
+            assert allAlternatives.Symbol*.text().sort() == ['zkWh', 'zm'].sort()
         }
     }
 
@@ -281,7 +243,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getAllUnitsForUnitType() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnitsForUnitType(version) }
+        versions.each { version -> getAllUnitsForUnitType(version) }
     }
 
     def getAllUnitsForUnitType(version) {
@@ -291,35 +253,30 @@ class UnitIT extends BaseApiTest {
 
     def getAllUnitsForUnitTypeJson(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types/AAA3DAA7A390/units;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals unitUids.size(), response.data.units.size()
-            assertEquals unitUids.sort(), response.data.units.collect {it.uid}.sort()
-            assertEquals unitNames.sort(), response.data.units.collect {it.name}.sort()
-            assertEquals unitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort()
-            assertEquals unitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort()
+            def response = client.get(path: "/$version/units/types/AAA3DAA7A390/units;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.units.size() == units.size()
+            assert response.data.units.collect { it.uid }.sort() == units.collect { it.uid }.sort()
+            assert response.data.units.collect { it.name }.sort() == units.collect { it.name }.sort()
+            assert response.data.units.collect { it.internalSymbol }.sort() == units.collect { it.internalSymbol }.sort()
+            assert response.data.units.collect { it.externalSymbol }.sort() == units.collect { it.externalSymbol }.sort()
         }
     }
 
     def getAllUnitsForUnitTypeXml(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units/types/AAA3DAA7A390/units;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
+            def response = client.get(path: "/$version/units/types/AAA3DAA7A390/units;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
             def allUnits = response.data.Units.Unit
-            assertEquals unitUids.size(), allUnits.size()
-            assertEquals unitUids.sort(), allUnits.@uid*.text().sort()
-            assertEquals unitNames.sort(), allUnits.Name*.text().sort()
-            assertEquals unitInternalSymbols.sort(), allUnits.InternalSymbol*.text().sort()
-            assertEquals unitExternalSymbols.sort(), allUnits.ExternalSymbol*.text().sort()
+            assert allUnits.size() == units.size()
+            assert allUnits.@uid*.text().sort() == units.collect { it.uid }.sort()
+            assert allUnits.Name*.text().sort() == units.collect { it.name }.sort()
+            assert allUnits.InternalSymbol*.text().sort() == units.collect { it.internalSymbol }.sort()
+            assert allUnits.ExternalSymbol*.text().sort() == units.collect { it.externalSymbol }.sort()
         }
     }
 
@@ -335,7 +292,7 @@ class UnitIT extends BaseApiTest {
      */
     @Test
     void getAllUnits() {
-        com.amee.integration.BaseApiTest.versions.each { version -> getAllUnits(version) }
+        versions.each { version -> getAllUnits(version) }
     }
 
     def getAllUnits(version) {
@@ -345,35 +302,30 @@ class UnitIT extends BaseApiTest {
 
     def getAllUnitsJson(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units;full",
-                    contentType: JSON)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/json', response.contentType
-            assertTrue response.data instanceof net.sf.json.JSON
-            assertEquals 'OK', response.data.status
-            assertEquals allUnitUids.size(), response.data.units.size()
-            assertEquals allUnitUids.sort(), response.data.units.collect {it.uid}.sort()
-            assertEquals allUnitNames.sort(), response.data.units.collect {it.name}.sort()
-            assertEquals allUnitInternalSymbols.sort(), response.data.units.collect {it.internalSymbol}.sort()
-            assertEquals allUnitExternalSymbols.sort(), response.data.units.collect {it.externalSymbol}.sort()
+            def response = client.get(path: "/$version/units;full", contentType: JSON)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/json'
+            assert response.data.status == 'OK'
+            assert response.data.units.size() == allUnits.size()
+            assert response.data.units.collect { it.uid }.sort() == allUnits.collect { it.uid }.sort()
+            assert response.data.units.collect { it.name }.sort() == allUnits.collect { it.name }.sort()
+            assert response.data.units.collect { it.internalSymbol }.sort() == allUnits.collect { it.internalSymbol }.sort()
+            assert response.data.units.collect { it.externalSymbol }.sort() == allUnits.collect { it.externalSymbol }.sort()
         }
     }
 
     def getAllUnitsXml(version) {
         if (version >= 3.5) {
-            def response = client.get(
-                    path: "/${version}/units;full",
-                    contentType: XML)
-            assertEquals SUCCESS_OK.code, response.status
-            assertEquals 'application/xml', response.contentType
-            assertEquals 'OK', response.data.Status.text()
-            def allUnits = response.data.Units.Unit
-            assertEquals allUnitUids.size(), allUnits.size()
-            assertEquals allUnitUids.sort(), allUnits.@uid*.text().sort()
-            assertEquals allUnitNames.sort(), allUnits.Name*.text().sort()
-            assertEquals allUnitInternalSymbols.sort(), allUnits.InternalSymbol*.text().sort()
-            assertEquals allUnitExternalSymbols.sort(), allUnits.ExternalSymbol*.text().sort()
+            def response = client.get(path: "/$version/units;full", contentType: XML)
+            assert response.status == SUCCESS_OK.code
+            assert response.contentType == 'application/xml'
+            assert response.data.Status.text() == 'OK'
+            def units = response.data.Units.Unit
+            assert units.size() == allUnits.size()
+            assert units.@uid*.text().sort() == allUnits.collect { it.uid }.sort()
+            assert units.Name*.text().sort() == allUnits.collect { it.name }.sort()
+            assert units.InternalSymbol*.text().sort() == allUnits.collect { it.internalSymbol }.sort()
+            assert units.ExternalSymbol*.text().sort() == allUnits.collect {it.externalSymbol }.sort()
         }
     }
 
@@ -392,7 +344,7 @@ class UnitIT extends BaseApiTest {
     void updateWithInvalidName() {
         setAdminUser()
         updateUnitFieldJson('name', 'empty', '')
-        updateUnitFieldJson('name', 'long', String.randomString(256))
+        updateUnitFieldJson('name', 'long', String.randomString(AMEEUnit.NAME_MAX_SIZE + 1))
     }
 
     /**
@@ -411,7 +363,7 @@ class UnitIT extends BaseApiTest {
     void updateWithInvalidInternalSymbol() {
         setAdminUser()
         updateUnitFieldJson('internalSymbol', 'empty', '')
-        updateUnitFieldJson('internalSymbol', 'long', String.randomString(256))
+        updateUnitFieldJson('internalSymbol', 'long', String.randomString(AMEEUnit.SYMBOL_MAX_SIZE + 1))
         updateUnitFieldJson('internalSymbol', 'duplicate', 'kWh'); // Existing internalSymbol.
         updateUnitFieldJson('internalSymbol', 'format', 'not_a_real_unit_symbol')
     }
@@ -430,7 +382,7 @@ class UnitIT extends BaseApiTest {
     @Test
     void updateWithInvalidExternalSymbol() {
         setAdminUser()
-        updateUnitFieldJson('externalSymbol', 'long', String.randomString(256))
+        updateUnitFieldJson('externalSymbol', 'long', String.randomString(AMEEUnit.SYMBOL_MAX_SIZE + 1))
     }
 
     /**
