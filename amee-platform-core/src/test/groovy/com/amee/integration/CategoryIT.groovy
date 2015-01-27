@@ -13,25 +13,39 @@ import static org.restlet.data.Status.*
  */
 class CategoryIT extends BaseApiTest {
 
-    // NOTE: Keep these lists up to date if you add new categories to import.sql.
-
-    static def categoryNames = [
-        'Root',
-        'Home', 'Appliances', 'Computers', 'Generic', 'Cooking', 'Entertainment', 'Generic', 'Kitchen', 'Generic',
-        'Business', 'Energy', 'Electricity', 'US', 'Greenhouse Gas Protocol methodology for US grid electricity', 'Waste',
-        'Embodied', 'ICE Building Materials LCA', 'V2', 'Inventory of Carbon & Energy methodology for materials by mass',
-        'Transport', 'Plane', 'Specific', 'Military', 'Ipcc',
-        'Integration', 'Api', 'Item history test', 'Item history dimless test',
-        'Greenhouse Gas Protocol methodology for international grid electricity']
-
-    static def categoryWikiNames = [
-        'Root',
-        'Home', 'Appliances', 'Computers', 'Computers_generic', 'Cooking', 'Entertainment', 'Entertainment_generic', 'Kitchen', 'Kitchen_generic',
-        'Business', 'Business_energy', 'Electricity_by_Country', 'Energy_US', 'US_Subregion_Electricity', 'Waste',
-        'Embodied', 'ICE_Building_Materials_LCA', 'ICE_v2', 'ICE_v2_by_mass',
-        'Transport', 'Plane', 'Specific_plane_transport', 'Specific_military_aircraft', 'IPCC_military_aircraft',
-        'Integration', 'Api', 'Item_history_test', 'Item_history_dimless_test',
-        'Greenhouse_Gas_Protocol_international_electricity']
+    // NOTE: Keep this list up to date if you add new categories to import.sql.
+    static def categories  = [
+            [name: 'Root', wikiName: 'Root'],
+            [name: 'Home', wikiName: 'Home'],
+            [name: 'Appliances', wikiName: 'Appliances'],
+            [name: 'Computers', wikiName: 'Computers'],
+            [name: 'Generic', wikiName: 'Computers_generic'],
+            [name: 'Cooking', wikiName: 'Cooking'],
+            [name: 'Entertainment', wikiName: 'Entertainment'],
+            [name: 'Generic', wikiName: 'Entertainment_generic'],
+            [name: 'Kitchen', wikiName: 'Kitchen'],
+            [name: 'Generic', wikiName: 'Kitchen_generic'],
+            [name: 'Business', wikiName: 'Business'],
+            [name: 'Energy', wikiName: 'Business_energy'],
+            [name: 'Electricity', wikiName: 'Electricity_by_Country'],
+            [name: 'US', wikiName: 'Energy_US'],
+            [name: 'Greenhouse Gas Protocol methodology for US grid electricity', wikiName: 'US_Subregion_Electricity'],
+            [name: 'Waste', wikiName: 'Waste'],
+            [name: 'Embodied', wikiName: 'Embodied'],
+            [name: 'ICE Building Materials LCA', wikiName: 'ICE_Building_Materials_LCA'],
+            [name: 'V2', wikiName: 'ICE_v2'],
+            [name: 'Inventory of Carbon & Energy methodology for materials by mass', wikiName: 'ICE_v2_by_mass'],
+            [name: 'Transport', wikiName: 'Transport'],
+            [name: 'Plane', wikiName: 'Plane'],
+            [name: 'Specific', wikiName: 'Specific_plane_transport'],
+            [name: 'Military', wikiName: 'Specific_military_aircraft'],
+            [name: 'Ipcc', wikiName: 'IPCC_military_aircraft'],
+            [name: 'Integration', wikiName: 'Integration'],
+            [name: 'Api', wikiName: 'Api'],
+            [name: 'Item history test', wikiName: 'Item_history_test'],
+            [name: 'Item history dimless test', wikiName: 'Item_history_dimless_test'],
+            [name: 'Greenhouse Gas Protocol methodology for international grid electricity', wikiName: 'Greenhouse_Gas_Protocol_international_electricity']
+    ]
 
     /**
      * Tests for creation, fetch and deletion of a Data Category using JSON responses.
@@ -272,10 +286,10 @@ class CategoryIT extends BaseApiTest {
         assert response.contentType == 'application/json'
         assert response.data.status == 'OK'
         assert response.data.resultsTruncated == false
-        assert response.data.categories.size() == categoryNames.size()
+        assert response.data.categories.size() == categories.size()
 
         // Results are sorted by wikiName
-        assert response.data.categories.collect { it.wikiName } == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
+        assert response.data.categories.collect { it.wikiName } == categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) }
     }
     
     /**
@@ -294,11 +308,11 @@ class CategoryIT extends BaseApiTest {
             assert response.contentType == 'application/json'
             assert response.data.status == 'OK'
             assert response.data.resultsTruncated == false
-            assert response.data.categories.size() == categoryNames.size()
-            assert response.data.categories.collect { it.name }.sort() == categoryNames.sort()
+            assert response.data.categories.size() == categories.size()
+            assert response.data.categories.collect { it.name }.sort() == categories.collect { it.name }.sort()
     
             // Results are sorted by wikiName
-            assert response.data.categories.collect { it.wikiName } == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
+            assert response.data.categories.collect { it.wikiName } == categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) }
         }
     }
 
@@ -318,10 +332,10 @@ class CategoryIT extends BaseApiTest {
         assert response.data.Status.text() == 'OK'
         assert response.data.Categories.@truncated.text() == 'false'
         def allCategories = response.data.Categories.Category
-        assert allCategories.size() == categoryNames.size()
+        assert allCategories.size() == categories.size()
 
         // Should be sorted by wikiName
-        assert allCategories.WikiName*.text() == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
+        assert allCategories.WikiName*.text() == categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) }
     }
 
     /**
@@ -341,11 +355,11 @@ class CategoryIT extends BaseApiTest {
            assert response.data.Status.text() == 'OK'
            assert response.data.Categories.@truncated.text() == 'false'
            def allCategories = response.data.Categories.Category
-           assert allCategories.size() == categoryNames.size()
-           assert allCategories.Name*.text().sort() == categoryNames.sort()
+           assert allCategories.size() == categories.size()
+           assert allCategories.Name*.text().sort() == categories.collect { it.name }.sort()
     
            // Should be sorted by wikiName
-           assert allCategories.WikiName*.text() == categoryWikiNames.sort { a, b -> a.compareToIgnoreCase(b) }
+           assert allCategories.WikiName*.text() == categories.collect { it.wikiName }.sort { a, b -> a.compareToIgnoreCase(b) }
        }
    }
     
@@ -445,9 +459,8 @@ class CategoryIT extends BaseApiTest {
 
         def electricityCategoryWikiNames = ['Electricity_by_Country', 'Greenhouse_Gas_Protocol_international_electricity',
                                             'US_Subregion_Electricity', 'Kitchen_generic']
-        def categoryWikiNamesExcElectricity = categoryWikiNames - electricityCategoryWikiNames
-
-        assert response.data.categories.size() == categoryWikiNamesExcElectricity.size()
+        def notElectricityCount = categories.count { !electricityCategoryWikiNames.contains(it.wikiName) }
+        assert response.data.categories.size() == notElectricityCount
     }
 
     /**

@@ -66,10 +66,10 @@ abstract class BaseApiTest {
         int count = 0;
 
         // TODO: Should we be indexing root category?
-        while (SearchIndexerImpl.getCount() < (CategoryIT.categoryNames.size())) {
+        while (SearchIndexerImpl.getCount() < (CategoryIT.categories.size())) {
             sleep(1000);
             count++;
-            println 'Waited ' + count + ' second(s) whilst the index is being built... (' + SearchIndexerImpl.getCount() + '/' + CategoryIT.categoryNames.size() + ')';
+            println 'Waited ' + count + ' second(s) whilst the index is being built... (' + SearchIndexerImpl.getCount() + '/' + CategoryIT.categories.size() + ')';
         }
 
         // Now the index has been built reset the clearIndex flag & ensure index reader is re-opened.
