@@ -45,7 +45,7 @@ public class InternalValueTest {
         dateFour = now.plusMinutes(4);
         dateFive = now.plusMinutes(5);
         dateSix = now.plusMinutes(6);
-        dateMax = new DateTime(Long.MAX_VALUE);
+        dateMax = new DateTime(new Date(Long.MAX_VALUE));
 
         when(mockValueOne.getStartDate()).thenReturn(new StartEndDate(dateOne.toDate()));
         values.add(mockValueOne);

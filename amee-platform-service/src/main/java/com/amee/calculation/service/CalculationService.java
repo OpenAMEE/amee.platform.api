@@ -19,7 +19,7 @@ import com.amee.platform.science.AlgorithmRunner;
 import com.amee.platform.science.ExternalGenericValue;
 import com.amee.platform.science.InternalValue;
 import com.amee.platform.science.ReturnValues;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

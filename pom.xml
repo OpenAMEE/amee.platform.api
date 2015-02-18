@@ -19,15 +19,14 @@
         <!-- Note: Check Restlet release notes and jetty dependencies. -->
         <airbrake-notifier.version>2.0</airbrake-notifier.version>
         <commons-cli.version>1.2</commons-cli.version>
-        <commons-codec.version>1.6</commons-codec.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
-        <commons-dbcp.version>1.4</commons-dbcp.version>
-        <commons-io.version>2.3</commons-io.version>
+        <commons-codec.version>1.10</commons-codec.version>
+        <commons-collections.version>4.0</commons-collections.version>
+        <commons-dbcp2.version>2.0.1</commons-dbcp2.version>
+        <commons-io.version>2.4</commons-io.version>
         <commons-jexl.version>1.1</commons-jexl.version>
-        <commons-lang.version>3.1</commons-lang.version>
-        <cglib.version>2.2.2</cglib.version>
-        <ehcache.version>2.5.2</ehcache.version>
-        <gmaven-runtime-1.7.version>1.3</gmaven-runtime-1.7.version>
+        <commons-lang.version>3.3.2</commons-lang.version>
+        <cglib.version>3.1</cglib.version>
+        <ehcache.version>2.6.10</ehcache.version>
         <groovy.version>2.1.5</groovy.version>
         <groovy-eclipse-compiler.version>2.8.0-01</groovy-eclipse-compiler.version>
         <groovy-eclipse-batch.version>2.1.5-03</groovy-eclipse-batch.version>
@@ -35,39 +34,37 @@
         <hibernate.version>4.3.8.Final</hibernate.version>
         <hsqldb.version>2.3.2</hsqldb.version>
         <http-builder.version>0.7.1</http-builder.version>
-        <httpclient.version>4.2</httpclient.version>
-        <janino.version>2.6.1</janino.version>
-        <javax.mail.version>1.4.5</javax.mail.version>
-        <jetty-servlet-api.version>2.5.20110712</jetty-servlet-api.version>
+        <httpclient.version>4.3.5</httpclient.version>
+        <httpcore.version>4.4</httpcore.version>
+        <janino.version>2.7.7</janino.version>
+        <javax.mail.version>1.5.0-b01</javax.mail.version>
         <jetty.version>6.1.26</jetty.version>
-        <joda-time.version>2.1</joda-time.version>
+        <joda-time.version>2.7</joda-time.version>
         <jscience.version>4.3.1</jscience.version>
-        <junit.version>4.10</junit.version>
-        <logback.version>1.0.6</logback.version>
+        <junit.version>4.12</junit.version>
+        <logback.version>1.1.2</logback.version>
         <log4jdbc.version>1.2</log4jdbc.version>
         <lucene-core.version>3.6.0</lucene-core.version>
         <lucene-lucli.version>3.1.0</lucene-lucli.version>
-        <mysql-connector-java.version>5.1.20</mysql-connector-java.version>
-        <org-aspectj.version>1.6.12</org-aspectj.version>
-        <org.jdom.version>2.0.2</org.jdom.version>
+        <mysql-connector-java.version>5.1.34</mysql-connector-java.version>
+        <org-aspectj.version>1.8.4</org-aspectj.version>
+        <org.jdom2.version>2.0.5</org.jdom2.version>
         <org.json.version>20090211</org.json.version>
-        <org-mockito.version>1.9.0</org-mockito.version>
+        <org-mockito.version>1.10.19</org-mockito.version>
         <org-perf4j.version>0.9.16</org-perf4j.version>
-        <quartz.version>2.1.5</quartz.version>
-        <rabbitmq.version>2.8.2</rabbitmq.version>
+        <quartz.version>2.2.1</quartz.version>
+        <rabbitmq.version>3.4.3</rabbitmq.version>
         <restlet.version>1.1.10</restlet.version>
-        <slf4j.version>1.6.6</slf4j.version>
+        <slf4j.version>1.7.10</slf4j.version>
         <spring.version>3.1.4.RELEASE</spring.version>
-        <spymemcached.version>2.10.0</spymemcached.version>
+        <spymemcached.version>2.11.6</spymemcached.version>
         <xerces.version>2.11.0</xerces.version>
-        <xml-apis.version>2.11.0</xml-apis.version>
 
         <!-- Plugin versions -->
-        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+        <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
-        <gmaven-plugin.version>1.4</gmaven-plugin.version>
-        <maven-release-plugin.version>2.3.1</maven-release-plugin.version>
+        <maven-release-plugin.version>2.5.1</maven-release-plugin.version>
 
         <!-- Other. -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

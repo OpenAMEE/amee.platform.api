@@ -14,23 +14,15 @@ import com.amee.domain.item.profile.BaseProfileItemValue;
 import com.amee.persist.BaseEntity;
 import com.amee.platform.science.ExternalHistoryValue;
 import com.amee.platform.science.StartEndDate;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+
+import java.util.*;
 
 public abstract class AbstractItemService implements ItemService, ApplicationListener {
 

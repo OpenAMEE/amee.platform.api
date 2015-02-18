@@ -56,8 +56,8 @@
             <version>${commons-lang.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
             <version>${commons-collections.version}</version>
         </dependency>
         <dependency>

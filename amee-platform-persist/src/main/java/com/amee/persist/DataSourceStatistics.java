@@ -1,6 +1,6 @@
 package com.amee.persist;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,8 @@ public class DataSourceStatistics {
         return dataSource.getNumIdle();
     }
 
-    public int getMaxActive() {
-        return dataSource.getMaxActive();
+    public int getMaxTotal() {
+        return dataSource.getMaxTotal();
     }
 
     public int getNumActive() {

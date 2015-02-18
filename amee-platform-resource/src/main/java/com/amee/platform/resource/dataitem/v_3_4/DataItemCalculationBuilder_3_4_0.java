@@ -1,7 +1,5 @@
 package com.amee.platform.resource.dataitem.v_3_4;
 
-import static com.amee.domain.DataItemService.EPOCH;
-
 import com.amee.base.domain.Since;
 import com.amee.base.resource.RequestWrapper;
 import com.amee.base.resource.ResourceBeanFinder;
@@ -19,23 +17,9 @@ import com.amee.domain.sheet.Choice;
 import com.amee.domain.sheet.Choices;
 import com.amee.platform.resource.ResourceService;
 import com.amee.platform.resource.dataitem.DataItemCalculationResource;
-import com.amee.platform.science.Amount;
-import com.amee.platform.science.CO2AmountUnit;
-import com.amee.platform.science.ExternalHistoryValue;
-import com.amee.platform.science.Note;
-import com.amee.platform.science.ReturnValue;
-import com.amee.platform.science.ReturnValues;
-import com.amee.platform.science.StartEndDate;
+import com.amee.platform.science.*;
 import com.amee.service.auth.ResourceAuthorizationService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +28,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+import static com.amee.domain.DataItemService.EPOCH;
 
 @Service
 @Scope("prototype")

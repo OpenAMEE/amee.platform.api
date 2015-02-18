@@ -97,8 +97,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
-			<artifactId>jdom</artifactId>
-			<version>${org.jdom.version}</version>
+			<artifactId>jdom2</artifactId>
+			<version>${org.jdom2.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>

@@ -1,6 +1,7 @@
 package com.amee.domain.item;
 
-import org.apache.commons.collections.Predicate;
+
+import org.apache.commons.collections4.Predicate;
 
 /**
  * Basic Predicate testing {@link BaseItemValue} instances for usable values.

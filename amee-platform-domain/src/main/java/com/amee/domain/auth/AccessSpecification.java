@@ -1,7 +1,7 @@
 package com.amee.domain.auth;
 
 import com.amee.domain.IAMEEEntityReference;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.HashSet;
