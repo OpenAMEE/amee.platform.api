@@ -1121,7 +1121,7 @@ class ProfileItemIT extends BaseApiTest {
      * @param unit the expected unit, eg kg.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountJson(amounts, String type, double value, String unit, String isDefault) {
+    def assertContainsAmountJson(amounts, String type, double value, String unit, boolean isDefault) {
         def amount = amounts.find { it.type == type }
         assertNotNull amount
         assertEquals(value, amount.value, 0.0001)
@@ -1140,7 +1140,7 @@ class ProfileItemIT extends BaseApiTest {
      * @param unit the expected unit, eg kg.
      * @param isDefault is this amount the default type?
      */
-    def assertContainsAmountXml(amounts, String type, double value, String unit, String isDefault) {
+    def assertContainsAmountXml(amounts, String type, double value, String unit, boolean isDefault) {
         def amount = amounts.find { it.@type.text() == type }
         assertNotNull amount
         assertEquals(value, amount.text() as double, 0.0001)
