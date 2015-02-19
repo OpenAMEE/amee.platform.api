@@ -554,6 +554,14 @@ class CategoryIT extends BaseApiTest {
         if (version >= 3.3) {
             assert responseGet.data.category.history == 'New History.'
         }
+
+        // 3) Reset the name and wikiName as other tests rely on it
+        responsePut = client.put(
+                path: "/$version/categories/6153F468BE05",
+                body: [name: 'Integration', wikiName: 'Integration'],
+                requestContentType: URLENC,
+                contentType: JSON)
+        assertOkJson(responsePut, SUCCESS_OK.code, '6153F468BE05')
     }
 
     /**
