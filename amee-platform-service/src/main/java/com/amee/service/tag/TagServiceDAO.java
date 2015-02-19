@@ -91,7 +91,7 @@ public class TagServiceDAO {
         Collection<Long> excEntityIds = getEntityIdListFromEntityTagList(excEntityTags);
         // Create HQL.
         StringBuilder hql = new StringBuilder();
-        hql.append("SELECT distinct t, count(et) ");
+        hql.append("SELECT distinct t, lower(t.tag), count(et) ");
         hql.append("FROM Tag t ");
         hql.append("LEFT JOIN t.entityTags et ");
         hql.append("WHERE t.status != :trash ");
@@ -120,7 +120,7 @@ public class TagServiceDAO {
         for (Object o : results) {
             Object[] result = (Object[]) o;
             Tag tag = (Tag) result[0];
-            tag.setCount((Long) result[1]);
+            tag.setCount((Long) result[2]);
             tags.add(tag);
         }
         return tags;

@@ -2,6 +2,7 @@ package com.amee.integration
 
 import com.amee.domain.tag.Tag
 import groovyx.net.http.HttpResponseException
+import org.junit.Before
 import org.junit.Test
 
 import static groovyx.net.http.ContentType.*
@@ -66,6 +67,14 @@ class TagIT extends BaseApiTest {
             [uid: 'E4P9V1X6AGJL', tag: 'waste', count: 1],
             [uid: '001FD23CD3A2', tag: 'inc_tag_2', count: 1],
             [uid: 'GKMTHRTWKQ4K', tag: 'computer', count: 1]]
+
+    /**
+     * Wait for the scheduler to start up.
+     */
+    @Before
+    void waitForQuartz() {
+        sleep(11000)
+    }
 
     /**
      * Tests for creation, fetch and deletion of a Tag using JSON responses.
@@ -669,8 +678,8 @@ class TagIT extends BaseApiTest {
                     ['electricity', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
                     [1, 1, 1, 1, 2, 1, 1], version)
             testTags([incTags: 'test_tag_1, test_tag_2, test_tag_3'],
-                    ['computer', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
-                    [1, 1, 1, 1, 2, 1, 2], version)
+                    ['computer', 'electricity', 'entertainment', 'inc_tag_1', 'inc_tag_2', 'test_tag_1', 'test_tag_2', 'test_tag_3'],
+                    [1, 1, 1, 1, 1, 2, 1, 2], version)
             testTags([excTags: 'test_tag_1'],
                     ['actonco2', 'computer', 'country', 'deprecated', 'domestic', 'electrical', 'electricity', 'GHGP', 'inc_tag_1', 'inc_tag_2', 'test_tag_3', 'US', 'waste', 'grid'],
                     [1, 1, 2, 2, 1, 1, 3, 3, 2, 1, 1, 1, 1, 1], version)
@@ -686,6 +695,9 @@ class TagIT extends BaseApiTest {
             responseDelete = client.delete(path: "/$version/tags/test_tag_3")
             assertOkJson(responseDelete, SUCCESS_OK.code, uid3)
         }
+
+        // Sleep a little to give the index a chance to be updated.
+        sleep(SLEEP_TIME)
     }
 
     def postTagToCategory(category, tag, version) {
