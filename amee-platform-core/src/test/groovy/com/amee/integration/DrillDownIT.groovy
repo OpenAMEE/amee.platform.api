@@ -89,14 +89,14 @@ class DrillDownIT extends BaseApiTest {
         if (version >= 3.3) {
             def response = client.get(
                 path: "/$version/categories/ICE_v2_by_mass/drill",
-                query: [subtype: 'General'],
+                query: [type: 'General'],
                 contentType: JSON);
             assert response.status == SUCCESS_OK.code
             assert response.contentType == 'application/json'
             assert response.data.status == 'OK'
             assert response.data.drill.choices.values.size() == 1
             assert response.data.drill.choices.name == 'uid'
-            assert response.data.drill.choices.values[0] == 'LNW3AVZB0A2D'
+            assert response.data.drill.choices.values[0] == 'R80Z2HQRYRR6'
         }
     }
 }
