@@ -226,7 +226,7 @@ public class CalculationService implements CO2CalculationService, BeanFactoryAwa
         ItemValueDefinition ivd = itemValues.get(0).getItemValueDefinition();
 
         // Add all BaseItemValues with usable values
-        List<ExternalGenericValue> usableSet = (List<ExternalGenericValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
+        List<? extends ExternalGenericValue> usableSet = (List<BaseItemValue>) CollectionUtils.select(itemValues, new UsableValuePredicate());
 
         if (!usableSet.isEmpty()) {
             values.put(ivd, new InternalValue(usableSet, item.getEffectiveStartDate(), item.getEffectiveEndDate()));

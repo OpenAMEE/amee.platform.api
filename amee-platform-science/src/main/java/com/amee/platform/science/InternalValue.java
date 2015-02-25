@@ -1,8 +1,8 @@
 package com.amee.platform.science;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.joda.time.DateTime;
 
 import java.util.*;
 
@@ -47,11 +47,11 @@ public class InternalValue {
     /**
      * Instantiate an InternalValue representation of the supplied collection of values.
      *
-     * @param values    - the List of {@link ExternalValue}s representing a sequence of values
+     * @param values    - the List of {@link com.amee.platform.science.ExternalValue}s representing a sequence of values
      * @param startDate - the start Date to filter the series
      * @param endDate   - the end Date to filter the series
      */
-    public InternalValue(List<ExternalGenericValue> values, Date startDate, Date endDate) {
+    public InternalValue(List<? extends ExternalGenericValue> values, Date startDate, Date endDate) {
         slog.info("InternalValue() Diagnostics from filtering: " + values.size() + "," + new DateTime(startDate) + "," + new DateTime(endDate));
 
         if (ExternalNumberValue.class.isAssignableFrom(values.get(0).getClass())) {
@@ -94,7 +94,7 @@ public class InternalValue {
      * @param endDate   effective endDate of Item
      * @return the filtered values
      */
-    private List<ExternalGenericValue> filterItemValues(List<ExternalGenericValue> values, Date startDate, Date endDate) {
+    private List<ExternalGenericValue> filterItemValues(List<? extends ExternalGenericValue> values, Date startDate, Date endDate) {
 
         List<ExternalGenericValue> filteredValues = new ArrayList<ExternalGenericValue>();
 
@@ -190,7 +190,7 @@ public class InternalValue {
                     AmountCompoundUnit internalUnit = value.getCanonicalCompoundUnit();
                     if (amount.hasDifferentUnits(internalUnit)) {
                         log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
-                            new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
+                                iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit);
                         amount = amount.convert(internalUnit);
                     }
                 }
@@ -219,7 +219,7 @@ public class InternalValue {
             AmountCompoundUnit internalUnit = iv.getCanonicalCompoundUnit();
             if (amount.hasDifferentUnits(internalUnit)) {
                 log.debug("asInternalDecimal() label: {}, external: {}, internal: {}",
-                    new Object[] {iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit});
+                        iv.getLabel(), amount + " " + amount.getUnit(), amount.convert(internalUnit) + " " + internalUnit);
                 amount = amount.convert(internalUnit);
             }
             return amount;
