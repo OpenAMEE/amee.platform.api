@@ -64,7 +64,7 @@ public class DataItemValueHistoryFormAcceptor_3_4_0 implements DataItemValueHist
 
         // Handle the DataItem submission.
         BaseDataItemValue newDataItemValue;
-        if (itemValueDefinition.isDouble()) {
+        if (itemValueDefinition.isDouble() || itemValueDefinition.isInteger()) {
             newDataItemValue = new DataItemNumberValueHistory(itemValueDefinition, dataItem);
         } else {
             newDataItemValue = new DataItemTextValueHistory(itemValueDefinition, dataItem);
