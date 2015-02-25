@@ -135,7 +135,7 @@ public class DataSeries {
     private DataSeries combine(DataSeries series, Operation operation) {
 
         // Create a union of all DateTime points in the two DataSeries and sort the resultant collection (DESC).
-        List<DateTime> dateTimePoints = (List) CollectionUtils.union(getDateTimePoints(), series.getDateTimePoints());
+        List<DateTime> dateTimePoints = (List<DateTime>) CollectionUtils.union(getDateTimePoints(), series.getDateTimePoints());
         Collections.sort(dateTimePoints);
 
         // For each DateTime point, find the nearest corresponding DataPoint in each series and apply the desired
@@ -392,7 +392,7 @@ public class DataSeries {
         Long seriesTimeInMillis = getSeriesTimeInMillis();
 
         log.debug("integrate() Integrating, time range: {}->{}, series length: {}",
-            new Object[] {getSeriesStartDate(), getSeriesEndDate(), dataPoints.size()});
+                getSeriesStartDate(), getSeriesEndDate(), dataPoints.size());
 
         // If there is no defined time period or, in the case of data (non-profile) calculations, just an instant in time.
         if (seriesTimeInMillis == null || (seriesTimeInMillis == 0 && dataPoints.size() == 1)) {
@@ -419,7 +419,7 @@ public class DataSeries {
                 double weightedAverage = current.getValue().getValue() * segmentInMillis / seriesTimeInMillis.doubleValue();
                 log.debug("integrate() Diagnostics from integrate() weightedAverage: {}, current value: {}, {}, " +
                     "datapoints size: {}, segment millis / series millis: {}",
-                    new Object[] {weightedAverage, current.getValue(), i, pointArray.length, segmentInMillis / (seriesTimeInMillis.doubleValue())});
+                        weightedAverage, current.getValue(), i, pointArray.length, segmentInMillis / (seriesTimeInMillis.doubleValue()));
                 if (start.isAfter(end)) continue;
                 integral = integral + weightedAverage;
             }
@@ -432,12 +432,10 @@ public class DataSeries {
      *
      * @return the Collection of {@link org.joda.time.DateTime} points in the DataSeries
      */
-    @SuppressWarnings("unchecked")
     public Collection<DateTime> getDateTimePoints() {
-        return (Collection<DateTime>) CollectionUtils.collect(dataPoints, new Transformer() {
-            public Object transform(Object input) {
-                DataPoint dataPoint = (DataPoint) input;
-                return dataPoint.getDateTime();
+        return CollectionUtils.collect(dataPoints, new Transformer<DataPoint, DateTime>() {
+            public DateTime transform(DataPoint input) {
+                return input.getDateTime();
             }
         });
     }

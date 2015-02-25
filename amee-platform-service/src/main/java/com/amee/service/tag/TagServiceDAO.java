@@ -127,9 +127,9 @@ public class TagServiceDAO {
     }
 
     private List<Long> getEntityIdListFromEntityTagList(Collection<EntityTag> incEntityTags) {
-        return (List<Long>) CollectionUtils.collect(incEntityTags, new Transformer() {
-            public Object transform(Object entityTag) {
-                return ((EntityTag) entityTag).getEntityReference().getEntityId();
+        return (List<Long>) CollectionUtils.collect(incEntityTags, new Transformer<EntityTag, Long>() {
+            public Long transform(EntityTag entityTag) {
+                return entityTag.getEntityReference().getEntityId();
             }
         });
     }

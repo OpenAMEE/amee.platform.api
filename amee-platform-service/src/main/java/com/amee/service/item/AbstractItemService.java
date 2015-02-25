@@ -149,10 +149,10 @@ public abstract class AbstractItemService implements ItemService, ApplicationLis
      */
     @Override
     public BaseItemValue getByUid(BaseItem item, final String uid) {
-        return (BaseItemValue) CollectionUtils.find(getActiveItemValues(item), new Predicate() {
+        return CollectionUtils.find(getActiveItemValues(item), new Predicate<BaseItemValue>() {
             @Override
-            public boolean evaluate(Object o) {
-                BaseEntity iv = (BaseEntity) o;
+            public boolean evaluate(BaseItemValue o) {
+                BaseEntity iv = o;
                 return iv.getUid().equals(uid);
             }
         });
