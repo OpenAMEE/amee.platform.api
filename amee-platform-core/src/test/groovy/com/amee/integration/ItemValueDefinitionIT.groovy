@@ -325,6 +325,14 @@ class ItemValueDefinitionIT extends BaseApiTest {
         assert responseGet.data.itemValueDefinition.name == 'New Name'
         assert responseGet.data.itemValueDefinition.path == 'newPath'
         assert responseGet.data.itemValueDefinition.wikiDoc == 'New WikiDoc.'
+
+        // 3) Reset the name and path as other tests rely on it
+        responsePut = client.put(
+                path: "/$version/definitions/65RC86G6KMRA/values/9OWHW3DE3ZJF",
+                body: [name: 'KWh Per Year', path: 'kWhPerYear'],
+                requestContentType: URLENC,
+                contentType: JSON)
+        assertOkJson(responsePut, SUCCESS_OK.code, '9OWHW3DE3ZJF')
     }
 
     /**
@@ -353,6 +361,13 @@ class ItemValueDefinitionIT extends BaseApiTest {
             assert responseGet.data.ItemValueDefinition.Name.text() == 'New Name XML'
             assert responseGet.data.ItemValueDefinition.Path.text() == 'newPathXml'
             assert responseGet.data.ItemValueDefinition.WikiDoc.text() == 'New WikiDoc XML'
+
+            responsePut = client.put(
+                    path: "/$version/definitions/65RC86G6KMRA/values/9OWHW3DE3ZJF",
+                    body: itemValueDefinitionResetXml(),
+                    requestContentType: XML,
+                    contentType: XML)
+            assertOkXml(responsePut, SUCCESS_OK.code, '9OWHW3DE3ZJF')
         }
     }
 
@@ -447,6 +462,15 @@ class ItemValueDefinitionIT extends BaseApiTest {
                 <Name>New Name XML</Name>
                 <Path>newPathXml</Path>
                 <WikiDoc>New WikiDoc XML</WikiDoc>
+            </ItemValueDefinition>
+        '''
+    }
+
+    def itemValueDefinitionResetXml() {
+        def ivd = '''\
+            <ItemValueDefinition>
+                <Name>KWh Per Year</Name>
+                <Path>kWhPerYear</Path>
             </ItemValueDefinition>
         '''
     }
