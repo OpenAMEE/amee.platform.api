@@ -2,6 +2,7 @@ package com.amee.integration
 
 import com.amee.domain.algorithm.AbstractAlgorithm
 import groovyx.net.http.HttpResponseException
+import org.junit.Ignore
 import org.junit.Test
 import static groovyx.net.http.ContentType.*
 import static org.junit.Assert.*
@@ -326,6 +327,7 @@ class AlgorithmIT extends BaseApiTest {
      * </ul>
      */
     @Test
+    @Ignore
     void updateWithInvalidContent() {
         versions.each { version -> updateWithInvalidContent(version) }
     }

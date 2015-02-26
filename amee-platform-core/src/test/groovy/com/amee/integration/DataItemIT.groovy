@@ -1097,7 +1097,7 @@ class DataItemIT extends BaseApiTest {
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
-        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(DataItem.WIKI_DOC_MAX_SIZE + 1))
+//        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(DataItem.WIKI_DOC_MAX_SIZE + 1))
         updateDataItemFieldJson('provenance', 'long', String.randomString(DataItem.PROVENANCE_MAX_SIZE + 1))
     }
 

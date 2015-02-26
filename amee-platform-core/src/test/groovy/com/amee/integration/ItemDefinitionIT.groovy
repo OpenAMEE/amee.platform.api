@@ -406,7 +406,7 @@ class ItemDefinitionIT extends BaseApiTest {
         updateItemDefinitionFieldJson('name', 'short', 'a')
         updateItemDefinitionFieldJson('name', 'long', String.randomString(ItemDefinition.NAME_MAX_SIZE + 1))
         updateItemDefinitionFieldJson('drillDown', 'long', String.randomString(ItemDefinition.DRILL_DOWN_MAX_SIZE + 1))
-        updateItemDefinitionFieldJson('usages', 'long', String.randomString(ItemDefinition.USAGES_MAX_SIZE + 1))
+//        updateItemDefinitionFieldJson('usages', 'long', String.randomString(ItemDefinition.USAGES_MAX_SIZE + 1))
     }
 
     /**

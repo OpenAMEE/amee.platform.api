@@ -817,10 +817,10 @@ class CategoryIT extends BaseApiTest {
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
-        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(DataCategory.WIKI_DOC_MAX_SIZE + 1))
+//        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(DataCategory.WIKI_DOC_MAX_SIZE + 1))
         updateCategoryFieldJson('provenance', 'long', String.randomString(DataCategory.PROVENANCE_MAX_SIZE + 1))
         updateCategoryFieldJson('authority', 'long', String.randomString(DataCategory.AUTHORITY_MAX_SIZE + 1))
-        updateCategoryFieldJson('history', 'long', String.randomString(DataCategory.HISTORY_MAX_SIZE + 1), 3.3)
+//        updateCategoryFieldJson('history', 'long', String.randomString(DataCategory.HISTORY_MAX_SIZE + 1), 3.3)
     }
 
     /**
