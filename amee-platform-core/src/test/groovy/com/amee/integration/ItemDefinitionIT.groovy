@@ -396,7 +396,7 @@ class ItemDefinitionIT extends BaseApiTest {
      * <ul>
      *    <li>name - nonempty, min: 3, max: 255
      *    <li>drillDown - max: 255
-     *    <li>usages - max: 255
+     *    <li>usages - max: 16,777,215
      * <ul>
      */
     @Test
@@ -406,6 +406,8 @@ class ItemDefinitionIT extends BaseApiTest {
         updateItemDefinitionFieldJson('name', 'short', 'a')
         updateItemDefinitionFieldJson('name', 'long', String.randomString(ItemDefinition.NAME_MAX_SIZE + 1))
         updateItemDefinitionFieldJson('drillDown', 'long', String.randomString(ItemDefinition.DRILL_DOWN_MAX_SIZE + 1))
+
+        // Long strings cause memory issues on CI build
 //        updateItemDefinitionFieldJson('usages', 'long', String.randomString(ItemDefinition.USAGES_MAX_SIZE + 1))
     }
 

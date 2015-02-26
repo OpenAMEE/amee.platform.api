@@ -378,6 +378,8 @@ class ItemValueDefinitionIT extends BaseApiTest {
         updateItemValueDefinitionFieldJson('path', 'long', String.randomString(ItemValueDefinition.PATH_MAX_SIZE + 1))
         updateItemValueDefinitionFieldJson('path', 'format', 'n o t v a l i d')
         updateItemValueDefinitionFieldJson('path', 'duplicate', 'onStandby')
+
+        // Long strings cause memory issues on CI build
 //        updateItemValueDefinitionFieldJson('wikiDoc', 'long', String.randomString(ItemValueDefinition.WIKI_DOC_MAX_SIZE + 1))
         updateItemValueDefinitionFieldJson('value', 'long', String.randomString(ItemValueDefinition.VALUE_MAX_SIZE + 1))
         updateItemValueDefinitionFieldJson('choices', 'long', String.randomString(ItemValueDefinition.CHOICES_MAX_SIZE + 1))

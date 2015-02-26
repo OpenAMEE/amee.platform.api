@@ -1090,13 +1090,15 @@ class DataItemIT extends BaseApiTest {
      *
      * <ul>
      * <li>All are optional.
-     * <li>wikiDoc must be no longer than 32767 characters.
+     * <li>wikiDoc must be no longer than 16,777,215 characters.
      * <li>provenance must be no longer than 255 characters.
      * </ul>
      */
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
+
+        // Long strings cause memory issues on CI build
 //        updateDataItemFieldJson('wikiDoc', 'long', String.randomString(DataItem.WIKI_DOC_MAX_SIZE + 1))
         updateDataItemFieldJson('provenance', 'long', String.randomString(DataItem.PROVENANCE_MAX_SIZE + 1))
     }

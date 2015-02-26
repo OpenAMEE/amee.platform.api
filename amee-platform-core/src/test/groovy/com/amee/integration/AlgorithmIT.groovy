@@ -323,11 +323,11 @@ class AlgorithmIT extends BaseApiTest {
      *
      * <ul>
      * <li>Optional.
-     * <li>No longer than 32767 chars.
+     * <li>No longer than 16,777,215 chars.
      * </ul>
      */
     @Test
-    @Ignore
+    @Ignore("Long strings cause memory issues on CI build")
     void updateWithInvalidContent() {
         versions.each { version -> updateWithInvalidContent(version) }
     }

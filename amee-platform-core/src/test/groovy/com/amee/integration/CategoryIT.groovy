@@ -810,17 +810,19 @@ class CategoryIT extends BaseApiTest {
      *
      * <ul>
      * <li>All are optional.
-     * <li>wikiDoc and history (since 3.3.0) must be no longer than 32767?? characters.
+     * <li>wikiDoc and history (since 3.3.0) must be no longer than 16,777,215 characters.
      * <li>provenance and authority must be no longer than 255 characters.
      * </ul>
      */
     @Test
     void updateWithInvalidMetadata() {
         setAdminUser()
+
+        // Long strings cause memory issues on CI build
 //        updateCategoryFieldJson('wikiDoc', 'long', String.randomString(DataCategory.WIKI_DOC_MAX_SIZE + 1))
+//        updateCategoryFieldJson('history', 'long', String.randomString(DataCategory.HISTORY_MAX_SIZE + 1), 3.3)
         updateCategoryFieldJson('provenance', 'long', String.randomString(DataCategory.PROVENANCE_MAX_SIZE + 1))
         updateCategoryFieldJson('authority', 'long', String.randomString(DataCategory.AUTHORITY_MAX_SIZE + 1))
-//        updateCategoryFieldJson('history', 'long', String.randomString(DataCategory.HISTORY_MAX_SIZE + 1), 3.3)
     }
 
     /**
