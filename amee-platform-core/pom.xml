@@ -62,7 +62,7 @@
                     <skipTests>${skipIntegrationTests}</skipTests>
                     <skipITs>${skipIntegrationTests}</skipITs>
                     <forkMode>once</forkMode>
-                    <argLine>-Xmx512m</argLine>
+                    <argLine>-Xmx1024m</argLine>
                     <runOrder>alphabetical</runOrder>
                     <environmentVariables>
                         <!-- H2 -->
