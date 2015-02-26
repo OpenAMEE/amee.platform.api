@@ -18,9 +18,13 @@
     <properties>
         <appassembler-maven-plugin.version>1.8.1</appassembler-maven-plugin.version>
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
-
         <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
         <package-name>amee-platform</package-name>
+        <rabbitmq.address>localhost</rabbitmq.address>
+        <rabbitmq.port>5672</rabbitmq.port>
+        <rabbitmq.vhost>/</rabbitmq.vhost>
+        <rabbitmq.username>guest</rabbitmq.username>
+        <rabbitmq.password>guest</rabbitmq.password>
     </properties>
 
     <build>
@@ -105,11 +109,11 @@
                         <TRAIN_ROUTE_SERVICE_URI>http://example.com</TRAIN_ROUTE_SERVICE_URI>
                         <AUTO_START_SCHEDULER>true</AUTO_START_SCHEDULER>
                         <MESSAGING_RUN_SLEEP>5000</MESSAGING_RUN_SLEEP>
-                        <RABBIT_MQ_ADDRESS>localhost</RABBIT_MQ_ADDRESS>
-                        <RABBIT_MQ_PORT>5672</RABBIT_MQ_PORT>
-                        <RABBIT_MQ_USERNAME>guest</RABBIT_MQ_USERNAME>
-                        <RABBIT_MQ_PASSWORD>guest</RABBIT_MQ_PASSWORD>
-                        <RABBIT_MQ_VHOST>/</RABBIT_MQ_VHOST>
+                        <RABBIT_MQ_ADDRESS>${rabbitmq.address}</RABBIT_MQ_ADDRESS>
+                        <RABBIT_MQ_PORT>${rabbitmq.port}</RABBIT_MQ_PORT>
+                        <RABBIT_MQ_USERNAME>${rabbitmq.username}</RABBIT_MQ_USERNAME>
+                        <RABBIT_MQ_PASSWORD>${rabbitmq.password}</RABBIT_MQ_PASSWORD>
+                        <RABBIT_MQ_VHOST>${rabbitmq.vhost}</RABBIT_MQ_VHOST>
                         <MESSAGING_SCOPE>local</MESSAGING_SCOPE>
                         <AMEE_APP_NAME>platform</AMEE_APP_NAME>
                         <AMEE_INSTANCE_NAME>local</AMEE_INSTANCE_NAME>
