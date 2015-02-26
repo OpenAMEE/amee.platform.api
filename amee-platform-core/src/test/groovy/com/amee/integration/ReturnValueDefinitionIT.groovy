@@ -181,7 +181,6 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             }
             if (version >= 3.2) {
                 assert response.data.returnValueDefinition.created == '2010-08-17T15:13:41Z'
-                assert response.data.returnValueDefinition.modified == '2010-08-17T15:13:41Z'
                 assert response.data.returnValueDefinition.status == 'ACTIVE'
             }
         }
@@ -218,7 +217,6 @@ class ReturnValueDefinitionIT extends BaseApiTest {
             }
             if (version >= 3.2) {
                 assert response.data.ReturnValueDefinition.@created.text() == '2010-08-17T15:13:41Z'
-                assert response.data.ReturnValueDefinition.@modified.text() == '2010-08-17T15:13:41Z'
                 assert response.data.ReturnValueDefinition.@status.text() == 'ACTIVE'
             }
         }
