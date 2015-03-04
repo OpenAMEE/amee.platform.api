@@ -20,8 +20,8 @@
     </bean>
 
     <bean id="platformServer" class="com.amee.restlet.AMEESpringServer">
-        <constructor-arg index="0" value="${PROTOCOL}"/>
-        <constructor-arg index="1" value="${PORT}"/>
+        <constructor-arg index="0" value="${protocol}"/>
+        <constructor-arg index="1" value="${port}"/>
         <property name="parameters">
             <props>
                 <prop key="minThreads">50</prop>
@@ -39,8 +39,8 @@
     </bean>
 
     <bean id="platformSecureServer" class="com.amee.restlet.AMEESpringServer">
-        <constructor-arg index="0" value="${PROTOCOL}"/>
-        <constructor-arg index="1" value="${SECURE_PORT}"/>
+        <constructor-arg index="0" value="${protocol}"/>
+        <constructor-arg index="1" value="${securePort}"/>
         <property name="parameters">
             <props>
                 <prop key="minThreads">50</prop>
@@ -59,7 +59,7 @@
 
     <bean id="platformHost" class="org.restlet.ext.spring.SpringHost">
         <constructor-arg ref="platformContainer"/>
-        <property name="hostDomain" value="${HOST_NAME}"/>
+        <property name="hostDomain" value="${hostName}"/>
         <property name="attachments">
             <map>
                 <entry key="" value-ref="platformApplication"/>

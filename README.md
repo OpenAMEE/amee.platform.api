@@ -11,7 +11,7 @@ Running the platform locally
   <id>amee-local</id>
   <properties>
       <db.username>amee</db.username>
-      <db.pswd>amee</db.pswd>
+      <db.password>amee</db.password>
       <db.url>mysql://localhost:3306/amee?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</db.url>
       <rabbitmq.address>localhost</rabbitmq.address>
       <rabbitmq.port>5672</rabbitmq.port>

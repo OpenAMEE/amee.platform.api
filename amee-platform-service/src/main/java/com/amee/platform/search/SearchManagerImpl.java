@@ -354,27 +354,27 @@ public class SearchManagerImpl implements SearchManager, ApplicationContextAware
         this.applicationContext = applicationContext;
     }
 
-    @Value("${MASTER_INDEX}")
+    @Value("${index.master}")
     public void setMasterIndex(Boolean masterIndex) {
         this.masterIndex = masterIndex;
     }
 
-    @Value("${CHECK_DATA_CATEGORIES}")
+    @Value("${index.checkDataCategories}")
     public void setCheckDataCategories(Boolean checkDataCategories) {
         this.checkDataCategories = checkDataCategories;
     }
 
-    @Value("${INDEX_DATA_CATEGORIES}")
+    @Value("${index.indexDataCategories}")
     public void setIndexDataCategories(Boolean indexDataCategories) {
         this.indexDataCategories = indexDataCategories;
     }
 
-    @Value("${INDEX_DATA_ITEMS}")
+    @Value("${index.indexDataItems}")
     public void setIndexDataItems(Boolean indexDataItems) {
         this.indexDataItems = indexDataItems;
     }
 
-    @Value("${INDEX_DATA_CATEGORY_PATH_PREFIX:}")
+    @Value("${index.dataCategoryPathPrefix:}")
     public void setDataCategoryPathPrefix(String dataCategoryPathPrefix) {
         this.dataCategoryPathPrefix = dataCategoryPathPrefix;
     }

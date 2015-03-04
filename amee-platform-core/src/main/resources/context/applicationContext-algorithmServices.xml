@@ -14,7 +14,7 @@
 
     <bean id="trainRouteFinderService" class="com.amee.calculation.service.TrainRouteFinderService" scope="prototype">
         <constructor-arg>
-            <value>${TRAIN_ROUTE_SERVICE_URI}</value>
+            <value>${trainRouteServiceUri}</value>
         </constructor-arg>
     </bean>
 

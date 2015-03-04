@@ -58,9 +58,9 @@
 
     <!-- JPA Vendor Adaptor -->
     <bean id="jpaVendorAdaptor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="database" value="${DATABASE}"/>
-        <property name="databasePlatform" value="${DATABASE_PLATFORM}"/>
-        <property name="showSql" value="${SHOW_SQL}"/>
+        <property name="database" value="${db.targetDatabase}"/>
+        <property name="databasePlatform" value="${db.targetPlatform}"/>
+        <property name="showSql" value="${db.showSql}"/>
     </bean>
 
     <!-- transactionManager -->

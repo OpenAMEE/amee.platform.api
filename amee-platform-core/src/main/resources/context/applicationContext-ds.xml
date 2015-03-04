@@ -7,16 +7,16 @@
     <!-- The JDBC DataSource for the JPA persistence provider. This is an alternative to keeping the
 	     JDBC configuration in persistence.xml, passing in a Spring-managed DataSource instead. -->
     <bean id="ameeDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${DB_DRIVER}"/>
-        <property name="url" value="${DB_URL_PREFIX}:${DB_URL}"/>
-        <property name="username" value="${DB_USERNAME}"/>
-        <property name="password" value="${DB_PSWD}"/>
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.urlPrefix}:${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
         <property name="initialSize" value="5"/>
         <property name="maxTotal" value="10"/>
         <property name="maxIdle" value="5"/>
         <property name="minIdle" value="2"/>
         <property name="maxWaitMillis" value="-1"/>
-        <property name="validationQuery" value="${VALIDATION_QUERY}"/>
+        <property name="validationQuery" value="${db.validationQuery}"/>
         <property name="testOnBorrow" value="true"/>
         <property name="testOnReturn" value="true"/>
         <property name="testWhileIdle" value="true"/>

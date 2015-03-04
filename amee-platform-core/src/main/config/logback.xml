@@ -51,11 +51,12 @@
 
     <!-- Declare the 'TRANSACTIONS_ROLLER' Daily RollingFileAppender. -->
     <appender name="TRANSACTIONS_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${amee.logDir}/transactions.log</file>
+        <!-- Because http://jira.qos.ch/browse/LOGBACK-239 -->
+        <file>${log.dir:-logs}/transactions.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
             <!-- daily rollover -->
-            <fileNamePattern>${amee.logDir}/transactions.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${log.dir:-logs}/transactions.log.%d{yyyy-MM-dd}</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -70,11 +71,12 @@
 
     <!-- Declare the 'SEARCH_ROLLER' Daily RollingFileAppender. -->
     <appender name="SEARCH_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${amee.logDir}/search.log</file>
+        <!-- Because http://jira.qos.ch/browse/LOGBACK-239 -->
+        <file>${log.dir:-logs}/search.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
             <!-- daily rollover -->
-            <fileNamePattern>${amee.logDir}/search.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${log.dir:-logs}/search.log.%d{yyyy-MM-dd}</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -89,12 +91,13 @@
 
     <!-- Declare the 'SCIENCE_ROLLER' Daily RollingFileAppender. -->
     <appender name="SCIENCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${amee.logDir}/science.log</file>
+        <!-- Because http://jira.qos.ch/browse/LOGBACK-239 -->
+        <file>${log.dir:-logs}/science.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
             <!-- daily rollover -->
-            <fileNamePattern>${amee.logDir}/science.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${log.dir:-logs}/science.log.%d{yyyy-MM-dd}</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -109,11 +112,12 @@
 
     <!-- Declare the 'PERFORMANCE_ROLLER' DailyRollingFileAppender. -->
     <appender name="PERFORMANCE_ROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${amee.logDir}/performance.log</file>
+        <!-- Because http://jira.qos.ch/browse/LOGBACK-239 -->
+        <file>${log.dir:-logs}/performance.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
             <!-- daily rollover -->
-            <fileNamePattern>${amee.logDir}/performance.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>${log.dir:-logs}/performance.log.%d{yyyy-MM-dd}</fileNamePattern>
         </rollingPolicy>
 
         <encoder>
@@ -172,7 +176,7 @@
 
     <!-- ############### AMEE ################### -->
 
-    <logger name="com.amee" level="${LOG_LEVEL:-INFO}"/>
+    <logger name="com.amee" level="${log.level:-INFO}"/>
 
     <logger name="transactions" level="INFO" additivity="false">
         <appender-ref ref="TRANSACTIONS_ROLLER"/>
@@ -189,7 +193,7 @@
     </logger>
 
     <!-- The root logger -->
-    <root level="${DEFAULT_LOG_LEVEL:-INFO}">
+    <root level="${log.defaultLevel:-INFO}">
         <appender-ref ref="CONSOLE" />
         <!--<appender-ref ref="PLATFORM_EMAIL"/>-->
         <!--<appender-ref ref="AIRBRAKE"/>-->

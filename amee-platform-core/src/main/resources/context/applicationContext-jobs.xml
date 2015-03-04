@@ -8,7 +8,7 @@
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <!-- Allow us to prevent automatic startup -->
-        <property name="autoStartup" value="${AUTO_START_SCHEDULER}"/>
+        <property name="autoStartup" value="${autoStartScheduler}"/>
         <!-- Wait for 10 seconds -->
         <property name="startupDelay" value="10"/>
         <property name="triggers">

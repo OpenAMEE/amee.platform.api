@@ -815,7 +815,7 @@ public class LuceneServiceImpl implements LuceneService {
         }
     }
 
-    @Value("${MASTER_INDEX}")
+    @Value("${index.master}")
     public void setMasterIndex(Boolean masterIndex) {
         this.masterIndex = masterIndex;
     }
@@ -826,32 +826,32 @@ public class LuceneServiceImpl implements LuceneService {
     }
 
     @Override
-    @Value("${CLEAR_INDEX}")
+    @Value("${index.clear}")
     public void setClearIndex(Boolean clearIndex) {
         this.clearIndex = clearIndex;
     }
 
-    @Value("${SNAPSHOT_ENABLED}")
+    @Value("${index.snapshot}")
     public void setSnapshotEnabled(Boolean snapshotEnabled) {
         this.snapshotEnabled = snapshotEnabled;
     }
 
-    @Value("${INDEX_PATH}")
+    @Value("${index.path}")
     public void setIndexPath(String indexPath) {
         this.indexPath = indexPath;
     }
 
-    @Value("${LUCENE_PATH}")
+    @Value("${index.lucenePath}")
     public void setLucenePath(String lucenePath) {
         this.lucenePath = lucenePath;
     }
 
-    @Value("${SNAPSHOOTER_PATH}")
+    @Value("${index.snapshooterPath}")
     public void setSnapShooterPath(String snapShooterPath) {
         this.snapShooterPath = snapShooterPath;
     }
 
-    @Value("${INDEX_CHECK_SEARCHER_ON_COMMIT}")
+    @Value("${index.checkSearcherOnCommit}")
     public void setCheckSearcherOnCommit(Boolean checkSearcherOnCommit) {
         this.checkSearcherOnCommit = checkSearcherOnCommit;
     }

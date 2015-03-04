@@ -35,7 +35,7 @@ abstract class BaseApiTest {
         addRandomStringMethodToString()
 
         // Set the default timezone
-        def timeZone = TimeZone.getTimeZone(System.getProperty("AMEE_TIME_ZONE", "UTC"))
+        def timeZone = TimeZone.getTimeZone(System.getProperty("timeZone", "UTC"))
         TimeZone.setDefault(timeZone)
         DateTimeZone.setDefault(DateTimeZone.forTimeZone(timeZone))
 

@@ -71,51 +71,51 @@
                     <systemPropertyVariables>
 
                         <!-- H2 -->
-                        <DATABASE>H2</DATABASE>
-                        <DATABASE_PLATFORM>org.hibernate.dialect.H2Dialect</DATABASE_PLATFORM>
-                        <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
-                        <DB_URL>h2:mem:amee_test</DB_URL>
-                        <DB_DRIVER>org.h2.Driver</DB_DRIVER>
-                        <DB_USERNAME>sa</DB_USERNAME>
-                        <DB_PSWD>NULL</DB_PSWD>
-                        <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
+                        <db.targetDatabase>H2</db.targetDatabase>
+                        <db.targetPlatform>org.hibernate.dialect.H2Dialect</db.targetPlatform>
+                        <db.urlPrefix>jdbc</db.urlPrefix>
+                        <db.url>h2:mem:amee_test</db.url>
+                        <db.driver>org.h2.Driver</db.driver>
+                        <db.username>sa</db.username>
+                        <db.password>NULL</db.password>
+                        <db.validationQuery>SELECT 1 FROM DUAL</db.validationQuery>
                         <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
 
                         <!-- MySQL -->
                         <!--
-                        <DB_URL_PREFIX>jdbc:log4jdbc</DB_URL_PREFIX>
-                        <DB_URL>mysql://localhost:3306/amee_test?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</DB_URL>
-                        <DB_DRIVER>net.sf.log4jdbc.DriverSpy</DB_DRIVER>
-                        <DB_USERNAME>amee</DB_USERNAME>
-                        <DB_PSWD>amee</DB_PSWD>
-                        <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
+                        <db.urlPrefix>jdbc:log4jdbc</db.urlPrefix>
+                        <db.url>mysql://localhost:3306/amee_test?autoReconnect=true&amp;autoReconnectForPools=true&amp;useCompression=false</db.url>
+                        <db.driver>net.sf.log4jdbc.DriverSpy</db.driver>
+                        <db.username>amee</db.username>
+                        <db.password>amee</db.password>
+                        <db.validationQuery>SELECT 1 FROM DUAL</db.validationQuery>
                         -->
 
-                        <RABBIT_MQ_ADDRESS>${rabbitmq.address}</RABBIT_MQ_ADDRESS>
-                        <RABBIT_MQ_PORT>${rabbitmq.port}</RABBIT_MQ_PORT>
-                        <RABBIT_MQ_USERNAME>${rabbitmq.username}</RABBIT_MQ_USERNAME>
-                        <RABBIT_MQ_PASSWORD>${rabbitmq.password}</RABBIT_MQ_PASSWORD>
-                        <RABBIT_MQ_VHOST>${rabbitmq.vhost}</RABBIT_MQ_VHOST>
-                        <MESSAGING_SCOPE>local</MESSAGING_SCOPE>
+                        <rabbitmq.address>${rabbitmq.address}</rabbitmq.address>
+                        <rabbitmq.port>${rabbitmq.port}</rabbitmq.port>
+                        <rabbitmq.username>${rabbitmq.username}</rabbitmq.username>
+                        <rabbitmq.password>${rabbitmq.password}</rabbitmq.password>
+                        <rabbitmq.vhost>${rabbitmq.vhost}</rabbitmq.vhost>
+                        <messaging.scope>local</messaging.scope>
 
                         <!-- Clear the index -->
-                        <CLEAR_INDEX>true</CLEAR_INDEX>
-                        <INDEX_CHECK_SEARCHER_ON_COMMIT>true</INDEX_CHECK_SEARCHER_ON_COMMIT>
-                        <CHECK_DATA_CATEGORIES>true</CHECK_DATA_CATEGORIES>
-                        <INDEX_DATA_CATEGORIES>true</INDEX_DATA_CATEGORIES>
-                        <INDEX_DATA_ITEMS>true</INDEX_DATA_ITEMS>
+                        <index.clear>true</index.clear>
+                        <index.checkSearcherOnCommit>true</index.checkSearcherOnCommit>
+                        <index.checkDataCategories>true</index.checkDataCategories>
+                        <index.indexDataCategories>true</index.indexDataCategories>
+                        <index.indexDataItems>true</index.indexDataItems>
                         <!-- Setting the following to '/' means the root category will not be indexed -->
-                        <!--<INDEX_DATA_CATEGORY_PATH_PREFIX>/</INDEX_DATA_CATEGORY_PATH_PREFIX>-->
-                        <SNAPSHOT_ENABLED>false</SNAPSHOT_ENABLED>
-                        <INDEX_PATH>${project.build.directory}/lucene</INDEX_PATH>
-                        <LUCENE_PATH>${project.build.directory}/lucene/index</LUCENE_PATH>
-                        <SNAPSHOOTER_PATH>/</SNAPSHOOTER_PATH>
+                        <!--<index.dataCategoryPathPrefix>/</index.dataCategoryPathPrefix>-->
+                        <index.snapshot>false</index.snapshot>
+                        <index.path>${project.build.directory}/lucene</index.path>
+                        <index.lucenePath>${project.build.directory}/lucene/index</index.lucenePath>
+                        <index.snapshooterPath>/</index.snapshooterPath>
 
                         <!-- Use test key and salt files -->
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
 
-                        <amee.logDir>${project.build.directory}/logs</amee.logDir>
+                        <log.dir>${project.build.directory}/logs</log.dir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -134,79 +134,79 @@
 
                         <!-- Database -->
                         <systemProperty>
-                            <key>DATABASE</key>
+                            <key>db.targetDatabase</key>
                             <value>MYSQL</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DATABASE_PLATFORM</key>
+                            <key>db.targetPlatform</key>
                             <value>org.hibernate.dialect.MySQL5InnoDBDialect</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_DRIVER</key>
+                            <key>db.driver</key>
                             <value>com.mysql.jdbc.Driver</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_URL_PREFIX</key>
+                            <key>db.urlPrefix</key>
                             <value>jdbc</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_URL</key>
+                            <key>db.url</key>
                             <value>${db.url}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_USERNAME</key>
+                            <key>db.username</key>
                             <value>${db.username}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_PSWD</key>
-                            <value>${db.pswd}</value>
+                            <key>db.password</key>
+                            <value>${db.password}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>VALIDATION_QUERY</key>
+                            <key>db.validationQuery</key>
                             <value>SELECT 1 FROM DUAL</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>SHOW_SQL</key>
+                            <key>db.showSql</key>
                             <value>false</value>
                         </systemProperty>
 
                         <!-- Messaging -->
                         <systemProperty>
-                            <key>RABBIT_MQ_ADDRESS</key>
+                            <key>rabbitmq.address</key>
                             <value>${rabbitmq.address}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>RABBIT_MQ_PORT</key>
+                            <key>rabbitmq.port</key>
                             <value>${rabbitmq.port}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>RABBIT_MQ_VHOST</key>
+                            <key>rabbitmq.vhost</key>
                             <value>${rabbitmq.vhost}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>RABBIT_MQ_USERNAME</key>
+                            <key>rabbitmq.username</key>
                             <value>${rabbitmq.username}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>RABBIT_MQ_PASSWORD</key>
+                            <key>rabbitmq.password</key>
                             <value>${rabbitmq.password}</value>
                         </systemProperty>
 
                         <!-- Index -->
                         <systemProperty>
-                            <key>SNAPSHOT_ENABLED</key>
+                            <key>index.snapshot</key>
                             <value>false</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>INDEX_PATH</key>
+                            <key>index.path</key>
                             <value>${project.basedir}/lucene</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>LUCENE_PATH</key>
+                            <key>index.lucenePath</key>
                             <value>${project.basedir}/lucene/index</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>SNAPSHOOTER_PATH</key>
+                            <key>index.snapshooterPath</key>
                             <value>/</value>
                         </systemProperty>
 
@@ -219,7 +219,7 @@
                             <value>amee.salt</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>amee.logDir</key>
+                            <key>log.dir</key>
                             <value>${project.build.directory}/logs</value>
                         </systemProperty>
                     </systemProperties>

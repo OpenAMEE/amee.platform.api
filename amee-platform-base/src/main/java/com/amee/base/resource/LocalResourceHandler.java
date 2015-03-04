@@ -171,7 +171,7 @@ public class LocalResourceHandler implements ResourceHandler {
      *
      * @param defaultTimeout timeout value in seconds
      */
-    @Value("${RESOURCE_DEFAULT_TIMEOUT}")
+    @Value("${resourceDefaultTimeout}")
     public void setDefaultTimeout(Integer defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
     }
