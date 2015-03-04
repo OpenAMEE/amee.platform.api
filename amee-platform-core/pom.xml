@@ -59,26 +59,27 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${basedir}/src/main/config</additionalClasspathElement>
+                    </additionalClasspathElements>
                     <skipTests>${skipIntegrationTests}</skipTests>
                     <skipITs>${skipIntegrationTests}</skipITs>
                     <forkMode>once</forkMode>
                     <runOrder>alphabetical</runOrder>
-                    <environmentVariables>
+
+                    <!-- Override some properties -->
+                    <systemPropertyVariables>
+
                         <!-- H2 -->
+                        <DATABASE>H2</DATABASE>
+                        <DATABASE_PLATFORM>org.hibernate.dialect.H2Dialect</DATABASE_PLATFORM>
                         <DB_URL_PREFIX>jdbc</DB_URL_PREFIX>
                         <DB_URL>h2:mem:amee_test</DB_URL>
                         <DB_DRIVER>org.h2.Driver</DB_DRIVER>
                         <DB_USERNAME>sa</DB_USERNAME>
                         <DB_PSWD>NULL</DB_PSWD>
                         <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
-
-                        <!-- HSQLDB -->
-                        <!--<DB_URL_PREFIX>jdbc</DB_URL_PREFIX>-->
-                        <!--<DB_URL>hsqldb:mem:amee_test</DB_URL>-->
-                        <!--<DB_DRIVER>org.hsqldb.jdbcDriver</DB_DRIVER>-->
-                        <!--<DB_USERNAME>sa</DB_USERNAME>-->
-                        <!--<DB_PSWD>NULL</DB_PSWD>-->
-                        <!--<VALIDATION_QUERY>SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS</VALIDATION_QUERY>-->
+                        <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
 
                         <!-- MySQL -->
                         <!--
@@ -90,36 +91,14 @@
                         <VALIDATION_QUERY>SELECT 1 FROM DUAL</VALIDATION_QUERY>
                         -->
 
-                        <!-- AMEE -->
-                        <HOST_NAME>localhost</HOST_NAME>
-                        <PROTOCOL>http</PROTOCOL>
-                        <PORT>7777</PORT>
-                        <SECURE_PORT>7778</SECURE_PORT>
-
-                        <LOG_LEVEL>DEBUG</LOG_LEVEL>
-                        <DEFAULT_LOG_LEVEL>WARN</DEFAULT_LOG_LEVEL>
-                        <AMEE_SERVER_NAME>localhost</AMEE_SERVER_NAME>
-                        <RESOURCE_DEFAULT_TIMEOUT>15</RESOURCE_DEFAULT_TIMEOUT>
-                    </environmentVariables>
-                    <systemPropertyVariables>
-                        <hibernate.hbm2ddl.auto>create-drop</hibernate.hbm2ddl.auto>
-                        <sun.lang.ClassLoader.allowArraySyntax>true</sun.lang.ClassLoader.allowArraySyntax>
-                        <java.awt.headless>true</java.awt.headless>
-                        <TRAIN_ROUTE_SERVICE_URI>http://example.com</TRAIN_ROUTE_SERVICE_URI>
-                        <AUTO_START_SCHEDULER>true</AUTO_START_SCHEDULER>
-                        <MESSAGING_RUN_SLEEP>5000</MESSAGING_RUN_SLEEP>
                         <RABBIT_MQ_ADDRESS>${rabbitmq.address}</RABBIT_MQ_ADDRESS>
                         <RABBIT_MQ_PORT>${rabbitmq.port}</RABBIT_MQ_PORT>
                         <RABBIT_MQ_USERNAME>${rabbitmq.username}</RABBIT_MQ_USERNAME>
                         <RABBIT_MQ_PASSWORD>${rabbitmq.password}</RABBIT_MQ_PASSWORD>
                         <RABBIT_MQ_VHOST>${rabbitmq.vhost}</RABBIT_MQ_VHOST>
                         <MESSAGING_SCOPE>local</MESSAGING_SCOPE>
-                        <AMEE_APP_NAME>platform</AMEE_APP_NAME>
-                        <AMEE_INSTANCE_NAME>local</AMEE_INSTANCE_NAME>
-                        <DATABASE>H2</DATABASE>
-                        <DATABASE_PLATFORM>org.hibernate.dialect.H2Dialect</DATABASE_PLATFORM>
-                        <SHOW_SQL>false</SHOW_SQL>
-                        <MASTER_INDEX>true</MASTER_INDEX>
+
+                        <!-- Clear the index -->
                         <CLEAR_INDEX>true</CLEAR_INDEX>
                         <INDEX_CHECK_SEARCHER_ON_COMMIT>true</INDEX_CHECK_SEARCHER_ON_COMMIT>
                         <CHECK_DATA_CATEGORIES>true</CHECK_DATA_CATEGORIES>
@@ -131,8 +110,12 @@
                         <INDEX_PATH>${project.build.directory}/lucene</INDEX_PATH>
                         <LUCENE_PATH>${project.build.directory}/lucene/index</LUCENE_PATH>
                         <SNAPSHOOTER_PATH>/</SNAPSHOOTER_PATH>
+
+                        <!-- Use test key and salt files -->
                         <amee.keyFile>${basedir}/src/test/resources/crypto/amee.key</amee.keyFile>
                         <amee.saltFile>${basedir}/src/test/resources/crypto/amee.salt</amee.saltFile>
+
+                        <amee.logDir>${project.build.directory}/logs</amee.logDir>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -146,56 +129,21 @@
                         <additionalClasspathElement>${basedir}/src/main/config</additionalClasspathElement>
                     </additionalClasspathElements>
 
-                    <!-- TODO: Put properties file in src/main/config to load properties from there. -->
-                    <!-- TODO: Remember to exclude from any jars that are built -->
+                    <!-- Override some properties -->
                     <systemProperties>
+
+                        <!-- Database -->
                         <systemProperty>
-                            <key>AMEE_SERVER_NAME</key>
-                            <value>localhost</value>
+                            <key>DATABASE</key>
+                            <value>MYSQL</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>AMEE_INSTANCE_NAME</key>
-                            <value>local</value>
+                            <key>DATABASE_PLATFORM</key>
+                            <value>org.hibernate.dialect.MySQL5InnoDBDialect</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>AMEE_APP_NAME</key>
-                            <value>platform</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>HOST_NAME</key>
-                            <value>localhost</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>LOG_LEVEL</key>
-                            <value>DEBUG</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>DEFAULT_LOG_LEVEL</key>
-                            <value>INFO</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>AIRBRAKE</key>
-                            <value>false</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>PROTOCOL</key>
-                            <value>http</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>PORT</key>
-                            <value>8888</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>SECURE_PORT</key>
-                            <value>8889</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>DB_USERNAME</key>
-                            <value>${db.username}</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>DB_PSWD</key>
-                            <value>${db.pswd}</value>
+                            <key>DB_DRIVER</key>
+                            <value>com.mysql.jdbc.Driver</value>
                         </systemProperty>
                         <systemProperty>
                             <key>DB_URL_PREFIX</key>
@@ -206,33 +154,23 @@
                             <value>${db.url}</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>DB_DRIVER</key>
-                            <value>com.mysql.jdbc.Driver</value>
+                            <key>DB_USERNAME</key>
+                            <value>${db.username}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <key>DB_PSWD</key>
+                            <value>${db.pswd}</value>
                         </systemProperty>
                         <systemProperty>
                             <key>VALIDATION_QUERY</key>
                             <value>SELECT 1 FROM DUAL</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>RESOURCE_DEFAULT_TIMEOUT</key>
-                            <value>15</value>
+                            <key>SHOW_SQL</key>
+                            <value>false</value>
                         </systemProperty>
-                        <systemProperty>
-                            <key>AMEE_TIME_ZONE</key>
-                            <value>UTC</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>TRAIN_ROUTE_SERVICE_URI</key>
-                            <value>http://example.com</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>AUTO_START_SCHEDULER</key>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>MESSAGING_RUN_SLEEP</key>
-                            <value>5000</value>
-                        </systemProperty>
+
+                        <!-- Messaging -->
                         <systemProperty>
                             <key>RABBIT_MQ_ADDRESS</key>
                             <value>${rabbitmq.address}</value>
@@ -253,55 +191,11 @@
                             <key>RABBIT_MQ_PASSWORD</key>
                             <value>${rabbitmq.password}</value>
                         </systemProperty>
-                        <systemProperty>
-                            <key>MESSAGING_SCOPE</key>
-                            <value>local</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>DATABASE_PLATFORM</key>
-                            <value>org.hibernate.dialect.MySQL5InnoDBDialect</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>DATABASE</key>
-                            <value>MYSQL</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>SHOW_SQL</key>
-                            <value>false</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>MASTER_INDEX</key>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>CLEAR_INDEX</key>
-                            <value>false</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>CHECK_DATA_CATEGORIES</key>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>INDEX_DATA_CATEGORIES</key>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>INDEX_DATA_ITEMS</key>
-                            <value>true</value>
-                        </systemProperty>
 
-                        <!-- Setting the following to '/' means the root category will not be indexed -->
-                        <!--<systemProperty>-->
-                            <!--<key>INDEX_DATA_CATEGORY_PATH_PREFIX</key>-->
-                            <!--<value>/</value>-->
-                        <!--</systemProperty>-->
+                        <!-- Index -->
                         <systemProperty>
                             <key>SNAPSHOT_ENABLED</key>
                             <value>false</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>SNAPSHOOTER_PATH</key>
-                            <value>/</value>
                         </systemProperty>
                         <systemProperty>
                             <key>INDEX_PATH</key>
@@ -312,9 +206,10 @@
                             <value>${project.basedir}/lucene/index</value>
                         </systemProperty>
                         <systemProperty>
-                            <key>INDEX_CHECK_SEARCHER_ON_COMMIT</key>
-                            <value>true</value>
+                            <key>SNAPSHOOTER_PATH</key>
+                            <value>/</value>
                         </systemProperty>
+
                         <systemProperty>
                             <key>amee.keyFile</key>
                             <value>amee.key</value>
@@ -395,6 +290,8 @@
                                 <systemProperties>
                                     <systemProperty>amee.keyFile=amee.key</systemProperty>
                                     <systemProperty>amee.saltFile=amee.salt</systemProperty>
+                                    <systemProperty>sun.lang.ClassLoader.allowArraySyntax=true</systemProperty>
+                                    <systemProperty>java.awt.headless=true</systemProperty>
                                 </systemProperties>
                                 <extraArguments>
                                     <extraArgument>-server</extraArgument>
